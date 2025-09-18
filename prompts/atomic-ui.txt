@@ -1,0 +1,55 @@
+Generate a complete set of atomic UI components for a Next.js mobile application using TailwindCSS. The components should follow a modern, clean, travel-inspired style with semantic colors and design tokens defined in a global Tailwind config.
+
+Requirements:
+
+All components must be responsive, accessible, and mobile-first.
+
+Use semantic colors, shadows, and border-radius from the global Tailwind theme.
+
+Components should be reusable, self-contained, and ready for Next.js (functional components with proper props).
+
+Include variants when appropriate (e.g., primary/secondary buttons, filled/outlined inputs, success/error states).
+
+List of atomic components to generate:
+
+Button – variants: primary, secondary, accent, disabled, loading.
+
+Input / TextField – variants: default, error, disabled, with icon.
+
+Textarea – multiline input, error/disabled states.
+
+Select / Dropdown – single and multi-select.
+
+Checkbox / Radio – checked/unchecked, disabled states.
+
+Switch / Toggle – light/dark mode style.
+
+Badge / Tag – for status labels (info, success, warning, error).
+
+Card – with header, body, footer; optional image.
+
+Modal / Dialog – overlay with close button, scrollable content.
+
+Tooltip / Popover – hover or click, with arrow.
+
+Avatar / ProfileImage – circular image with optional status indicator.
+
+Progress / Spinner / Loader – loading indicators.
+
+Tabs / TabList – horizontal and vertical variants.
+
+Breadcrumb / Navigation – small text navigation component.
+
+Accordion / Collapse – expandable/collapsible content.
+
+Toast / Notification – success, error, info, warning.
+
+Output Requirements:
+
+Provide each component as a separate functional React component with props for customization (e.g., size, color, disabled, onClick).
+
+Use TailwindCSS utility classes only, referencing global design tokens.
+
+Include light and dark mode support where relevant.
+
+Include default export and proper file naming for easy integration in a Next.js project.
