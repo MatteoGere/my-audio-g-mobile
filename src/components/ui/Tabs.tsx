@@ -46,11 +46,9 @@ const Tabs: React.FC<TabsProps> = ({
   orientation = 'horizontal',
   variant = 'default',
   size = 'md',
-  className
+  className,
 }) => {
-  const [activeTab, setActiveTab] = useState(
-    value || defaultValue || items[0]?.id || ''
-  );
+  const [activeTab, setActiveTab] = useState(value || defaultValue || items[0]?.id || '');
 
   React.useEffect(() => {
     if (value !== undefined) {
@@ -68,18 +66,12 @@ const Tabs: React.FC<TabsProps> = ({
     setActiveTab: handleTabChange,
     orientation,
     variant,
-    size
+    size,
   };
 
   return (
     <TabsContext.Provider value={contextValue}>
-      <div
-        className={cn(
-          'w-full',
-          orientation === 'vertical' && 'flex gap-4',
-          className
-        )}
-      >
+      <div className={cn('w-full', orientation === 'vertical' && 'flex gap-4', className)}>
         <TabsList items={items} />
         <TabsContent items={items} />
       </div>
@@ -92,21 +84,23 @@ const TabsList: React.FC<{ items: TabItem[] }> = ({ items }) => {
 
   const containerStyles = cn(
     'flex',
-    orientation === 'horizontal' ? 'border-b border-stone-200' : 'flex-col border-r border-stone-200 min-w-[200px]',
+    orientation === 'horizontal'
+      ? 'border-b border-stone-200'
+      : 'flex-col border-r border-stone-200 min-w-[200px]',
     variant === 'pills' && 'bg-stone-100 p-1 rounded-md border-0',
-    variant === 'underline' && 'border-b-2 border-stone-200'
+    variant === 'underline' && 'border-b-2 border-stone-200',
   );
 
   const sizes = {
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base'
+    lg: 'px-6 py-3 text-base',
   };
 
   const getTabStyles = (item: TabItem) => {
     const baseStyles = cn(
       'flex items-center gap-2 font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
-      sizes[size]
+      sizes[size],
     );
 
     if (variant === 'pills') {
@@ -115,7 +109,7 @@ const TabsList: React.FC<{ items: TabItem[] }> = ({ items }) => {
         'rounded-md',
         activeTab === item.id
           ? 'bg-surface text-foreground shadow-sm'
-          : 'text-muted hover:text-foreground hover:bg-stone-200'
+          : 'text-muted hover:text-foreground hover:bg-stone-200',
       );
     }
 
@@ -125,7 +119,7 @@ const TabsList: React.FC<{ items: TabItem[] }> = ({ items }) => {
         'border-b-2 -mb-0.5',
         activeTab === item.id
           ? 'border-primary text-primary'
-          : 'border-transparent text-muted hover:text-foreground hover:border-stone-300'
+          : 'border-transparent text-muted hover:text-foreground hover:border-stone-300',
       );
     }
 
@@ -135,7 +129,7 @@ const TabsList: React.FC<{ items: TabItem[] }> = ({ items }) => {
       'border-b-2 -mb-px',
       activeTab === item.id
         ? 'border-primary text-primary bg-surface'
-        : 'border-transparent text-muted hover:text-foreground hover:border-stone-300'
+        : 'border-transparent text-muted hover:text-foreground hover:border-stone-300',
     );
   };
 
@@ -152,11 +146,7 @@ const TabsList: React.FC<{ items: TabItem[] }> = ({ items }) => {
           aria-controls={`tabpanel-${item.id}`}
           id={`tab-${item.id}`}
         >
-          {item.icon && (
-            <span className="flex-shrink-0">
-              {item.icon}
-            </span>
-          )}
+          {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
           {item.label}
         </button>
       ))}
@@ -168,16 +158,11 @@ const TabsContent: React.FC<{ items: TabItem[] }> = ({ items }) => {
   const { activeTab, orientation } = useTabs();
 
   return (
-    <div className={cn(
-      'flex-1',
-      orientation === 'vertical' ? 'pl-4' : 'pt-4'
-    )}>
+    <div className={cn('flex-1', orientation === 'vertical' ? 'pl-4' : 'pt-4')}>
       {items.map((item) => (
         <div
           key={item.id}
-          className={cn(
-            activeTab === item.id ? 'block' : 'hidden'
-          )}
+          className={cn(activeTab === item.id ? 'block' : 'hidden')}
           role="tabpanel"
           id={`tabpanel-${item.id}`}
           aria-labelledby={`tab-${item.id}`}
@@ -190,17 +175,13 @@ const TabsContent: React.FC<{ items: TabItem[] }> = ({ items }) => {
 };
 
 // Individual components for more flexible usage
-const TabList: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ 
-  className, 
-  children, 
-  ...props 
+const TabList: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
+  className,
+  children,
+  ...props
 }) => {
   return (
-    <div
-      className={cn('flex border-b border-stone-200', className)}
-      role="tablist"
-      {...props}
-    >
+    <div className={cn('flex border-b border-stone-200', className)} role="tablist" {...props}>
       {children}
     </div>
   );
@@ -219,7 +200,7 @@ const Tab: React.FC<{
         'border-transparent text-muted hover:text-foreground hover:border-stone-300',
         'data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-surface',
         disabled && 'opacity-50 cursor-not-allowed',
-        className
+        className,
       )}
       disabled={disabled}
       role="tab"
@@ -236,10 +217,7 @@ const TabContent: React.FC<{
   className?: string;
 }> = ({ children, className }) => {
   return (
-    <div
-      className={cn('pt-4', className)}
-      role="tabpanel"
-    >
+    <div className={cn('pt-4', className)} role="tabpanel">
       {children}
     </div>
   );

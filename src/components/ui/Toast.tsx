@@ -44,10 +44,10 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const newToast: Toast = {
       ...toast,
       id,
-      duration: toast.duration ?? 5000
+      duration: toast.duration ?? 5000,
     };
 
-    setToasts(prev => [...prev, newToast]);
+    setToasts((prev) => [...prev, newToast]);
 
     // Auto remove toast after duration
     if (newToast.duration && newToast.duration > 0) {
@@ -60,7 +60,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const removeToast = (id: string) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
   };
 
   const clearToasts = () => {
@@ -97,7 +97,7 @@ const ToastComponent: React.FC<Toast> = ({
   description,
   variant = 'default',
   action,
-  onClose
+  onClose,
 }) => {
   const { removeToast } = useToast();
   const [isVisible, setIsVisible] = useState(false);
@@ -112,7 +112,7 @@ const ToastComponent: React.FC<Toast> = ({
   const handleClose = () => {
     setIsLeaving(true);
     onClose?.();
-    
+
     // Remove from context after animation
     setTimeout(() => {
       removeToast(id);
@@ -123,28 +123,29 @@ const ToastComponent: React.FC<Toast> = ({
     default: {
       container: 'bg-surface border-stone-200',
       icon: 'text-info',
-      iconPath: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+      iconPath: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
     },
     success: {
       container: 'bg-success/10 border-success/20',
       icon: 'text-success',
-      iconPath: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
+      iconPath: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
     },
     warning: {
       container: 'bg-warning/10 border-warning/20',
       icon: 'text-warning',
-      iconPath: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z'
+      iconPath:
+        'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z',
     },
     error: {
       container: 'bg-error/10 border-error/20',
       icon: 'text-error',
-      iconPath: 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'
+      iconPath: 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z',
     },
     info: {
       container: 'bg-info/10 border-info/20',
       icon: 'text-info',
-      iconPath: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
-    }
+      iconPath: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+    },
   };
 
   const variantConfig = variants[variant];
@@ -154,9 +155,9 @@ const ToastComponent: React.FC<Toast> = ({
       className={cn(
         'relative w-full pointer-events-auto overflow-hidden rounded-md border p-4 shadow-medium transition-all duration-300 ease-in-out',
         variantConfig.container,
-        isVisible && !isLeaving 
-          ? 'transform translate-x-0 opacity-100' 
-          : 'transform translate-x-full opacity-0'
+        isVisible && !isLeaving
+          ? 'transform translate-x-0 opacity-100'
+          : 'transform translate-x-full opacity-0',
       )}
       role="alert"
     >
@@ -180,17 +181,9 @@ const ToastComponent: React.FC<Toast> = ({
 
         {/* Content */}
         <div className="flex-1 space-y-1">
-          {title && (
-            <div className="text-sm font-medium text-foreground">
-              {title}
-            </div>
-          )}
-          {description && (
-            <div className="text-sm text-muted">
-              {description}
-            </div>
-          )}
-          
+          {title && <div className="text-sm font-medium text-foreground">{title}</div>}
+          {description && <div className="text-sm text-muted">{description}</div>}
+
           {/* Action */}
           {action && (
             <div className="mt-2">
@@ -210,13 +203,13 @@ const ToastComponent: React.FC<Toast> = ({
           className="flex-shrink-0 p-1 rounded-md hover:bg-stone-100 transition-colors"
           aria-label="Close notification"
         >
-          <svg
-            className="h-4 w-4 text-muted"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg className="h-4 w-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
@@ -241,7 +234,7 @@ export const toast = {
   },
   default: (message: string, options?: Partial<Omit<Toast, 'id' | 'variant'>>) => {
     return { variant: 'default' as const, description: message, ...options };
-  }
+  },
 };
 
 export { ToastComponent as Toast };

@@ -16,18 +16,9 @@ export interface BreadcrumbProps {
   className?: string;
 }
 
-const Breadcrumb: React.FC<BreadcrumbProps> = ({
-  items,
-  separator,
-  maxItems,
-  className
-}) => {
+const Breadcrumb: React.FC<BreadcrumbProps> = ({ items, separator, maxItems, className }) => {
   const defaultSeparator = (
-    <svg
-      className="h-4 w-4 text-muted"
-      fill="currentColor"
-      viewBox="0 0 20 20"
-    >
+    <svg className="h-4 w-4 text-muted" fill="currentColor" viewBox="0 0 20 20">
       <path
         fillRule="evenodd"
         d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
@@ -48,21 +39,14 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
     const ellipsisItem: BreadcrumbItem = {
       label: '...',
-      disabled: true
+      disabled: true,
     };
 
-    return [
-      items[0],
-      ellipsisItem,
-      ...items.slice(-(maxItems - 2))
-    ];
+    return [items[0], ellipsisItem, ...items.slice(-(maxItems - 2))];
   }, [items, maxItems]);
 
   return (
-    <nav
-      className={cn('flex items-center space-x-1 text-sm', className)}
-      aria-label="Breadcrumb"
-    >
+    <nav className={cn('flex items-center space-x-1 text-sm', className)} aria-label="Breadcrumb">
       <ol className="flex items-center space-x-1">
         {processedItems.map((item, index) => {
           const isLast = index === processedItems.length - 1;
@@ -78,7 +62,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
                     'hover:text-foreground transition-colors',
                     item.disabled || item.current
                       ? 'text-foreground font-medium cursor-default'
-                      : 'text-muted hover:text-foreground'
+                      : 'text-muted hover:text-foreground',
                   )}
                   aria-current={item.current || isLast ? 'page' : undefined}
                   onClick={item.disabled ? (e) => e.preventDefault() : undefined}
@@ -92,7 +76,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
                     'hover:text-foreground transition-colors text-left',
                     item.current
                       ? 'text-foreground font-medium cursor-default'
-                      : 'text-muted hover:text-foreground'
+                      : 'text-muted hover:text-foreground',
                   )}
                   aria-current={item.current || isLast ? 'page' : undefined}
                 >
@@ -104,8 +88,8 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
                     isEllipsis
                       ? 'text-muted'
                       : item.current || isLast
-                      ? 'text-foreground font-medium'
-                      : 'text-muted'
+                        ? 'text-foreground font-medium'
+                        : 'text-muted',
                   )}
                   aria-current={item.current || isLast ? 'page' : undefined}
                 >
@@ -115,9 +99,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
               {/* Separator */}
               {!isLast && (
-                <span className="mx-1 flex items-center">
-                  {separator || defaultSeparator}
-                </span>
+                <span className="mx-1 flex items-center">{separator || defaultSeparator}</span>
               )}
             </li>
           );

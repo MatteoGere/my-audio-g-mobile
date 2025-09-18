@@ -24,7 +24,7 @@ const Popover: React.FC<PopoverProps> = ({
   closeOnEscape = true,
   offset = 8,
   className,
-  disabled = false
+  disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [actualPosition, setActualPosition] = useState(position);
@@ -56,7 +56,7 @@ const Popover: React.FC<PopoverProps> = ({
       const contentRect = contentRef.current.getBoundingClientRect();
       const viewport = {
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
       };
 
       let newPosition = position;
@@ -128,35 +128,39 @@ const Popover: React.FC<PopoverProps> = ({
 
   const getPositionClasses = () => {
     const baseOffset = `${offset}px`;
-    
+
     switch (actualPosition) {
       case 'top':
         return {
           content: `bottom-full mb-[${baseOffset}]`,
-          align: align === 'start' ? 'left-0' : 
-                align === 'end' ? 'right-0' : 
-                'left-1/2 -translate-x-1/2'
+          align:
+            align === 'start'
+              ? 'left-0'
+              : align === 'end'
+                ? 'right-0'
+                : 'left-1/2 -translate-x-1/2',
         };
       case 'bottom':
         return {
           content: `top-full mt-[${baseOffset}]`,
-          align: align === 'start' ? 'left-0' : 
-                align === 'end' ? 'right-0' : 
-                'left-1/2 -translate-x-1/2'
+          align:
+            align === 'start'
+              ? 'left-0'
+              : align === 'end'
+                ? 'right-0'
+                : 'left-1/2 -translate-x-1/2',
         };
       case 'left':
         return {
           content: `right-full mr-[${baseOffset}]`,
-          align: align === 'start' ? 'top-0' : 
-                align === 'end' ? 'bottom-0' : 
-                'top-1/2 -translate-y-1/2'
+          align:
+            align === 'start' ? 'top-0' : align === 'end' ? 'bottom-0' : 'top-1/2 -translate-y-1/2',
         };
       case 'right':
         return {
           content: `left-full ml-[${baseOffset}]`,
-          align: align === 'start' ? 'top-0' : 
-                align === 'end' ? 'bottom-0' : 
-                'top-1/2 -translate-y-1/2'
+          align:
+            align === 'start' ? 'top-0' : align === 'end' ? 'bottom-0' : 'top-1/2 -translate-y-1/2',
         };
       default:
         return { content: '', align: '' };
@@ -165,14 +169,15 @@ const Popover: React.FC<PopoverProps> = ({
 
   const positionClasses = getPositionClasses();
 
-  const triggerProps = triggerMode === 'hover'
-    ? {
-        onMouseEnter: openPopover,
-        onMouseLeave: closePopover
-      }
-    : {
-        onClick: togglePopover
-      };
+  const triggerProps =
+    triggerMode === 'hover'
+      ? {
+          onMouseEnter: openPopover,
+          onMouseLeave: closePopover,
+        }
+      : {
+          onClick: togglePopover,
+        };
 
   return (
     <div className="relative inline-block">
@@ -191,9 +196,9 @@ const Popover: React.FC<PopoverProps> = ({
             'absolute z-50 bg-surface border border-stone-200 rounded-md shadow-medium',
             positionClasses.content,
             positionClasses.align,
-            className
+            className,
           )}
-          style={{ 
+          style={{
             marginTop: actualPosition === 'bottom' ? offset : undefined,
             marginBottom: actualPosition === 'top' ? offset : undefined,
             marginLeft: actualPosition === 'right' ? offset : undefined,

@@ -25,7 +25,7 @@ import {
   Breadcrumb,
   Accordion,
   ToastProvider,
-  useToast
+  useToast,
 } from '@/components/ui';
 
 // Sample data
@@ -69,17 +69,20 @@ const accordionItems = [
   {
     id: 'accordion1',
     trigger: 'What is this component library?',
-    content: 'This is a comprehensive set of atomic UI components built for Next.js applications with a travel-inspired design system.',
+    content:
+      'This is a comprehensive set of atomic UI components built for Next.js applications with a travel-inspired design system.',
   },
   {
     id: 'accordion2',
     trigger: 'How do I use these components?',
-    content: 'Import the components you need from the ui library and use them in your React components. Each component comes with TypeScript support and multiple variants.',
+    content:
+      'Import the components you need from the ui library and use them in your React components. Each component comes with TypeScript support and multiple variants.',
   },
   {
     id: 'accordion3',
     trigger: 'Are the components accessible?',
-    content: 'Yes! All components follow accessibility best practices including proper ARIA attributes, keyboard navigation, and screen reader support.',
+    content:
+      'Yes! All components follow accessibility best practices including proper ARIA attributes, keyboard navigation, and screen reader support.',
   },
 ];
 
@@ -145,7 +148,7 @@ export default function UIPlayground() {
           {/* Base Components */}
           <Card className="p-6 mb-8">
             <h2 className="text-2xl font-semibold mb-6">Base Components</h2>
-            
+
             {/* Buttons */}
             <div className="mb-8">
               <h3 className="text-lg font-semibold mb-4">Buttons</h3>
@@ -157,13 +160,23 @@ export default function UIPlayground() {
                 <Button variant="ghost">Ghost</Button>
               </div>
               <div className="flex flex-wrap gap-4 mb-4">
-                <Button variant="primary" size="sm">Small</Button>
-                <Button variant="primary" size="md">Medium</Button>
-                <Button variant="primary" size="lg">Large</Button>
+                <Button variant="primary" size="sm">
+                  Small
+                </Button>
+                <Button variant="primary" size="md">
+                  Medium
+                </Button>
+                <Button variant="primary" size="lg">
+                  Large
+                </Button>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Button variant="primary" loading>Loading</Button>
-                <Button variant="primary" disabled>Disabled</Button>
+                <Button variant="primary" loading>
+                  Loading
+                </Button>
+                <Button variant="primary" disabled>
+                  Disabled
+                </Button>
               </div>
             </div>
 
@@ -184,11 +197,7 @@ export default function UIPlayground() {
                   icon={<span>🔒</span>}
                 />
                 <div className="md:col-span-2">
-                  <Textarea
-                    label="Message"
-                    placeholder="Enter your message here..."
-                    rows={3}
-                  />
+                  <Textarea label="Message" placeholder="Enter your message here..." rows={3} />
                 </div>
               </div>
             </div>
@@ -197,7 +206,7 @@ export default function UIPlayground() {
           {/* Form Components */}
           <Card className="p-6 mb-8">
             <h2 className="text-2xl font-semibold mb-6">Form Components</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <Select
@@ -208,7 +217,7 @@ export default function UIPlayground() {
                   onValueChange={(value) => setSelectValue(value as string)}
                 />
               </div>
-              
+
               <div>
                 <RadioGroup
                   name="example-radio"
@@ -217,7 +226,7 @@ export default function UIPlayground() {
                   onValueChange={setRadioValue}
                 />
               </div>
-              
+
               <div>
                 <Checkbox
                   label="Accept terms and conditions"
@@ -226,7 +235,7 @@ export default function UIPlayground() {
                   onChange={(e) => setCheckboxChecked(e.target.checked)}
                 />
               </div>
-              
+
               <div>
                 <Switch
                   label="Enable notifications"
@@ -241,7 +250,7 @@ export default function UIPlayground() {
           {/* Data Display Components */}
           <Card className="p-6 mb-8">
             <h2 className="text-2xl font-semibold mb-6">Data Display</h2>
-            
+
             {/* Badges */}
             <div className="mb-8">
               <h3 className="text-lg font-semibold mb-4">Badges</h3>
@@ -298,10 +307,12 @@ export default function UIPlayground() {
                     <p className="text-muted">This is a default card with some content.</p>
                   </CardBody>
                   <CardFooter>
-                    <Button variant="outline" size="sm">Action</Button>
+                    <Button variant="outline" size="sm">
+                      Action
+                    </Button>
                   </CardFooter>
                 </Card>
-                
+
                 <Card variant="elevated">
                   <CardHeader>
                     <CardTitle>Elevated Card</CardTitle>
@@ -317,7 +328,7 @@ export default function UIPlayground() {
           {/* Interactive Components */}
           <Card className="p-6 mb-8">
             <h2 className="text-2xl font-semibold mb-6">Interactive Components</h2>
-            
+
             <div className="space-y-8">
               {/* Modal */}
               <div>
@@ -330,7 +341,8 @@ export default function UIPlayground() {
                   description="This is an example modal dialog."
                 >
                   <p className="text-muted mb-4">
-                    This modal demonstrates the overlay functionality with proper focus management and keyboard navigation.
+                    This modal demonstrates the overlay functionality with proper focus management
+                    and keyboard navigation.
                   </p>
                   <div className="flex justify-end gap-2">
                     <Button variant="outline" onClick={() => setIsModalOpen(false)}>
@@ -350,7 +362,7 @@ export default function UIPlayground() {
                   <Tooltip content="This is a helpful tooltip" position="top">
                     <Button variant="outline">Hover for tooltip</Button>
                   </Tooltip>
-                  
+
                   <Popover
                     trigger={<Button variant="outline">Click for popover</Button>}
                     content={
@@ -380,7 +392,7 @@ export default function UIPlayground() {
           {/* Navigation Components */}
           <Card className="p-6 mb-8">
             <h2 className="text-2xl font-semibold mb-6">Navigation Components</h2>
-            
+
             {/* Accordion */}
             <div>
               <h3 className="text-lg font-semibold mb-4">Accordion</h3>

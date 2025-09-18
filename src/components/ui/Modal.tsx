@@ -26,7 +26,7 @@ const Modal: React.FC<ModalProps> = ({
   closeOnEscape = true,
   showCloseButton = true,
   children,
-  className
+  className,
 }) => {
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -53,7 +53,7 @@ const Modal: React.FC<ModalProps> = ({
     md: 'max-w-lg',
     lg: 'max-w-2xl',
     xl: 'max-w-4xl',
-    full: 'max-w-[95vw] max-h-[95vh]'
+    full: 'max-w-[95vw] max-h-[95vh]',
   };
 
   const handleOverlayClick = (e: React.MouseEvent) => {
@@ -65,18 +65,15 @@ const Modal: React.FC<ModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Overlay */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={handleOverlayClick}
-      />
-      
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={handleOverlayClick} />
+
       {/* Modal Content */}
       <div
         className={cn(
           'relative w-full m-4 bg-surface rounded-lg shadow-strong border border-stone-200 overflow-hidden',
           sizes[size],
           size === 'full' && 'h-full',
-          className
+          className,
         )}
         role="dialog"
         aria-modal="true"
@@ -88,23 +85,17 @@ const Modal: React.FC<ModalProps> = ({
           <div className="flex items-center justify-between p-4 border-b border-stone-200">
             <div className="space-y-1">
               {title && (
-                <h2 
-                  id="modal-title"
-                  className="text-lg font-semibold text-foreground"
-                >
+                <h2 id="modal-title" className="text-lg font-semibold text-foreground">
                   {title}
                 </h2>
               )}
               {description && (
-                <p 
-                  id="modal-description"
-                  className="text-sm text-muted"
-                >
+                <p id="modal-description" className="text-sm text-muted">
                   {description}
                 </p>
               )}
             </div>
-            
+
             {showCloseButton && (
               <button
                 onClick={onClose}
@@ -117,20 +108,20 @@ const Modal: React.FC<ModalProps> = ({
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             )}
           </div>
         )}
-        
+
         {/* Content */}
-        <div className={cn(
-          'p-4',
-          size === 'full' && 'flex-1 overflow-auto'
-        )}>
-          {children}
-        </div>
+        <div className={cn('p-4', size === 'full' && 'flex-1 overflow-auto')}>{children}</div>
       </div>
     </div>
   );

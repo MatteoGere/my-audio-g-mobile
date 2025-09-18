@@ -11,7 +11,7 @@ export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ 
+const Avatar: React.FC<AvatarProps> = ({
   className,
   src,
   alt,
@@ -20,7 +20,7 @@ const Avatar: React.FC<AvatarProps> = ({
   status,
   showStatus = false,
   children,
-  ...props 
+  ...props
 }) => {
   const [imageLoaded, setImageLoaded] = React.useState(false);
   const [imageError, setImageError] = React.useState(false);
@@ -31,7 +31,7 @@ const Avatar: React.FC<AvatarProps> = ({
     md: 'h-10 w-10 text-sm',
     lg: 'h-12 w-12 text-base',
     xl: 'h-16 w-16 text-lg',
-    '2xl': 'h-20 w-20 text-xl'
+    '2xl': 'h-20 w-20 text-xl',
   };
 
   const statusSizes = {
@@ -40,20 +40,20 @@ const Avatar: React.FC<AvatarProps> = ({
     md: 'h-2.5 w-2.5',
     lg: 'h-3 w-3',
     xl: 'h-3.5 w-3.5',
-    '2xl': 'h-4 w-4'
+    '2xl': 'h-4 w-4',
   };
 
   const statusColors = {
     online: 'bg-success',
     offline: 'bg-stone-400',
     away: 'bg-warning',
-    busy: 'bg-error'
+    busy: 'bg-error',
   };
 
   const getInitials = (name: string) => {
     return name
       .split(' ')
-      .map(word => word.charAt(0))
+      .map((word) => word.charAt(0))
       .join('')
       .toUpperCase()
       .slice(0, 2);
@@ -66,7 +66,7 @@ const Avatar: React.FC<AvatarProps> = ({
     if (src) {
       setImageLoaded(false);
       setImageError(false);
-      
+
       const img = new Image();
       img.onload = () => setImageLoaded(true);
       img.onerror = () => setImageError(true);
@@ -80,36 +80,22 @@ const Avatar: React.FC<AvatarProps> = ({
         className={cn(
           'relative flex items-center justify-center rounded-full bg-stone-100 font-medium text-stone-700 overflow-hidden',
           sizes[size],
-          className
+          className,
         )}
         {...props}
       >
-        {shouldShowImage && (
-          <img
-            src={src}
-            alt={alt}
-            className="h-full w-full object-cover"
-          />
-        )}
-        
+        {shouldShowImage && <img src={src} alt={alt} className="h-full w-full object-cover" />}
+
         {shouldShowFallback && (
-          <span className="select-none">
-            {getInitials(fallback || alt || '')}
-          </span>
+          <span className="select-none">{getInitials(fallback || alt || '')}</span>
         )}
-        
+
         {!shouldShowImage && !shouldShowFallback && children && (
-          <span className="select-none">
-            {children}
-          </span>
+          <span className="select-none">{children}</span>
         )}
-        
+
         {!shouldShowImage && !shouldShowFallback && !children && (
-          <svg
-            className="h-1/2 w-1/2 text-stone-400"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
+          <svg className="h-1/2 w-1/2 text-stone-400" fill="currentColor" viewBox="0 0 20 20">
             <path
               fillRule="evenodd"
               d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
@@ -118,13 +104,13 @@ const Avatar: React.FC<AvatarProps> = ({
           </svg>
         )}
       </div>
-      
+
       {showStatus && status && (
         <span
           className={cn(
             'absolute bottom-0 right-0 block rounded-full ring-2 ring-surface',
             statusSizes[size],
-            statusColors[status]
+            statusColors[status],
           )}
         />
       )}

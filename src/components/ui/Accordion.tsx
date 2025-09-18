@@ -44,7 +44,7 @@ const Accordion: React.FC<AccordionProps> = ({
   onValueChange,
   collapsible = true,
   className,
-  children
+  children,
 }) => {
   const [internalValue, setInternalValue] = useState<string | string[]>(() => {
     if (value !== undefined) return value;
@@ -60,7 +60,7 @@ const Accordion: React.FC<AccordionProps> = ({
     if (type === 'multiple') {
       const arrayValue = Array.isArray(currentValue) ? currentValue : [];
       if (arrayValue.includes(itemId)) {
-        newValue = arrayValue.filter(id => id !== itemId);
+        newValue = arrayValue.filter((id) => id !== itemId);
       } else {
         newValue = [...arrayValue, itemId];
       }
@@ -83,21 +83,20 @@ const Accordion: React.FC<AccordionProps> = ({
     type,
     value: currentValue,
     onItemToggle: handleItemToggle,
-    collapsible
+    collapsible,
   };
 
   return (
     <AccordionContext.Provider value={contextValue}>
       <div className={cn('w-full', className)}>
-        {items 
+        {items
           ? items.map((item) => (
               <AccordionItem key={item.id} value={item.id} disabled={item.disabled}>
                 <AccordionTrigger>{item.trigger}</AccordionTrigger>
                 <AccordionContent>{item.content}</AccordionContent>
               </AccordionItem>
             ))
-          : children
-        }
+          : children}
       </div>
     </AccordionContext.Provider>
   );
@@ -114,30 +113,31 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
   value,
   disabled = false,
   className,
-  children
+  children,
 }) => {
   const { value: accordionValue, type } = useAccordion();
-  
-  const isOpen = type === 'multiple' 
-    ? Array.isArray(accordionValue) && accordionValue.includes(value)
-    : accordionValue === value;
+
+  const isOpen =
+    type === 'multiple'
+      ? Array.isArray(accordionValue) && accordionValue.includes(value)
+      : accordionValue === value;
 
   return (
     <div
       className={cn(
         'border-b border-stone-200 last:border-b-0',
         disabled && 'opacity-50',
-        className
+        className,
       )}
       data-state={isOpen ? 'open' : 'closed'}
       data-disabled={disabled}
     >
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
-          const additionalProps = { 
-            value, 
+          const additionalProps = {
+            value,
             disabled,
-            isOpen
+            isOpen,
           };
           return React.cloneElement(child, additionalProps as Record<string, unknown>);
         }
@@ -160,7 +160,7 @@ const AccordionTrigger: React.FC<AccordionTriggerProps> = ({
   disabled = false,
   isOpen = false,
   className,
-  children
+  children,
 }) => {
   const { onItemToggle } = useAccordion();
 
@@ -175,7 +175,7 @@ const AccordionTrigger: React.FC<AccordionTriggerProps> = ({
       className={cn(
         'flex w-full items-center justify-between py-4 px-0 text-left font-medium transition-all hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
         disabled && 'cursor-not-allowed hover:no-underline',
-        className
+        className,
       )}
       onClick={handleClick}
       disabled={disabled}
@@ -186,7 +186,7 @@ const AccordionTrigger: React.FC<AccordionTriggerProps> = ({
       <svg
         className={cn(
           'h-4 w-4 shrink-0 text-muted transition-transform duration-200',
-          isOpen && 'rotate-180'
+          isOpen && 'rotate-180',
         )}
         fill="none"
         stroke="currentColor"
@@ -209,19 +209,17 @@ interface AccordionContentProps {
 const AccordionContent: React.FC<AccordionContentProps> = ({
   isOpen = false,
   className,
-  children
+  children,
 }) => {
   return (
     <div
       className={cn(
         'overflow-hidden transition-all duration-200 ease-in-out',
-        isOpen ? 'pb-4' : 'max-h-0'
+        isOpen ? 'pb-4' : 'max-h-0',
       )}
       data-state={isOpen ? 'open' : 'closed'}
     >
-      <div className={cn('text-sm text-muted', className)}>
-        {children}
-      </div>
+      <div className={cn('text-sm text-muted', className)}>{children}</div>
     </div>
   );
 };

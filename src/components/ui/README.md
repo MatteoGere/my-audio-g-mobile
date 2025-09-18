@@ -17,6 +17,7 @@ A complete set of atomic UI components for Next.js mobile applications, built wi
 ### Base Components
 
 #### Button
+
 Versatile button component with multiple variants and loading states.
 
 ```tsx
@@ -24,13 +25,14 @@ import { Button } from '@/components/ui';
 
 <Button variant="primary" size="md" loading={false}>
   Click me
-</Button>
+</Button>;
 ```
 
 **Variants**: `primary`, `secondary`, `accent`, `outline`, `ghost`
 **Sizes**: `sm`, `md`, `lg`
 
 #### Input
+
 Input field with icon support, error states, and labels.
 
 ```tsx
@@ -41,25 +43,23 @@ import { Input } from '@/components/ui';
   placeholder="Enter your email"
   icon={<EmailIcon />}
   error="This field is required"
-/>
+/>;
 ```
 
 #### Textarea
+
 Multi-line text input with resize controls.
 
 ```tsx
 import { Textarea } from '@/components/ui';
 
-<Textarea
-  label="Description"
-  resize="vertical"
-  rows={4}
-/>
+<Textarea label="Description" resize="vertical" rows={4} />;
 ```
 
 ### Form Components
 
 #### Select
+
 Dropdown select with single/multi-select support.
 
 ```tsx
@@ -70,27 +70,21 @@ const options = [
   { value: 'option2', label: 'Option 2' },
 ];
 
-<Select
-  options={options}
-  placeholder="Choose an option"
-  multiple={false}
-/>
+<Select options={options} placeholder="Choose an option" multiple={false} />;
 ```
 
 #### Checkbox
+
 Checkbox with label and indeterminate state support.
 
 ```tsx
 import { Checkbox } from '@/components/ui';
 
-<Checkbox
-  label="Agree to terms"
-  description="Check this to continue"
-  indeterminate={false}
-/>
+<Checkbox label="Agree to terms" description="Check this to continue" indeterminate={false} />;
 ```
 
 #### Radio / RadioGroup
+
 Radio buttons with group management.
 
 ```tsx
@@ -101,29 +95,23 @@ const options = [
   { value: 'option2', label: 'Option 2' },
 ];
 
-<RadioGroup
-  name="choice"
-  options={options}
-  orientation="vertical"
-/>
+<RadioGroup name="choice" options={options} orientation="vertical" />;
 ```
 
 #### Switch
+
 Toggle switch with light/dark mode styling.
 
 ```tsx
 import { Switch } from '@/components/ui';
 
-<Switch
-  label="Enable notifications"
-  size="md"
-  variant="default"
-/>
+<Switch label="Enable notifications" size="md" variant="default" />;
 ```
 
 ### Data Display Components
 
 #### Badge
+
 Status and label badges with semantic colors.
 
 ```tsx
@@ -131,12 +119,13 @@ import { Badge } from '@/components/ui';
 
 <Badge variant="success" size="md">
   Active
-</Badge>
+</Badge>;
 ```
 
 **Variants**: `default`, `primary`, `secondary`, `accent`, `info`, `success`, `warning`, `error`, `outline`
 
 #### Card
+
 Flexible card component with header, body, footer, and image support.
 
 ```tsx
@@ -146,16 +135,13 @@ import { Card, CardHeader, CardTitle, CardBody, CardFooter } from '@/components/
   <CardHeader>
     <CardTitle>Card Title</CardTitle>
   </CardHeader>
-  <CardBody>
-    Card content goes here
-  </CardBody>
-  <CardFooter>
-    Footer content
-  </CardFooter>
-</Card>
+  <CardBody>Card content goes here</CardBody>
+  <CardFooter>Footer content</CardFooter>
+</Card>;
 ```
 
 #### Avatar
+
 User avatar with fallback initials and status indicators.
 
 ```tsx
@@ -168,10 +154,11 @@ import { Avatar } from '@/components/ui';
   size="md"
   status="online"
   showStatus={true}
-/>
+/>;
 ```
 
 #### Progress
+
 Progress bars and loading spinners.
 
 ```tsx
@@ -191,6 +178,7 @@ import { Progress, Spinner } from '@/components/ui';
 ### Interactive Components
 
 #### Modal / Dialog
+
 Accessible modal dialogs with overlay and keyboard navigation.
 
 ```tsx
@@ -204,25 +192,23 @@ import { Modal } from '@/components/ui';
   closeOnOverlayClick={true}
 >
   Modal content
-</Modal>
+</Modal>;
 ```
 
 #### Tooltip
+
 Hover or click tooltips with position optimization.
 
 ```tsx
 import { Tooltip } from '@/components/ui';
 
-<Tooltip
-  content="This is a tooltip"
-  position="top"
-  trigger="hover"
->
+<Tooltip content="This is a tooltip" position="top" trigger="hover">
   <span>Hover me</span>
-</Tooltip>
+</Tooltip>;
 ```
 
 #### Popover
+
 Click or hover popovers for additional content.
 
 ```tsx
@@ -233,10 +219,11 @@ import { Popover } from '@/components/ui';
   content={<div>Popover content</div>}
   position="bottom"
   triggerMode="click"
-/>
+/>;
 ```
 
 #### Tabs
+
 Tab navigation with horizontal and vertical layouts.
 
 ```tsx
@@ -255,16 +242,13 @@ const items = [
   },
 ];
 
-<Tabs
-  items={items}
-  orientation="horizontal"
-  variant="default"
-/>
+<Tabs items={items} orientation="horizontal" variant="default" />;
 ```
 
 ### Navigation Components
 
 #### Breadcrumb
+
 Navigation breadcrumbs with overflow handling.
 
 ```tsx
@@ -276,13 +260,11 @@ const items = [
   { label: 'Current Page', current: true },
 ];
 
-<Breadcrumb
-  items={items}
-  maxItems={3}
-/>
+<Breadcrumb items={items} maxItems={3} />;
 ```
 
 #### Accordion
+
 Collapsible content sections.
 
 ```tsx
@@ -301,14 +283,11 @@ const items = [
   },
 ];
 
-<Accordion
-  items={items}
-  type="single"
-  collapsible={true}
-/>
+<Accordion items={items} type="single" collapsible={true} />;
 ```
 
 #### Toast
+
 Notification toasts with auto-dismiss and actions.
 
 ```tsx
@@ -317,7 +296,7 @@ import { ToastProvider, useToast } from '@/components/ui';
 // Wrap your app with ToastProvider
 <ToastProvider>
   <App />
-</ToastProvider>
+</ToastProvider>;
 
 // Use in components
 const { addToast } = useToast();
@@ -337,7 +316,7 @@ addToast({
 The components use a travel-inspired color palette:
 
 - **Sand**: `#faf7f2` to `#e6dcc2` - Warm, sandy tones
-- **Sea**: `#f2fbfc` to `#bfe9ee` - Ocean and water tones  
+- **Sea**: `#f2fbfc` to `#bfe9ee` - Ocean and water tones
 - **Forest**: `#f4fbf6` to `#cfe6d0` - Natural green tones
 - **Stone**: `#f6f6f6` to `#d0d0d0` - Neutral gray tones
 
@@ -394,6 +373,7 @@ Components automatically adapt to dark mode using CSS custom properties and Tail
 ## Browser Support
 
 Components are tested and supported in:
+
 - Chrome (latest)
 - Firefox (latest)
 - Safari (latest)

@@ -16,25 +16,25 @@ const tokens = {
     info: 'var(--color-info)',
     success: 'var(--color-success)',
     warning: 'var(--color-warning)',
-    error: 'var(--color-error)'
+    error: 'var(--color-error)',
   },
   typography: {
     fontFamilySans: 'var(--font-family-sans)',
     fontFamilyMono: 'var(--font-family-mono)',
     fontSizeBase: 'var(--font-size-base)',
-    lineHeightBase: 'var(--line-height-base)'
+    lineHeightBase: 'var(--line-height-base)',
   },
   radius: {
     sm: 'var(--radius-sm)',
     md: 'var(--radius-md)',
     lg: 'var(--radius-lg)',
-    full: 'var(--radius-full)'
+    full: 'var(--radius-full)',
   },
   shadow: {
     soft: 'var(--shadow-soft)',
     medium: 'var(--shadow-medium)',
-    strong: 'var(--shadow-strong)'
-  }
+    strong: 'var(--shadow-strong)',
+  },
 } as const;
 
 export default tokens;

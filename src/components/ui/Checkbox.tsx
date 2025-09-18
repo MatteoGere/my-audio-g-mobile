@@ -11,7 +11,7 @@ export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputE
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   ({ className, label, description, error, disabled, indeterminate, ...props }, ref) => {
     const checkboxRef = React.useRef<HTMLInputElement>(null);
-    
+
     React.useImperativeHandle(ref, () => checkboxRef.current!);
 
     React.useEffect(() => {
@@ -24,7 +24,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       'peer h-4 w-4 shrink-0 rounded-sm border border-stone-300 bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200',
       'checked:bg-primary checked:border-primary checked:text-primary-foreground',
       error && 'border-error',
-      className
+      className,
     );
 
     return (
@@ -41,7 +41,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           <svg
             className={cn(
               'absolute inset-0 h-4 w-4 text-primary-foreground opacity-0 transition-opacity peer-checked:opacity-100',
-              'pointer-events-none'
+              'pointer-events-none',
             )}
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -52,7 +52,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               clipRule="evenodd"
             />
           </svg>
-          
+
           {/* Indeterminate state */}
           {indeterminate && (
             <svg
@@ -68,7 +68,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             </svg>
           )}
         </div>
-        
+
         {(label || description) && (
           <div className="grid gap-1.5 leading-none">
             {label && (
@@ -76,7 +76,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
                 className={cn(
                   'text-sm font-medium leading-none cursor-pointer',
                   disabled ? 'cursor-not-allowed opacity-50' : 'text-foreground',
-                  error && 'text-error'
+                  error && 'text-error',
                 )}
                 onClick={() => !disabled && checkboxRef.current?.click()}
               >
@@ -84,18 +84,13 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               </label>
             )}
             {description && (
-              <p className={cn(
-                'text-xs',
-                error ? 'text-error' : 'text-muted'
-              )}>
-                {description}
-              </p>
+              <p className={cn('text-xs', error ? 'text-error' : 'text-muted')}>{description}</p>
             )}
           </div>
         )}
       </div>
     );
-  }
+  },
 );
 
 Checkbox.displayName = 'Checkbox';
