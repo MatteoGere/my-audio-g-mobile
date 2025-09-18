@@ -4,14 +4,14 @@ Stai sviluppando una Progressive Web App (PWA) per audio guide turistiche chiama
 Current Setup & Architecture
 Base esistente:
 
-✅ Framework: Next.js 14+ con App Router
+✅ Framework: Next.js 15+ con App Router
 ✅ Componenti: Atomic components già creati e styled
 ✅ Types: File types.ts con definizioni Supabase complete
 ✅ Styling: Sistema di design implementato
 
 Stack tecnologico completo:
 
-Frontend: Next.js 14, TypeScript, Tailwind CSS
+Frontend: Next.js 15, TypeScript, Tailwind CSS
 State Management: Redux Toolkit + RTK Query (da implementare)
 Backend: Supabase (Database, Auth, Storage)
 
