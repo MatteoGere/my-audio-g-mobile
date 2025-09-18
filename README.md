@@ -34,3 +34,12 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Design tokens
+
+This project includes a small design system implemented with CSS custom properties (variables) defined in `src/app/globals.css`.
+
+- Use CSS variables directly in styles: `var(--color-primary)`, `var(--radius-md)`, `var(--shadow-soft)`, etc.
+- A TypeScript token helper is available at `src/design/tokens.ts` which exports a tokens object referencing the same variables for use in inline styles or component libraries.
+
+The tokens support both light and dark mode via `prefers-color-scheme` media queries and provide semantic colors (primary, secondary, accent, info, success, warning, error), typography defaults, border radii, and shadow presets.
