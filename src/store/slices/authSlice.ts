@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { User, Session } from '@supabase/supabase-js'
 import { supabase } from '../api/apiSlice'
-import type { Tables } from '../../types/supabase-types'
 
 export interface AuthState {
   user: User | null

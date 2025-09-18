@@ -1,0 +1,24 @@
+{
+  "name": "MyAudioG",
+  "short_name": "AudioG",
+  "description": "Audio guide PWA for interactive tours and maps",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1f2937",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/myaudiog-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/myaudiog-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["travel", "education"],
+  "lang": "en-US"
+}
