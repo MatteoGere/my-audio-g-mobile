@@ -96,6 +96,25 @@ export const signOut = createAsyncThunk('auth/signOut', async (_, { rejectWithVa
   }
 });
 
+export const signInWithProvider = createAsyncThunk(
+  'auth/signInWithProvider',
+  async (provider: 'google' | 'apple', { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) throw error;
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
 export const fetchUserProfile = createAsyncThunk(
   'auth/fetchUserProfile',
   async (userId: string, { rejectWithValue }) => {
@@ -175,6 +194,19 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(signOut.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      // Sign in with provider
+      .addCase(signInWithProvider.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(signInWithProvider.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // OAuth redirect will be handled by callback
+      })
+      .addCase(signInWithProvider.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       })

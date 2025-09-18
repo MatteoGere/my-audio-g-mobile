@@ -1,18 +1,96 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { MainLayout } from '@/components/layouts';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 import { Badge } from '@/components/ui';
 import { Avatar } from '@/components/ui';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { signOut, fetchUserProfile, setUserProfile } from '@/store/slices/authSlice';
+import { supabase } from '@/store/api/apiSlice';
 
 export default function ProfilePage() {
-  // Placeholder user data
-  const user = {
-    name: 'Marco Rossi',
-    email: 'marco.rossi@example.com',
-    avatar: '',
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { user, userProfile, isLoading } = useAppSelector((state) => state.auth);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    name: '',
+    surname: '',
+  });
+  const [saveLoading, setSaveLoading] = useState(false);
+
+  useEffect(() => {
+    if (user && !userProfile) {
+      dispatch(fetchUserProfile(user.id));
+    }
+    
+    if (userProfile) {
+      setEditFormData({
+        name: userProfile.name || '',
+        surname: userProfile.surname || '',
+      });
+    }
+  }, [user, userProfile, dispatch]);
+
+  const handleSignOut = async () => {
+    try {
+      await dispatch(signOut()).unwrap();
+      router.push('/auth/login');
+    } catch (error) {
+      console.error('Sign out failed:', error);
+    }
+  };
+
+  const handleEditToggle = () => {
+    if (isEditing) {
+      // Cancel editing, reset form
+      setEditFormData({
+        name: userProfile?.name || '',
+        surname: userProfile?.surname || '',
+      });
+    }
+    setIsEditing(!isEditing);
+  };
+
+  const handleSaveProfile = async () => {
+    if (!user || !userProfile) return;
+
+    setSaveLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('user_profile')
+        .update({
+          name: editFormData.name,
+          surname: editFormData.surname,
+        })
+        .eq('id', user.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Update local state
+      dispatch(setUserProfile(data));
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      alert('Failed to update profile. Please try again.');
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
+  if (!user) {
+    router.push('/auth/login');
+    return null;
+  }
+  // Placeholder user data - will be replaced with real data from userProfile
+  const mockUserStats = {
     memberSince: 'January 2024',
     toursCompleted: 12,
     hoursListened: 45,
@@ -79,35 +157,83 @@ export default function ProfilePage() {
     <MainLayout title="Profile" showBackButton={false}>
       <div className="p-4 space-y-6">
         {/* Profile Header */}
-        <Card className="p-6 text-center">
-          <Avatar size="xl" className="mx-auto mb-4">
-            <div className="w-full h-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold">
-              {user.name.split(' ').map(n => n[0]).join('')}
+        <Card className="p-6">
+          {isEditing ? (
+            <div className="space-y-4">
+              <h2 className="text-lg font-bold text-center mb-4">Edit Profile</h2>
+              <div className="grid grid-cols-2 gap-3">
+                <Input
+                  name="name"
+                  label="First Name"
+                  value={editFormData.name}
+                  onChange={(e) => setEditFormData(prev => ({...prev, name: e.target.value}))}
+                  disabled={saveLoading}
+                />
+                <Input
+                  name="surname"
+                  label="Last Name"
+                  value={editFormData.surname}
+                  onChange={(e) => setEditFormData(prev => ({...prev, surname: e.target.value}))}
+                  disabled={saveLoading}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  variant="primary" 
+                  onClick={handleSaveProfile}
+                  loading={saveLoading}
+                  className="flex-1"
+                >
+                  Save Changes
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={handleEditToggle}
+                  disabled={saveLoading}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
-          </Avatar>
-          
-          <h1 className="text-xl font-bold text-foreground mb-1">{user.name}</h1>
-          <p className="text-sm text-muted mb-4">{user.email}</p>
-          
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Badge variant="primary">{user.level}</Badge>
-            <span className="text-sm text-muted">Member since {user.memberSince}</span>
-          </div>
-          
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-lg font-bold text-primary">{user.toursCompleted}</div>
-              <div className="text-xs text-muted">Tours</div>
+          ) : (
+            <div className="text-center">
+              <Avatar size="xl" className="mx-auto mb-4">
+                <div className="w-full h-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold">
+                  {userProfile?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
+                </div>
+              </Avatar>
+              
+              <h1 className="text-xl font-bold text-foreground mb-1">
+                {userProfile ? `${userProfile.name} ${userProfile.surname}` : user?.email}
+              </h1>
+              <p className="text-sm text-muted mb-4">{user?.email}</p>
+              
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Badge variant="primary">{mockUserStats.level}</Badge>
+                <span className="text-sm text-muted">Member since {mockUserStats.memberSince}</span>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-4 text-center mb-4">
+                <div>
+                  <div className="text-lg font-bold text-primary">{mockUserStats.toursCompleted}</div>
+                  <div className="text-xs text-muted">Tours</div>
+                </div>
+                <div>
+                  <div className="text-lg font-bold text-primary">{mockUserStats.hoursListened}h</div>
+                  <div className="text-xs text-muted">Listened</div>
+                </div>
+                <div>
+                  <div className="text-lg font-bold text-primary">{mockUserStats.badgesEarned}</div>
+                  <div className="text-xs text-muted">Badges</div>
+                </div>
+              </div>
+
+              <Button variant="outline" onClick={handleEditToggle} className="mb-2">
+                Edit Profile
+              </Button>
             </div>
-            <div>
-              <div className="text-lg font-bold text-primary">{user.hoursListened}h</div>
-              <div className="text-xs text-muted">Listened</div>
-            </div>
-            <div>
-              <div className="text-lg font-bold text-primary">{user.badgesEarned}</div>
-              <div className="text-xs text-muted">Badges</div>
-            </div>
-          </div>
+          )}
         </Card>
 
         {/* Quick Actions */}
@@ -181,8 +307,8 @@ export default function ProfilePage() {
           </div>
         </Card>
 
-        {/* Settings Link */}
-        <Card className="p-4">
+        {/* Settings and Actions */}
+        <Card className="p-4 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <svg className="w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -195,6 +321,20 @@ export default function ProfilePage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </div>
+          
+          <hr className="border-border" />
+          
+          <Button 
+            variant="outline" 
+            onClick={handleSignOut}
+            loading={isLoading}
+            className="w-full text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Sign Out
+          </Button>
         </Card>
       </div>
     </MainLayout>
