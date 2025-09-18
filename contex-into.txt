@@ -1,0 +1,56 @@
+📋 CONTEXT INTRO - Da usare per ogni task con l'AI Agent
+Project Overview
+Stai sviluppando una Progressive Web App (PWA) per audio guide turistiche chiamata [Nome App]. L'app è mobile-first e permette ai turisti di scoprire destinazioni attraverso tour audio interattivi con mappe integrate.
+Current Setup & Architecture
+Base esistente:
+
+✅ Framework: Next.js 14+ con App Router
+✅ Componenti: Atomic components già creati e styled
+✅ Types: File types.ts con definizioni Supabase complete
+✅ Styling: Sistema di design implementato
+
+Stack tecnologico completo:
+
+Frontend: Next.js 14, TypeScript, Tailwind CSS
+State Management: Redux Toolkit + RTK Query (da implementare)
+Backend: Supabase (Database, Auth, Storage)
+
+Core App Features & User Journey
+Funzionalità principali:
+
+Full registration flow
+Onboarding con selezione lingua e tutorial
+Home con ricerca, tour featured e raccomandazioni personalizzate
+Tour Discovery con filtri, categorie e preview
+Audio Player con controlli avanzati e sync progress
+Interactive Maps con POI, GPS tracking e geofencing
+Offline Mode con download selettivo e sync
+User Profiles con favorites, history e gamification
+Accessibility completa e supporto multilingue
+
+Mobile-First Design Principles
+
+Navigation: Bottom tabs per azioni primarie
+Touch-First: Gesture intuitive, tap targets ≥44px
+Offline-First: Funzionalità core disponibili offline
+Performance: Lazy loading, compression, caching intelligente
+Accessibility: Screen reader support, high contrast, font scaling
+
+Development Constraints & Considerations
+
+PWA Requirements: Installabile, offline, responsive
+Audio Handling: Background playback, Media Session API integration
+Location Services: GPS accuracy, battery optimization
+Storage: Gestione intelligente spazio device per contenuti offline
+Network: Ottimizzazione per connessioni lente/instabili
+Security: RLS policies Supabase, input validation, rate limiting
+
+When working on each task:
+
+Prioritizza mobile experience poi adatta per desktop
+Considera sempre offline scenario - cosa succede senza rete?
+Implementa loading states e error handling robusti
+Usa TypeScript strict - sfrutta i types esistenti
+Segui atomic design - riusa componenti esistenti
+Performance first - lazy load, memo, ottimizza bundle
+Accessibility by design - semantic HTML, ARIA labels, keyboard navigation
