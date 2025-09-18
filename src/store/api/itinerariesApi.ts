@@ -1,9 +1,9 @@
-import { apiSlice } from './apiSlice'
+import { apiSlice, supabase } from './apiSlice'
 import type { Tables, TablesInsert, TablesUpdate } from '../../types/supabase-types'
 
 export interface ItineraryWithDetails extends Tables<'audio_itinerary'> {
-  company?: Tables<'company'>
-  image_file?: Tables<'image_file'>
+  company?: Tables<'company'> | null
+  image_file?: Tables<'image_file'> | null
   tracks?: Tables<'audio_track'>[]
 }
 
@@ -11,34 +11,109 @@ export const itinerariesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Get all itineraries with company and image details
     getItineraries: builder.query<ItineraryWithDetails[], void>({
-      query: () => 'audio_itinerary?select=*,company(*),image_file(*)',
+      queryFn: async () => {
+        try {
+          const { data, error } = await supabase
+            .from('audio_itinerary')
+            .select(`
+              *,
+              company(*),
+              image_file(*)
+            `)
+          
+          if (error) throw error
+          return { data: data || [] }
+        } catch (error) {
+          return { error: { status: 'FETCH_ERROR', error: String(error) } }
+        }
+      },
       providesTags: ['AudioItinerary'],
     }),
     
     // Get itinerary by ID with full details
     getItinerary: builder.query<ItineraryWithDetails, string>({
-      query: (id) => `audio_itinerary?id=eq.${id}&select=*,company(*),image_file(*)`,
-      transformResponse: (response: ItineraryWithDetails[]) => response[0],
+      queryFn: async (id) => {
+        try {
+          const { data, error } = await supabase
+            .from('audio_itinerary')
+            .select(`
+              *,
+              company(*),
+              image_file(*)
+            `)
+            .eq('id', id)
+            .single()
+          
+          if (error) throw error
+          return { data }
+        } catch (error) {
+          return { error: { status: 'FETCH_ERROR', error: String(error) } }
+        }
+      },
       providesTags: (result, error, id) => [{ type: 'AudioItinerary', id }],
     }),
     
     // Get itineraries by company
     getItinerariesByCompany: builder.query<ItineraryWithDetails[], string>({
-      query: (companyId) => `audio_itinerary?company_id=eq.${companyId}&select=*,company(*),image_file(*)`,
+      queryFn: async (companyId) => {
+        try {
+          const { data, error } = await supabase
+            .from('audio_itinerary')
+            .select(`
+              *,
+              company(*),
+              image_file(*)
+            `)
+            .eq('company_id', companyId)
+          
+          if (error) throw error
+          return { data: data || [] }
+        } catch (error) {
+          return { error: { status: 'FETCH_ERROR', error: String(error) } }
+        }
+      },
       providesTags: ['AudioItinerary'],
     }),
     
     // Get nearby itineraries using the database function
     getNearbyItineraries: builder.query<any[], { lat: number; lng: number; radius?: number }>({
-      query: ({ lat, lng, radius = 5000 }) => 
-        `rpc/fn_nearby_audio_itineraries?user_lat=${lat}&user_lng=${lng}&radius_meters=${radius}`,
+      queryFn: async ({ lat, lng, radius = 5000 }) => {
+        try {
+          const { data, error } = await supabase
+            .rpc('fn_nearby_audio_itineraries', {
+              user_lat: lat,
+              user_lng: lng,
+              radius_meters: radius
+            })
+          
+          if (error) throw error
+          return { data: data || [] }
+        } catch (error) {
+          return { error: { status: 'FETCH_ERROR', error: String(error) } }
+        }
+      },
       providesTags: ['AudioItinerary'],
     }),
     
     // Get itinerary tracks
     getItineraryTracks: builder.query<Tables<'audio_track'>[], string>({
-      query: (itineraryId) => 
-        `audio_track?audio_itinerary_id=eq.${itineraryId}&select=*,image_file(*)&order=audio_itinerary_order.asc`,
+      queryFn: async (itineraryId) => {
+        try {
+          const { data, error } = await supabase
+            .from('audio_track')
+            .select(`
+              *,
+              image_file(*)
+            `)
+            .eq('audio_itinerary_id', itineraryId)
+            .order('audio_itinerary_order', { ascending: true })
+          
+          if (error) throw error
+          return { data: data || [] }
+        } catch (error) {
+          return { error: { status: 'FETCH_ERROR', error: String(error) } }
+        }
+      },
       providesTags: (result, error, itineraryId) => [
         { type: 'AudioTrack', id: `itinerary-${itineraryId}` }
       ],
@@ -46,30 +121,58 @@ export const itinerariesApi = apiSlice.injectEndpoints({
     
     // Create itinerary
     createItinerary: builder.mutation<Tables<'audio_itinerary'>, TablesInsert<'audio_itinerary'>>({
-      query: (itinerary) => ({
-        url: 'audio_itinerary',
-        method: 'POST',
-        body: itinerary,
-      }),
+      queryFn: async (itinerary) => {
+        try {
+          const { data, error } = await supabase
+            .from('audio_itinerary')
+            .insert(itinerary)
+            .select()
+            .single()
+          
+          if (error) throw error
+          return { data }
+        } catch (error) {
+          return { error: { status: 'FETCH_ERROR', error: String(error) } }
+        }
+      },
       invalidatesTags: ['AudioItinerary'],
     }),
     
     // Update itinerary
     updateItinerary: builder.mutation<Tables<'audio_itinerary'>, { id: string; data: TablesUpdate<'audio_itinerary'> }>({
-      query: ({ id, data }) => ({
-        url: `audio_itinerary?id=eq.${id}`,
-        method: 'PATCH',
-        body: data,
-      }),
+      queryFn: async ({ id, data }) => {
+        try {
+          const { data: result, error } = await supabase
+            .from('audio_itinerary')
+            .update(data)
+            .eq('id', id)
+            .select()
+            .single()
+          
+          if (error) throw error
+          return { data: result }
+        } catch (error) {
+          return { error: { status: 'FETCH_ERROR', error: String(error) } }
+        }
+      },
       invalidatesTags: (result, error, { id }) => [{ type: 'AudioItinerary', id }],
     }),
     
     // Delete itinerary
     deleteItinerary: builder.mutation<void, string>({
-      query: (id) => ({
-        url: `audio_itinerary?id=eq.${id}`,
-        method: 'DELETE',
-      }),
+      queryFn: async (id) => {
+        try {
+          const { error } = await supabase
+            .from('audio_itinerary')
+            .delete()
+            .eq('id', id)
+          
+          if (error) throw error
+          return { data: undefined }
+        } catch (error) {
+          return { error: { status: 'FETCH_ERROR', error: String(error) } }
+        }
+      },
       invalidatesTags: (result, error, id) => [{ type: 'AudioItinerary', id }],
     }),
   }),

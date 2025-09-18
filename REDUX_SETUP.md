@@ -153,9 +153,41 @@ function MyComponent() {
 ## 🌐 RTK Query APIs
 
 ### Base Configuration (`apiSlice.ts`)
-- Supabase integration with automatic auth headers
+- Supabase client integration with native API methods
+- Uses `fakeBaseQuery()` with custom `queryFn` for each endpoint
+- Automatic authentication through Supabase client
 - Centralized cache tags for data invalidation
-- Error handling and retry logic
+- Error handling and type safety with Supabase types
+
+### API Implementation Approach:
+Instead of using REST endpoints directly, all APIs use Supabase's native JavaScript client:
+```typescript
+// Example: Instead of REST calls
+queryFn: async () => {
+  try {
+    const { data, error } = await supabase
+      .from('audio_itinerary')
+      .select(`
+        *,
+        company(*),
+        image_file(*)
+      `)
+    
+    if (error) throw error
+    return { data: data || [] }
+  } catch (error) {
+    return { error: { status: 'FETCH_ERROR', error: String(error) } }
+  }
+}
+```
+
+**Benefits of Native Supabase API:**
+- ✅ Row Level Security (RLS) automatically enforced
+- ✅ Full TypeScript support with generated types
+- ✅ Optimized queries with built-in caching
+- ✅ Real-time subscriptions ready (if needed)
+- ✅ Better error handling and debugging
+- ✅ Automatic relation handling
 
 ### Available APIs:
 1. **Companies API** - Company CRUD operations
@@ -166,22 +198,22 @@ function MyComponent() {
 
 ### Example Usage:
 ```typescript
-// Fetch itineraries with company details
+// Fetch itineraries with company details (using native Supabase API)
 const { data: itineraries, isLoading, error } = useGetItinerariesQuery()
 
-// Get nearby tours based on location
+// Get nearby tours based on location (using RPC function)
 const { data: nearbyTours } = useGetNearbyItinerariesQuery({
   lat: 41.9028,
   lng: 12.4964,
   radius: 5000
 })
 
-// Add to favorites
+// Add to favorites (with proper type safety)
 const [addFavourite] = useAddFavouriteMutation()
 await addFavourite({
   user_id: user.id,
   favourite_id: itinerary.id,
-  type: 'FAVOURITE-ITINERARY'
+  type: 'FAVOURITE-ITINERARY' // Fully typed enum
 })
 ```
 
