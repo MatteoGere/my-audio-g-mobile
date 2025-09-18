@@ -2,15 +2,19 @@ import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  darkMode: 'media',
+  darkMode: 'class', // allow toggling with the .dark class; prefers-color-scheme still works via CSS
   theme: {
     extend: {
       colors: {
-        // Semantic colors referencing CSS custom properties
+        background: 'var(--color-background)',
+        surface: 'var(--color-surface)',
+        foreground: 'var(--color-foreground)',
+        muted: 'var(--color-muted)',
+
         primary: {
           DEFAULT: 'var(--color-primary)',
           foreground: 'var(--color-primary-foreground)',
@@ -23,18 +27,12 @@ const config: Config = {
           DEFAULT: 'var(--color-accent)',
           foreground: 'var(--color-accent-foreground)',
         },
-        background: 'var(--color-background)',
-        surface: 'var(--color-surface)',
-        foreground: 'var(--color-foreground)',
-        muted: 'var(--color-muted)',
-        
-        // State colors
+
         info: 'var(--color-info)',
         success: 'var(--color-success)',
         warning: 'var(--color-warning)',
         error: 'var(--color-error)',
-        
-        // Travel-inspired color palette
+
         sand: {
           50: 'var(--color-sand-50)',
           100: 'var(--color-sand-100)',
@@ -68,8 +66,8 @@ const config: Config = {
         strong: 'var(--shadow-strong)',
       },
       fontFamily: {
-        sans: 'var(--font-family-sans)',
-        mono: 'var(--font-family-mono)',
+        sans: ['var(--font-family-sans)'],
+        mono: ['var(--font-family-mono)'],
       },
       fontSize: {
         base: 'var(--font-size-base)',

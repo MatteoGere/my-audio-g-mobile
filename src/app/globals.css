@@ -1,7 +1,17 @@
 @import "tailwindcss";
 
+/*
+  Global design tokens and theme variables
+  - Keep :root for the light-mode defaults
+  - Provide a prefers-color-scheme: dark block for automatic device preference
+  - Provide a .dark class mapping so class-based dark mode works too
+  - Keep the @theme mapping (Tailwind v4 helper) for compatibility with generated utilities
+*/
+
 :root {
-  /* Base (light mode) travel-inspired palette */
+  /* -----------------------------
+     Palette: travel-inspired (light mode)
+     ----------------------------- */
   --color-sand-50: #faf7f2;
   --color-sand-100: #f1eadf;
   --color-sand-200: #e6dcc2;
@@ -18,28 +28,31 @@
   --color-stone-100: #ededed;
   --color-stone-200: #d0d0d0;
 
+  /* Semantic surface/background */
   --background: var(--color-sand-50);
   --foreground: #0f1720; /* dark charcoal for high readability */
-
-  /* Semantic colors (light) */
-  --color-primary: #2b8a9e; /* ocean teal */
-  --color-primary-foreground: #ffffff;
-
-  --color-secondary: #b08b57; /* warm beige/bronze */
-  --color-secondary-foreground: #ffffff;
-
-  --color-accent: #66c0a3; /* soft mint */
-  --color-accent-foreground: #083324;
-
-  --color-muted: #9aa4a6; /* subtle gray-green */
-
   --color-background: var(--background);
   --color-surface: #ffffff; /* cards, sheets */
 
-  --color-info: #3b82f6; /* blue */
-  --color-success: #16a34a; /* green */
-  --color-warning: #f59e0b; /* amber */
-  --color-error: #ef4444; /* red */
+  /* Semantic colors (light)
+     naming: --color-{role} and {role}-foreground for text on that color
+  */
+  --color-primary: #2b8a9e;
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: #b08b57;
+  --color-secondary-foreground: #ffffff;
+
+  --color-accent: #66c0a3;
+  --color-accent-foreground: #083324;
+
+  --color-muted: #9aa4a6;
+
+  /* State colors */
+  --color-info: #3b82f6;
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
 
   /* Typography */
   --font-family-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
@@ -57,20 +70,69 @@
   --shadow-soft: 0 6px 18px rgba(10, 10, 10, 0.06);
   --shadow-medium: 0 12px 30px rgba(10, 10, 10, 0.10);
   --shadow-strong: 0 20px 50px rgba(10, 10, 10, 0.16);
-}
 
-/* Theme helper variables (kept flat for compatibility) */
-:root {
-  --color-background: var(--background);
+  /* Compatibility fallbacks */
   --color-foreground: var(--foreground);
-  /* fallback font vars for tools expecting these names */
   --font-sans: var(--font-family-sans);
   --font-mono: var(--font-family-mono);
 }
 
+/* Tailwind v4 token mapping (keeps generated utilities aligned with our CSS variables)
+   Note: Tailwind config also references the same CSS vars. This block is harmless if your
+   toolchain ignores @theme, but keeps backwards compatibility with older setups. */
+@theme {
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-foreground: var(--color-foreground);
+  --color-muted: var(--color-muted);
+
+  --color-primary: var(--color-primary);
+  --color-primary-foreground: var(--color-primary-foreground);
+
+  --color-secondary: var(--color-secondary);
+  --color-secondary-foreground: var(--color-secondary-foreground);
+
+  --color-accent: var(--color-accent);
+  --color-accent-foreground: var(--color-accent-foreground);
+
+  --color-info: var(--color-info);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-error: var(--color-error);
+
+  --color-sand-50: var(--color-sand-50);
+  --color-sand-100: var(--color-sand-100);
+  --color-sand-200: var(--color-sand-200);
+  --color-sea-50: var(--color-sea-50);
+  --color-sea-100: var(--color-sea-100);
+  --color-sea-200: var(--color-sea-200);
+  --color-forest-50: var(--color-forest-50);
+  --color-forest-100: var(--color-forest-100);
+  --color-forest-200: var(--color-forest-200);
+  --color-stone-50: var(--color-stone-50);
+  --color-stone-100: var(--color-stone-100);
+  --color-stone-200: var(--color-stone-200);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-full: var(--radius-full);
+
+  --shadow-soft: var(--shadow-soft);
+  --shadow-medium: var(--shadow-medium);
+  --shadow-strong: var(--shadow-strong);
+
+  --font-sans: var(--font-family-sans);
+  --font-mono: var(--font-family-mono);
+}
+
+/* -----------------------------
+   Dark mode: prefer device setting
+   - prefers-color-scheme: dark for automatic device preference
+   - .dark class mapping so class-based dark mode is also supported
+   ----------------------------- */
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark mode adjustments: deeper, muted travel tones */
     --color-sand-50: #0f1412;
     --color-sand-100: #131916;
     --color-sand-200: #1a201d;
@@ -90,14 +152,13 @@
     --background: var(--color-stone-50);
     --foreground: #e6eef0;
 
-    /* Semantic colors (dark) */
-    --color-primary: #59a6b6; /* lighter teal for contrast */
+    --color-primary: #59a6b6;
     --color-primary-foreground: #042026;
 
-    --color-secondary: #c9a97f; /* lighter bronze */
+    --color-secondary: #c9a97f;
     --color-secondary-foreground: #07120a;
 
-    --color-accent: #7fe0bf; /* brighter mint */
+    --color-accent: #7fe0bf;
     --color-accent-foreground: #02221a;
 
     --color-muted: #7f8b8c;
@@ -110,11 +171,55 @@
     --color-warning: #fbbf24;
     --color-error: #fb7185;
 
-    /* Shadows: softened and tinted for dark surfaces */
     --shadow-soft: 0 6px 18px rgba(0,0,0,0.6);
     --shadow-medium: 0 12px 30px rgba(0,0,0,0.65);
     --shadow-strong: 0 20px 50px rgba(0,0,0,0.7);
   }
+}
+
+/* Class-based dark mode support (keeps parity with prefers-color-scheme) */
+.dark {
+  --color-sand-50: #0f1412;
+  --color-sand-100: #131916;
+  --color-sand-200: #1a201d;
+
+  --color-sea-50: #07181b;
+  --color-sea-100: #062025;
+  --color-sea-200: #0b3a43;
+
+  --color-forest-50: #07170f;
+  --color-forest-100: #0b241a;
+  --color-forest-200: #15382b;
+
+  --color-stone-50: #0b0b0b;
+  --color-stone-100: #121212;
+  --color-stone-200: #1f1f1f;
+
+  --background: var(--color-stone-50);
+  --foreground: #e6eef0;
+
+  --color-primary: #59a6b6;
+  --color-primary-foreground: #042026;
+
+  --color-secondary: #c9a97f;
+  --color-secondary-foreground: #07120a;
+
+  --color-accent: #7fe0bf;
+  --color-accent-foreground: #02221a;
+
+  --color-muted: #7f8b8c;
+
+  --color-background: var(--background);
+  --color-surface: #0f1416;
+
+  --color-info: #60a5fa;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-error: #fb7185;
+
+  --shadow-soft: 0 6px 18px rgba(0,0,0,0.6);
+  --shadow-medium: 0 12px 30px rgba(0,0,0,0.65);
+  --shadow-strong: 0 20px 50px rgba(0,0,0,0.7);
 }
 
 body {
