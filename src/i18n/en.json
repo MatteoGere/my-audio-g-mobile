@@ -1,0 +1,8 @@
+{
+  "app": {
+    "title": "MyAudioG",
+    "offline_title": "You’re offline",
+    "offline_text": "MyAudioG can’t reach the network right now. You can still play downloaded audio or try again.",
+    "go_home": "Go to Home"
+  }
+}

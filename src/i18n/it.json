@@ -1,0 +1,8 @@
+{
+  "app": {
+    "title": "MyAudioG",
+    "offline_title": "Sei offline",
+    "offline_text": "MyAudioG non riesce a raggiungere la rete al momento. Puoi comunque riprodurre l'audio scaricato o riprovare.",
+    "go_home": "Vai alla Home"
+  }
+}

@@ -7,6 +7,8 @@ const ASSETS_TO_CACHE = [
   '/icon-192.png',
   '/icon-512.png',
   '/offline.html',
+  '/offline.en.html',
+  '/offline.it.html',
   '/_next/static/*',
 ]
 
@@ -41,16 +43,20 @@ self.addEventListener('fetch', (event) => {
 
   // Navigation requests - network first, fallback to cache
   if (isNavigationRequest(request)) {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          // Update the cache asynchronously
-          const copy = response.clone()
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy))
-          return response
-        })
-        .catch(() => caches.match(request).then((r) => r || caches.match('/offline.html')))
-    )
+    event.respondWith((async () => {
+      try {
+        const response = await fetch(request)
+        // Update the cache asynchronously
+        const copy = response.clone()
+        caches.open(CACHE_NAME).then((cache) => cache.put(request, copy))
+        return response
+      } catch (err) {
+        // On failure return cached page or localized offline page
+        const cached = await caches.match(request)
+        if (cached) return cached
+        return getLocalizedOfflineResponse()
+      }
+    })())
     return
   }
 
@@ -87,11 +93,38 @@ self.addEventListener('fetch', (event) => {
       }).catch(() => {
         // Optionally return a fallback image for images
         if (request.destination === 'image') return caches.match('/icon-192.png')
-        return caches.match('/offline.html')
+        return getLocalizedOfflineResponse()
       })
     })
   )
 })
+
+// Read cached '/offline.lang' to determine which localized offline page to serve
+async function getLocalizedOfflineResponse() {
+  try {
+    const cache = await caches.open(CACHE_NAME)
+    const langResp = await cache.match('/offline.lang')
+    let lang = 'it'
+    if (langResp) {
+      const txt = await langResp.text()
+      if (txt) lang = txt.trim()
+    }
+
+    // try localized html
+    const localized = `/offline.${lang}.html`
+    const match = await caches.match(localized)
+    if (match) return match
+
+    // fallback to generic offline.html
+    const fallback = await caches.match('/offline.html')
+    if (fallback) return fallback
+
+    // nothing cached — return a minimal response
+    return new Response('<h1>Offline</h1>', { headers: { 'Content-Type': 'text/html' } })
+  } catch (e) {
+    return new Response('<h1>Offline</h1>', { headers: { 'Content-Type': 'text/html' } })
+  }
+}
 
 // Listen for skipWaiting message to activate new SW immediately
 self.addEventListener('message', (event) => {
