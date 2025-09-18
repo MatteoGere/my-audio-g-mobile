@@ -1,12 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useI18n } from '@/i18n/I18nProvider';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/store/hooks';
 import { setSession, fetchUserProfile } from '@/store/slices/authSlice';
 import { supabase } from '@/store/api/apiSlice';
 
 export default function AuthCallbackPage() {
+  const { t } = useI18n();
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -70,7 +72,7 @@ export default function AuthCallbackPage() {
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="text-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-        <p className="text-muted">Completing authentication...</p>
+  <p className="text-muted">{t('auth.callback.loading')}</p>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useI18n } from '@/i18n/I18nProvider';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
@@ -10,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { signUp, signInWithProvider, clearError } from '@/store/slices/authSlice';
 
 export default function SignupPage() {
+  const { t } = useI18n();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { isLoading, error } = useAppSelector((state) => state.auth);
@@ -43,36 +45,36 @@ export default function SignupPage() {
     let isValid = true;
 
     if (!formData.name.trim()) {
-      errors.name = 'First name is required';
+      errors.name = t('auth.signup.error.name_required');
       isValid = false;
     }
 
     if (!formData.surname.trim()) {
-      errors.surname = 'Last name is required';
+      errors.surname = t('auth.signup.error.surname_required');
       isValid = false;
     }
 
     if (!formData.email) {
-      errors.email = 'Email is required';
+      errors.email = t('auth.signup.error.email_required');
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Please enter a valid email';
+      errors.email = t('auth.signup.error.email_invalid');
       isValid = false;
     }
 
     if (!formData.password) {
-      errors.password = 'Password is required';
+      errors.password = t('auth.signup.error.password_required');
       isValid = false;
     } else if (formData.password.length < 8) {
-      errors.password = 'Password must be at least 8 characters';
+      errors.password = t('auth.signup.error.password_length');
       isValid = false;
     }
 
     if (!formData.confirmPassword) {
-      errors.confirmPassword = 'Please confirm your password';
+      errors.confirmPassword = t('auth.signup.error.confirm_required');
       isValid = false;
     } else if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = 'Passwords do not match';
+      errors.confirmPassword = t('auth.signup.error.password_match');
       isValid = false;
     }
 
@@ -104,7 +106,7 @@ export default function SignupPage() {
     e.preventDefault();
     
     if (!acceptedTerms) {
-      alert('Please accept the Terms of Service and Privacy Policy');
+      alert(t('auth.signup.error.terms'));
       return;
     }
     
@@ -139,8 +141,8 @@ export default function SignupPage() {
 
   return (
     <AuthLayout
-      title="Join AudioG"
-      subtitle="Create your account to start exploring with audio guides"
+      title={t('auth.signup.title')}
+      subtitle={t('auth.signup.subtitle')}
       className="justify-center max-w-sm mx-auto"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -156,8 +158,8 @@ export default function SignupPage() {
           <Input
             name="name"
             type="text"
-            label="First Name"
-            placeholder="John"
+            label={t('auth.signup.name_label')}
+            placeholder={t('auth.signup.name_placeholder')}
             value={formData.name}
             onChange={handleInputChange}
             error={formErrors.name}
@@ -168,8 +170,8 @@ export default function SignupPage() {
           <Input
             name="surname"
             type="text"
-            label="Last Name"
-            placeholder="Doe"
+            label={t('auth.signup.surname_label')}
+            placeholder={t('auth.signup.surname_placeholder')}
             value={formData.surname}
             onChange={handleInputChange}
             error={formErrors.surname}
@@ -183,8 +185,8 @@ export default function SignupPage() {
         <Input
           name="email"
           type="email"
-          label="Email"
-          placeholder="john.doe@example.com"
+          label={t('auth.signup.email_label')}
+          placeholder={t('auth.signup.email_placeholder')}
           value={formData.email}
           onChange={handleInputChange}
           error={formErrors.email}
@@ -197,22 +199,22 @@ export default function SignupPage() {
         <Input
           name="password"
           type="password"
-          label="Password"
-          placeholder="Create a strong password"
+          label={t('auth.signup.password_label')}
+          placeholder={t('auth.signup.password_placeholder')}
           value={formData.password}
           onChange={handleInputChange}
           error={formErrors.password}
           variant={formErrors.password ? 'error' : 'default'}
           autoComplete="new-password"
           disabled={isLoading}
-          helperText="Must be at least 8 characters"
+          helperText={t('auth.signup.password_helper')}
         />
 
         <Input
           name="confirmPassword"
           type="password"
-          label="Confirm Password"
-          placeholder="Confirm your password"
+          label={t('auth.signup.confirm_label')}
+          placeholder={t('auth.signup.confirm_placeholder')}
           value={formData.confirmPassword}
           onChange={handleInputChange}
           error={formErrors.confirmPassword}
@@ -232,13 +234,13 @@ export default function SignupPage() {
             disabled={isLoading}
           />
           <label htmlFor="terms" className="text-sm text-foreground leading-5">
-            I agree to the{' '}
+            {t('auth.signup.terms_prefix')}{' '}
             <Link href="/terms" className="text-primary hover:text-primary/80 transition-colors">
-              Terms of Service
+              {t('auth.signup.terms')}
             </Link>{' '}
-            and{' '}
+            {t('auth.signup.terms_and')}{' '}
             <Link href="/privacy" className="text-primary hover:text-primary/80 transition-colors">
-              Privacy Policy
+              {t('auth.signup.privacy')}
             </Link>
           </label>
         </div>
@@ -251,7 +253,7 @@ export default function SignupPage() {
           loading={isLoading}
           className="w-full"
         >
-          {isLoading ? 'Creating account...' : 'Create Account'}
+          {isLoading ? t('auth.signup.loading') : t('auth.signup.button')}
         </Button>
 
         {/* Divider */}
@@ -260,7 +262,7 @@ export default function SignupPage() {
             <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted">Or sign up with</span>
+            <span className="bg-background px-2 text-muted">{t('auth.signup.or_signup_with')}</span>
           </div>
         </div>
 
@@ -292,7 +294,7 @@ export default function SignupPage() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Sign up with Google
+            {t('auth.signup.google')}
           </Button>
 
           <Button
@@ -306,19 +308,19 @@ export default function SignupPage() {
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
               <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
             </svg>
-            Sign up with Apple
+            {t('auth.signup.apple')}
           </Button>
         </div>
 
         {/* Sign In Link */}
         <div className="text-center pt-4">
           <p className="text-sm text-muted">
-            Already have an account?{' '}
+            {t('auth.signup.have_account')}{' '}
             <Link 
               href="/auth/login" 
               className="text-primary hover:text-primary/80 transition-colors font-medium"
             >
-              Sign in
+              {t('auth.signup.login_link')}
             </Link>
           </p>
         </div>

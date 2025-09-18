@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useI18n } from '@/i18n/I18nProvider';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
@@ -10,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { signIn, signInWithProvider, clearError } from '@/store/slices/authSlice';
 
 export default function LoginPage() {
+  const { t } = useI18n();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { isLoading, error } = useAppSelector((state) => state.auth);
@@ -29,15 +31,15 @@ export default function LoginPage() {
     let isValid = true;
 
     if (!formData.email) {
-      errors.email = 'Email is required';
+      errors.email = t('auth.login.error.email_required');
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Please enter a valid email';
+      errors.email = t('auth.login.error.email_invalid');
       isValid = false;
     }
 
     if (!formData.password) {
-      errors.password = 'Password is required';
+      errors.password = t('auth.login.error.password_required');
       isValid = false;
     }
 
@@ -90,8 +92,8 @@ export default function LoginPage() {
 
   return (
     <AuthLayout
-      title="Welcome Back"
-      subtitle="Sign in to continue your audio adventures"
+      title={t('auth.login.title')}
+      subtitle={t('auth.login.subtitle')}
       className="justify-center max-w-sm mx-auto"
     >
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -107,8 +109,8 @@ export default function LoginPage() {
           <Input
             name="email"
             type="email"
-            label="Email"
-            placeholder="Enter your email"
+            label={t('auth.login.email_label')}
+            placeholder={t('auth.login.email_placeholder')}
             value={formData.email}
             onChange={handleInputChange}
             error={formErrors.email}
@@ -123,8 +125,8 @@ export default function LoginPage() {
           <Input
             name="password"
             type="password"
-            label="Password"
-            placeholder="Enter your password"
+            label={t('auth.login.password_label')}
+            placeholder={t('auth.login.password_placeholder')}
             value={formData.password}
             onChange={handleInputChange}
             error={formErrors.password}
@@ -140,7 +142,7 @@ export default function LoginPage() {
             href="/auth/forgot-password" 
             className="text-sm text-primary hover:text-primary/80 transition-colors"
           >
-            Forgot password?
+            {t('auth.login.forgot_password')}
           </Link>
         </div>
 
@@ -152,7 +154,7 @@ export default function LoginPage() {
           loading={isLoading}
           className="w-full"
         >
-          {isLoading ? 'Signing in...' : 'Sign In'}
+          {isLoading ? t('auth.login.loading') : t('auth.login.button')}
         </Button>
 
         {/* Divider */}
@@ -161,7 +163,7 @@ export default function LoginPage() {
             <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted">Or continue with</span>
+            <span className="bg-background px-2 text-muted">{t('auth.login.or_continue_with')}</span>
           </div>
         </div>
 
@@ -193,7 +195,7 @@ export default function LoginPage() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Continue with Google
+            {t('auth.login.google')}
           </Button>
 
           <Button
@@ -207,19 +209,19 @@ export default function LoginPage() {
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
               <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
             </svg>
-            Continue with Apple
+            {t('auth.login.apple')}
           </Button>
         </div>
 
         {/* Sign Up Link */}
         <div className="text-center pt-4">
           <p className="text-sm text-muted">
-            Don't have an account?{' '}
+            {t('auth.login.no_account')}{' '}
             <Link 
               href="/auth/signup" 
               className="text-primary hover:text-primary/80 transition-colors font-medium"
             >
-              Sign up
+              {t('auth.login.signup_link')}
             </Link>
           </p>
         </div>
