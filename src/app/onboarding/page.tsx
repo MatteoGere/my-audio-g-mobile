@@ -73,7 +73,7 @@ export default function OnboardingPage() {
             </div>
             <h2 className="text-2xl font-bold text-foreground mb-4">Ready to Explore!</h2>
             <p className="text-base text-muted leading-relaxed">
-              You're all set! Start discovering amazing audio tours and create unforgettable experiences.
+              You&apos;re all set! Start discovering amazing audio tours and create unforgettable experiences.
             </p>
           </div>
         );

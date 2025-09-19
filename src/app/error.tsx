@@ -24,7 +24,7 @@ export default function Error({
         </div>
         <h2 className="text-xl font-bold text-foreground mb-2">Something went wrong!</h2>
         <p className="text-muted mb-6">
-          We're sorry, but something unexpected happened. Please try again.
+          We&apos;re sorry, but something unexpected happened. Please try again.
         </p>
         <div className="flex flex-col gap-3">
           <Button onClick={reset}>Try again</Button>

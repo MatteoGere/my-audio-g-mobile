@@ -14,7 +14,7 @@ export default function NotFound() {
         </div>
         <h2 className="text-xl font-bold text-foreground mb-2">Page Not Found</h2>
         <p className="text-muted mb-6">
-          The page you're looking for doesn't exist or may have been moved.
+          The page you&apos;re looking for doesn&apos;t exist or may have been moved.
         </p>
         <div className="flex flex-col gap-3">
           <Button onClick={() => window.location.href = '/home'}>

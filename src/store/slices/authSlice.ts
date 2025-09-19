@@ -202,7 +202,7 @@ const authSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(signInWithProvider.fulfilled, (state, action) => {
+      .addCase(signInWithProvider.fulfilled, (state) => {
         state.isLoading = false;
         // OAuth redirect will be handled by callback
       })

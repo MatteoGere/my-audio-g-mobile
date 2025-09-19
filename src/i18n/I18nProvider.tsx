@@ -26,7 +26,7 @@ export const I18nProvider: React.FC<{
   // Keep local locale in sync with redux preference
   useEffect(() => {
     if (reduxLocale && reduxLocale !== locale) setLocaleState(reduxLocale);
-  }, [reduxLocale]);
+  }, [reduxLocale, locale]);
 
   useEffect(() => {
     let mounted = true;

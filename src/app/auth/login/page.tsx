@@ -68,7 +68,7 @@ export default function LoginPage() {
     if (!validateForm()) return;
 
     try {
-      const result = await dispatch(signIn({
+      await dispatch(signIn({
         email: formData.email,
         password: formData.password,
       })).unwrap();

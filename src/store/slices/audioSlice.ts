@@ -207,7 +207,7 @@ const audioSlice = createSlice({
     },
 
     // Reset
-    reset: (state) => {
+    reset: () => {
       return initialState;
     },
   },

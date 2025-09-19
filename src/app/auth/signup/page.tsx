@@ -113,7 +113,7 @@ export default function SignupPage() {
     if (!validateForm()) return;
 
     try {
-      const result = await dispatch(signUp({
+      await dispatch(signUp({
         email: formData.email,
         password: formData.password,
         userData: {

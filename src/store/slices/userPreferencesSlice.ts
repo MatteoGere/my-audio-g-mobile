@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { Tables } from '../../types/supabase-types';
 
 export interface UserPreferencesState {
   // App settings

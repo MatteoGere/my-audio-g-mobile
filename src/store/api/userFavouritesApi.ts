@@ -1,5 +1,5 @@
 import { apiSlice, supabase } from './apiSlice';
-import type { Tables, TablesInsert, TablesUpdate } from '../../types/supabase-types';
+import type { Tables, TablesInsert } from '../../types/supabase-types';
 
 export const userFavouritesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
