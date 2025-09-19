@@ -26,7 +26,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="manifest" href="/manifest.json" />
         {/* <I18nProvider defaultLocale="it">
 
-          </I18nProvider> */}    {children}
+          </I18nProvider> */}{' '}
+        {children}
       </body>
     </html>
   );
