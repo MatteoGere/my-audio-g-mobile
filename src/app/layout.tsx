@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { I18nProvider } from '../i18n/I18nProvider';
+//import { I18nProvider } from '../i18n/i18nProvider';
 import './globals.css';
 
 const geistSans = Geist({
@@ -24,9 +24,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="it">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <link rel="manifest" href="/manifest.json" />
-          <I18nProvider defaultLocale="it">
-            {children}
-          </I18nProvider>
+        {/* <I18nProvider defaultLocale="it">
+
+          </I18nProvider> */}    {children}
       </body>
     </html>
   );
