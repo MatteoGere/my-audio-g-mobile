@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { ReduxProvider } from '../store/ReduxProvider';
 import { I18nProvider } from '../i18n/I18nProvider';
 import './globals.css';
-import ServiceWorkerRegister from '../components/service-worker/register';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -26,13 +24,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="it">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <link rel="manifest" href="/manifest.json" />
-        <ReduxProvider>
           <I18nProvider defaultLocale="it">
             {children}
-            {/* Register service worker on client side */}
-            <ServiceWorkerRegister />
           </I18nProvider>
-        </ReduxProvider>
       </body>
     </html>
   );
