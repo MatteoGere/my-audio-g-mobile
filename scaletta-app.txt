@@ -1,272 +1,108 @@
-Audio Guide PWA - Development Roadmap
-🏗️ FASE 1: Setup Infrastruttura e Store
-1.1 Redux Toolkit Configuration
-
- Setup Redux store con RTK
- Configurare RTK Query per API calls
- Definire slice principali:
-
-authSlice (user authentication)
-itinerariesSlice (tours/itineraries data)
-audioSlice (audio player state)
-mapSlice (map state, location, markers)
-userPreferencesSlice (settings, language, favorites)
-offlineSlice (cached content, download status)
-
-
-
-1.2 Supabase Integration
-
- Setup Supabase client con environment variables
- Configurare Row Level Security (RLS) policies
- Definire API endpoints con RTK Query:
-
-Itineraries CRUD
-Audio tracks management
-User profiles
-Favorites/bookmarks
-Analytics/progress tracking
-
-
-
-1.3 PWA Foundation
-
- Configurare Service Worker per caching
- Setup Web App Manifest
- Implementare offline-first strategy
- Cache strategies per audio files e immagini
-
-🎨 FASE 2: Screens e Routing
-2.1 Routing Structure
-/onboarding
-/home
-/search
-/itineraries
-/itinerary/[id]
-/audio-player
-/map
-/favorites
-/profile
-/settings
-2.2 Layout Components
-
- MainLayout (con navigation)
- AuthLayout (per onboarding)
- PlayerLayout (con mini/full player)
- MapLayout (fullscreen map)
+Phase 1 Tasks:
 
-2.3 Navigation System
-
- Bottom Tab Navigation (Home, Search, Map, Favorites, Profile)
- Header con back button e context actions
- Breadcrumb per nested navigation
-
-📱 FASE 3: Core Screens Development
-3.1 Onboarding Flow
-
- Welcome screens con animazioni
- Language selection
- Permission requests (location, notifications)
- Tutorial interactive
- Initial data fetching
-
-3.2 Home Screen
-
- Search bar con suggestions
- Featured itineraries carousel
- Categories grid
- Personalized recommendations
- Location-based suggestions
- Pull-to-refresh functionality
+Redux Store Configuration
 
-3.3 Itineraries Screens
-
- List view con filtri e sorting
- Card components con lazy loading
- Infinite scrolling
- Offline indicators
- Download progress indicators
+Setup store with RTK and middleware
+Create all required slices with proper TypeScript types
+Implement signed URL caching logic
 
-3.4 Itinerary Detail
-
- Hero image/video
- Interactive map preview
- Audio tracks list
- Reviews/ratings
- Download manager
- Social sharing
-
-🎵 FASE 4: Audio System
-4.1 Audio Player Core
 
- Web Audio API integration
- Background audio support
- Media Session API per controlli OS
- Audio caching e preloading
- Playlist management
+Supabase RTK Query Setup
 
-4.2 Player UI Components
+Create API slice with base query
+Implement authentication endpoints
+Add signed URL management endpoints
 
- Mini player (sticky bottom)
- Full-screen player
- Progress tracking
- Speed controls
- Sleep timer
- Audio visualizer (opzionale)
 
-4.3 Audio Sync & Progress
+Basic App Shell
 
- Track progress in database
- Resume functionality
- Sync across devices
- Offline playback
+Main layout with navigation
+Route setup and protection
+Service Worker registration
 
-🗺️ FASE 5: Map Integration
-5.1 Map Setup
 
- Scegliere provider (Google Maps / Mapbox / OpenStreetMap)
- Custom markers e clustering
- Offline maps support
- GPS tracking durante tour
 
-5.2 Interactive Features
+Phase 2 Tasks:
 
- POI (Points of Interest) markers
- Route visualization
- Current location tracking
- Geofencing per auto-play
- AR mode (futuro)
+Home Screen Implementation
 
-👤 FASE 6: User Features
-6.1 Authentication
+Search functionality
+Featured content display
+Nearby itineraries integration
 
- Email/password signup/login
- Social login (Google, Apple)
- Guest mode
- Profile management
 
-6.2 Personalization
+Content Display System
 
- Favorites system
- History tracking
- Preferences saving
- Recommendation engine
+Itinerary detail screen
+Image loading with signed URLs
+Track listing and organization
 
-6.3 Settings & Accessibility
 
- Language switching
- Dark/light mode
- Font size scaling
- High contrast mode
- Voice commands support
 
-🔧 FASE 7: Advanced Features
-7.1 Offline Capability
+Phase 3 Tasks:
 
- Selective content download
- Storage management
- Sync when online
- Compression strategies
+Audio Player Core
 
-7.2 Gamification
+Web Audio API integration
+Playlist and queue management
+Background playback setup
 
- Progress badges
- Achievement system
- Leaderboards
- Challenge completions
 
-7.3 Social Features
+Map Integration
 
- Reviews e ratings
- Photo sharing
- Social media integration
- Community features
+Interactive map with POI
+GPS location services
+Route visualization
 
-⚡ FASE 8: Performance & Optimization
-8.1 Performance
 
- Image optimization e lazy loading
- Bundle splitting e code splitting
- Service worker optimizations
- Memory management per audio
 
-8.2 Analytics & Monitoring
+Phase 4 Tasks:
 
- User behavior tracking
- Performance monitoring
- Error tracking (Sentry)
- Usage analytics
+User Management
 
-8.3 Testing
+Profile CRUD operations
+Preferences system
+Settings interface
 
- Unit tests per components
- Integration tests per RTK slices
- E2E tests per user flows
- Performance testing
 
-🚀 FASE 9: Deployment & CI/CD
-9.1 Build & Deploy
+Offline System
 
- Production build optimization
- Environment management
- CDN setup per assets
- PWA deployment verification
+Content download management
+Storage optimization
+Sync strategies
 
-9.2 Monitoring
 
- Health checks
- Performance monitoring
- User feedback collection
- A/B testing setup
 
+Phase 5 Tasks:
 
-📋 Priorità di Sviluppo Suggerite
-Sprint 1 (Foundation)
+PWA Completion
 
-Redux setup + Supabase integration
-Basic routing e layout
-
-Sprint 2 (Core Navigation)
-
-Home screen + Itinerary list
-Basic audio player
-
-Sprint 3 (Content)
-
-Itinerary detail + Map integration
-Offline functionality basic
-
-Sprint 4 (Enhanced UX)
-
-Full audio features + Player UI
-User preferences + Settings
-
-Sprint 5 (Advanced)
-
-Gamification + Social features
+Final Service Worker implementation
+Installation and sharing features
 Performance optimization
 
 
-🛠️ Stack Tecnologico Completo
 
-Frontend: Next.js 14+ (App Router), TypeScript
-State Management: Redux Toolkit + RTK Query
-Backend: Supabase (Database, Auth, Storage, Functions)
-Maps: Google Maps API / Mapbox
-Audio: Web Audio API + Media Session API
-PWA: Service Worker + Web App Manifest
-Styling: Tailwind CSS + CSS Modules
-Testing: Jest + Testing Library + Playwright
-Deployment: Vercel / Netlify
-Monitoring: Sentry + Google Analytics
+🎯 SUCCESS CRITERIA
+Technical Metrics:
 
+Signed URL cache hit rate >90%
+Audio playback works 100% offline for downloaded content
+App loads <3s on 3G networks
+PWA installation success rate >80%
 
-📝 Note per l'AI Agent
+User Experience Metrics:
 
-Mobile-First: Ogni componente deve essere pensato per mobile, poi adattato per desktop
-Offline-First: Priorità assoluta per funzionalità offline
-Performance: Audio e immagini devono essere ottimizzati per reti lente
-Accessibilità: Seguire WCAG 2.1 guidelines
-Internazionalizzazione: Preparare per supporto multilingue fin dall'inizio
-Security: Implementare rate limiting e validazione input
-SEO: Ottimizzare per discovery dei tour pubblici
+Time to first audio play <5s
+Offline usage capability for all downloaded content
+Zero audio playback failures for cached content
+Smooth 60fps animations on target devices
+
+Code Quality:
+
+100% TypeScript strict mode compliance
+Proper error handling for all async operations
+Comprehensive loading states
+Accessibility compliance (WCAG 2.1 AA)
+
+Remember: Focus on mobile-first experience, offline-first architecture, and performance optimization throughout development.

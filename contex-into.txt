@@ -1,56 +1,109 @@
-📋 CONTEXT INTRO - Da usare per ogni task con l'AI Agent
+📋 CONTEXT INTRO - Audio Guide PWA Development
 Project Overview
-Stai sviluppando una Progressive Web App (PWA) per audio guide turistiche chiamata [Nome App]. L'app è mobile-first e permette ai turisti di scoprire destinazioni attraverso tour audio interattivi con mappe integrate.
+You are developing a Progressive Web App (PWA) for tourist audio guides. The app is mobile-first and allows tourists to discover destinations through interactive audio tours with integrated maps.
 Current Setup & Architecture
-Base esistente:
+Existing Base:
 
-✅ Framework: Next.js 15+ con App Router
-✅ Componenti: Atomic components già creati e styled
-✅ Types: File types.ts con definizioni Supabase complete
-✅ Styling: Sistema di design implementato
+✅ Framework: Next.js 15+ with App Router
+✅ Components: Atomic components already created and styled
+✅ Types: Complete Supabase type definitions
+✅ Styling: Design system implemented
 
-Stack tecnologico completo:
+Complete Tech Stack:
 
 Frontend: Next.js 15, TypeScript, Tailwind CSS
-State Management: Redux Toolkit + RTK Query (da implementare)
-Backend: Supabase (Database, Auth, Storage)
+State Management: Redux Toolkit + RTK Query (to implement)
+Backend: Supabase (Database, Auth, Storage with signed URLs)
 
-Core App Features & User Journey
-Funzionalità principali:
+Database Schema Context
+Key Tables (User READ-ONLY except where noted):
 
-Full registration flow
-Onboarding con selezione lingua e tutorial
-Home con ricerca, tour featured e raccomandazioni personalizzate
-Tour Discovery con filtri, categorie e preview
-Audio Player con controlli avanzati e sync progress
-Interactive Maps con POI, GPS tracking e geofencing
-Offline Mode con download selettivo e sync
-User Profiles con favorites, history e gamification
-Accessibility completa e supporto multilingue
+audio_itinerary: Tours with company, duration, description
+audio_track: Individual audio files with order and storage keys
+audio_track_poi: Geographic coordinates for each track
+user_profile: User data (READ/WRITE)
+user_favourite: User favorites (READ/WRITE) - types: FAVOURITE-TRACK | FAVOURITE-ITINERARY
+audio_qr_token: QR code access tokens
+image_file: Image metadata with storage keys
+
+Critical Technical Requirements:
+
+All media files use signed URLs (audio_storage_key, image_storage_key)
+Signed URLs must be cached locally with expiration tracking
+Geographic discovery via fn_nearby_audio_itineraries() function
+
+Core User Journey & Features
+User Experience Flow:
+
+Onboarding: Language selection, permissions, tutorial
+Discovery: Search, nearby tours via GPS, QR scanning
+Consumption: Audio playback with map integration
+Personalization: Favorites, preferences, offline downloads
+
+Key Features:
+
+Audio Player with background playback, Media Session API
+Interactive Maps with POI markers and GPS tracking
+Offline Mode with selective downloads
+User Profiles with favorites and preferences
+QR Code scanning for quick access
 
 Mobile-First Design Principles
+Navigation & UX:
 
-Navigation: Bottom tabs per azioni primarie
-Touch-First: Gesture intuitive, tap targets ≥44px
-Offline-First: Funzionalità core disponibili offline
-Performance: Lazy loading, compression, caching intelligente
-Accessibility: Screen reader support, high contrast, font scaling
+Bottom tabs for primary actions (Home, Search, Favorites, Profile)
+Touch-first gestures, tap targets ≥44px
+Offline-first functionality for core features
+Progressive loading with intelligent caching
 
-Development Constraints & Considerations
+Performance Requirements:
 
-PWA Requirements: Installabile, offline, responsive
-Audio Handling: Background playback, Media Session API integration
-Location Services: GPS accuracy, battery optimization
-Storage: Gestione intelligente spazio device per contenuti offline
-Network: Ottimizzazione per connessioni lente/instabili
-Security: RLS policies Supabase, input validation, rate limiting
+Lazy loading for images and audio
+Signed URL caching (50min cache for 60min URLs)
+Service Worker for offline content
+Memory management for audio playback
 
-When working on each task:
+Development Constraints
+PWA Requirements:
 
-Prioritizza mobile experience poi adatta per desktop
-Considera sempre offline scenario - cosa succede senza rete?
-Implementa loading states e error handling robusti
-Usa TypeScript strict - sfrutta i types esistenti
-Segui atomic design - riusa componenti esistenti
-Performance first - lazy load, memo, ottimizza bundle
-Accessibility by design - semantic HTML, ARIA labels, keyboard navigation
+Installable with proper manifest
+Offline functionality for downloaded content
+Responsive design with mobile-first approach
+
+Technical Constraints:
+
+Audio: Background playback, playlist management
+Location: GPS optimization, geofencing
+Storage: Intelligent device storage management
+Network: Optimization for slow/unstable connections
+Security: Supabase RLS policies, input validation
+
+AI Development Guidelines
+When working on tasks, always:
+🎯 User Experience First
+
+Prioritize mobile experience, adapt for desktop
+Consider offline scenarios - what happens without network?
+Implement robust loading states and error handling
+Focus on touch-friendly interactions
+
+💾 Data & Performance
+
+Use existing TypeScript types from Supabase schema
+Implement signed URL caching with expiration logic
+Follow atomic design - reuse existing components
+Optimize for performance: lazy loading, memoization, bundle optimization
+
+🔧 Technical Standards
+
+TypeScript strict mode - leverage existing type definitions
+Redux Toolkit patterns for state management
+RTK Query for API calls with proper caching
+Service Worker for offline functionality
+
+♿ Accessibility & UX
+
+Semantic HTML with proper ARIA labels
+Keyboard navigation support
+Screen reader compatibility
+High contrast and font scaling support
