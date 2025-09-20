@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { HiOutlineXMark } from 'react-icons/hi2';
 
 export interface ModalProps {
   isOpen: boolean;
@@ -102,19 +103,7 @@ const Modal: React.FC<ModalProps> = ({
                 className="p-1 rounded-md hover:bg-stone-100 transition-colors"
                 aria-label="Close modal"
               >
-                <svg
-                  className="h-5 w-5 text-muted"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <HiOutlineXMark className="h-5 w-5 text-muted" aria-hidden="true" />
               </button>
             )}
           </div>

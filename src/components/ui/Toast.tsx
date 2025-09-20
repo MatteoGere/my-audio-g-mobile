@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { cn } from '@/lib/utils';
+import { HiOutlineInformationCircle, HiOutlineCheckCircle, HiOutlineExclamationTriangle, HiOutlineXCircle, HiOutlineXMark } from 'react-icons/hi2';
 
 export interface Toast {
   id: string;
@@ -123,32 +124,32 @@ const ToastComponent: React.FC<Toast> = ({
     default: {
       container: 'bg-surface border-stone-200',
       icon: 'text-info',
-      iconPath: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+      IconComp: HiOutlineInformationCircle,
     },
     success: {
       container: 'bg-success/10 border-success/20',
       icon: 'text-success',
-      iconPath: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
+      IconComp: HiOutlineCheckCircle,
     },
     warning: {
       container: 'bg-warning/10 border-warning/20',
       icon: 'text-warning',
-      iconPath:
-        'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z',
+      IconComp: HiOutlineExclamationTriangle,
     },
     error: {
       container: 'bg-error/10 border-error/20',
       icon: 'text-error',
-      iconPath: 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z',
+      IconComp: HiOutlineXCircle,
     },
     info: {
       container: 'bg-info/10 border-info/20',
       icon: 'text-info',
-      iconPath: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+      IconComp: HiOutlineInformationCircle,
     },
-  };
+  } as const;
 
   const variantConfig = variants[variant];
+  const Icon = variantConfig.IconComp;
 
   return (
     <div
@@ -164,19 +165,7 @@ const ToastComponent: React.FC<Toast> = ({
       <div className="flex gap-3">
         {/* Icon */}
         <div className="flex-shrink-0">
-          <svg
-            className={cn('h-5 w-5', variantConfig.icon)}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d={variantConfig.iconPath}
-            />
-          </svg>
+          <Icon className={cn('h-5 w-5', variantConfig.icon)} aria-hidden="true" />
         </div>
 
         {/* Content */}
@@ -203,14 +192,7 @@ const ToastComponent: React.FC<Toast> = ({
           className="flex-shrink-0 p-1 rounded-md hover:bg-stone-100 transition-colors"
           aria-label="Close notification"
         >
-          <svg className="h-4 w-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          <HiOutlineXMark className="h-4 w-4 text-muted" aria-hidden="true" />
         </button>
       </div>
     </div>

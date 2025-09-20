@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { HiOutlineUser } from 'react-icons/hi2';
 
 export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   src?: string;
@@ -95,13 +96,7 @@ const Avatar: React.FC<AvatarProps> = ({
         )}
 
         {!shouldShowImage && !shouldShowFallback && !children && (
-          <svg className="h-1/2 w-1/2 text-stone-400" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <HiOutlineUser className="h-1/2 w-1/2 text-stone-400" aria-hidden="true" />
         )}
       </div>
 

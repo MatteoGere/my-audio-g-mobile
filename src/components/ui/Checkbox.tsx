@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { HiCheck, HiMinus } from 'react-icons/hi2';
 
 export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label?: string;
@@ -38,34 +39,17 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             {...props}
           />
           {/* Custom checkmark */}
-          <svg
+          <HiCheck
             className={cn(
               'absolute inset-0 h-4 w-4 text-primary-foreground opacity-0 transition-opacity peer-checked:opacity-100',
               'pointer-events-none',
             )}
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fillRule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clipRule="evenodd"
-            />
-          </svg>
+            aria-hidden="true"
+          />
 
           {/* Indeterminate state */}
           {indeterminate && (
-            <svg
-              className="absolute inset-0 h-4 w-4 text-primary-foreground opacity-100 pointer-events-none"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <HiMinus className="absolute inset-0 h-4 w-4 text-primary-foreground opacity-100 pointer-events-none" aria-hidden="true" />
           )}
         </div>
 

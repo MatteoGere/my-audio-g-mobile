@@ -391,3 +391,17 @@ When adding new components:
 5. Include relevant variants and sizes
 6. Update the index.ts file
 7. Add documentation to this README
+
+### Icons
+
+This library uses `react-icons` (Heroicons outline set via `react-icons/hi2`) for all decorative and action icons. Avoid inline `<svg>` in components; import the needed icon instead and style it via Tailwind classes.
+
+Example:
+
+```tsx
+import { HiOutlineChevronDown } from 'react-icons/hi2';
+
+<HiOutlineChevronDown className="h-4 w-4 text-muted" aria-hidden="true" />
+```
+
+Spinner/loader examples use `HiOutlineArrowPath` with the `animate-spin` utility.

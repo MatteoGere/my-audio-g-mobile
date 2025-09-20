@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { HiOutlineChevronRight } from 'react-icons/hi2';
 
 export interface BreadcrumbItem {
   label: string;
@@ -18,13 +19,7 @@ export interface BreadcrumbProps {
 
 const Breadcrumb: React.FC<BreadcrumbProps> = ({ items, separator, maxItems, className }) => {
   const defaultSeparator = (
-    <svg className="h-4 w-4 text-muted" fill="currentColor" viewBox="0 0 20 20">
-      <path
-        fillRule="evenodd"
-        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-        clipRule="evenodd"
-      />
-    </svg>
+    <HiOutlineChevronRight className="h-4 w-4 text-muted" aria-hidden="true" />
   );
 
   // Handle maxItems by showing first item, ellipsis, and last few items

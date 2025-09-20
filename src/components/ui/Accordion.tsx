@@ -1,5 +1,6 @@
 import React, { useState, createContext, useContext } from 'react';
 import { cn } from '@/lib/utils';
+import { HiOutlineChevronDown } from 'react-icons/hi2';
 
 export interface AccordionItem {
   id: string;
@@ -183,18 +184,10 @@ const AccordionTrigger: React.FC<AccordionTriggerProps> = ({
       data-state={isOpen ? 'open' : 'closed'}
     >
       <span className="text-foreground">{children}</span>
-      <svg
-        className={cn(
-          'h-4 w-4 shrink-0 text-muted transition-transform duration-200',
-          isOpen && 'rotate-180',
-        )}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-      </svg>
+      <HiOutlineChevronDown
+        className={cn('h-4 w-4 shrink-0 text-muted transition-transform duration-200', isOpen && 'rotate-180')}
+        aria-hidden="true"
+      />
     </button>
   );
 };
