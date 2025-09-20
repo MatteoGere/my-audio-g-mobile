@@ -5,13 +5,13 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: true,
   },
-  
+
   // Image optimization
   images: {
     domains: ['supabase.co'], // Add your Supabase domain
     formats: ['image/webp', 'image/avif'],
   },
-  
+
   // Headers for PWA and security
   async headers() {
     return [
@@ -52,7 +52,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  
+
   // Webpack optimization for PWA
   webpack: (config, { isServer }) => {
     if (!isServer) {
