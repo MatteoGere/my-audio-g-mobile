@@ -13,9 +13,14 @@ export { PWAProvider } from './pwa/PWAProvider';
 
 // Itinerary exports
 export { ItineraryCard } from './itinerary/ItineraryCard';
+export { ItineraryHero } from './itinerary/ItineraryHero';
 
 // Search exports
 export { SearchBar } from './search/SearchBar';
 
 // Location exports
 export { LocationPermissionPrompt } from './location/LocationPermissionPrompt';
+
+// Track exports
+export { TrackCard } from './track/TrackCard';
+export { TrackList } from './track/TrackList';

@@ -296,18 +296,39 @@ export const supabaseApi = createApi({
       },
       string
     >({
-      query: (id) => ({
-        table: 'audio_itinerary',
-        operation: 'select',
-        query: `
-          *,
-          image_file:image_file_id (
-            id,
-            image_storage_key,
-            image_type
-          )
-        `,
-      }),
+      queryFn: async (id) => {
+        try {
+          const { data, error } = await supabase
+            .from('audio_itinerary')
+            .select(
+              `
+              *,
+              image_file:image_file_id (
+                id,
+                image_storage_key,
+                image_type,
+                object_id,
+                created_at
+              )
+            `,
+            )
+            .eq('id', id)
+            .single();
+
+          if (error) {
+            return { error: { error: error.message, details: error } };
+          }
+
+          return { data: data as any };
+        } catch (error) {
+          return {
+            error: {
+              error: error instanceof Error ? error.message : 'Failed to fetch itinerary',
+              details: error,
+            },
+          };
+        }
+      },
       providesTags: ['AudioItinerary'],
     }),
 
@@ -334,23 +355,44 @@ export const supabaseApi = createApi({
 
     // Audio Tracks
     getAudioTracks: builder.query<Database['public']['Tables']['audio_track']['Row'][], string>({
-      query: (itineraryId) => ({
-        table: 'audio_track',
-        operation: 'select',
-        query: `
-          *,
-          image_file:image_file_id (
-            id,
-            image_storage_key,
-            image_type
-          ),
-          audio_track_poi (
-            latitude,
-            longitude,
-            location
-          )
-        `,
-      }),
+      queryFn: async (itineraryId) => {
+        try {
+          const { data, error } = await supabase
+            .from('audio_track')
+            .select(
+              `
+              *,
+              image_file:image_file_id (
+                id,
+                image_storage_key,
+                image_type,
+                object_id,
+                created_at
+              ),
+              audio_track_poi (
+                latitude,
+                longitude,
+                location
+              )
+            `,
+            )
+            .eq('audio_itinerary_id', itineraryId)
+            .order('audio_itinerary_order', { ascending: true });
+
+          if (error) {
+            return { error: { error: error.message, details: error } };
+          }
+
+          return { data: data as any };
+        } catch (error) {
+          return {
+            error: {
+              error: error instanceof Error ? error.message : 'Failed to fetch tracks',
+              details: error,
+            },
+          };
+        }
+      },
       providesTags: ['AudioTrack'],
     }),
 
