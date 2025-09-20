@@ -57,8 +57,9 @@ export default function HomePage() {
   );
 
   // Fetch user favorites if authenticated
-  const { data: userFavorites } = useGetUserFavouritesQuery(undefined, {
-    skip: !isAuthenticated,
+  const userId = useAppSelector((state) => state.auth.user?.id);
+  const { data: userFavorites } = useGetUserFavouritesQuery(userId ?? '', {
+    skip: !isAuthenticated || !userId,
   });
 
   // Favorite mutations
@@ -91,23 +92,30 @@ export default function HomePage() {
   };
 
   const handleFavoriteToggle = async (itineraryId: string, isFavorite: boolean) => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !userId) {
       // Optionally redirect to login or show login prompt
       return;
     }
 
     try {
-      if (isFavorite) {
+      if (!isFavorite) {
+        // Add favorite
         await addFavorite({
-          target_id: itineraryId,
-          favourite_type: 'FAVOURITE-ITINERARY',
+          userId,
+          favouriteId: itineraryId,
+          type: 'FAVOURITE-ITINERARY',
         }).unwrap();
       } else {
+        // Remove favorite
         const favorite = userFavorites?.find(
-          (f) => f.target_id === itineraryId && f.favourite_type === 'FAVOURITE-ITINERARY',
+          (f) => f.favourite_id === itineraryId && f.type === 'FAVOURITE-ITINERARY',
         );
         if (favorite) {
-          await removeFavorite(favorite.id).unwrap();
+          await removeFavorite({
+            userId,
+            favouriteId: itineraryId,
+            type: 'FAVOURITE-ITINERARY',
+          }).unwrap();
         }
       }
     } catch (error) {
@@ -118,7 +126,7 @@ export default function HomePage() {
   const isItineraryFavorite = (itineraryId: string) => {
     return (
       userFavorites?.some(
-        (f) => f.target_id === itineraryId && f.favourite_type === 'FAVOURITE-ITINERARY',
+        (f) => f.favourite_id === itineraryId && f.type === 'FAVOURITE-ITINERARY',
       ) || false
     );
   };

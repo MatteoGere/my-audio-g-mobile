@@ -8,7 +8,10 @@ const nextConfig: NextConfig = {
 
   // Image optimization
   images: {
-    domains: ['supabase.co'], // Add your Supabase domain
+    domains: [
+      'supabase.co', // Add your Supabase domain
+      'xknweifwtllubmkwbdbe.supabase.co',
+    ],
     formats: ['image/webp', 'image/avif'],
   },
 
