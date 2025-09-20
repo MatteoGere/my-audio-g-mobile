@@ -199,6 +199,97 @@ export const supabaseApi = createApi({
       providesTags: ['AudioItinerary'],
     }),
 
+    // Search audio itineraries
+    searchAudioItineraries: builder.query<
+      Database['public']['Tables']['audio_itinerary']['Row'][],
+      {
+        searchTerm: string;
+        limit?: number;
+      }
+    >({
+      queryFn: async ({ searchTerm, limit = 20 }) => {
+        try {
+          const { data, error } = await supabase
+            .from('audio_itinerary')
+            .select(
+              `
+              *,
+              image_file:image_file_id (
+                id,
+                image_storage_key,
+                image_type
+              )
+            `,
+            )
+            .or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`)
+            .limit(limit);
+
+          if (error) {
+            return {
+              error: {
+                error: error.message,
+                details: error,
+              },
+            };
+          }
+
+          return { data: data || [] };
+        } catch (error) {
+          return {
+            error: {
+              error: error instanceof Error ? error.message : 'Search failed',
+              details: error,
+            },
+          };
+        }
+      },
+      providesTags: ['AudioItinerary'],
+    }),
+
+    // Get featured/popular itineraries
+    getFeaturedItineraries: builder.query<
+      Database['public']['Tables']['audio_itinerary']['Row'][],
+      { limit?: number }
+    >({
+      queryFn: async ({ limit = 6 }) => {
+        try {
+          const { data, error } = await supabase
+            .from('audio_itinerary')
+            .select(
+              `
+              *,
+              image_file:image_file_id (
+                id,
+                image_storage_key,
+                image_type
+              )
+            `,
+            )
+            .limit(limit);
+
+          if (error) {
+            return {
+              error: {
+                error: error.message,
+                details: error,
+              },
+            };
+          }
+
+          return { data: data || [] };
+        } catch (error) {
+          return {
+            error: {
+              error:
+                error instanceof Error ? error.message : 'Failed to fetch featured itineraries',
+              details: error,
+            },
+          };
+        }
+      },
+      providesTags: ['AudioItinerary'],
+    }),
+
     getAudioItinerary: builder.query<
       Database['public']['Tables']['audio_itinerary']['Row'] & {
         image_file?: Database['public']['Tables']['image_file']['Row'];
@@ -393,6 +484,8 @@ export const {
 
   // Audio Itineraries
   useGetAudioItinerariesQuery,
+  useSearchAudioItinerariesQuery,
+  useGetFeaturedItinerariesQuery,
   useGetAudioItineraryQuery,
   useGetNearbyItinerariesQuery,
 

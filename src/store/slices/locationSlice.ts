@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 export interface Coordinates {
   latitude: number;
@@ -61,6 +61,103 @@ const initialState: LocationState = {
   highAccuracy: true,
   updateFrequency: 30000, // 30 seconds
 };
+
+// Async thunks for location operations
+export const requestLocationPermission = createAsyncThunk(
+  'location/requestPermission',
+  async (_, { dispatch }) => {
+    if (!navigator.geolocation) {
+      throw new Error('Geolocation is not supported by this browser');
+    }
+
+    return new Promise<'granted' | 'denied' | 'prompt'>((resolve, reject) => {
+      navigator.permissions
+        .query({ name: 'geolocation' })
+        .then((result) => {
+          dispatch(setLocationPermission(result.state as any));
+          resolve(result.state);
+        })
+        .catch(() => {
+          // Fallback if permissions API is not available
+          navigator.geolocation.getCurrentPosition(
+            () => {
+              dispatch(setLocationPermission('granted'));
+              resolve('granted');
+            },
+            () => {
+              dispatch(setLocationPermission('denied'));
+              reject(new Error('Location permission denied'));
+            },
+          );
+        });
+    });
+  },
+);
+
+export const startLocationTracking = createAsyncThunk(
+  'location/startTracking',
+  async (_, { dispatch, getState }) => {
+    const state = getState() as { location: LocationState };
+
+    if (!navigator.geolocation) {
+      throw new Error('Geolocation is not supported');
+    }
+
+    dispatch(startTracking());
+
+    const options: PositionOptions = {
+      enableHighAccuracy: state.location.highAccuracy,
+      timeout: 10000,
+      maximumAge: 300000, // 5 minutes
+    };
+
+    return new Promise<Coordinates>((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const coords: Coordinates = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+            altitude: position.coords.altitude || undefined,
+            heading: position.coords.heading || undefined,
+            speed: position.coords.speed || undefined,
+          };
+
+          dispatch(setCurrentPosition(coords));
+          resolve(coords);
+        },
+        (error) => {
+          let errorMessage = 'Failed to get location';
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = 'Location permission denied';
+              dispatch(setLocationPermission('denied'));
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = 'Location information unavailable';
+              break;
+            case error.TIMEOUT:
+              errorMessage = 'Location request timed out';
+              break;
+          }
+
+          dispatch(setError(errorMessage));
+          dispatch(stopTracking());
+          reject(new Error(errorMessage));
+        },
+        options,
+      );
+    });
+  },
+);
+
+export const stopLocationTracking = createAsyncThunk(
+  'location/stopTracking',
+  async (_, { dispatch }) => {
+    dispatch(stopTracking());
+    return true;
+  },
+);
 
 const locationSlice = createSlice({
   name: 'location',
@@ -158,6 +255,37 @@ const locationSlice = createSlice({
         locationPermission: state.locationPermission,
       };
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(requestLocationPermission.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(requestLocationPermission.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(requestLocationPermission.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to request location permission';
+      })
+      .addCase(startLocationTracking.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(startLocationTracking.fulfilled, (state) => {
+        state.loading = false;
+        state.isTrackingLocation = true;
+      })
+      .addCase(startLocationTracking.rejected, (state, action) => {
+        state.loading = false;
+        state.isTrackingLocation = false;
+        state.error = action.error.message || 'Failed to start location tracking';
+      })
+      .addCase(stopLocationTracking.fulfilled, (state) => {
+        state.isTrackingLocation = false;
+        state.loading = false;
+      });
   },
 });
 

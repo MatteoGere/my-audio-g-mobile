@@ -17,7 +17,7 @@
     },
     {
       "src": "/myaudiog-512.svg",
-      "sizes": "512x512", 
+      "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any"
     },
@@ -30,7 +30,7 @@
     {
       "src": "/myaudiog-512.svg",
       "sizes": "512x512",
-      "type": "image/svg+xml", 
+      "type": "image/svg+xml",
       "purpose": "maskable"
     }
   ],
@@ -45,7 +45,7 @@
       "form_factor": "wide"
     },
     {
-      "src": "/screenshot-mobile.png", 
+      "src": "/screenshot-mobile.png",
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow"
@@ -61,7 +61,7 @@
     },
     {
       "name": "My Favorites",
-      "short_name": "Favorites", 
+      "short_name": "Favorites",
       "description": "View your favorite tours",
       "url": "/favorites",
       "icons": [{ "src": "/myaudiog-192.svg", "sizes": "192x192" }]

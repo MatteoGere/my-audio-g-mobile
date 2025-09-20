@@ -2,7 +2,12 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { HiOutlineHome, HiOutlineMagnifyingGlass, HiOutlineHeart, HiOutlineUser } from 'react-icons/hi2';
+import {
+  HiOutlineHome,
+  HiOutlineMagnifyingGlass,
+  HiOutlineHeart,
+  HiOutlineUser,
+} from 'react-icons/hi2';
 import { HiHome, HiMagnifyingGlass, HiHeart, HiUser } from 'react-icons/hi2';
 
 interface NavItem {
@@ -48,7 +53,7 @@ export function BottomNavigation() {
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = isActive ? item.activeIcon : item.icon;
-          
+
           return (
             <Link
               key={item.href}
@@ -62,9 +67,7 @@ export function BottomNavigation() {
               aria-current={isActive ? 'page' : undefined}
             >
               <Icon className="h-6 w-6 mb-1" aria-hidden="true" />
-              <span className="text-xs font-medium leading-none truncate">
-                {item.label}
-              </span>
+              <span className="text-xs font-medium leading-none truncate">{item.label}</span>
             </Link>
           );
         })}

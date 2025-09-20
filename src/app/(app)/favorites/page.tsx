@@ -3,9 +3,7 @@ export default function FavoritesPage() {
     <div className="flex flex-col min-h-screen">
       {/* Header */}
       <header className="bg-white dark:bg-gray-900 border-b border-stone-200 dark:border-gray-700 px-4 py-3">
-        <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-          Favorites
-        </h1>
+        <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Favorites</h1>
       </header>
 
       {/* Content */}
@@ -27,8 +25,18 @@ export default function FavoritesPage() {
               {/* Check if user has favorites */}
               <div className="text-center py-12">
                 <div className="h-16 w-16 bg-stone-200 dark:bg-gray-700 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <svg className="h-8 w-8 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  <svg
+                    className="h-8 w-8 text-stone-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
                   </svg>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -38,8 +46,18 @@ export default function FavoritesPage() {
                   Start exploring audio tours and save your favorites here for easy access later.
                 </p>
                 <button className="inline-flex items-center px-6 py-3 bg-primary text-white font-medium rounded-xl hover:bg-primary/90 transition-colors">
-                  <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  <svg
+                    className="h-5 w-5 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
                   </svg>
                   Browse Tours
                 </button>

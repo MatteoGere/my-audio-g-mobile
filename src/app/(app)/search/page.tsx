@@ -3,9 +3,7 @@ export default function SearchPage() {
     <div className="flex flex-col min-h-screen">
       {/* Header */}
       <header className="bg-white dark:bg-gray-900 border-b border-stone-200 dark:border-gray-700 px-4 py-3">
-        <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-          Search
-        </h1>
+        <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Search</h1>
       </header>
 
       {/* Content */}
@@ -20,8 +18,18 @@ export default function SearchPage() {
               autoFocus
             />
             <div className="absolute left-4 top-1/2 -translate-y-1/2">
-              <svg className="h-5 w-5 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg
+                className="h-5 w-5 text-stone-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
             </div>
           </div>
@@ -53,8 +61,18 @@ export default function SearchPage() {
                   key={search}
                   className="flex items-center w-full p-3 text-left bg-white dark:bg-gray-800 border border-stone-200 dark:border-gray-700 rounded-xl hover:bg-stone-50 dark:hover:bg-gray-700 transition-colors"
                 >
-                  <svg className="h-5 w-5 text-stone-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="h-5 w-5 text-stone-400 mr-3"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   <span className="text-gray-900 dark:text-white">{search}</span>
                 </button>
