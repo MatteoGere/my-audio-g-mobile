@@ -401,7 +401,7 @@ Example:
 ```tsx
 import { HiOutlineChevronDown } from 'react-icons/hi2';
 
-<HiOutlineChevronDown className="h-4 w-4 text-muted" aria-hidden="true" />
+<HiOutlineChevronDown className="h-4 w-4 text-muted" aria-hidden="true" />;
 ```
 
 Spinner/loader examples use `HiOutlineArrowPath` with the `animate-spin` utility.

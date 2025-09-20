@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { ReduxProvider } from '../store/ReduxProvider';
 //import { I18nProvider } from '../i18n/i18nProvider';
 import './globals.css';
 
@@ -24,10 +25,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="it">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <link rel="manifest" href="/manifest.json" />
-        {/* <I18nProvider defaultLocale="it">
+        <ReduxProvider>
+          {/* <I18nProvider defaultLocale="it">
 
-          </I18nProvider> */}{' '}
-        {children}
+          </I18nProvider> */}
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   );
