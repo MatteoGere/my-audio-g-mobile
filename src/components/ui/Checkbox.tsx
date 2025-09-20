@@ -49,7 +49,10 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 
           {/* Indeterminate state */}
           {indeterminate && (
-            <HiMinus className="absolute inset-0 h-4 w-4 text-primary-foreground opacity-100 pointer-events-none" aria-hidden="true" />
+            <HiMinus
+              className="absolute inset-0 h-4 w-4 text-primary-foreground opacity-100 pointer-events-none"
+              aria-hidden="true"
+            />
           )}
         </div>
 
