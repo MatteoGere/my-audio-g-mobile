@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { ReduxProvider } from '../store/ReduxProvider';
 import { AuthProvider } from '../components/auth/AuthProvider';
 import { PWAProvider } from '../components/pwa/PWAProvider';
+import { AudioPlayerProvider } from '../components/audio/AudioPlayerProvider';
 //import { I18nProvider } from '../i18n/i18nProvider';
 import './globals.css';
 
@@ -71,11 +72,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ReduxProvider>
           <AuthProvider>
-            <PWAProvider />
-            {/* <I18nProvider defaultLocale="it">
+            <AudioPlayerProvider>
+              <PWAProvider />
+              {/* <I18nProvider defaultLocale="it">
 
-            </I18nProvider> */}
-            {children}
+              </I18nProvider> */}
+              {children}
+            </AudioPlayerProvider>
           </AuthProvider>
         </ReduxProvider>
       </body>
