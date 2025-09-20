@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import {
   HiOutlinePlay,
   HiOutlineMapPin,
@@ -46,7 +45,12 @@ export function ItineraryHero({
       {/* Hero Image */}
       {imageUrl ? (
         <div className="relative h-64 bg-stone-200 dark:bg-gray-700">
-          <Image src={imageUrl} alt={itinerary.name} fill className="object-cover" priority />
+          <img
+            src={imageUrl}
+            alt={itinerary.name}
+            className="object-cover w-full h-full absolute inset-0"
+            style={{ objectFit: 'cover' }}
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         </div>
       ) : (

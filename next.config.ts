@@ -6,15 +6,6 @@ const nextConfig: NextConfig = {
     optimizeCss: true,
   },
 
-  // Image optimization
-  images: {
-    domains: [
-      'supabase.co', // Add your Supabase domain
-      'xknweifwtllubmkwbdbe.supabase.co',
-    ],
-    formats: ['image/webp', 'image/avif'],
-  },
-
   // Headers for PWA and security
   async headers() {
     return [

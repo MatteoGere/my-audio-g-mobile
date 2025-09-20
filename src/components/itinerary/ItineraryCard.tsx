@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+
 import { HiOutlineHeart, HiHeart, HiOutlineClock, HiOutlineMapPin } from 'react-icons/hi2';
 import { Database } from '../../types/supabase-types';
 import { useGetSignedImageUrlQuery } from '../../store/api/supabaseApi';
@@ -74,13 +74,12 @@ export function ItineraryCard({
           )}
 
           {imageUrl && !imageError && !imageLoading && (
-            <Image
+            <img
               src={imageUrl}
               alt={itinerary.name}
-              fill
-              className="object-cover"
+              className="object-cover absolute inset-0 w-full h-full"
+              style={{ objectFit: 'cover' }}
               onError={() => setImageError(true)}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           )}
 

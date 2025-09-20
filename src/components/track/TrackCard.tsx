@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { HiOutlinePlay, HiOutlineMapPin, HiOutlineHeart } from 'react-icons/hi2';
 import { useGetSignedImageUrlQuery } from '../../store/api/supabaseApi';
 import { Button, Badge } from '../ui';
@@ -51,12 +50,13 @@ export function TrackCard({
       {/* Track Image */}
       <div className="flex-shrink-0 w-12 h-12 bg-stone-200 dark:bg-gray-600 rounded-lg overflow-hidden">
         {trackImageUrl ? (
-          <Image
+          <img
             src={trackImageUrl}
             alt={track.name || `Track ${index}`}
             width={48}
             height={48}
             className="object-cover w-full h-full"
+            style={{ objectFit: 'cover' }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">

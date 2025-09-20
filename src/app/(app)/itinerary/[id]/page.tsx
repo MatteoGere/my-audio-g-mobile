@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { HiOutlineArrowLeft, HiOutlineShare, HiOutlineHeart } from 'react-icons/hi2';
 import { useAppSelector } from '../../../../store/hooks';
 import {
@@ -17,9 +16,7 @@ import { Button, Spinner } from '../../../../components/ui';
 import { TrackList, ItineraryHero } from '../../../../components';
 
 interface ItineraryDetailPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }> | { id: string };
 }
 
 export default function ItineraryDetailPage({ params }: ItineraryDetailPageProps) {
@@ -27,19 +24,18 @@ export default function ItineraryDetailPage({ params }: ItineraryDetailPageProps
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const userId = useAppSelector((state) => state.auth.user?.id);
 
+  // Unwrap params if it's a Promise (Next.js App Router migration)
+  const { id } = typeof params === 'object' && 'then' in params ? use(params) : params;
+
   // Fetch itinerary data
   const {
     data: itinerary,
     isLoading: itineraryLoading,
     error: itineraryError,
-  } = useGetAudioItineraryQuery(params.id);
+  } = useGetAudioItineraryQuery(id);
 
   // Fetch tracks for this itinerary
-  const {
-    data: tracks,
-    isLoading: tracksLoading,
-    error: tracksError,
-  } = useGetAudioTracksQuery(params.id);
+  const { data: tracks, isLoading: tracksLoading, error: tracksError } = useGetAudioTracksQuery(id);
 
   // Fetch user favorites if authenticated
   const { data: userFavorites } = useGetUserFavouritesQuery(userId ?? '', {
@@ -62,9 +58,7 @@ export default function ItineraryDetailPage({ params }: ItineraryDetailPageProps
 
   const isItineraryFavorite = () => {
     return (
-      userFavorites?.some(
-        (f) => f.favourite_id === params.id && f.type === 'FAVOURITE-ITINERARY',
-      ) || false
+      userFavorites?.some((f) => f.favourite_id === id && f.type === 'FAVOURITE-ITINERARY') || false
     );
   };
 
@@ -75,13 +69,13 @@ export default function ItineraryDetailPage({ params }: ItineraryDetailPageProps
       if (!isItineraryFavorite()) {
         await addFavorite({
           userId,
-          favouriteId: params.id,
+          favouriteId: id,
           type: 'FAVOURITE-ITINERARY',
         }).unwrap();
       } else {
         await removeFavorite({
           userId,
-          favouriteId: params.id,
+          favouriteId: id,
           type: 'FAVOURITE-ITINERARY',
         }).unwrap();
       }
