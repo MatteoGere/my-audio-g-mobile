@@ -156,7 +156,6 @@ MapLayout: Fullscreen layout for map interactions
 - [ ] **Search Bar Component**:
   - Real-time search suggestions
   - Search history
-  - Voice search capability (future enhancement)
   - Filter shortcuts (by duration, type, distance)
 - [ ] **Featured Itineraries Section**:
   - Carousel of popular/recommended itineraries

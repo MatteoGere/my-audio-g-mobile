@@ -21,7 +21,7 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   {
-    href: '/',
+    href: '/home',
     label: 'Home',
     icon: HiOutlineHome,
   },
@@ -51,7 +51,7 @@ export function BottomNavigation() {
   const pathname = usePathname();
 
   const isActive = (href: string) => {
-    if (href === '/') {
+    if (href === '/home') {
       return pathname === '/' || pathname === '/home';
     }
     return pathname.startsWith(href);
