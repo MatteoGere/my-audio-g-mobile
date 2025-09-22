@@ -1,14 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AudioItinerary, AudioTrack } from './itinerariesSlice';
+import { EnhancedUserFavorite } from '@/types/app-types';
 
 // Types for favorites
-export interface FavoriteItem {
-  id: number; // user_favourite.id
-  user_id: string;
-  favourite_id: string; // itinerary or track ID
-  type: 'FAVOURITE-TRACK' | 'FAVOURITE-ITINERARY';
-  created_at: string;
-  // Extended data
+export interface FavoriteItem extends EnhancedUserFavorite {
+  // Legacy compatibility field
   item?: AudioItinerary | AudioTrack;
 }
 

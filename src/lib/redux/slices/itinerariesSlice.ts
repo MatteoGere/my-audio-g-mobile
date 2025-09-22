@@ -1,61 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { EnhancedAudioItinerary, EnhancedAudioTrack, SearchFilters as AppSearchFilters } from '@/types/app-types';
 
-// Types for itineraries
-export interface AudioItinerary {
-  id: string;
-  name: string;
-  description: string;
-  company_id: string;
-  image_file_id: string | null;
-  total_duration: number;
-  created_at: string;
-  // Extended data from joins
-  company?: {
-    id: string;
-    name: string;
-    description: string | null;
-    image_file_id: string | null;
-  };
-  image_url?: string | null;
-  track_count?: number;
-  poi_count?: number;
-  min_distance_meters?: number;
-  avg_latitude?: number;
-  avg_longitude?: number;
-}
-
-export interface AudioTrack {
-  id: string;
-  name: string | null;
-  description: string | null;
-  audio_itinerary_id: string | null;
-  audio_itinerary_order: number;
-  audio_storage_key: string;
-  duration: number;
-  track_object_id: string;
-  image_file_id: string | null;
-  created_at: string;
-  // Extended data
-  image_url?: string | null;
-  poi?: {
-    latitude: number;
-    longitude: number;
-  };
-}
-
-export interface SearchFilters {
-  query: string;
-  company_id?: string;
-  min_duration?: number;
-  max_duration?: number;
-  distance_km?: number;
-  user_location?: {
-    latitude: number;
-    longitude: number;
-  };
-  sort_by: 'name' | 'duration' | 'created_at' | 'distance';
-  sort_order: 'asc' | 'desc';
-}
+// Re-export enhanced types for backward compatibility
+export type AudioItinerary = EnhancedAudioItinerary;
+export type AudioTrack = EnhancedAudioTrack;
+export type SearchFilters = AppSearchFilters;
 
 export interface ItinerariesState {
   // Data
@@ -101,7 +50,7 @@ const initialState: ItinerariesState = {
     query: '',
     sort_by: 'name',
     sort_order: 'asc',
-  },
+  } as SearchFilters,
   searchResults: [],
   isSearching: false,
   selectedItinerary: null,

@@ -65,7 +65,6 @@
 
 ### 1.3 Database Schema Understanding & Types
 
-- [ ] Import and configure generated Supabase types
 - [ ] Define custom TypeScript interfaces for:
   - Enhanced itinerary objects with related data
   - Audio track with POI information

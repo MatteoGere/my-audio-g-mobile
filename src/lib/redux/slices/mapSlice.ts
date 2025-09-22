@@ -1,6 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { 
+  LatLng as AppLatLng, 
+  MapBounds as AppMapBounds, 
+  POI as AppPOI, 
+  UserLocation as AppUserLocation 
+} from '@/types/app-types';
 
-// Types for map functionality
+// Legacy types for backward compatibility (using latitude/longitude instead of lat/lng)
 export interface LatLng {
   latitude: number;
   longitude: number;
@@ -15,13 +21,22 @@ export interface MapBounds {
 
 export interface POI {
   id: string;
-  track_id: string;
-  track_name?: string;
+  type: 'track' | 'itinerary' | 'company';
   latitude: number;
   longitude: number;
+  title: string;
   description?: string;
-  type: 'audio_track' | 'waypoint' | 'landmark';
+  imageUrl?: string;
+  trackId?: string;
+  itineraryId?: string;
+  companyId?: string;
 }
+
+// Type aliases for enhanced types
+export type EnhancedLatLng = AppLatLng;
+export type EnhancedMapBounds = AppMapBounds;
+export type EnhancedPOI = AppPOI;
+export type EnhancedUserLocation = AppUserLocation;
 
 export interface MapState {
   // View state

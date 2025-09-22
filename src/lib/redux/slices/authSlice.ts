@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { Tables } from '@/types/supabase-types';
+import { EnhancedUserProfile } from '@/types/app-types';
 
-// Types for authentication state
+// Types for authentication state - simplified to avoid deep instantiation
 export interface UserProfile {
   id: string;
   name: string;
@@ -9,6 +10,12 @@ export interface UserProfile {
   role: 'ADMIN' | 'USER' | 'COMPANY-USER';
   address: any | null;
   created_at: string;
+  // Enhanced computed fields
+  preferences?: any;
+  total_favorites?: number;
+  total_listening_time?: number;
+  completed_itineraries?: number;
+  last_activity?: string;
 }
 
 export interface User {

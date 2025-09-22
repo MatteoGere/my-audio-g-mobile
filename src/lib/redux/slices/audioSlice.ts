@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AudioTrack } from './itinerariesSlice';
+import { PlaybackState as AppPlaybackState, QueueItem as AppQueueItem, AudioPlayerState } from '@/types/app-types';
 
-// Types for audio player
+// Legacy types for backward compatibility
 export interface PlaybackState {
   isPlaying: boolean;
   isPaused: boolean;
@@ -19,6 +20,7 @@ export interface QueueItem {
   index: number;
 }
 
+// AudioState - keeping existing structure for compatibility
 export interface AudioState {
   // Current playback
   currentTrack: AudioTrack | null;
