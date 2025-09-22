@@ -2,6 +2,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useAppSelector, useAppDispatch, userPreferencesActions } from '@/lib/redux';
 
 type Messages = Record<string, any>;
 
@@ -47,7 +48,7 @@ export const I18nProvider: React.FC<{
   const setLocale = (l: string) => {
     setLocaleState(l);
     try {
-      dispatch(setLanguage(l as any));
+      dispatch(userPreferencesActions.setLanguage(l as any));
     } catch (e) {
       // ignore dispatch errors in non-redux contexts
     }

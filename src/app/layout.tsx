@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { ReduxProvider } from '@/lib/redux';
 //import { I18nProvider } from '../i18n/i18nProvider';
 import './globals.css';
 
@@ -19,15 +20,17 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // Keep layout server-rendered; I18nProvider is a client component so we mount it inside the body
+  // Keep layout server-rendered; Redux and I18n providers are client components so we mount them inside the body
   return (
     <html lang="it">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <link rel="manifest" href="/manifest.json" />
-        {/* <I18nProvider defaultLocale="it">
-
-          </I18nProvider> */}{' '}
-        {children}
+        <ReduxProvider>
+          {/* <I18nProvider defaultLocale="it">
+            {children}
+          </I18nProvider> */}
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   );

@@ -17,9 +17,8 @@
 ### 1.2 Supabase Integration & API Layer
 
 - [ ] Setup Supabase client with environment variables
-- [ ] Configure Row Level Security (RLS) policies for user data access
 - [ ] Implement RTK Query API endpoints:
-  - **Itineraries API**: CRUD operations for audio_itinerary table
+  - **Itineraries API**: R operations for audio_itinerary table
   - **Audio Tracks API**: Fetch tracks by itinerary_id, handle audio_track table
   - **POI API**: Get track locations from audio_track_poi table
   - **User Profile API**: Manage user_profile data
@@ -78,24 +77,45 @@
 
 ### 2.1 Next.js App Router Structure
 
-- [ ] `/` - Landing/home page
-- [ ] `/search` - Search itineraries page
-- [ ] `/itinerary/[id]` - Itinerary detail page
-- [ ] `/itinerary/[id]/play` - Audio player page
-- [ ] `/map` - Full-screen map view
-- [ ] `/map/[itineraryId]` - Map view for specific itinerary
-- [ ] `/favorites` - User favorites page
-- [ ] `/profile` - User profile and settings
-- [ ] `/auth/login` - Authentication page
-- [ ] `/auth/register` - Registration page
+/app
+├── layout.tsx (root layout with Redux provider, auth wrapper)
+├── page.tsx (home page)
+├── (auth)
+│ ├── layout.tsx (auth-specific layout)
+│ ├── login
+│ │ └── page.tsx
+│ └── register
+│ └── page.tsx
+├── (main)
+│ ├── layout.tsx (main app layout with navigation)
+│ ├── search
+│ │ └── page.tsx
+│ ├── itinerary
+│ │ └── [id]
+│ │ ├── page.tsx (detail page)
+│ │ └── play
+│ │ └── page.tsx (audio player)
+│ ├── map
+│ │ ├── page.tsx (full-screen map)
+│ │ └── [itineraryId]
+│ │ └── page.tsx (itinerary-specific map)
+│ ├── favorites
+│ │ └── page.tsx
+│ └── profile
+│ └── page.tsx
+└── api
+├── signed-url
+│ └── route.ts
+└── signed-urls
+└── route.ts
 
 ### 2.2 Layout Components Architecture
 
-- [ ] **RootLayout**: Redux provider, global styles, authentication wrapper
-- [ ] **MainLayout**: Navigation header, bottom navigation, footer
-- [ ] **AuthLayout**: Clean layout for login/register pages
-- [ ] **PlayerLayout**: Layout with persistent mini-player at bottom
-- [ ] **MapLayout**: Fullscreen layout for map interactions
+RootLayout: Redux provider, global styles, authentication wrapper
+MainLayout: Navigation header, bottom navigation, footer
+AuthLayout: Clean layout for login/register pages
+PlayerLayout: Layout with persistent mini-player at bottom
+MapLayout: Fullscreen layout for map interactions
 
 ### 2.3 Navigation System Implementation
 
