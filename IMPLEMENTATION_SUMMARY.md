@@ -15,6 +15,7 @@ Component → Custom Hook → Redux Cache → RTK Query → Supabase Storage
 ## ✅ Completed Features
 
 ### 1. Supabase Client Configuration
+
 - **Location**: `src/lib/redux/api/apiSlice.ts`
 - **Environment**: `.env.example` with proper configuration
 - **Auto-refresh tokens**: Enabled
@@ -22,6 +23,7 @@ Component → Custom Hook → Redux Cache → RTK Query → Supabase Storage
 - **URL detection**: Disabled (for mobile PWA)
 
 ### 2. RTK Query API Endpoints
+
 - **Authentication**: Sign up, sign in, sign out
 - **User Profile**: Get and update user profiles
 - **Audio Itineraries**: List, single, nearby search
@@ -33,6 +35,7 @@ Component → Custom Hook → Redux Cache → RTK Query → Supabase Storage
 ### 3. Redux Slices for Signed URL Caching
 
 #### AudioTrack Slice (`src/lib/redux/slices/audioTrackSlice.ts`)
+
 ```typescript
 // Cache structure
 {
@@ -50,6 +53,7 @@ Component → Custom Hook → Redux Cache → RTK Query → Supabase Storage
 ```
 
 #### Storage Slice (`src/lib/redux/slices/storageSlice.ts`)
+
 ```typescript
 // Cache structure
 {
@@ -59,22 +63,24 @@ Component → Custom Hook → Redux Cache → RTK Query → Supabase Storage
 }
 
 // Key actions
-- setSignedUrl(path, bucket, url, expiresIn)
-- removeSignedUrl(path, bucket)
-- clearExpiredUrls()
-- clearBucketUrls(bucket)
+-setSignedUrl(path, bucket, url, expiresIn) -
+  removeSignedUrl(path, bucket) -
+  clearExpiredUrls() -
+  clearBucketUrls(bucket);
 ```
 
 ### 4. Persistence Middleware
+
 - **File**: `src/lib/redux/middleware/signedUrlPersistenceMiddleware.ts`
 - **Debounced writes**: 250ms delay to batch updates
-- **localStorage keys**: 
+- **localStorage keys**:
   - `'app:signedUrls:storage'` for all storage URLs
   - `'app:signedUrls:audio'` for audio-only URLs (legacy compatibility)
 - **Automatic cleanup**: Filters expired entries before saving
 - **Logout handling**: Clears all cached URLs on user logout
 
 ### 5. Cache Hydration System
+
 - **Function**: `hydrateSignedUrlCaches(store)`
 - **SSR-safe**: Skips hydration during server-side rendering
 - **Error handling**: Gracefully handles corrupted localStorage data
@@ -84,6 +90,7 @@ Component → Custom Hook → Redux Cache → RTK Query → Supabase Storage
 ### 6. Custom Hooks for Signed URLs
 
 #### Core Hooks
+
 ```typescript
 // Single audio file URL
 const { signedUrl, isLoading, error, refreshUrl } = useSignedAudioUrl(path, expiresIn?);
@@ -99,6 +106,7 @@ const { signedUrls, isLoading, error, refreshUrls } = useSignedUrls(paths, bucke
 ```
 
 #### Advanced Hooks
+
 ```typescript
 // Preloading for performance
 const { isPreloading, preloadError, preloadedCount } = usePreloadSignedUrls(paths, bucket);
@@ -108,11 +116,12 @@ const { stats, cleanupExpired } = useSignedUrlCacheHealth();
 ```
 
 ### 7. Authentication Hooks
+
 ```typescript
 // Main auth hook
-const { 
-  user, session, isAuthenticated, isLoading, error, 
-  signOut, refreshSession, clearError 
+const {
+  user, session, isAuthenticated, isLoading, error,
+  signOut, refreshSession, clearError
 } = useAuth();
 
 // User profile management
@@ -125,6 +134,7 @@ const { role, hasRole, isUser, isAdmin, isCompanyUser } = useUserRole(requiredRo
 ### 8. Error Handling & Loading States
 
 #### Error Handling (`src/lib/utils/errorHandling.ts`)
+
 ```typescript
 // Parse any error type into consistent format
 const apiError = parseApiError(error);
@@ -141,6 +151,7 @@ const validationErrors = getValidationErrors(error);
 ```
 
 #### Loading States (`src/lib/utils/loadingStates.ts`)
+
 ```typescript
 // Multiple loading states
 const { startLoading, stopLoading, isAnyLoading } = useLoadingManager();
@@ -158,6 +169,7 @@ const { setItemLoading, isAnyItemLoading } = useBatchLoading();
 ## 🚀 Usage Examples
 
 ### Basic Audio URL
+
 ```tsx
 import { useSignedAudioUrl } from '@/lib/hooks';
 
@@ -165,7 +177,12 @@ const AudioPlayer = ({ trackPath }: { trackPath: string }) => {
   const { signedUrl, isLoading, error, refreshUrl } = useSignedAudioUrl(trackPath);
 
   if (isLoading) return <div>Loading audio...</div>;
-  if (error) return <div>Error: {error} <button onClick={refreshUrl}>Retry</button></div>;
+  if (error)
+    return (
+      <div>
+        Error: {error} <button onClick={refreshUrl}>Retry</button>
+      </div>
+    );
   if (!signedUrl) return <div>Audio not available</div>;
 
   return <audio src={signedUrl} controls />;
@@ -173,6 +190,7 @@ const AudioPlayer = ({ trackPath }: { trackPath: string }) => {
 ```
 
 ### Batch Image Loading
+
 ```tsx
 import { useSignedUrls } from '@/lib/hooks';
 
@@ -196,6 +214,7 @@ const ImageGallery = ({ imagePaths }: { imagePaths: string[] }) => {
 ```
 
 ### Authentication with Profile
+
 ```tsx
 import { useAuth, useUserProfile } from '@/lib/hooks';
 
@@ -219,6 +238,7 @@ const UserDashboard = () => {
 ## 🔧 Configuration
 
 ### Environment Variables
+
 ```bash
 # Required
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
@@ -229,6 +249,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ```
 
 ### Cache Configuration
+
 - **Default expiration**: 3600 seconds (1 hour)
 - **Near-expiry threshold**: 5 minutes
 - **Cleanup interval**: 5 minutes
@@ -237,12 +258,14 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ## 🛡️ Security & Performance
 
 ### Security Features
+
 - Row Level Security (RLS) policies in Supabase
 - Secure signed URL generation with expiration
 - Automatic token refresh
 - Session persistence with security
 
 ### Performance Optimizations
+
 - Intelligent cache invalidation
 - Debounced localStorage writes
 - Batch URL fetching
@@ -252,6 +275,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ## 🔍 Monitoring & Debugging
 
 ### Cache Health Monitoring
+
 ```tsx
 import { useSignedUrlCacheHealth } from '@/lib/hooks';
 
@@ -260,8 +284,12 @@ const CacheHealthMonitor = () => {
 
   return (
     <div>
-      <p>Audio URLs: {stats.audio.valid}/{stats.audio.total}</p>
-      <p>Storage URLs: {stats.storage.valid}/{stats.storage.total}</p>
+      <p>
+        Audio URLs: {stats.audio.valid}/{stats.audio.total}
+      </p>
+      <p>
+        Storage URLs: {stats.storage.valid}/{stats.storage.total}
+      </p>
       <button onClick={cleanupExpired}>Cleanup Expired</button>
     </div>
   );
@@ -269,6 +297,7 @@ const CacheHealthMonitor = () => {
 ```
 
 ### Error Logging
+
 ```typescript
 import { logError, parseApiError } from '@/lib/utils';
 

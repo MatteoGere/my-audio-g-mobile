@@ -17,21 +17,26 @@ export const useAuth = () => {
     const getSession = async () => {
       try {
         setIsLoading(true);
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+
         if (error) {
           console.error('Error getting session:', error);
           setError(error.message);
         } else {
           if (session) {
             dispatch(updateSession(session));
-            dispatch(loginSuccess({ 
-              user: { 
-                id: session.user.id, 
-                email: session.user.email || '',
-              }, 
-              session 
-            }));
+            dispatch(
+              loginSuccess({
+                user: {
+                  id: session.user.id,
+                  email: session.user.email || '',
+                },
+                session,
+              }),
+            );
           }
         }
       } catch (err) {
@@ -49,18 +54,20 @@ export const useAuth = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state change:', event, session?.user?.id);
-      
+
       switch (event) {
         case 'SIGNED_IN':
           if (session) {
             dispatch(updateSession(session));
-            dispatch(loginSuccess({ 
-              user: { 
-                id: session.user.id, 
-                email: session.user.email || '',
-              }, 
-              session 
-            }));
+            dispatch(
+              loginSuccess({
+                user: {
+                  id: session.user.id,
+                  email: session.user.email || '',
+                },
+                session,
+              }),
+            );
             setError(null);
           }
           break;
@@ -71,30 +78,34 @@ export const useAuth = () => {
         case 'TOKEN_REFRESHED':
           if (session) {
             dispatch(updateSession(session));
-            dispatch(loginSuccess({ 
-              user: { 
-                id: session.user.id, 
-                email: session.user.email || '',
-              }, 
-              session 
-            }));
+            dispatch(
+              loginSuccess({
+                user: {
+                  id: session.user.id,
+                  email: session.user.email || '',
+                },
+                session,
+              }),
+            );
           }
           break;
         case 'USER_UPDATED':
           if (session) {
-            dispatch(loginSuccess({ 
-              user: { 
-                id: session.user.id, 
-                email: session.user.email || '',
-              }, 
-              session 
-            }));
+            dispatch(
+              loginSuccess({
+                user: {
+                  id: session.user.id,
+                  email: session.user.email || '',
+                },
+                session,
+              }),
+            );
           }
           break;
         default:
           break;
       }
-      
+
       setIsLoading(false);
     });
 

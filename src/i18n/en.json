@@ -1,12 +1,12 @@
 {
-	"reduxTest": {
-		"title": "Redux Configuration Test",
-		"currentLanguage": "Current Language",
-		"setEnglish": "Set English",
-		"setItalian": "Set Italian",
-		"currentTheme": "Current Theme",
-		"darkTheme": "Dark Theme",
-		"lightTheme": "Light Theme",
-		"themeClass": "Current Theme Class"
-	}
+  "reduxTest": {
+    "title": "Redux Configuration Test",
+    "currentLanguage": "Current Language",
+    "setEnglish": "Set English",
+    "setItalian": "Set Italian",
+    "currentTheme": "Current Theme",
+    "darkTheme": "Dark Theme",
+    "lightTheme": "Light Theme",
+    "themeClass": "Current Theme Class"
+  }
 }

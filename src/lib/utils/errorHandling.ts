@@ -28,7 +28,7 @@ export const parseApiError = (error: unknown): ApiError => {
         details: error,
       };
     }
-    
+
     if (error.status === 'PARSING_ERROR') {
       return {
         status: 'PARSING_ERROR',
@@ -116,7 +116,7 @@ export const parseApiError = (error: unknown): ApiError => {
   // Supabase or custom errors
   if (typeof error === 'object' && error !== null) {
     const errorObj = error as any;
-    
+
     // Supabase error format
     if (errorObj.message) {
       return {
@@ -162,22 +162,22 @@ export const getErrorMessage = (error: unknown): string => {
 // Check if error is retryable
 export const isRetryableError = (error: unknown): boolean => {
   const parsedError = parseApiError(error);
-  
+
   // Network errors are retryable
   if (parsedError.status === 'FETCH_ERROR') {
     return true;
   }
-  
+
   // Server errors are retryable
   if (typeof parsedError.status === 'number') {
     // Rate limiting is retryable after some time
     if (parsedError.status === 429) {
       return true;
     }
-    
+
     return parsedError.status >= 500 && parsedError.status < 600;
   }
-  
+
   return false;
 };
 
@@ -186,7 +186,7 @@ export const getRetryDelay = (attemptNumber: number): number => {
   const baseDelay = 1000; // 1 second
   const maxDelay = 30000; // 30 seconds
   const delay = Math.min(baseDelay * Math.pow(2, attemptNumber - 1), maxDelay);
-  
+
   // Add some jitter to avoid thundering herd
   const jitter = Math.random() * 0.1 * delay;
   return delay + jitter;
@@ -202,12 +202,12 @@ export const logError = (error: unknown, context?: string) => {
     details: parsedError.details,
     timestamp: new Date().toISOString(),
   };
-  
+
   // Log to console in development
   if (process.env.NODE_ENV === 'development') {
     console.error('API Error:', logData);
   }
-  
+
   // In production, you might want to send this to a logging service
   // sendToLoggingService(logData);
 };
@@ -215,35 +215,35 @@ export const logError = (error: unknown, context?: string) => {
 // Validation error helpers
 export const getValidationErrors = (error: unknown): Record<string, string[]> | null => {
   const parsedError = parseApiError(error);
-  
+
   if (parsedError.status === 422 && parsedError.details) {
     // Common validation error formats
     if (parsedError.details.errors) {
       return parsedError.details.errors;
     }
-    
+
     if (parsedError.details.fieldErrors) {
       return parsedError.details.fieldErrors;
     }
-    
+
     if (parsedError.details.validationErrors) {
       return parsedError.details.validationErrors;
     }
   }
-  
+
   return null;
 };
 
 // Format validation errors for display
 export const formatValidationErrors = (errors: Record<string, string[]>): string => {
   const messages: string[] = [];
-  
+
   Object.entries(errors).forEach(([field, fieldErrors]) => {
     fieldErrors.forEach((error) => {
       messages.push(`${field}: ${error}`);
     });
   });
-  
+
   return messages.join(', ');
 };
 

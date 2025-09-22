@@ -1,9 +1,5 @@
 // Authentication hooks
-export {
-  useAuth,
-  useUserProfile,
-  useUserRole,
-} from './useAuth';
+export { useAuth, useUserProfile, useUserRole } from './useAuth';
 
 // Signed URL hooks
 export {

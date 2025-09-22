@@ -1,9 +1,9 @@
 import { useEffect, useCallback, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { 
-  useGetSignedAudioUrlQuery, 
-  useGetSignedImageUrlQuery, 
-  useGetBatchSignedUrlsQuery 
+import {
+  useGetSignedAudioUrlQuery,
+  useGetSignedImageUrlQuery,
+  useGetBatchSignedUrlsQuery,
 } from '../redux/api/apiSlice';
 import {
   setSignedAudioUrl,
@@ -38,27 +38,24 @@ export const useSignedAudioUrl = (path: string, expiresIn: number = 3600) => {
   // Skip RTK Query if we have a valid, non-near-expiry URL
   const shouldSkip = Boolean(cachedUrl && !isExpired && !isNearExpiry);
 
-  const {
-    data,
-    isLoading,
-    error,
-    refetch,
-  } = useGetSignedAudioUrlQuery(
+  const { data, isLoading, error, refetch } = useGetSignedAudioUrlQuery(
     { path, expiresIn },
-    { 
+    {
       skip: shouldSkip,
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
 
   // Cache the URL when fetched
   useEffect(() => {
     if (data && !error) {
-      dispatch(setSignedAudioUrl({
-        path,
-        url: data.url,
-        expiresIn: data.expiresIn,
-      }));
+      dispatch(
+        setSignedAudioUrl({
+          path,
+          url: data.url,
+          expiresIn: data.expiresIn,
+        }),
+      );
     }
   }, [data, error, dispatch, path]);
 
@@ -71,9 +68,12 @@ export const useSignedAudioUrl = (path: string, expiresIn: number = 3600) => {
 
   // Cleanup expired URLs every 5 minutes
   useEffect(() => {
-    const interval = setInterval(() => {
-      dispatch(clearExpiredAudioUrls());
-    }, 5 * 60 * 1000);
+    const interval = setInterval(
+      () => {
+        dispatch(clearExpiredAudioUrls());
+      },
+      5 * 60 * 1000,
+    );
 
     return () => clearInterval(interval);
   }, [dispatch]);
@@ -95,7 +95,7 @@ export const useSignedAudioUrl = (path: string, expiresIn: number = 3600) => {
 // Batch audio URLs hook
 export const useSignedAudioUrls = (paths: string[], expiresIn: number = 3600) => {
   const dispatch = useAppDispatch();
-  
+
   // Check which URLs need fetching
   const urlsToFetch = useAppSelector((state) => {
     return paths.filter((path) => {
@@ -109,29 +109,24 @@ export const useSignedAudioUrls = (paths: string[], expiresIn: number = 3600) =>
   // Only fetch if we have paths that need fetching
   const shouldSkip = urlsToFetch.length === 0;
 
-  const {
-    data,
-    isLoading,
-    error,
-    refetch,
-  } = useGetBatchSignedUrlsQuery(
-    { 
-      paths: urlsToFetch, 
-      bucket: 'audio-files', 
-      expiresIn 
+  const { data, isLoading, error, refetch } = useGetBatchSignedUrlsQuery(
+    {
+      paths: urlsToFetch,
+      bucket: 'audio-files',
+      expiresIn,
     },
-    { 
+    {
       skip: shouldSkip,
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
 
   // Cache the URLs when fetched
   useEffect(() => {
     if (data && !error) {
       const validUrls = data
-        .filter(item => item.url && !item.error)
-        .map(item => ({
+        .filter((item) => item.url && !item.error)
+        .map((item) => ({
           path: item.path,
           url: item.url,
           expiresIn,
@@ -173,9 +168,9 @@ export const useSignedAudioUrls = (paths: string[], expiresIn: number = 3600) =>
 
 // Generic signed URL hook (for both audio and images)
 export const useSignedUrl = (
-  path: string, 
-  bucket: 'audio-files' | 'image-files', 
-  expiresIn: number = 3600
+  path: string,
+  bucket: 'audio-files' | 'image-files',
+  expiresIn: number = 3600,
 ) => {
   const dispatch = useAppDispatch();
   const cachedUrl = useAppSelector((state) => selectSignedUrl(state, path, bucket));
@@ -192,10 +187,10 @@ export const useSignedUrl = (
     refetch: audioRefetch,
   } = useGetSignedAudioUrlQuery(
     { path, expiresIn },
-    { 
+    {
       skip: shouldSkip || bucket !== 'audio-files',
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
 
   const {
@@ -205,10 +200,10 @@ export const useSignedUrl = (
     refetch: imageRefetch,
   } = useGetSignedImageUrlQuery(
     { path, expiresIn },
-    { 
+    {
       skip: shouldSkip || bucket !== 'image-files',
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
 
   const data = bucket === 'audio-files' ? audioData : imageData;
@@ -219,12 +214,14 @@ export const useSignedUrl = (
   // Cache the URL when fetched
   useEffect(() => {
     if (data && !error) {
-      dispatch(setSignedUrl({
-        path,
-        bucket,
-        url: data.url,
-        expiresIn: data.expiresIn,
-      }));
+      dispatch(
+        setSignedUrl({
+          path,
+          bucket,
+          url: data.url,
+          expiresIn: data.expiresIn,
+        }),
+      );
     }
   }, [data, error, dispatch, path, bucket]);
 
@@ -237,9 +234,12 @@ export const useSignedUrl = (
 
   // Cleanup expired URLs every 5 minutes
   useEffect(() => {
-    const interval = setInterval(() => {
-      dispatch(clearExpiredUrls());
-    }, 5 * 60 * 1000);
+    const interval = setInterval(
+      () => {
+        dispatch(clearExpiredUrls());
+      },
+      5 * 60 * 1000,
+    );
 
     return () => clearInterval(interval);
   }, [dispatch]);
@@ -260,12 +260,12 @@ export const useSignedUrl = (
 
 // Batch generic URLs hook
 export const useSignedUrls = (
-  paths: string[], 
-  bucket: 'audio-files' | 'image-files', 
-  expiresIn: number = 3600
+  paths: string[],
+  bucket: 'audio-files' | 'image-files',
+  expiresIn: number = 3600,
 ) => {
   const dispatch = useAppDispatch();
-  
+
   // Check which URLs need fetching
   const urlsToFetch = useAppSelector((state) => {
     return paths.filter((path) => {
@@ -278,29 +278,24 @@ export const useSignedUrls = (
 
   const shouldSkip = urlsToFetch.length === 0;
 
-  const {
-    data,
-    isLoading,
-    error,
-    refetch,
-  } = useGetBatchSignedUrlsQuery(
-    { 
-      paths: urlsToFetch, 
-      bucket, 
-      expiresIn 
+  const { data, isLoading, error, refetch } = useGetBatchSignedUrlsQuery(
+    {
+      paths: urlsToFetch,
+      bucket,
+      expiresIn,
     },
-    { 
+    {
       skip: shouldSkip,
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
 
   // Cache the URLs when fetched
   useEffect(() => {
     if (data && !error) {
       const validUrls = data
-        .filter(item => item.url && !item.error)
-        .map(item => ({
+        .filter((item) => item.url && !item.error)
+        .map((item) => ({
           path: item.path,
           bucket,
           url: item.url,
@@ -343,9 +338,9 @@ export const useSignedUrls = (
 
 // Helper hook for preloading signed URLs (useful for performance)
 export const usePreloadSignedUrls = (
-  paths: string[], 
-  bucket: 'audio-files' | 'image-files', 
-  expiresIn: number = 3600
+  paths: string[],
+  bucket: 'audio-files' | 'image-files',
+  expiresIn: number = 3600,
 ) => {
   const { signedUrls, isLoading, error } = useSignedUrls(paths, bucket, expiresIn);
 

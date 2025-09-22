@@ -114,8 +114,8 @@ export const favoritesSlice = createSlice({
     },
     removeFavoriteTrack: (state, action: PayloadAction<string>) => {
       const trackId = action.payload;
-  state.favoriteTracks = state.favoriteTracks.filter((f) => f.favourite_id !== trackId);
-  state.favoriteTrackIds = state.favoriteTrackIds.filter((id) => id !== trackId);
+      state.favoriteTracks = state.favoriteTracks.filter((f) => f.favourite_id !== trackId);
+      state.favoriteTrackIds = state.favoriteTrackIds.filter((id) => id !== trackId);
       state.isRemovingFavorite = false;
       state.error = null;
     },
@@ -138,8 +138,10 @@ export const favoritesSlice = createSlice({
       const trackIndex = state.favoriteTracks.findIndex((f) => f.id === favoriteId);
       if (trackIndex !== -1) {
         const removedFavorite = state.favoriteTracks[trackIndex];
-  state.favoriteTracks.splice(trackIndex, 1);
-  state.favoriteTrackIds = state.favoriteTrackIds.filter((id) => id !== removedFavorite.favourite_id);
+        state.favoriteTracks.splice(trackIndex, 1);
+        state.favoriteTrackIds = state.favoriteTrackIds.filter(
+          (id) => id !== removedFavorite.favourite_id,
+        );
       }
 
       state.isRemovingFavorite = false;
@@ -217,8 +219,8 @@ export const favoritesSlice = createSlice({
     clearFavorites: (state) => {
       state.favoriteItineraries = [];
       state.favoriteTracks = [];
-  state.favoriteItineraryIds = [];
-  state.favoriteTrackIds = [];
+      state.favoriteItineraryIds = [];
+      state.favoriteTrackIds = [];
       state.error = null;
       state.isLoading = false;
       state.isAddingFavorite = false;
@@ -267,10 +269,8 @@ export const selectIsItineraryFavorite = (
   state: { favorites: FavoritesState },
   itineraryId: string,
 ) => state.favorites.favoriteItineraryIds.includes(itineraryId);
-export const selectIsTrackFavorite = (
-  state: { favorites: FavoritesState },
-  trackId: string,
-) => state.favorites.favoriteTrackIds.includes(trackId);
+export const selectIsTrackFavorite = (state: { favorites: FavoritesState }, trackId: string) =>
+  state.favorites.favoriteTrackIds.includes(trackId);
 export const selectFavoritesLoading = (state: { favorites: FavoritesState }) =>
   state.favorites.isLoading;
 export const selectFavoritesError = (state: { favorites: FavoritesState }) => state.favorites.error;

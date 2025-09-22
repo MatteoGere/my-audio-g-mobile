@@ -1,12 +1,12 @@
 {
-	"reduxTest": {
-		"title": "Test Configurazione Redux",
-		"currentLanguage": "Lingua Corrente",
-		"setEnglish": "Imposta Inglese",
-		"setItalian": "Imposta Italiano",
-		"currentTheme": "Tema Corrente",
-		"darkTheme": "Tema Scuro",
-		"lightTheme": "Tema Chiaro",
-		"themeClass": "Classe Tema Corrente"
-	}
+  "reduxTest": {
+    "title": "Test Configurazione Redux",
+    "currentLanguage": "Lingua Corrente",
+    "setEnglish": "Imposta Inglese",
+    "setItalian": "Imposta Italiano",
+    "currentTheme": "Tema Corrente",
+    "darkTheme": "Tema Scuro",
+    "lightTheme": "Tema Chiaro",
+    "themeClass": "Classe Tema Corrente"
+  }
 }

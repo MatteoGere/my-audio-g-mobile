@@ -28,23 +28,39 @@ export default function ReduxTest() {
         </CardHeader>
         <CardBody className="space-y-6">
           <div>
-            <p className="mb-2">{t('reduxTest.currentLanguage')}: <span className="font-mono">{language}</span></p>
+            <p className="mb-2">
+              {t('reduxTest.currentLanguage')}: <span className="font-mono">{language}</span>
+            </p>
             <div className="flex gap-2">
-              <Button variant="primary" onClick={() => dispatch(userPreferencesActions.setLanguage('en'))}>
+              <Button
+                variant="primary"
+                onClick={() => dispatch(userPreferencesActions.setLanguage('en'))}
+              >
                 {t('reduxTest.setEnglish')}
               </Button>
-              <Button variant="secondary" onClick={() => dispatch(userPreferencesActions.setLanguage('it'))}>
+              <Button
+                variant="secondary"
+                onClick={() => dispatch(userPreferencesActions.setLanguage('it'))}
+              >
                 {t('reduxTest.setItalian')}
               </Button>
             </div>
           </div>
           <div>
-            <p className="mb-2">{t('reduxTest.currentTheme')}: <span className="font-mono">{theme}</span></p>
+            <p className="mb-2">
+              {t('reduxTest.currentTheme')}: <span className="font-mono">{theme}</span>
+            </p>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => dispatch(userPreferencesActions.setTheme('dark'))}>
+              <Button
+                variant="outline"
+                onClick={() => dispatch(userPreferencesActions.setTheme('dark'))}
+              >
                 {t('reduxTest.darkTheme')}
               </Button>
-              <Button variant="accent" onClick={() => dispatch(userPreferencesActions.setTheme('light'))}>
+              <Button
+                variant="accent"
+                onClick={() => dispatch(userPreferencesActions.setTheme('light'))}
+              >
                 {t('reduxTest.lightTheme')}
               </Button>
             </div>
