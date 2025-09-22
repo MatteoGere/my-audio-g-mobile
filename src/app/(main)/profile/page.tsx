@@ -57,18 +57,14 @@ export default function ProfilePage() {
             <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
               {user?.email}
             </h2>
-            <p className="text-sm text-stone-600 dark:text-stone-400">
-              Audio Guide Explorer
-            </p>
+            <p className="text-sm text-stone-600 dark:text-stone-400">Audio Guide Explorer</p>
           </div>
         </div>
       </Card>
 
       {/* Settings */}
       <div>
-        <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
-          Settings
-        </h3>
+        <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">Settings</h3>
         <div className="space-y-4">
           <Card className="p-4">
             <div className="flex items-center justify-between">
@@ -104,9 +100,7 @@ export default function ProfilePage() {
                 <h4 className="font-medium text-stone-900 dark:text-stone-100">
                   Download over WiFi only
                 </h4>
-                <p className="text-sm text-stone-600 dark:text-stone-400">
-                  Save mobile data usage
-                </p>
+                <p className="text-sm text-stone-600 dark:text-stone-400">Save mobile data usage</p>
               </div>
               <Switch />
             </div>
@@ -147,7 +141,11 @@ export default function ProfilePage() {
         <Button variant="outline" className="w-full">
           Download History
         </Button>
-        <Button variant="ghost" className="w-full text-error-600 hover:text-error-700" onClick={handleSignOut}>
+        <Button
+          variant="ghost"
+          className="w-full text-error-600 hover:text-error-700"
+          onClick={handleSignOut}
+        >
           Sign Out
         </Button>
       </div>

@@ -5,11 +5,7 @@ export default function SearchPage() {
     <div className="space-y-6">
       {/* Search Input */}
       <div className="sticky top-0 bg-sand-50 dark:bg-stone-900 z-10 pb-4">
-        <Input
-          type="search"
-          placeholder="Search audio tours..."
-          className="w-full"
-        />
+        <Input type="search" placeholder="Search audio tours..." className="w-full" />
       </div>
 
       {/* Filter Chips */}
@@ -34,9 +30,7 @@ export default function SearchPage() {
           <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
             Search Results
           </h2>
-          <span className="text-sm text-stone-600 dark:text-stone-400">
-            24 tours found
-          </span>
+          <span className="text-sm text-stone-600 dark:text-stone-400">24 tours found</span>
         </div>
 
         {/* Results List */}
@@ -54,7 +48,8 @@ export default function SearchPage() {
                     Historic Downtown Walking Tour
                   </h3>
                   <p className="text-sm text-stone-600 dark:text-stone-400 mb-2 line-clamp-2">
-                    Explore the rich history of our downtown area with expert narration and fascinating stories.
+                    Explore the rich history of our downtown area with expert narration and
+                    fascinating stories.
                   </p>
                   <div className="flex items-center text-xs text-stone-500 dark:text-stone-400 space-x-4">
                     <span>45 minutes</span>
@@ -73,9 +68,7 @@ export default function SearchPage() {
 
       {/* Load More */}
       <div className="text-center pt-4">
-        <Button variant="outline">
-          Load More Results
-        </Button>
+        <Button variant="outline">Load More Results</Button>
       </div>
     </div>
   );

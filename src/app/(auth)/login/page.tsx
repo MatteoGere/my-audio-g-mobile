@@ -9,7 +9,7 @@ import { useSignInMutation } from '@/lib/redux/api/apiSlice';
 export default function LoginPage() {
   const router = useRouter();
   const [signIn, { isLoading, error }] = useSignInMutation();
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -18,7 +18,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalError(null);
-    
+
     try {
       await signIn({ email, password }).unwrap();
       router.push('/'); // Redirect to home after successful login
@@ -33,9 +33,7 @@ export default function LoginPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-          Welcome Back
-        </h2>
+        <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Welcome Back</h2>
         <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
           Sign in to continue your audio journey
         </p>
@@ -74,19 +72,11 @@ export default function LoginPage() {
 
         {displayError && (
           <div className="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800">
-            <p className="text-sm text-error-700 dark:text-error-300">
-              {displayError}
-            </p>
+            <p className="text-sm text-error-700 dark:text-error-300">{displayError}</p>
           </div>
         )}
 
-        <Button
-          type="submit"
-          variant="primary"
-          size="lg"
-          className="w-full"
-          loading={isLoading}
-        >
+        <Button type="submit" variant="primary" size="lg" className="w-full" loading={isLoading}>
           Sign In
         </Button>
       </form>
@@ -113,12 +103,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <Button
-        variant="outline"
-        size="lg"
-        className="w-full"
-        onClick={() => router.push('/')}
-      >
+      <Button variant="outline" size="lg" className="w-full" onClick={() => router.push('/')}>
         Continue as Guest
       </Button>
 

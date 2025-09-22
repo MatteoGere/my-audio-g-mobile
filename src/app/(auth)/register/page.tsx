@@ -9,7 +9,7 @@ import { useSignUpMutation } from '@/lib/redux/api/apiSlice';
 export default function RegisterPage() {
   const router = useRouter();
   const [signUp, { isLoading, error }] = useSignUpMutation();
-  
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -22,29 +22,29 @@ export default function RegisterPage() {
   const [localError, setLocalError] = useState<string | null>(null);
 
   const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, [field]: e.target.value }));
+    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalError(null);
-    
+
     // Validation
     if (formData.password !== formData.confirmPassword) {
       setLocalError('Passwords do not match');
       return;
     }
-    
+
     if (formData.password.length < 6) {
       setLocalError('Password must be at least 6 characters long');
       return;
     }
-    
+
     if (!acceptTerms) {
       setLocalError('Please accept the Terms and Conditions');
       return;
     }
-    
+
     try {
       await signUp({
         email: formData.email,
@@ -52,7 +52,7 @@ export default function RegisterPage() {
         name: formData.name,
         surname: formData.surname,
       }).unwrap();
-      
+
       // Success - redirect to verification page or login
       router.push('/login?message=Please check your email to verify your account');
     } catch (err: any) {
@@ -66,9 +66,7 @@ export default function RegisterPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-          Create Account
-        </h2>
+        <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Create Account</h2>
         <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
           Join MyAudioG and discover amazing audio experiences
         </p>
@@ -86,7 +84,7 @@ export default function RegisterPage() {
             required
             autoComplete="given-name"
           />
-          
+
           <Input
             type="text"
             label="Last Name"
@@ -118,9 +116,7 @@ export default function RegisterPage() {
             required
             autoComplete="new-password"
           />
-          <p className="text-xs text-stone-500 dark:text-stone-400">
-            Minimum 6 characters
-          </p>
+          <p className="text-xs text-stone-500 dark:text-stone-400">Minimum 6 characters</p>
         </div>
 
         <div className="space-y-1">
@@ -148,13 +144,22 @@ export default function RegisterPage() {
             onChange={(e) => setAcceptTerms(e.target.checked)}
             id="accept-terms"
           />
-          <label htmlFor="accept-terms" className="text-sm text-stone-600 dark:text-stone-400 leading-5">
+          <label
+            htmlFor="accept-terms"
+            className="text-sm text-stone-600 dark:text-stone-400 leading-5"
+          >
             I agree to the{' '}
-            <Link href="/terms" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+            <Link
+              href="/terms"
+              className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+            >
               Terms and Conditions
-            </Link>
-            {' '}and{' '}
-            <Link href="/privacy" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+            </Link>{' '}
+            and{' '}
+            <Link
+              href="/privacy"
+              className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+            >
               Privacy Policy
             </Link>
           </label>
@@ -162,19 +167,11 @@ export default function RegisterPage() {
 
         {displayError && (
           <div className="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800">
-            <p className="text-sm text-error-700 dark:text-error-300">
-              {displayError}
-            </p>
+            <p className="text-sm text-error-700 dark:text-error-300">{displayError}</p>
           </div>
         )}
 
-        <Button
-          type="submit"
-          variant="primary"
-          size="lg"
-          className="w-full"
-          loading={isLoading}
-        >
+        <Button type="submit" variant="primary" size="lg" className="w-full" loading={isLoading}>
           Create Account
         </Button>
       </form>

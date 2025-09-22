@@ -8,15 +8,15 @@ interface MainNavigationProps {
   customActions?: React.ReactNode;
 }
 
-export function MainNavigation({ 
-  title, 
-  showBackButton, 
+export function MainNavigation({
+  title,
+  showBackButton,
   showSearchButton,
-  customActions 
+  customActions,
 }: MainNavigationProps) {
   return (
     <>
-      <Header 
+      <Header
         title={title}
         showBackButton={showBackButton}
         showSearchButton={showSearchButton}

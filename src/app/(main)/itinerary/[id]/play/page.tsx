@@ -13,7 +13,8 @@ export default function AudioPlayerPage({ params }: AudioPlayerPageProps) {
   const currentTrack = {
     id: 'track-1',
     name: 'City Hall Introduction',
-    description: 'Learn about the founding of our city and the architectural significance of the City Hall building.',
+    description:
+      'Learn about the founding of our city and the architectural significance of the City Hall building.',
     duration: 420, // 7 minutes
     currentTime: 125, // 2:05
   };
@@ -48,9 +49,7 @@ export default function AudioPlayerPage({ params }: AudioPlayerPageProps) {
           <h1 className="text-xl font-bold text-stone-900 dark:text-stone-100">
             {currentTrack.name}
           </h1>
-          <p className="text-stone-600 dark:text-stone-400 text-sm">
-            {itinerary.name}
-          </p>
+          <p className="text-stone-600 dark:text-stone-400 text-sm">{itinerary.name}</p>
           <p className="text-stone-500 dark:text-stone-500 text-xs">
             Track {itinerary.currentTrackIndex + 1} of {itinerary.totalTracks}
           </p>
@@ -58,11 +57,7 @@ export default function AudioPlayerPage({ params }: AudioPlayerPageProps) {
 
         {/* Progress Bar */}
         <div className="space-y-2">
-          <Progress 
-            value={progress} 
-            className="h-2" 
-            variant="primary"
-          />
+          <Progress value={progress} className="h-2" variant="primary" />
           <div className="flex justify-between text-xs text-stone-500 dark:text-stone-400">
             <span>{formatTime(currentTrack.currentTime)}</span>
             <span>{formatTime(currentTrack.duration)}</span>
@@ -74,11 +69,11 @@ export default function AudioPlayerPage({ params }: AudioPlayerPageProps) {
           <Button variant="ghost" size="lg" className="p-3">
             <span className="text-2xl">⏮️</span>
           </Button>
-          
+
           <Button variant="primary" size="lg" className="w-16 h-16 rounded-full p-0">
             <span className="text-3xl">⏸️</span>
           </Button>
-          
+
           <Button variant="ghost" size="lg" className="p-3">
             <span className="text-2xl">⏭️</span>
           </Button>
@@ -89,18 +84,16 @@ export default function AudioPlayerPage({ params }: AudioPlayerPageProps) {
           <Button variant="ghost" size="sm">
             <span className="text-lg">🔀</span>
           </Button>
-          
+
           <div className="flex items-center space-x-4">
             <Button variant="ghost" size="sm">
               <span className="text-lg">⏪</span>
             </Button>
-            
+
             <div className="bg-stone-100 dark:bg-stone-800 rounded-lg px-3 py-1">
-              <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
-                1.0x
-              </span>
+              <span className="text-sm font-medium text-stone-700 dark:text-stone-300">1.0x</span>
             </div>
-            
+
             <Button variant="ghost" size="sm">
               <span className="text-lg">⏩</span>
             </Button>
@@ -123,9 +116,7 @@ export default function AudioPlayerPage({ params }: AudioPlayerPageProps) {
 
         {/* Queue/Playlist */}
         <Card className="p-4">
-          <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
-            Up Next
-          </h3>
+          <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">Up Next</h3>
           <div className="space-y-3">
             {[
               { name: 'Historic Main Street', duration: '10:00' },
@@ -137,9 +128,7 @@ export default function AudioPlayerPage({ params }: AudioPlayerPageProps) {
                   <p className="font-medium text-stone-900 dark:text-stone-100 text-sm">
                     {track.name}
                   </p>
-                  <p className="text-xs text-stone-500 dark:text-stone-400">
-                    {track.duration}
-                  </p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400">{track.duration}</p>
                 </div>
                 <Button variant="ghost" size="sm">
                   ▶

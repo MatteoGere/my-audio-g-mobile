@@ -2,9 +2,9 @@
 
 import { useAppSelector } from '@/lib/redux/store';
 import { Button } from '@/components/ui';
-import { 
-  HiOutlinePlay, 
-  HiOutlinePause, 
+import {
+  HiOutlinePlay,
+  HiOutlinePause,
   HiOutlineForward,
   HiOutlineBackward,
 } from 'react-icons/hi2';
@@ -32,21 +32,11 @@ export function MiniPlayer() {
 
         {/* Playback Controls */}
         <div className="flex items-center space-x-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="p-2"
-            disabled={isLoadingTrack}
-          >
+          <Button variant="ghost" size="sm" className="p-2" disabled={isLoadingTrack}>
             <HiOutlineBackward className="h-4 w-4" />
           </Button>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            className="p-2"
-            disabled={isLoadingTrack}
-          >
+          <Button variant="ghost" size="sm" className="p-2" disabled={isLoadingTrack}>
             {playbackState.isPlaying ? (
               <HiOutlinePause className="h-5 w-5" />
             ) : (
@@ -54,12 +44,7 @@ export function MiniPlayer() {
             )}
           </Button>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            className="p-2"
-            disabled={isLoadingTrack}
-          >
+          <Button variant="ghost" size="sm" className="p-2" disabled={isLoadingTrack}>
             <HiOutlineForward className="h-4 w-4" />
           </Button>
         </div>
@@ -67,7 +52,7 @@ export function MiniPlayer() {
 
       {/* Progress Bar */}
       <div className="h-1 bg-stone-200 dark:bg-stone-700">
-        <div 
+        <div
           className="h-1 bg-primary-500 transition-all duration-300"
           style={{ width: '30%' }} // This would be dynamic based on current position
         />

@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EnhancedAudioItinerary, EnhancedAudioTrack, SearchFilters as AppSearchFilters } from '@/types/app-types';
+import {
+  EnhancedAudioItinerary,
+  EnhancedAudioTrack,
+  SearchFilters as AppSearchFilters,
+} from '@/types/app-types';
 
 // Re-export enhanced types for backward compatibility
 export type AudioItinerary = EnhancedAudioItinerary;

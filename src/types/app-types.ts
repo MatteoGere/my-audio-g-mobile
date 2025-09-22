@@ -20,7 +20,7 @@ export interface EnhancedAudioItinerary extends Tables<'audio_itinerary'> {
   company?: EnhancedCompany;
   image_file?: Tables<'image_file'> | null;
   tracks?: EnhancedAudioTrack[];
-  
+
   // Computed fields
   image_url?: string; // Signed URL for the itinerary cover image
   track_count?: number;
@@ -28,7 +28,7 @@ export interface EnhancedAudioItinerary extends Tables<'audio_itinerary'> {
   min_distance_meters?: number; // Distance from user's location
   avg_latitude?: number; // Average POI latitude
   avg_longitude?: number; // Average POI longitude
-  
+
   // UI state
   is_favorite?: boolean;
   is_downloaded?: boolean; // For offline support
@@ -43,21 +43,21 @@ export interface EnhancedAudioTrack extends Tables<'audio_track'> {
   audio_itinerary?: EnhancedAudioItinerary;
   image_file?: Tables<'image_file'> | null;
   poi?: Tables<'audio_track_poi'> | null;
-  
+
   // Computed fields
   image_url?: string; // Signed URL for track image
   audio_url?: string; // Signed URL for audio file
-  
+
   // POI data (flattened for convenience)
   latitude?: number;
   longitude?: number;
-  
+
   // Playback state
   is_playing?: boolean;
   is_current?: boolean;
   progress?: number; // 0-1 (percentage played)
   last_position?: number; // Last playback position in seconds
-  
+
   // UI state
   is_favorite?: boolean;
   is_downloaded?: boolean;
@@ -95,7 +95,7 @@ export interface EnhancedUserProfile extends Tables<'user_profile'> {
       large_text: boolean;
     };
   };
-  
+
   // Computed stats
   total_favorites?: number;
   total_listening_time?: number; // Total seconds listened
@@ -145,7 +145,7 @@ export interface POI {
   description?: string;
   image_url?: string;
   audio_track: EnhancedAudioTrack;
-  
+
   // Map display options
   marker_type?: 'default' | 'current' | 'completed' | 'favorite';
   is_clustered?: boolean;
@@ -206,30 +206,30 @@ export interface AudioPlayerState {
   // Current track
   current_track?: EnhancedAudioTrack;
   current_itinerary?: EnhancedAudioItinerary;
-  
+
   // Playback state
   state: PlaybackState;
   position: number; // Current position in seconds
   duration: number; // Total duration in seconds
   buffered_ranges: Array<{ start: number; end: number }>;
-  
+
   // Controls
   volume: number; // 0-1
   playback_rate: number; // 0.5-2.0
   is_muted: boolean;
   is_shuffled: boolean;
   repeat_mode: 'none' | 'track' | 'queue';
-  
+
   // Queue management
   queue: QueueItem[];
   queue_position: number; // Current position in queue
   history: QueueItem[]; // Previously played tracks
-  
+
   // UI state
   player_view: 'mini' | 'full' | 'hidden';
   is_loading: boolean;
   error?: string;
-  
+
   // Background play
   is_background_supported: boolean;
   is_background_active: boolean;
@@ -279,15 +279,17 @@ export interface SearchFilters {
 /**
  * Search result item (union type)
  */
-export type SearchResultItem = {
-  type: 'itinerary';
-  item: EnhancedAudioItinerary;
-  relevance_score?: number;
-} | {
-  type: 'track';
-  item: EnhancedAudioTrack;
-  relevance_score?: number;
-};
+export type SearchResultItem =
+  | {
+      type: 'itinerary';
+      item: EnhancedAudioItinerary;
+      relevance_score?: number;
+    }
+  | {
+      type: 'track';
+      item: EnhancedAudioTrack;
+      relevance_score?: number;
+    };
 
 /**
  * Search results with pagination
@@ -392,7 +394,15 @@ export interface OfflineStorageStats {
  * User interaction tracking
  */
 export interface UserInteraction {
-  action: 'play' | 'pause' | 'skip' | 'favorite' | 'share' | 'download' | 'search' | 'location_view';
+  action:
+    | 'play'
+    | 'pause'
+    | 'skip'
+    | 'favorite'
+    | 'share'
+    | 'download'
+    | 'search'
+    | 'location_view';
   target_type: 'itinerary' | 'track' | 'company' | 'search_result';
   target_id: string;
   context?: {

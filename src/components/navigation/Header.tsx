@@ -5,9 +5,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
 import { useAuth } from '@/lib/hooks';
-import { 
-  HiOutlineChevronLeft, 
-  HiOutlineMagnifyingGlass, 
+import {
+  HiOutlineChevronLeft,
+  HiOutlineMagnifyingGlass,
   HiOutlineUser,
   HiOutlineBars3,
 } from 'react-icons/hi2';
@@ -19,20 +19,20 @@ interface HeaderProps {
   customActions?: React.ReactNode;
 }
 
-export function Header({ 
-  title, 
-  showBackButton = false, 
+export function Header({
+  title,
+  showBackButton = false,
   showSearchButton = true,
-  customActions 
+  customActions,
 }: HeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, user } = useAuth();
-  
+
   // Dynamic title based on route
   const getPageTitle = () => {
     if (title) return title;
-    
+
     switch (pathname) {
       case '/':
       case '/home':
@@ -59,16 +59,11 @@ export function Header({
         {/* Left Section */}
         <div className="flex items-center space-x-2 flex-1">
           {showBackButton && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.back()}
-              className="p-2"
-            >
+            <Button variant="ghost" size="sm" onClick={() => router.back()} className="p-2">
               <HiOutlineChevronLeft className="h-5 w-5" />
             </Button>
           )}
-          
+
           <h1 className="text-lg font-semibold text-stone-900 dark:text-stone-100 truncate">
             {getPageTitle()}
           </h1>
@@ -77,7 +72,7 @@ export function Header({
         {/* Right Section */}
         <div className="flex items-center space-x-2">
           {customActions}
-          
+
           {showSearchButton && (
             <Button
               variant="ghost"
@@ -100,11 +95,7 @@ export function Header({
               <HiOutlineUser className="h-5 w-5" />
             </Button>
           ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => router.push('/login')}
-            >
+            <Button variant="outline" size="sm" onClick={() => router.push('/login')}>
               Sign In
             </Button>
           )}

@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui';
-import { 
+import {
   HiOutlineHome,
   HiOutlineMagnifyingGlass,
   HiOutlineMap,
@@ -63,7 +63,7 @@ export function BottomNavigation() {
         {navigationItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
-          
+
           return (
             <Link
               key={item.href}
@@ -72,15 +72,12 @@ export function BottomNavigation() {
                 'flex flex-col items-center justify-center space-y-1 px-3 py-2 rounded-lg transition-all duration-200 min-w-0 flex-1',
                 active
                   ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                  : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-100 dark:hover:bg-stone-700'
+                  : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-100 dark:hover:bg-stone-700',
               )}
             >
               <div className="relative">
-                <Icon 
-                  className={cn(
-                    'h-5 w-5 transition-transform duration-200',
-                    active && 'scale-110'
-                  )} 
+                <Icon
+                  className={cn('h-5 w-5 transition-transform duration-200', active && 'scale-110')}
                 />
                 {item.badge && (
                   <Badge
@@ -92,10 +89,9 @@ export function BottomNavigation() {
                   </Badge>
                 )}
               </div>
-              <span className={cn(
-                'text-xs font-medium truncate max-w-full',
-                active && 'font-semibold'
-              )}>
+              <span
+                className={cn('text-xs font-medium truncate max-w-full', active && 'font-semibold')}
+              >
                 {item.label}
               </span>
             </Link>

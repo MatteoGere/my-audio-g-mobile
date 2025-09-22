@@ -8,9 +8,7 @@ export default function FavoritesPage() {
         <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2">
           Your Favorites
         </h1>
-        <p className="text-stone-600 dark:text-stone-400">
-          Your saved audio tours and tracks
-        </p>
+        <p className="text-stone-600 dark:text-stone-400">Your saved audio tours and tracks</p>
       </div>
 
       {/* Filter Tabs */}
@@ -32,9 +30,7 @@ export default function FavoritesPage() {
           <Card key={item} className="p-4">
             <div className="flex items-start space-x-4">
               <div className="w-16 h-16 bg-forest-100 dark:bg-forest-900 rounded-lg flex-shrink-0 flex items-center justify-center">
-                <span className="text-forest-600 dark:text-forest-400 text-sm font-medium">
-                  ❤️
-                </span>
+                <span className="text-forest-600 dark:text-forest-400 text-sm font-medium">❤️</span>
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">
@@ -74,9 +70,7 @@ export default function FavoritesPage() {
           <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">
             Start exploring tours and save your favorites here
           </p>
-          <Button variant="primary">
-            Explore Tours
-          </Button>
+          <Button variant="primary">Explore Tours</Button>
         </Card>
       )}
     </div>

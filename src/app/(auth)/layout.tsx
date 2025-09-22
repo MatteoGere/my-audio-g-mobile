@@ -15,15 +15,9 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       {/* Auth Header */}
       <header className="flex-shrink-0 p-4 text-center">
         <div className="flex items-center justify-center mb-2">
-          <img 
-            src="/myaudiog-192.svg" 
-            alt="MyAudioG" 
-            className="h-12 w-12"
-          />
+          <img src="/myaudiog-192.svg" alt="MyAudioG" className="h-12 w-12" />
         </div>
-        <h1 className="text-2xl font-bold text-primary-600 dark:text-primary-400">
-          MyAudioG
-        </h1>
+        <h1 className="text-2xl font-bold text-primary-600 dark:text-primary-400">MyAudioG</h1>
         <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
           Your Audio Guide Experience
         </p>

@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AudioTrack } from './itinerariesSlice';
-import { PlaybackState as AppPlaybackState, QueueItem as AppQueueItem, AudioPlayerState } from '@/types/app-types';
+import {
+  PlaybackState as AppPlaybackState,
+  QueueItem as AppQueueItem,
+  AudioPlayerState,
+} from '@/types/app-types';
 
 // Legacy types for backward compatibility
 export interface PlaybackState {

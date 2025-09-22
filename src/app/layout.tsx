@@ -5,7 +5,8 @@ import { I18nProvider } from '@/i18n/I18nProvider';
 
 export const metadata: Metadata = {
   title: 'MyAudioG - Audio Guide Experience',
-  description: 'Discover immersive audio tours and travel experiences with interactive maps and offline support',
+  description:
+    'Discover immersive audio tours and travel experiences with interactive maps and offline support',
   manifest: '/manifest.json',
   keywords: ['audio guide', 'travel', 'tours', 'maps', 'offline'],
   authors: [{ name: 'MyAudioG Team' }],
@@ -21,9 +22,7 @@ export const metadata: Metadata = {
       { url: '/myaudiog-192.svg', sizes: '192x192', type: 'image/svg+xml' },
       { url: '/myaudiog-512.svg', sizes: '512x512', type: 'image/svg+xml' },
     ],
-    apple: [
-      { url: '/myaudiog-192.svg', sizes: '192x192', type: 'image/svg+xml' },
-    ],
+    apple: [{ url: '/myaudiog-192.svg', sizes: '192x192', type: 'image/svg+xml' }],
   },
 };
 
@@ -47,9 +46,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased bg-sand-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 min-h-screen">
         <ReduxProvider>
-          <I18nProvider>
-            {children}
-          </I18nProvider>
+          <I18nProvider>{children}</I18nProvider>
         </ReduxProvider>
       </body>
     </html>

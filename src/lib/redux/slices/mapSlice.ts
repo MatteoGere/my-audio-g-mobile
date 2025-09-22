@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { 
-  LatLng as AppLatLng, 
-  MapBounds as AppMapBounds, 
-  POI as AppPOI, 
-  UserLocation as AppUserLocation 
+import {
+  LatLng as AppLatLng,
+  MapBounds as AppMapBounds,
+  POI as AppPOI,
+  UserLocation as AppUserLocation,
 } from '@/types/app-types';
 
 // Legacy types for backward compatibility (using latitude/longitude instead of lat/lng)

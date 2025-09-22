@@ -9,9 +9,7 @@ export default function MapPage() {
           <div className="w-16 h-16 bg-sea-200 dark:bg-sea-700 rounded-full mx-auto mb-4 flex items-center justify-center">
             <span className="text-sea-600 dark:text-sea-400 text-2xl">🗺️</span>
           </div>
-          <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">
-            Interactive Map
-          </h3>
+          <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">Interactive Map</h3>
           <p className="text-sm text-stone-600 dark:text-stone-400">
             Map integration will be implemented with Leaflet
           </p>

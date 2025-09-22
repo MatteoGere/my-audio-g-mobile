@@ -10,10 +10,10 @@ interface NavigationGuardProps {
   redirectTo?: string;
 }
 
-export function NavigationGuard({ 
-  children, 
-  requireAuth = false, 
-  redirectTo = '/login' 
+export function NavigationGuard({
+  children,
+  requireAuth = false,
+  redirectTo = '/login',
 }: NavigationGuardProps) {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
