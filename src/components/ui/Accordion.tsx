@@ -185,7 +185,10 @@ const AccordionTrigger: React.FC<AccordionTriggerProps> = ({
     >
       <span className="text-foreground">{children}</span>
       <HiOutlineChevronDown
-        className={cn('h-4 w-4 shrink-0 text-muted transition-transform duration-200', isOpen && 'rotate-180')}
+        className={cn(
+          'h-4 w-4 shrink-0 text-muted transition-transform duration-200',
+          isOpen && 'rotate-180',
+        )}
         aria-hidden="true"
       />
     </button>

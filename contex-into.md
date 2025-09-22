@@ -1,6 +1,7 @@
 # Audio Guide App - Project Context Information
 
 ## 📋 Project Overview
+
 **Project Type**: Audio Guide Progressive Web Application  
 **Target Platform**: Web-based application (mobile-first, responsive design)  
 **Primary User**: End consumers accessing audio tours and itineraries  
@@ -9,25 +10,24 @@
 ## 🏗️ Technical Architecture
 
 ### Core Technologies
+
 - **Framework**: Next.js 15.x with App Router
 - **Language**: TypeScript (strict type checking required)
 - **State Management**: Redux Toolkit (RTK) + RTK Query for API calls
-- **Backend/Database**: Supabase + supabase client ts 
-- **Styling**: Tailwind CSS + react-icons  
+- **Backend/Database**: Supabase + supabase client ts
+- **Styling**: Tailwind CSS + react-icons
 - **Maps**: Leaflet with OpenStreetMap tiles
 - **Audio**: Web Audio API + Media Session API
-						
 
 ### Key Technical Constraints
-																				 
-																					
+
 - **User-only app**: No company admin features, only end-user functionality
 - **NO testing framework**: Focus only on implementation code
-														   
 
 ## 🗄️ Database Schema (Supabase)
 
 ### Core Tables
+
 ```typescript
 // Main content structure
 audio_itinerary: {
@@ -98,6 +98,7 @@ image_file: {
 ```
 
 ### Key Database Functions
+
 ```typescript
 fn_nearby_audio_itineraries(user_lat: number, user_lng: number, radius_meters?: number)
 // Returns itineraries with POI locations near user's coordinates
@@ -107,9 +108,11 @@ fn_nearby_audio_itineraries(user_lat: number, user_lng: number, radius_meters?: 
 ## 🔐 Signed URL Management System
 
 ### Purpose
+
 All media files (audio tracks, images) are stored in Supabase Storage with private access. The app uses a sophisticated signed URL caching system to provide secure, temporary access while minimizing API calls and improving performance.
 
 ### Architecture Overview
+
 ```
 Component → Hook → Redux Cache → RTK Query → Backend API → Supabase Storage
                 ↓
@@ -117,6 +120,7 @@ Component → Hook → Redux Cache → RTK Query → Backend API → Supabase St
 ```
 
 ### Redux Store Structure
+
 ```typescript
 // Additional slices for signed URL management
 audioTrack: {
@@ -142,14 +146,14 @@ StorageSignedUrlEntry: {
 
 Use Supabase client to interact with storage:
 
-
 ### Custom Hooks
+
 ```typescript
 // Single URL hooks
 useSignedAudioUrl(path: string, expiresIn?: number)
 useSignedUrl(path: string, bucket: 'audio-files' | 'image-files', expiresIn?: number)
 
-// Batch URL hooks  
+// Batch URL hooks
 useSignedAudioUrls(paths: string[], expiresIn?: number)
 useSignedUrls(paths: string[], bucket: string, expiresIn?: number)
 
@@ -163,6 +167,7 @@ useSignedUrls(paths: string[], bucket: string, expiresIn?: number)
 ```
 
 ### Persistence Strategy
+
 - **localStorage Keys**:
   - `'app:signedUrls:storage'`: For all storage URLs with bucket information
   - `'app:signedUrls:audio'`: For audio-only URLs (legacy compatibility)
@@ -175,6 +180,7 @@ useSignedUrls(paths: string[], bucket: string, expiresIn?: number)
   - Skipped during SSR
 
 ### Cache Management
+
 - **Expiration Logic**:
   - Default: 3600 seconds (1 hour) for audio files
   - URLs with < 5 minutes remaining are considered "near expiry" and trigger refetch
@@ -188,12 +194,14 @@ useSignedUrls(paths: string[], bucket: string, expiresIn?: number)
   - Complete clear on logout
 
 ### Error Handling
+
 - **Network failures**: Hooks return `isError: true`
 - **Expired URLs**: Automatic refetch when cache entry expires
 - **Storage quota**: localStorage writes wrapped in try/catch, app continues with memory-only cache
 - **Clock skew**: Consider implementing safety margin for expiration checks
 
 ### Implementation Priority
+
 1. Redux slices with cache management methods
 2. Persistence middleware with debounced localStorage writes
 3. Custom hooks with automatic cache validation
@@ -201,6 +209,7 @@ useSignedUrls(paths: string[], bucket: string, expiresIn?: number)
 5. Integration with existing components (ImageManager, AudioPlayer)
 
 ### Usage Examples
+
 ```typescript
 // In components
 const { signedUrl, isLoading } = useSignedAudioUrl('audio/track-123.mp3');
@@ -209,121 +218,121 @@ const { signedUrls } = useSignedUrls(['img1.jpg', 'img2.jpg'], 'image-files');
 // Cache operations
 dispatch(setSignedUrl({ path, url, expiresIn: 3600 }));
 dispatch(removeSignedUrl({ path, bucket: 'image-files' }));
-dispatch(clearExpiredUrls());									
+dispatch(clearExpiredUrls());
 
 
-		   
-																																																										   
 
-						 
-   
-																					 
-				   
-									  
-   
 
-						 
-			 
-											  
-			 
-														  
- 
 
-		  
-																			  
- 
 
-				   
-				 
-			  
-											 
- 
 
-						
-			  
-					
-										
- 
-   
 
-				
-			 
-					
-																   
-							 
 
-																			 
-														   
-   
 
-				
-			 
-				   
-												   
-																					 
 
-					
-													   
-																  
 
-					
- 
-								
-					 
-			 
-													 
- 
-   
 
-						
-						
-																			
-																		
-												  
-													  
-										 
-										 
-															   
-													   
-					  
 
-					
-					   
-												  
-																					
-															  
-				 
-																		   
-												
-				   
-									
-						   
-							
 
-				  
-													
-															  
-																								   
-																		   
 
-						   
-											 
-															
-											   
-												  
-																   
 
-				  
-			 
-				
-																		  
-																			  
 
-				   
-													   
-														   
-							 
-   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 🎯 Core Features Requirements
 
@@ -363,201 +372,201 @@ dispatch(clearExpiredUrls());
 - **Accessibility**: WCAG 2.1 compliance, screen reader support
 - **Performance**: Lazy loading, optimized images, smooth scrolling
 
-						
-   
-		
-	   
-							 
-								   
-					 
-										   
-		  
-		
-		   
-			  
-   
 
-					 
-															 
-														
-													
-												
 
-									
 
-		   
-																																																										   
 
-						 
-   
-																					 
-				   
-									  
-   
 
-						 
-			 
-											  
-			 
-														  
- 
 
-		  
-																			  
- 
 
-				   
-				 
-			  
-											 
- 
 
-						
-			  
-					
-										
- 
-   
 
-				
-			 
-					
-																   
-							 
 
-																			 
-														   
-   
 
-				
-			 
-				   
-												   
-																					 
 
-					
-													   
-																  
 
-					
- 
-								
-					 
-			 
-													 
- 
-   
 
-						
-						
-																			
-																		
-												  
-													  
-										 
-										 
-															   
-													   
-					  
 
-					
-					   
-												  
-																					
-															  
-				 
-																		   
-												
-				   
-									
-						   
-							
 
-				  
-													
-															  
-																								   
-																		   
 
-						   
-											 
-															
-											   
-												  
-																   
 
-				  
-			 
-				
-																		  
-																			  
 
-				   
-													   
-														   
-							 
-   
 
-								  
 
-			 
-						
-			
-						   
-						  
-				   
-					   
- 
 
-				   
-						  
-										  
-				   
-						 
-								  
- 
 
-			 
-								  
-					 
-					  
-				   
-				 
-					   
-					  
-					   
- 
 
-		   
-													   
-						  
-										  
-					
-									  
- 
 
-				 
-										 
-								
-				   
- 
 
-					   
-				   
-						  
-										  
-					
- 
 
-															   
-			 
-											 
- 
 
-		  
-													
- 
-   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 🚀 Implementation Priority
 
@@ -607,9 +616,9 @@ dispatch(clearExpiredUrls());
 
 ## 🎨 UI Component Libraries
 - **Icons**: Lucide React (available in environment)
-												 
+
 - **Styling**: Tailwind CSS utility classes only
-																				  
+
 
 ## 🔒 Security & Privacy
 - Row Level Security (RLS) policies in Supabase for user data
@@ -631,15 +640,16 @@ dispatch(clearExpiredUrls());
 - RTK Query for all API operations
 - Normalized data structure in Redux store
 
-					 
-   
-	
-								 
-									  
-											   
-							 
-											  
-									  
-   
 
-																																																		  
+
+
+
+
+
+
+
+
+
+
+
+```

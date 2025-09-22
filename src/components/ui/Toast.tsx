@@ -1,6 +1,12 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { cn } from '@/lib/utils';
-import { HiOutlineInformationCircle, HiOutlineCheckCircle, HiOutlineExclamationTriangle, HiOutlineXCircle, HiOutlineXMark } from 'react-icons/hi2';
+import {
+  HiOutlineInformationCircle,
+  HiOutlineCheckCircle,
+  HiOutlineExclamationTriangle,
+  HiOutlineXCircle,
+  HiOutlineXMark,
+} from 'react-icons/hi2';
 
 export interface Toast {
   id: string;

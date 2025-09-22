@@ -3,6 +3,7 @@
 ## 🏗️ PHASE 1: Infrastructure Setup & State Management
 
 ### 1.1 Redux Toolkit Configuration
+
 - [ ] Setup Redux store with RTK configuration
 - [ ] Configure RTK Query for API calls with Supabase integration
 - [ ] Define core slices:
@@ -14,6 +15,7 @@
   - **favoritesSlice**: User favorites for itineraries and tracks
 
 ### 1.2 Supabase Integration & API Layer
+
 - [ ] Setup Supabase client with environment variables
 - [ ] Configure Row Level Security (RLS) policies for user data access
 - [ ] Implement RTK Query API endpoints:
@@ -29,6 +31,7 @@
 - [ ] Setup error handling and loading states for all API calls
 
 ### 1.3 Signed URL Management System
+
 - [ ] **Redux Slices for Signed URL Caching**:
   - **audioTrack.signedUrls**: Cache audio file signed URLs with expiration
   - **storage.signedUrls**: Cache all storage signed URLs (audio + images) with bucket prefixing
@@ -57,11 +60,12 @@
   - Avoid key collisions between different buckets
 - [ ] **Expiration & Validation Logic**:
   - Default expiration: 3600 seconds (1 hour) for audio files
-  - Store `expiresAt` as millisecond timestamp (Date.now() + expiresIn * 1000)
+  - Store `expiresAt` as millisecond timestamp (Date.now() + expiresIn \* 1000)
   - Consider URLs near expiration (< 5 minutes remaining) as invalid for refetch
   - Safety margin for clock skew protection
 
 ### 1.3 Database Schema Understanding & Types
+
 - [ ] Import and configure generated Supabase types
 - [ ] Define custom TypeScript interfaces for:
   - Enhanced itinerary objects with related data
@@ -73,6 +77,7 @@
 ## 🎨 PHASE 2: Next.js 15 Setup & Routing
 
 ### 2.1 Next.js App Router Structure
+
 - [ ] `/` - Landing/home page
 - [ ] `/search` - Search itineraries page
 - [ ] `/itinerary/[id]` - Itinerary detail page
@@ -85,6 +90,7 @@
 - [ ] `/auth/register` - Registration page
 
 ### 2.2 Layout Components Architecture
+
 - [ ] **RootLayout**: Redux provider, global styles, authentication wrapper
 - [ ] **MainLayout**: Navigation header, bottom navigation, footer
 - [ ] **AuthLayout**: Clean layout for login/register pages
@@ -92,22 +98,24 @@
 - [ ] **MapLayout**: Fullscreen layout for map interactions
 
 ### 2.3 Navigation System Implementation
-- [ ] **Header Component**: 
+
+- [ ] **Header Component**:
   - Dynamic title based on current page
   - Back navigation button
   - Search trigger button
   - User avatar/login button
-- [ ] **Bottom Navigation**: 
+- [ ] **Bottom Navigation**:
   - Home, Search, Map, Favorites, Profile tabs
   - Active state indicators
   - Badge notifications for new content
-- [ ] **Navigation Guards**: 
+- [ ] **Navigation Guards**:
   - Protected routes for authenticated users
   - Redirect logic for unauthenticated access
 
 ## 📱 PHASE 3: Core Pages Development
 
 ### 3.1 Authentication Flow
+
 - [ ] **Login Page**:
   - Email/password form with validation
   - Social login options (Google, if available)
@@ -125,6 +133,7 @@
   - Profile update capabilities
 
 ### 3.2 Home Page Implementation
+
 - [ ] **Search Bar Component**:
   - Real-time search suggestions
   - Search history
@@ -145,6 +154,7 @@
   - Quick navigation to filtered results
 
 ### 3.3 Search & Discovery Page
+
 - [ ] **Search Interface**:
   - Advanced search filters (duration, company, location)
   - Sort options (newest, popular, nearest, duration)
@@ -162,6 +172,7 @@
   - Favorites toggle on each card
 
 ### 3.4 Itinerary Detail Page
+
 - [ ] **Hero Section**:
   - Full-width header image from image_file table
   - Itinerary title, description, total duration
@@ -187,6 +198,7 @@
 ## 🎵 PHASE 4: Audio System Implementation
 
 ### 4.1 Audio Player Core Logic
+
 - [ ] **Web Audio API Integration**:
   - Audio context management
   - Support for various audio formats
@@ -204,6 +216,7 @@
   - Notification controls
 
 ### 4.2 Player UI Components
+
 - [ ] **Mini Player** (Persistent Bottom Bar):
   - Current track info (title, duration)
   - Play/pause button
@@ -224,6 +237,7 @@
   - Current itinerary context
 
 ### 4.3 Audio Progress & Synchronization
+
 - [ ] **Progress Tracking**:
   - Real-time progress updates in Redux store
   - Resume functionality from last position
@@ -238,6 +252,7 @@
 ## 🗺️ PHASE 5: Map Integration with Leaflet
 
 ### 5.1 Leaflet Map Setup
+
 - [ ] **Map Configuration**:
   - OpenStreetMap or custom tile layer
   - Responsive map container
@@ -255,6 +270,7 @@
   - Current location tracking with GPS
 
 ### 5.2 Map Features
+
 - [ ] **POI Display System**:
   - Load POI data from audio_track_poi table
   - Display track information in marker popups
@@ -272,6 +288,7 @@
   - Fullscreen map functionality
 
 ### 5.3 Map-Audio Integration
+
 - [ ] **Location-Based Audio**:
   - Proximity detection to POIs
   - Auto-play suggestions when near locations
@@ -286,6 +303,7 @@
 ## 👤 PHASE 6: User Management & Personalization
 
 ### 6.1 User Profile Management
+
 - [ ] **Profile Page**:
   - Display user information from user_profile table
   - Edit name, surname, address fields
@@ -303,6 +321,7 @@
   - Data export functionality
 
 ### 6.2 Favorites System
+
 - [ ] **Favorites Management**:
   - Add/remove favorites using user_favourite table
   - Support for both FAVOURITE-TRACK and FAVOURITE-ITINERARY types
@@ -315,6 +334,7 @@
   - Organize favorites by categories
 
 ### 6.3 User History & Analytics
+
 - [ ] **Listening History**:
   - Track playback history
   - Completed itineraries list
@@ -329,6 +349,7 @@
 ## 🔧 PHASE 7: Advanced Features
 
 ### 7.1 Search & Discovery Enhancement
+
 - [ ] **Advanced Search**:
   - Full-text search across itineraries and tracks
   - Search by company, location, duration
@@ -341,6 +362,7 @@
   - Location-based suggestions
 
 ### 7.2 Social Features
+
 - [ ] **User Interactions**:
   - Rate itineraries and tracks
   - Write reviews and comments
@@ -353,6 +375,7 @@
   - Community challenges
 
 ### 7.3 Company Integration
+
 - [ ] **Company Profiles**:
   - Display company information from company table
   - Company-specific branding
@@ -367,6 +390,7 @@
 ## ⚡ PHASE 8: Performance & Optimization
 
 ### 8.1 Performance Optimization
+
 - [ ] **Image Optimization**:
   - Next.js Image component implementation
   - Lazy loading for all images
@@ -384,6 +408,7 @@
   - Tree shaking for unused code
 
 ### 8.2 Data Management
+
 - [ ] **State Optimization**:
   - Memoization for expensive computations
   - Selective Redux state updates
@@ -396,6 +421,7 @@
   - Query result caching
 
 ### 8.3 User Experience Enhancement
+
 - [ ] **Loading States**:
   - Skeleton screens for all loading states
   - Progressive loading indicators
@@ -411,6 +437,7 @@
 ## 🚀 PHASE 9: Deployment & Production
 
 ### 9.1 Production Setup
+
 - [ ] **Environment Configuration**:
   - Production environment variables
   - Supabase production database
@@ -423,6 +450,7 @@
   - Performance monitoring setup
 
 ### 9.2 Monitoring & Analytics
+
 - [ ] **User Analytics**:
   - Google Analytics integration
   - User behavior tracking
@@ -437,36 +465,42 @@
 ## 📋 Development Sprint Structure
 
 ### Sprint 1: Foundation (2-3 weeks)
+
 - Redux Toolkit setup and Supabase integration
 - Basic Next.js routing and layouts
 - Authentication system implementation
 - Core TypeScript interfaces and types
 
 ### Sprint 2: Core Navigation (2-3 weeks)
+
 - Home page with search and featured content
 - Itinerary listing and search functionality
 - Basic map integration with Leaflet
 - User profile and authentication UI
 
 ### Sprint 3: Audio System (3-4 weeks)
+
 - Audio player core functionality
 - Mini and full player UI components
 - Audio state management and persistence
 - Basic playback controls and progress tracking
 
 ### Sprint 4: Map & Content (2-3 weeks)
+
 - Complete itinerary detail page
 - Interactive map with POI markers
 - Map-audio integration
 - Favorites system implementation
 
 ### Sprint 5: Enhanced Features (2-3 weeks)
+
 - Advanced search and filtering
 - User preferences and settings
 - Performance optimizations
 - Social features and company integration
 
 ### Sprint 6: Polish & Deploy (1-2 weeks)
+
 - UI/UX refinements
 - Performance testing and optimization
 - Production deployment setup
