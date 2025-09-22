@@ -51,13 +51,3 @@ export type AppDispatch = typeof store.dispatch;
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-// Export actions from all slices for easy importing
-export * from './slices/authSlice';
-export * from './slices/itinerariesSlice';
-export * from './slices/audioSlice';
-export * from './slices/mapSlice';
-export * from './slices/userPreferencesSlice';
-export * from './slices/favoritesSlice';
-export * from './slices/storageSlice';
-export * from './slices/audioTrackSlice';
-export * from './api/apiSlice';

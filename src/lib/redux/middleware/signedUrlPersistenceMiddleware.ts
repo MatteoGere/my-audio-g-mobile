@@ -1,5 +1,4 @@
 import { Middleware, AnyAction } from '@reduxjs/toolkit';
-import { RootState } from '../store';
 
 // localStorage keys for persistence
 const STORAGE_URLS_KEY = 'app:signedUrls:storage';
@@ -10,7 +9,7 @@ const debounce = (func: Function, delay: number) => {
   let timeoutId: NodeJS.Timeout;
   return (...args: any[]) => {
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func.apply(null, args), delay);
+    timeoutId = setTimeout(() => func(...args), delay);
   };
 };
 
@@ -38,33 +37,43 @@ const filterExpiredEntries = (urls: Record<string, any>) => {
 };
 
 // Middleware for persisting signed URLs
-export const signedUrlPersistenceMiddleware: Middleware<{}, RootState> =
-  (store) => (next) => (action: unknown) => {
+// Note: avoid importing RootState here to prevent circular dependencies with the store
+export const signedUrlPersistenceMiddleware: Middleware = (store) => {
+  // Debounced save functions (created once per middleware instance)
+  const debouncedSaveStorage = debounce(() => {
+    try {
+      const state: any = store.getState();
+      const validUrls = filterExpiredEntries(state.storage?.signedUrls || {});
+      saveToLocalStorage(STORAGE_URLS_KEY, validUrls);
+    } catch (e) {
+      // swallow errors - middleware should not throw
+    }
+  }, 250);
+
+  const debouncedSaveAudio = debounce(() => {
+    try {
+      const state: any = store.getState();
+      const validUrls = filterExpiredEntries(state.audioTrack?.signedUrls || {});
+      saveToLocalStorage(AUDIO_URLS_KEY, validUrls);
+    } catch (e) {
+      // swallow errors
+    }
+  }, 250);
+
+  return (next) => (action: unknown) => {
     const typedAction = action as AnyAction;
 
-    // Debounced save functions to batch multiple updates
-    const debouncedSaveStorage = debounce((state: RootState) => {
-      const validUrls = filterExpiredEntries(state.storage.signedUrls);
-      saveToLocalStorage(STORAGE_URLS_KEY, validUrls);
-    }, 250);
-
-    const debouncedSaveAudio = debounce((state: RootState) => {
-      const validUrls = filterExpiredEntries(state.audioTrack.signedUrls);
-      saveToLocalStorage(AUDIO_URLS_KEY, validUrls);
-    }, 250);
-
     const result = next(action);
-    const state = store.getState();
 
     // Handle storage slice actions
-    if (typedAction.type?.startsWith('storage/')) {
+    if (typeof typedAction.type === 'string' && typedAction.type.startsWith('storage/')) {
       switch (typedAction.type) {
         case 'storage/setSignedUrl':
         case 'storage/setSignedUrls':
         case 'storage/removeSignedUrl':
         case 'storage/clearExpiredUrls':
         case 'storage/clearBucketUrls':
-          debouncedSaveStorage(state);
+          debouncedSaveStorage();
           break;
         case 'storage/clearAllUrls':
         case 'storage/resetStorage':
@@ -78,14 +87,14 @@ export const signedUrlPersistenceMiddleware: Middleware<{}, RootState> =
     }
 
     // Handle audioTrack slice actions
-    if (typedAction.type?.startsWith('audioTrack/')) {
+    if (typeof typedAction.type === 'string' && typedAction.type.startsWith('audioTrack/')) {
       switch (typedAction.type) {
         case 'audioTrack/setSignedAudioUrl':
         case 'audioTrack/setSignedAudioUrls':
         case 'audioTrack/removeSignedAudioUrl':
         case 'audioTrack/clearExpiredAudioUrls':
         case 'audioTrack/batchUpdateAudioUrls':
-          debouncedSaveAudio(state);
+          debouncedSaveAudio();
           break;
         case 'audioTrack/clearAllAudioUrls':
         case 'audioTrack/resetAudioUrls':
@@ -110,6 +119,7 @@ export const signedUrlPersistenceMiddleware: Middleware<{}, RootState> =
 
     return result;
   };
+};
 
 // Hydration functions to restore cache from localStorage
 export const hydrateSignedUrlCaches = (store: any) => {
