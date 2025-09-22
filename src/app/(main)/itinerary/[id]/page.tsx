@@ -1,5 +1,4 @@
 import { Card, Button, Badge } from '@/components/ui';
-import { notFound } from 'next/navigation';
 
 interface ItineraryDetailPageProps {
   params: {

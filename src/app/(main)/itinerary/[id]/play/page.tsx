@@ -1,5 +1,4 @@
 import { Card, Button, Progress } from '@/components/ui';
-import { notFound } from 'next/navigation';
 
 interface AudioPlayerPageProps {
   params: {

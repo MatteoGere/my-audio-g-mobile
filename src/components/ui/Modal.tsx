@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { HiOutlineXMark } from 'react-icons/hi2';
