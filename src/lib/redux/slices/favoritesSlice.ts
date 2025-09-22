@@ -18,8 +18,8 @@ export interface FavoritesState {
   favoriteTracks: FavoriteItem[];
 
   // Quick access sets for performance
-  favoriteItineraryIds: Set<string>;
-  favoriteTrackIds: Set<string>;
+  favoriteItineraryIds: string[];
+  favoriteTrackIds: string[];
 
   // Loading states
   isLoading: boolean;
@@ -39,8 +39,8 @@ export interface FavoritesState {
 const initialState: FavoritesState = {
   favoriteItineraries: [],
   favoriteTracks: [],
-  favoriteItineraryIds: new Set(),
-  favoriteTrackIds: new Set(),
+  favoriteItineraryIds: [],
+  favoriteTrackIds: [],
   isLoading: false,
   isAddingFavorite: false,
   isRemovingFavorite: false,
@@ -69,30 +69,34 @@ export const favoritesSlice = createSlice({
     // Set favorites data
     setFavoriteItineraries: (state, action: PayloadAction<FavoriteItem[]>) => {
       state.favoriteItineraries = action.payload;
-      state.favoriteItineraryIds = new Set(action.payload.map((f) => f.favourite_id));
+      state.favoriteItineraryIds = Array.from(new Set(action.payload.map((f) => f.favourite_id)));
       state.error = null;
     },
     setFavoriteTracks: (state, action: PayloadAction<FavoriteItem[]>) => {
       state.favoriteTracks = action.payload;
-      state.favoriteTrackIds = new Set(action.payload.map((f) => f.favourite_id));
+      state.favoriteTrackIds = Array.from(new Set(action.payload.map((f) => f.favourite_id)));
       state.error = null;
     },
 
     // Add favorites
     addFavoriteItinerary: (state, action: PayloadAction<FavoriteItem>) => {
       const favorite = action.payload;
-      if (!state.favoriteItineraryIds.has(favorite.favourite_id)) {
+      const idSet = new Set(state.favoriteItineraryIds);
+      if (!idSet.has(favorite.favourite_id)) {
         state.favoriteItineraries.push(favorite);
-        state.favoriteItineraryIds.add(favorite.favourite_id);
+        idSet.add(favorite.favourite_id);
+        state.favoriteItineraryIds = Array.from(idSet);
       }
       state.isAddingFavorite = false;
       state.error = null;
     },
     addFavoriteTrack: (state, action: PayloadAction<FavoriteItem>) => {
       const favorite = action.payload;
-      if (!state.favoriteTrackIds.has(favorite.favourite_id)) {
+      const idSet = new Set(state.favoriteTrackIds);
+      if (!idSet.has(favorite.favourite_id)) {
         state.favoriteTracks.push(favorite);
-        state.favoriteTrackIds.add(favorite.favourite_id);
+        idSet.add(favorite.favourite_id);
+        state.favoriteTrackIds = Array.from(idSet);
       }
       state.isAddingFavorite = false;
       state.error = null;
@@ -104,14 +108,14 @@ export const favoritesSlice = createSlice({
       state.favoriteItineraries = state.favoriteItineraries.filter(
         (f) => f.favourite_id !== itineraryId,
       );
-      state.favoriteItineraryIds.delete(itineraryId);
+      state.favoriteItineraryIds = state.favoriteItineraryIds.filter((id) => id !== itineraryId);
       state.isRemovingFavorite = false;
       state.error = null;
     },
     removeFavoriteTrack: (state, action: PayloadAction<string>) => {
       const trackId = action.payload;
-      state.favoriteTracks = state.favoriteTracks.filter((f) => f.favourite_id !== trackId);
-      state.favoriteTrackIds.delete(trackId);
+  state.favoriteTracks = state.favoriteTracks.filter((f) => f.favourite_id !== trackId);
+  state.favoriteTrackIds = state.favoriteTrackIds.filter((id) => id !== trackId);
       state.isRemovingFavorite = false;
       state.error = null;
     },
@@ -125,15 +129,17 @@ export const favoritesSlice = createSlice({
       if (itineraryIndex !== -1) {
         const removedFavorite = state.favoriteItineraries[itineraryIndex];
         state.favoriteItineraries.splice(itineraryIndex, 1);
-        state.favoriteItineraryIds.delete(removedFavorite.favourite_id);
+        state.favoriteItineraryIds = state.favoriteItineraryIds.filter(
+          (id) => id !== removedFavorite.favourite_id,
+        );
       }
 
       // Check tracks
       const trackIndex = state.favoriteTracks.findIndex((f) => f.id === favoriteId);
       if (trackIndex !== -1) {
         const removedFavorite = state.favoriteTracks[trackIndex];
-        state.favoriteTracks.splice(trackIndex, 1);
-        state.favoriteTrackIds.delete(removedFavorite.favourite_id);
+  state.favoriteTracks.splice(trackIndex, 1);
+  state.favoriteTrackIds = state.favoriteTrackIds.filter((id) => id !== removedFavorite.favourite_id);
       }
 
       state.isRemovingFavorite = false;
@@ -164,19 +170,25 @@ export const favoritesSlice = createSlice({
 
     // Bulk operations
     addFavorites: (state, action: PayloadAction<FavoriteItem[]>) => {
+      const itinerarySet = new Set(state.favoriteItineraryIds);
+      const trackSet = new Set(state.favoriteTrackIds);
+
       action.payload.forEach((favorite) => {
         if (favorite.type === 'FAVOURITE-ITINERARY') {
-          if (!state.favoriteItineraryIds.has(favorite.favourite_id)) {
+          if (!itinerarySet.has(favorite.favourite_id)) {
             state.favoriteItineraries.push(favorite);
-            state.favoriteItineraryIds.add(favorite.favourite_id);
+            itinerarySet.add(favorite.favourite_id);
           }
         } else if (favorite.type === 'FAVOURITE-TRACK') {
-          if (!state.favoriteTrackIds.has(favorite.favourite_id)) {
+          if (!trackSet.has(favorite.favourite_id)) {
             state.favoriteTracks.push(favorite);
-            state.favoriteTrackIds.add(favorite.favourite_id);
+            trackSet.add(favorite.favourite_id);
           }
         }
       });
+
+      state.favoriteItineraryIds = Array.from(itinerarySet);
+      state.favoriteTrackIds = Array.from(trackSet);
     },
 
     // UI state
@@ -205,8 +217,8 @@ export const favoritesSlice = createSlice({
     clearFavorites: (state) => {
       state.favoriteItineraries = [];
       state.favoriteTracks = [];
-      state.favoriteItineraryIds.clear();
-      state.favoriteTrackIds.clear();
+  state.favoriteItineraryIds = [];
+  state.favoriteTrackIds = [];
       state.error = null;
       state.isLoading = false;
       state.isAddingFavorite = false;
@@ -254,9 +266,11 @@ export const selectFavoriteTrackIds = (state: { favorites: FavoritesState }) =>
 export const selectIsItineraryFavorite = (
   state: { favorites: FavoritesState },
   itineraryId: string,
-) => state.favorites.favoriteItineraryIds.has(itineraryId);
-export const selectIsTrackFavorite = (state: { favorites: FavoritesState }, trackId: string) =>
-  state.favorites.favoriteTrackIds.has(trackId);
+) => state.favorites.favoriteItineraryIds.includes(itineraryId);
+export const selectIsTrackFavorite = (
+  state: { favorites: FavoritesState },
+  trackId: string,
+) => state.favorites.favoriteTrackIds.includes(trackId);
 export const selectFavoritesLoading = (state: { favorites: FavoritesState }) =>
   state.favorites.isLoading;
 export const selectFavoritesError = (state: { favorites: FavoritesState }) => state.favorites.error;
