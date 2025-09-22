@@ -1,16 +1,40 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { supabase } from '../redux/api/apiSlice';
-import { loginSuccess, logout, updateSession } from '../redux/slices/authSlice';
+import {
+  supabase,
+  useSignInMutation,
+  useSignUpMutation,
+  useSignOutMutation,
+} from '../redux/api/apiSlice';
+import {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  logout,
+  updateSession,
+  clearError as clearAuthError,
+  updateLastActivity,
+} from '../redux/slices/authSlice';
 import type { Session, User } from '@supabase/supabase-js';
 import type { Tables } from '@/types/supabase-types';
 
 // Hook for Supabase Auth management
 export const useAuth = () => {
   const dispatch = useAppDispatch();
-  const { user, session, isAuthenticated } = useAppSelector((state) => state.auth);
+  const {
+    user,
+    session,
+    isAuthenticated,
+    isLoading: authLoading,
+    error: authError,
+  } = useAppSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // RTK Query mutations
+  const [signInMutation] = useSignInMutation();
+  const [signUpMutation] = useSignUpMutation();
+  const [signOutMutation] = useSignOutMutation();
 
   useEffect(() => {
     // Get initial session
@@ -112,20 +136,117 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, [dispatch]);
 
+  // Sign in function
+  const signIn = useCallback(
+    async (email: string, password: string) => {
+      dispatch(loginStart());
+
+      try {
+        const result = await signInMutation({ email, password }).unwrap();
+
+        if (result.user && result.session) {
+          // Get user profile from database
+          const { data: profile } = await supabase
+            .from('user_profile')
+            .select('*')
+            .eq('id', result.user.id)
+            .single();
+
+          const userData = {
+            id: result.user.id,
+            email: result.user.email || '',
+            profile: profile || undefined,
+          };
+
+          dispatch(loginSuccess({ user: userData, session: result.session }));
+          return { success: true };
+        }
+
+        throw new Error('Invalid response from server');
+      } catch (error: any) {
+        const errorMessage = error?.message || 'Sign in failed';
+        dispatch(loginFailure(errorMessage));
+        return { success: false, error: errorMessage };
+      }
+    },
+    [dispatch, signInMutation],
+  );
+
+  // Sign up function
+  const signUp = useCallback(
+    async (data: { email: string; password: string; name: string; surname: string }) => {
+      dispatch(loginStart());
+
+      try {
+        const result = await signUpMutation(data).unwrap();
+
+        if (result.user) {
+          // Create user profile in database
+          await supabase.from('user_profile').insert({
+            id: result.user.id,
+            name: data.name,
+            surname: data.surname,
+            role: 'USER',
+          });
+
+          // Note: User will need to verify email before they can sign in
+          dispatch(loginFailure('Please check your email to verify your account'));
+          return { success: true };
+        }
+
+        throw new Error('Invalid response from server');
+      } catch (error: any) {
+        const errorMessage = error?.message || 'Sign up failed';
+        dispatch(loginFailure(errorMessage));
+        return { success: false, error: errorMessage };
+      }
+    },
+    [dispatch, signUpMutation],
+  );
+
   // Sign out function
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     try {
       setError(null);
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        setError(error.message);
-        throw error;
-      }
-    } catch (err) {
-      console.error('Error signing out:', err);
-      throw err;
+      await signOutMutation().unwrap();
+      dispatch(logout());
+    } catch (error: any) {
+      console.error('Sign out error:', error);
+      // Even if the API call fails, clear local state
+      dispatch(logout());
+      setError('Sign out failed, but local session cleared');
     }
-  };
+  }, [dispatch, signOutMutation]);
+
+  // Forgot password
+  const forgotPassword = useCallback(async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+
+      return { success: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }, []);
+
+  // Reset password
+  const resetPassword = useCallback(async (token: string, newPassword: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) throw error;
+
+      return { success: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }, []);
 
   // Refresh session function
   const refreshSession = async () => {
@@ -147,11 +268,19 @@ export const useAuth = () => {
     user,
     session,
     isAuthenticated,
-    isLoading,
-    error,
+    isLoading: isLoading || authLoading,
+    error: error || authError,
+    signIn,
+    signUp,
     signOut,
     refreshSession,
-    clearError: () => setError(null),
+    forgotPassword,
+    resetPassword,
+    clearError: () => {
+      setError(null);
+      dispatch(clearAuthError());
+    },
+    updateActivity: () => dispatch(updateLastActivity()),
   };
 };
 
@@ -256,6 +385,7 @@ export const useUserProfile = () => {
     isLoading,
     error,
     updateProfile,
+    hasProfile: !!profile,
     clearError: () => setError(null),
   };
 };

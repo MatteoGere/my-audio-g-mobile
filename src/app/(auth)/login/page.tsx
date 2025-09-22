@@ -1,33 +1,72 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button, Input } from '@/components/ui';
-import { useSignInMutation } from '@/lib/redux/api/apiSlice';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [signIn, { isLoading, error }] = useSignInMutation();
+  const { signIn, isLoading, error, isAuthenticated, clearError } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [localError, setLocalError] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<{
+    email?: string;
+    password?: string;
+  }>({});
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/home');
+    }
+  }, [isAuthenticated, router]);
+
+  // Clear errors when component mounts or inputs change
+  useEffect(() => {
+    clearError();
+    setValidationErrors({});
+  }, [email, password, clearError]);
+
+  // Client-side validation
+  const validateForm = () => {
+    const errors: { email?: string; password?: string } = {};
+
+    if (!email) {
+      errors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+
+    if (!password) {
+      errors.password = 'Password is required';
+    } else if (password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLocalError(null);
 
-    try {
-      await signIn({ email, password }).unwrap();
-      router.push('/'); // Redirect to home after successful login
-    } catch (err: any) {
-      setLocalError(err?.message || 'Login failed. Please try again.');
+    if (!validateForm()) {
+      return;
     }
+
+    const result = await signIn(email, password);
+
+    if (result.success) {
+      router.push('/home');
+    }
+    // Error handling is managed by the useAuth hook
   };
 
-  const displayError = localError || (error as any)?.message || null;
+  const displayError = error;
 
   return (
     <div className="space-y-6">
@@ -49,6 +88,7 @@ export default function LoginPage() {
           onChange={(e) => setEmail(e.target.value)}
           required
           autoComplete="email"
+          error={validationErrors.email}
         />
 
         <div className="space-y-1">
@@ -60,6 +100,7 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
             autoComplete="current-password"
+            error={validationErrors.password}
           />
           <button
             type="button"
@@ -76,7 +117,14 @@ export default function LoginPage() {
           </div>
         )}
 
-        <Button type="submit" variant="primary" size="lg" className="w-full" loading={isLoading}>
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          className="w-full"
+          loading={isLoading}
+          disabled={isLoading}
+        >
           Sign In
         </Button>
       </form>

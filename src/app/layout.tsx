@@ -7,11 +7,12 @@ export const metadata: Metadata = {
   title: 'MyAudioG - Audio Guide Experience',
   description:
     'Discover immersive audio tours and travel experiences with interactive maps and offline support',
-  manifest: '/manifest.json',
   keywords: ['audio guide', 'travel', 'tours', 'maps', 'offline'],
   authors: [{ name: 'MyAudioG Team' }],
   creator: 'MyAudioG',
-  publisher: 'MyAudioG',
+  publisher: 'MyAudioG' /*
+  manifest: '/manifest.json',
+
   formatDetection: {
     email: false,
     address: false,
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
       { url: '/myaudiog-512.svg', sizes: '512x512', type: 'image/svg+xml' },
     ],
     apple: [{ url: '/myaudiog-192.svg', sizes: '192x192', type: 'image/svg+xml' }],
-  },
+  },*/,
 };
 
 export const viewport: Viewport = {
