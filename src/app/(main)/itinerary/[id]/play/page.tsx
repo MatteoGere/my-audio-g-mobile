@@ -1,13 +1,7 @@
 import { Card, Button, Progress } from '@/components/ui';
 
-interface AudioPlayerPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function AudioPlayerPage({ params }: AudioPlayerPageProps) {
-  const { id } = params;
+export default async function AudioPlayerPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
   // Mock data for the audio player page
   const currentTrack = {

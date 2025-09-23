@@ -1,5 +1,6 @@
 import { Card, Button } from '@/components/ui';
 import Link from 'next/link';
+import FeaturedCarousel from '@/components/FeaturedCarousel';
 
 export default function HomePage() {
   return (
@@ -42,51 +43,7 @@ export default function HomePage() {
       </div>
 
       {/* Featured Section */}
-      <div>
-        <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-4">
-          Featured Tours
-        </h2>
-        <div className="space-y-4">
-          {/* Placeholder for featured tours */}
-          <Card className="p-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center">
-                <span className="text-primary-600 dark:text-primary-400 text-sm font-medium">
-                  Tour
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-medium text-stone-900 dark:text-stone-100 truncate">
-                  Historic City Walk
-                </h3>
-                <p className="text-sm text-stone-600 dark:text-stone-400">45 minutes • 8 stops</p>
-              </div>
-              <Button variant="ghost" size="sm">
-                Play
-              </Button>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-sea-100 dark:bg-sea-900 rounded-lg flex items-center justify-center">
-                <span className="text-sea-600 dark:text-sea-400 text-sm font-medium">Tour</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-medium text-stone-900 dark:text-stone-100 truncate">
-                  Museum Audio Guide
-                </h3>
-                <p className="text-sm text-stone-600 dark:text-stone-400">
-                  30 minutes • 5 exhibits
-                </p>
-              </div>
-              <Button variant="ghost" size="sm">
-                Play
-              </Button>
-            </div>
-          </Card>
-        </div>
-      </div>
+      <FeaturedCarousel />
 
       {/* Categories */}
       <div>

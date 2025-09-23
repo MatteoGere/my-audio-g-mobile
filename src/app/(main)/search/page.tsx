@@ -1,18 +1,18 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, type ReadonlyURLSearchParams } from 'next/navigation';
 import { Button, Badge } from '@/components/ui';
 import SearchBar from '@/components/SearchBar';
 import { useGetAudioItinerariesQuery } from '@/lib/redux/api/apiSlice';
 import { HiOutlineClock, HiOutlineMapPin, HiOutlineHeart } from 'react-icons/hi2';
 
 interface SearchPageContentProps {
-  searchParams: URLSearchParams;
+  searchParams: ReadonlyURLSearchParams;
 }
 
 function SearchPageContent({ searchParams }: SearchPageContentProps) {
-  const query = searchParams.get('q') || '';
+  const query = searchParams.get('q') ?? '';
   const duration = searchParams.get('duration') as 'short' | 'medium' | 'long' | null;
   const location = searchParams.get('location') as 'nearby' | 'anywhere' | null;
   const company = searchParams.get('company') || '';
@@ -91,6 +91,8 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
     return 'bg-info-100 text-info-700 dark:bg-info-900/20 dark:text-info-300';
   };
 
+  const headerTitle: string = query ? `Search Results for "${query}"` : 'Audio Guides';
+
   return (
     <div className="space-y-6">
       {/* Search Header */}
@@ -127,9 +129,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
       {/* Results Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
-          {query ? `Search Results for "${query}"` : 'Audio Guides'}
-        </h2>
+        <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">{headerTitle}</h2>
         <span className="text-sm text-stone-500 dark:text-stone-400">
           {filteredResults.length} {filteredResults.length === 1 ? 'result' : 'results'}
         </span>
@@ -159,7 +159,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
       )}
 
       {/* Error State */}
-      {error && (
+      {!!error && (
         <div className="text-center py-8">
           <p className="text-stone-500 dark:text-stone-400">
             Something went wrong while searching. Please try again.
@@ -253,7 +253,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
           ))}
 
           {/* Load More */}
-          {results && results.length === 20 && (
+          {Array.isArray(results) && results.length === 20 && (
             <div className="text-center pt-4">
               <Button
                 variant="outline"
@@ -271,9 +271,12 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
   );
 }
 
-export default function SearchPage() {
+function SearchPageInner() {
   const searchParams = useSearchParams();
+  return <SearchPageContent searchParams={searchParams} />;
+}
 
+export default function SearchPage() {
   return (
     <Suspense
       fallback={
@@ -282,7 +285,7 @@ export default function SearchPage() {
         </div>
       }
     >
-      <SearchPageContent searchParams={searchParams} />
+      <SearchPageInner />
     </Suspense>
   );
 }

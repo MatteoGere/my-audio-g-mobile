@@ -1,13 +1,7 @@
 import { Card, Button, Badge } from '@/components/ui';
 
-interface ItineraryDetailPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function ItineraryDetailPage({ params }: ItineraryDetailPageProps) {
-  const { id } = params;
+export default async function ItineraryDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
   // In real implementation, you would fetch the itinerary data here
   // For now, we'll use mock data
