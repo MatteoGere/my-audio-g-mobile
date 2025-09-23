@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Card, Badge } from '@/components/ui';
+import Link from 'next/link';
 import { useGetAudioItinerariesQuery } from '@/lib/redux/api/apiSlice';
 import { useSignedUrls } from '@/lib/hooks/useSignedUrls';
 import { HiOutlineChevronLeft, HiOutlineChevronRight, HiOutlineClock } from 'react-icons/hi2';
@@ -125,37 +126,36 @@ export default function FeaturedCarousel() {
             const path = it.image_file?.image_storage_key ?? '';
             const imgUrl = path ? urlMap.get(path) : undefined;
             return (
-              <Card
-                key={it.id}
-                className="min-w-[260px] w-[260px] p-0 overflow-hidden snap-start border-stone-200 dark:border-stone-700"
-              >
-                <div className="relative h-40 bg-stone-100 dark:bg-stone-800">
-                  {imgUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={imgUrl} alt={it.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full grid place-items-center text-stone-400">
-                      No Image
-                    </div>
-                  )}
-                </div>
-                <div className="p-3 space-y-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-medium text-stone-900 dark:text-stone-100 truncate">
-                      {it.name}
-                    </h3>
-                    <Badge variant="secondary" className="shrink-0">
-                      <HiOutlineClock className="h-3 w-3 mr-1" />{' '}
-                      {formatDuration(it.total_duration)}
-                    </Badge>
+              <Link key={it.id} href={`/itinerary/${it.id}`} className="block">
+                <Card className="min-w-[260px] w-[260px] p-0 overflow-hidden snap-start border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800">
+                  <div className="relative h-40 bg-stone-100 dark:bg-stone-800">
+                    {imgUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={imgUrl} alt={it.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full grid place-items-center text-stone-400">
+                        No Image
+                      </div>
+                    )}
                   </div>
-                  {it.description && (
-                    <p className="text-xs text-stone-600 dark:text-stone-400 line-clamp-2">
-                      {it.description}
-                    </p>
-                  )}
-                </div>
-              </Card>
+                  <div className="p-3 space-y-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="font-medium text-stone-900 dark:text-stone-100 truncate">
+                        {it.name}
+                      </h3>
+                      <Badge variant="secondary" className="shrink-0">
+                        <HiOutlineClock className="h-3 w-3 mr-1" />{' '}
+                        {formatDuration(it.total_duration)}
+                      </Badge>
+                    </div>
+                    {it.description && (
+                      <p className="text-xs text-stone-600 dark:text-stone-400 line-clamp-2">
+                        {it.description}
+                      </p>
+                    )}
+                  </div>
+                </Card>
+              </Link>
             );
           })}
         </div>

@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { 
-  HiPlay, 
-  HiPause, 
-  HiForward, 
+import {
+  HiPlay,
+  HiPause,
+  HiForward,
   HiBackward,
   HiSpeakerWave,
   HiSpeakerXMark,
@@ -13,21 +13,21 @@ import {
   HiShare,
   HiClock,
   HiChevronLeft,
-  HiAdjustmentsHorizontal
+  HiAdjustmentsHorizontal,
 } from 'react-icons/hi2';
 import { Card, Button, Progress } from '@/components/ui';
 import { useGetAudioItineraryQuery, useGetItineraryTracksQuery } from '@/lib/redux/api/apiSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/lib/redux/store';
-import { 
-  setCurrentTrack, 
-  play, 
-  pause, 
-  setCurrentTime, 
+import {
+  setCurrentTrack,
+  play,
+  pause,
+  setCurrentTime,
   setPlaybackSpeed,
   toggleMute,
   setVolume,
-  updatePlaybackState 
+  updatePlaybackState,
 } from '@/lib/redux/slices/audioSlice';
 
 export default function AudioPlayerPage() {
@@ -35,25 +35,25 @@ export default function AudioPlayerPage() {
   const router = useRouter();
   const dispatch = useDispatch();
   const itineraryId = params.id as string;
-  
+
   // Local state
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
-  
+
   // Audio element ref
   const audioRef = useRef<HTMLAudioElement>(null);
-  
+
   // API calls
   const {
     data: itinerary,
     isLoading: itineraryLoading,
-    error: itineraryError
+    error: itineraryError,
   } = useGetAudioItineraryQuery(itineraryId);
-  
+
   const {
     data: tracks,
     isLoading: tracksLoading,
-    error: tracksError
+    error: tracksError,
   } = useGetItineraryTracksQuery(itineraryId);
 
   // Redux state
@@ -62,7 +62,8 @@ export default function AudioPlayerPage() {
 
   // Current track data
   const currentTrack = audioState.currentTrack || tracks?.[0];
-  const currentTrackIndex = tracks?.findIndex(track => track.id === audioState.currentTrack?.id) ?? 0;
+  const currentTrackIndex =
+    tracks?.findIndex((track) => track.id === audioState.currentTrack?.id) ?? 0;
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -70,12 +71,14 @@ export default function AudioPlayerPage() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const progress = currentTrack?.duration ? (audioState.playbackState.currentTime / currentTrack.duration) * 100 : 0;
+  const progress = currentTrack?.duration
+    ? (audioState.playbackState.currentTime / currentTrack.duration) * 100
+    : 0;
 
   // Audio control functions
   const handlePlayPause = () => {
     if (!currentTrack) return;
-    
+
     if (audioState.playbackState.isPlaying) {
       audioRef.current?.pause();
       dispatch(pause());
@@ -87,29 +90,29 @@ export default function AudioPlayerPage() {
 
   const handlePreviousTrack = () => {
     if (!tracks || tracks.length === 0) return;
-    
+
     const newIndex = currentTrackIndex > 0 ? currentTrackIndex - 1 : tracks.length - 1;
     const newTrack = tracks[newIndex];
     const audioUrl = signedUrls[newTrack.audio_storage_key]?.url;
-    
+
     dispatch(setCurrentTrack({ track: newTrack as any, audioUrl }));
     dispatch(setCurrentTime(0));
   };
 
   const handleNextTrack = () => {
     if (!tracks || tracks.length === 0) return;
-    
+
     const newIndex = currentTrackIndex < tracks.length - 1 ? currentTrackIndex + 1 : 0;
     const newTrack = tracks[newIndex];
     const audioUrl = signedUrls[newTrack.audio_storage_key]?.url;
-    
+
     dispatch(setCurrentTrack({ track: newTrack as any, audioUrl }));
     dispatch(setCurrentTime(0));
   };
 
   const handleSeek = (percentage: number) => {
     if (!currentTrack || !audioRef.current) return;
-    
+
     const newTime = (percentage / 100) * currentTrack.duration;
     audioRef.current.currentTime = newTime;
     dispatch(setCurrentTime(newTime));
@@ -150,14 +153,15 @@ export default function AudioPlayerPage() {
   // Set up audio element when track changes
   useEffect(() => {
     if (currentTrack && audioRef.current) {
-      const audioUrl = signedUrls[currentTrack.audio_storage_key]?.url || audioState.currentAudioUrl;
+      const audioUrl =
+        signedUrls[currentTrack.audio_storage_key]?.url || audioState.currentAudioUrl;
       if (audioUrl) {
         audioRef.current.src = audioUrl;
         audioRef.current.currentTime = audioState.playbackState.currentTime;
         audioRef.current.playbackRate = audioState.playbackState.playbackSpeed;
         audioRef.current.volume = audioState.playbackState.volume;
         audioRef.current.muted = audioState.playbackState.isMuted;
-        
+
         if (audioState.playbackState.isPlaying) {
           audioRef.current.play();
         }
@@ -202,7 +206,9 @@ export default function AudioPlayerPage() {
         <div className="container mx-auto px-4 py-6 max-w-md">
           <Card className="p-8 text-center">
             <h2 className="text-xl font-semibold text-gray-900 mb-2">Audio Not Available</h2>
-            <p className="text-gray-600 mb-4">Unable to load the audio tracks for this itinerary.</p>
+            <p className="text-gray-600 mb-4">
+              Unable to load the audio tracks for this itinerary.
+            </p>
             <Button onClick={() => router.back()}>Go Back</Button>
           </Card>
         </div>
@@ -242,9 +248,9 @@ export default function AudioPlayerPage() {
         <Card className="overflow-hidden">
           <div className="aspect-square bg-gradient-to-br from-primary-200 to-sea-200 dark:from-primary-800 dark:to-sea-800 flex items-center justify-center">
             {currentTrack?.image_file_id ? (
-              <img 
-                src={`/placeholder-track-${currentTrackIndex + 1}.jpg`} 
-                alt={currentTrack.name || 'Track'} 
+              <img
+                src={`/placeholder-track-${currentTrackIndex + 1}.jpg`}
+                alt={currentTrack.name || 'Track'}
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -258,7 +264,9 @@ export default function AudioPlayerPage() {
           <h1 className="text-xl font-bold text-stone-900 dark:text-stone-100">
             {currentTrack?.name || 'Loading...'}
           </h1>
-          <p className="text-stone-600 dark:text-stone-400 text-sm">{itinerary?.name || 'Audio Tour'}</p>
+          <p className="text-stone-600 dark:text-stone-400 text-sm">
+            {itinerary?.name || 'Audio Tour'}
+          </p>
           <p className="text-stone-500 dark:text-stone-500 text-xs">
             Track {currentTrackIndex + 1} of {tracks?.length || 0}
           </p>
@@ -266,9 +274,9 @@ export default function AudioPlayerPage() {
 
         {/* Progress Bar */}
         <div className="space-y-2">
-          <Progress 
-            value={progress} 
-            className="h-2 cursor-pointer" 
+          <Progress
+            value={progress}
+            className="h-2 cursor-pointer"
             variant="primary"
             onClick={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
@@ -289,9 +297,9 @@ export default function AudioPlayerPage() {
             <HiBackward className="w-6 h-6" />
           </Button>
 
-          <Button 
-            variant="primary" 
-            size="lg" 
+          <Button
+            variant="primary"
+            size="lg"
             className="w-16 h-16 rounded-full p-0"
             onClick={handlePlayPause}
           >
@@ -318,7 +326,11 @@ export default function AudioPlayerPage() {
           </Button>
 
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm" onClick={() => handleSeek(Math.max(0, progress - 10))}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleSeek(Math.max(0, progress - 10))}
+            >
               <span className="text-lg">⏪</span>
             </Button>
 
@@ -331,7 +343,7 @@ export default function AudioPlayerPage() {
                   {audioState.playbackState.playbackSpeed}x
                 </span>
               </button>
-              
+
               {showSpeedMenu && (
                 <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 p-2 z-10">
                   {[0.5, 0.75, 1.0, 1.25, 1.5, 2.0].map((speed) => (
@@ -347,20 +359,24 @@ export default function AudioPlayerPage() {
               )}
             </div>
 
-            <Button variant="ghost" size="sm" onClick={() => handleSeek(Math.min(100, progress + 10))}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleSeek(Math.min(100, progress + 10))}
+            >
               <span className="text-lg">⏩</span>
             </Button>
           </div>
 
           <div className="relative">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               onClick={() => setShowVolumeSlider(!showVolumeSlider)}
             >
               <HiAdjustmentsHorizontal className="w-4 h-4" />
             </Button>
-            
+
             {showVolumeSlider && (
               <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 p-3 z-10">
                 <input
@@ -395,28 +411,28 @@ export default function AudioPlayerPage() {
                 .filter((track, index) => index !== currentTrackIndex)
                 .slice(0, 5) // Show max 5 upcoming tracks
                 .map((track, index) => (
-                <div key={track.id} className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <p className="font-medium text-stone-900 dark:text-stone-100 text-sm">
-                      {track.name || `Track ${index + 1}`}
-                    </p>
-                    <p className="text-xs text-stone-500 dark:text-stone-400">
-                      {formatTime(track.duration || 0)}
-                    </p>
+                  <div key={track.id} className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <p className="font-medium text-stone-900 dark:text-stone-100 text-sm">
+                        {track.name || `Track ${index + 1}`}
+                      </p>
+                      <p className="text-xs text-stone-500 dark:text-stone-400">
+                        {formatTime(track.duration || 0)}
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        const trackIndex = tracks.findIndex((t) => t.id === track.id);
+                        const audioUrl = signedUrls[track.audio_storage_key]?.url;
+                        dispatch(setCurrentTrack({ track: track as any, audioUrl }));
+                      }}
+                    >
+                      <HiPlay className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => {
-                      const trackIndex = tracks.findIndex(t => t.id === track.id);
-                      const audioUrl = signedUrls[track.audio_storage_key]?.url;
-                      dispatch(setCurrentTrack({ track: track as any, audioUrl }));
-                    }}
-                  >
-                    <HiPlay className="w-4 h-4" />
-                  </Button>
-                </div>
-              ))}
+                ))}
             </div>
           </Card>
         )}
@@ -427,8 +443,8 @@ export default function AudioPlayerPage() {
             <HiShare className="w-4 h-4 mr-2" />
             Share
           </Button>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="flex-1"
             onClick={() => router.push(`/map?itinerary=${itineraryId}&track=${currentTrack?.id}`)}
           >

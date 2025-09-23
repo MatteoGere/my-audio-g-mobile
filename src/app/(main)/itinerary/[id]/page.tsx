@@ -12,18 +12,21 @@ export default function ItineraryDetailPage() {
   const id = params.id as string;
 
   // Fetch itinerary and tracks
-  const { data: itinerary, isLoading: itineraryLoading, error: itineraryError } =
-    useGetAudioItineraryQuery(id);
+  const {
+    data: itinerary,
+    isLoading: itineraryLoading,
+    error: itineraryError,
+  } = useGetAudioItineraryQuery(id);
 
-  const { data: tracks, isLoading: tracksLoading, error: tracksError } =
-    useGetItineraryTracksQuery(id);
+  const {
+    data: tracks,
+    isLoading: tracksLoading,
+    error: tracksError,
+  } = useGetItineraryTracksQuery(id);
 
   // Signed image URL for itinerary hero
   const imageKey = (itinerary as any)?.image_file?.image_storage_key as string | undefined;
-  const { signedUrl: heroImageUrl } = useSignedUrl(
-    imageKey || '',
-    'image-files',
-  );
+  const { signedUrl: heroImageUrl } = useSignedUrl(imageKey || '', 'image-files');
 
   // Preload signed audio URLs for tracks (warm the cache for Play page)
   const audioPaths = useMemo(
@@ -66,7 +69,9 @@ export default function ItineraryDetailPage() {
       <div className="space-y-6">
         <Card className="p-6 text-center">
           <h2 className="text-lg font-semibold mb-2">Itinerary not found</h2>
-          <p className="text-stone-600 mb-4">The itinerary may have been removed or is unavailable.</p>
+          <p className="text-stone-600 mb-4">
+            The itinerary may have been removed or is unavailable.
+          </p>
           <Button onClick={() => router.back()}>Go Back</Button>
         </Card>
       </div>
@@ -103,7 +108,7 @@ export default function ItineraryDetailPage() {
 
           <div className="flex items-center space-x-4 mb-4">
             <Badge variant="outline">{formatDuration(itinerary.total_duration)}</Badge>
-            <Badge variant="outline">{(tracks?.length || 0)} stops</Badge>
+            <Badge variant="outline">{tracks?.length || 0} stops</Badge>
             <Badge variant="secondary">Walking Tour</Badge>
           </div>
 
@@ -114,10 +119,16 @@ export default function ItineraryDetailPage() {
           )}
 
           <div className="flex space-x-3">
-            <Button variant="primary" className="flex-1" onClick={() => router.push(`/itinerary/${id}/play`)}>
+            <Button
+              variant="primary"
+              className="flex-1"
+              onClick={() => router.push(`/itinerary/${id}/play`)}
+            >
               ▶ Start Tour
             </Button>
-            <Button variant="outline" onClick={() => router.push('/map')}>📍 View Map</Button>
+            <Button variant="outline" onClick={() => router.push('/map')}>
+              📍 View Map
+            </Button>
           </div>
         </div>
       </Card>
@@ -159,7 +170,11 @@ export default function ItineraryDetailPage() {
                     {formatDuration(track.duration)}
                   </span>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => router.push(`/itinerary/${id}/play`)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => router.push(`/itinerary/${id}/play`)}
+                >
                   ▶
                 </Button>
               </div>
@@ -175,7 +190,7 @@ export default function ItineraryDetailPage() {
           <div className="text-center">
             <span className="text-sea-600 dark:text-sea-400 text-2xl block mb-2">🗺️</span>
             <p className="text-sm text-stone-600 dark:text-stone-400">
-              Interactive map with {(tracks?.length || 0)} stops
+              Interactive map with {tracks?.length || 0} stops
             </p>
           </div>
         </div>

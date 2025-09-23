@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { Card, Badge, Button } from '@/components/ui';
+import Link from 'next/link';
 import { useGetNearbyItinerariesQuery } from '@/lib/redux/api/apiSlice';
 import { useSignedUrls } from '@/lib/hooks/useSignedUrls';
 import { supabase } from '@/lib/redux/api/apiSlice';
@@ -10,14 +11,15 @@ import { HiOutlineClock, HiOutlineMapPin } from 'react-icons/hi2';
 type NearbyItem = {
   id: string;
   name: string;
-  description: string | null;
+  description?: string | null;
   total_duration: number;
-  distance_meters?: number | null;
   image_file?: { image_storage_key?: string | null } | null;
-  image_file_id?: string | null; // RPC sometimes returns only the image_file_id
+  image_file_id?: string | null;
+  distance_meters: number;
 };
 
-function formatDuration(seconds: number) {
+function formatDuration(seconds?: number | null) {
+  if (!seconds || seconds <= 0) return '0m';
   const minutes = Math.round(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
@@ -26,11 +28,10 @@ function formatDuration(seconds: number) {
 }
 
 function formatDistance(meters?: number | null) {
-  if (!meters && meters !== 0) return '';
-  if (meters < 1000) return `${Math.round(meters)} m`;
-  return `${(meters / 1000).toFixed(1)} km`;
+  if (meters == null) return '';
+  if (meters >= 1000) return `${(meters / 1000).toFixed(1)} km`;
+  return `${Math.round(meters)} m`;
 }
-
 export default function NearbyItineraries() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [geoError, setGeoError] = useState<string | null>(null);
@@ -183,35 +184,34 @@ export default function NearbyItineraries() {
               (it.image_file_id ? imageFileMap[it.image_file_id] : '');
             const imgUrl = path ? signedUrls[path] : undefined;
             return (
-              <Card
-                key={it.id}
-                className="p-0 overflow-hidden border-stone-200 dark:border-stone-700"
-              >
-                <div className="relative h-24 bg-stone-100 dark:bg-stone-800">
-                  {imgUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={imgUrl} alt={it.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full grid place-items-center text-stone-400 text-xs">
-                      No Image
+              <Link key={it.id} href={`/itinerary/${it.id}`} className="block">
+                <Card className="p-0 overflow-hidden border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800">
+                  <div className="relative h-24 bg-stone-100 dark:bg-stone-800">
+                    {imgUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={imgUrl} alt={it.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full grid place-items-center text-stone-400 text-xs">
+                        No Image
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3 space-y-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="font-medium text-stone-900 dark:text-stone-100 truncate">
+                        {it.name}
+                      </h3>
+                      <Badge variant="secondary" className="shrink-0">
+                        <HiOutlineClock className="h-3 w-3 mr-1" />{' '}
+                        {formatDuration(it.total_duration)}
+                      </Badge>
                     </div>
-                  )}
-                </div>
-                <div className="p-3 space-y-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-medium text-stone-900 dark:text-stone-100 truncate">
-                      {it.name}
-                    </h3>
-                    <Badge variant="secondary" className="shrink-0">
-                      <HiOutlineClock className="h-3 w-3 mr-1" />{' '}
-                      {formatDuration(it.total_duration)}
-                    </Badge>
+                    <div className="text-xs text-stone-500 dark:text-stone-400">
+                      {formatDistance(it.distance_meters)} away
+                    </div>
                   </div>
-                  <div className="text-xs text-stone-500 dark:text-stone-400">
-                    {formatDistance(it.distance_meters)} away
-                  </div>
-                </div>
-              </Card>
+                </Card>
+              </Link>
             );
           })}
         </div>
