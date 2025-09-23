@@ -1,102 +1,123 @@
+'use client';
+
+import { useMemo } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { Card, Button, Badge } from '@/components/ui';
+import { useGetAudioItineraryQuery, useGetItineraryTracksQuery } from '@/lib/redux/api/apiSlice';
+import { useSignedUrl, useSignedAudioUrls } from '@/lib/hooks/useSignedUrls';
 
-export default async function ItineraryDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export default function ItineraryDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const id = params.id as string;
 
-  // In real implementation, you would fetch the itinerary data here
-  // For now, we'll use mock data
-  const itinerary = {
-    id,
-    name: 'Historic Downtown Walking Tour',
-    description:
-      'Explore the rich history of our downtown area with expert narration and fascinating stories from the past. This comprehensive tour covers major landmarks, hidden gems, and architectural marvels.',
-    totalDuration: 2700, // 45 minutes in seconds
-    imageUrl: null,
-    company: {
-      name: 'City Heritage Tours',
-      id: 'company-1',
-    },
-    tracks: [
-      {
-        id: 'track-1',
-        name: 'City Hall Introduction',
-        description: 'Learn about the founding of our city',
-        duration: 420, // 7 minutes
-        order: 1,
-      },
-      {
-        id: 'track-2',
-        name: 'Historic Main Street',
-        description: 'Walk through the heart of the old town',
-        duration: 600, // 10 minutes
-        order: 2,
-      },
-      {
-        id: 'track-3',
-        name: 'The Old Market Square',
-        description: 'Discover the bustling marketplace of yesteryear',
-        duration: 480, // 8 minutes
-        order: 3,
-      },
-      {
-        id: 'track-4',
-        name: 'Cathedral and Churches',
-        description: 'Explore the spiritual heart of the community',
-        duration: 720, // 12 minutes
-        order: 4,
-      },
-      {
-        id: 'track-5',
-        name: 'Riverside Walk',
-        description: 'End your journey at the peaceful riverside',
-        duration: 480, // 8 minutes
-        order: 5,
-      },
-    ],
-  };
+  // Fetch itinerary and tracks
+  const { data: itinerary, isLoading: itineraryLoading, error: itineraryError } =
+    useGetAudioItineraryQuery(id);
 
-  const formatDuration = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
+  const { data: tracks, isLoading: tracksLoading, error: tracksError } =
+    useGetItineraryTracksQuery(id);
+
+  // Signed image URL for itinerary hero
+  const imageKey = (itinerary as any)?.image_file?.image_storage_key as string | undefined;
+  const { signedUrl: heroImageUrl } = useSignedUrl(
+    imageKey || '',
+    'image-files',
+  );
+
+  // Preload signed audio URLs for tracks (warm the cache for Play page)
+  const audioPaths = useMemo(
+    () => (tracks ? tracks.map((t) => t.audio_storage_key).filter(Boolean) : []),
+    [tracks],
+  );
+  useSignedAudioUrls(audioPaths, 3600);
+
+  const formatDuration = (seconds?: number | null) => {
+    const total = Math.max(0, Math.floor(seconds || 0));
+    const minutes = Math.floor(total / 60);
     return `${minutes} min`;
   };
+
+  if (itineraryLoading) {
+    return (
+      <div className="space-y-6">
+        <Card className="overflow-hidden animate-pulse">
+          <div className="h-48 bg-stone-200" />
+          <div className="p-6 space-y-3">
+            <div className="h-6 bg-stone-200 rounded w-2/3" />
+            <div className="h-4 bg-stone-200 rounded w-1/3" />
+            <div className="h-4 bg-stone-200 rounded w-full" />
+            <div className="h-9 bg-stone-200 rounded w-full" />
+          </div>
+        </Card>
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="p-4 animate-pulse">
+              <div className="h-8 bg-stone-200 rounded" />
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (itineraryError || !itinerary) {
+    return (
+      <div className="space-y-6">
+        <Card className="p-6 text-center">
+          <h2 className="text-lg font-semibold mb-2">Itinerary not found</h2>
+          <p className="text-stone-600 mb-4">The itinerary may have been removed or is unavailable.</p>
+          <Button onClick={() => router.back()}>Go Back</Button>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       {/* Hero Section */}
       <Card className="overflow-hidden">
-        <div className="h-48 bg-gradient-to-br from-primary-100 to-sea-100 dark:from-primary-900 dark:to-sea-900 flex items-center justify-center">
-          <span className="text-primary-600 dark:text-primary-400 text-4xl">🏛️</span>
-        </div>
+        {heroImageUrl ? (
+          <img src={heroImageUrl} alt={itinerary.name} className="h-48 w-full object-cover" />
+        ) : (
+          <div className="h-48 bg-gradient-to-br from-primary-100 to-sea-100 dark:from-primary-900 dark:to-sea-900 flex items-center justify-center">
+            <span className="text-primary-600 dark:text-primary-400 text-4xl">🏛️</span>
+          </div>
+        )}
         <div className="p-6">
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
               <h1 className="text-xl font-bold text-stone-900 dark:text-stone-100 mb-2">
                 {itinerary.name}
               </h1>
-              <p className="text-sm text-stone-600 dark:text-stone-400">
-                by {itinerary.company.name}
-              </p>
+              {(itinerary as any)?.company?.name && (
+                <p className="text-sm text-stone-600 dark:text-stone-400">
+                  by {(itinerary as any).company.name}
+                </p>
+              )}
             </div>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" aria-label="Add to favorites">
               ♡
             </Button>
           </div>
 
           <div className="flex items-center space-x-4 mb-4">
-            <Badge variant="outline">{formatDuration(itinerary.totalDuration)}</Badge>
-            <Badge variant="outline">{itinerary.tracks.length} stops</Badge>
+            <Badge variant="outline">{formatDuration(itinerary.total_duration)}</Badge>
+            <Badge variant="outline">{(tracks?.length || 0)} stops</Badge>
             <Badge variant="secondary">Walking Tour</Badge>
           </div>
 
-          <p className="text-stone-700 dark:text-stone-300 text-sm leading-relaxed mb-4">
-            {itinerary.description}
-          </p>
+          {itinerary.description && (
+            <p className="text-stone-700 dark:text-stone-300 text-sm leading-relaxed mb-4">
+              {itinerary.description}
+            </p>
+          )}
 
           <div className="flex space-x-3">
-            <Button variant="primary" className="flex-1">
+            <Button variant="primary" className="flex-1" onClick={() => router.push(`/itinerary/${id}/play`)}>
               ▶ Start Tour
             </Button>
-            <Button variant="outline">📍 View Map</Button>
+            <Button variant="outline" onClick={() => router.push('/map')}>📍 View Map</Button>
           </div>
         </div>
       </Card>
@@ -104,29 +125,41 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
       {/* Audio Tracks */}
       <div>
         <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
-          Audio Tracks ({itinerary.tracks.length})
+          Audio Tracks ({tracks?.length || 0})
         </h2>
         <div className="space-y-3">
-          {itinerary.tracks.map((track, index) => (
+          {tracksLoading && (
+            <div className="space-y-3">
+              {[1, 2].map((i) => (
+                <Card key={i} className="p-4 animate-pulse">
+                  <div className="h-6 bg-stone-200 rounded" />
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {tracks?.map((track) => (
             <Card key={track.id} className="p-4">
               <div className="flex items-center space-x-4">
                 <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-primary-600 dark:text-primary-400 text-sm font-semibold">
-                    {track.order}
+                    {track.audio_itinerary_order}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-1">
-                    {track.name}
+                    {track.name || 'Untitled track'}
                   </h3>
-                  <p className="text-sm text-stone-600 dark:text-stone-400 mb-1">
-                    {track.description}
-                  </p>
+                  {track.description && (
+                    <p className="text-sm text-stone-600 dark:text-stone-400 mb-1">
+                      {track.description}
+                    </p>
+                  )}
                   <span className="text-xs text-stone-500 dark:text-stone-400">
                     {formatDuration(track.duration)}
                   </span>
                 </div>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" onClick={() => router.push(`/itinerary/${id}/play`)}>
                   ▶
                 </Button>
               </div>
@@ -142,28 +175,31 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
           <div className="text-center">
             <span className="text-sea-600 dark:text-sea-400 text-2xl block mb-2">🗺️</span>
             <p className="text-sm text-stone-600 dark:text-stone-400">
-              Interactive map with {itinerary.tracks.length} stops
+              Interactive map with {(tracks?.length || 0)} stops
             </p>
           </div>
         </div>
-        <Button variant="outline" className="w-full mt-4">
+        <Button variant="outline" className="w-full mt-4" onClick={() => router.push('/map')}>
           View Full Map
         </Button>
       </Card>
 
       {/* Company Info */}
-      <Card className="p-4">
-        <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-2">
-          About {itinerary.company.name}
-        </h3>
-        <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
-          Professional tour guides creating immersive audio experiences for travelers and locals
-          alike.
-        </p>
-        <Button variant="ghost" size="sm">
-          View All Tours by {itinerary.company.name}
-        </Button>
-      </Card>
+      {(itinerary as any)?.company?.name && (
+        <Card className="p-4">
+          <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-2">
+            About {(itinerary as any).company.name}
+          </h3>
+          {(itinerary as any).company?.description && (
+            <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
+              {(itinerary as any).company.description}
+            </p>
+          )}
+          <Button variant="ghost" size="sm">
+            View All Tours by {(itinerary as any).company.name}
+          </Button>
+        </Card>
+      )}
     </div>
   );
 }
