@@ -257,7 +257,7 @@ MapLayout: Fullscreen layout for map interactions
 ### 4.3 Audio Progress & Synchronization
 
 - [ ] **Progress Tracking**:
-  - Real-time progress updates in Redux store
+  - Real-time progress updates in Redux store(Attention to handle carrefully in order to avoid component re-renders and performance issues)
   - Resume functionality from last position
   - Mark tracks as completed
   - Overall itinerary progress calculation
@@ -265,7 +265,6 @@ MapLayout: Fullscreen layout for map interactions
   - Save listening progress to user profile
   - Track completion status
   - Listening history
-  - Analytics data collection
 
 ## 🗺️ PHASE 5: Map Integration with Leaflet
 
