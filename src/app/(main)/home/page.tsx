@@ -44,8 +44,8 @@ export default function HomePage() {
         </Card>
       </div>
 
-  {/* Featured Section */}
-  <FeaturedCarousel />
+      {/* Featured Section */}
+      <FeaturedCarousel />
 
       {/* Nearby Recommendations */}
       <NearbyItineraries />

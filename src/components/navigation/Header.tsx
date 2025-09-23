@@ -145,9 +145,7 @@ export function Header({
                     <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
                       {getUserDisplayName()}
                     </p>
-                    <p className="text-xs text-stone-500 dark:text-stone-400">
-                      {user?.email}
-                    </p>
+                    <p className="text-xs text-stone-500 dark:text-stone-400">{user?.email}</p>
                   </div>
 
                   <Link
@@ -188,10 +186,7 @@ export function Header({
 
       {/* Overlay to close user menu */}
       {showUserMenu && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setShowUserMenu(false)}
-        />
+        <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
       )}
     </header>
   );

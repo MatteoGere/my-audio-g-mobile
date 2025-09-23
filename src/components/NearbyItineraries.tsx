@@ -57,7 +57,12 @@ export default function NearbyItineraries() {
     };
   }, []);
 
-  const { data = [], isLoading, error, refetch } = useGetNearbyItinerariesQuery(
+  const {
+    data = [],
+    isLoading,
+    error,
+    refetch,
+  } = useGetNearbyItinerariesQuery(
     coords ? { latitude: coords.lat, longitude: coords.lng, radius: 5000 } : (undefined as any),
     { skip: !coords },
   );
@@ -67,10 +72,15 @@ export default function NearbyItineraries() {
   const [imageFileMap, setImageFileMap] = useState<Record<string, string>>({});
 
   // Derive image paths from either the nested image_file or from image_file_id -> image_storage_key map
-  const imagePaths = useMemo(() =>
-    items
-      .map((it) => it.image_file?.image_storage_key ?? (it.image_file_id ? imageFileMap[it.image_file_id] : undefined))
-      .filter(Boolean) as string[],
+  const imagePaths = useMemo(
+    () =>
+      items
+        .map(
+          (it) =>
+            it.image_file?.image_storage_key ??
+            (it.image_file_id ? imageFileMap[it.image_file_id] : undefined),
+        )
+        .filter(Boolean) as string[],
     [items, imageFileMap],
   );
 
@@ -145,7 +155,10 @@ export default function NearbyItineraries() {
       {isLoading && (
         <div className="grid grid-cols-2 gap-4">
           {[...Array(4)].map((_, i) => (
-            <Card key={i} className="p-0 overflow-hidden animate-pulse border-stone-200 dark:border-stone-700">
+            <Card
+              key={i}
+              className="p-0 overflow-hidden animate-pulse border-stone-200 dark:border-stone-700"
+            >
               <div className="h-24 bg-stone-200 dark:bg-stone-700" />
               <div className="p-3 space-y-2">
                 <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4" />
@@ -158,19 +171,22 @@ export default function NearbyItineraries() {
 
       {/* Error state */}
       {!!error && !isLoading && (
-        <p className="text-sm text-stone-500 dark:text-stone-400">
-          Failed to load nearby tours.
-        </p>
+        <p className="text-sm text-stone-500 dark:text-stone-400">Failed to load nearby tours.</p>
       )}
 
       {/* Results */}
       {items.length > 0 && (
         <div className="grid grid-cols-2 gap-4">
           {items.map((it) => {
-            const path = it.image_file?.image_storage_key ?? (it.image_file_id ? imageFileMap[it.image_file_id] : '');
+            const path =
+              it.image_file?.image_storage_key ??
+              (it.image_file_id ? imageFileMap[it.image_file_id] : '');
             const imgUrl = path ? signedUrls[path] : undefined;
             return (
-              <Card key={it.id} className="p-0 overflow-hidden border-stone-200 dark:border-stone-700">
+              <Card
+                key={it.id}
+                className="p-0 overflow-hidden border-stone-200 dark:border-stone-700"
+              >
                 <div className="relative h-24 bg-stone-100 dark:bg-stone-800">
                   {imgUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -187,7 +203,8 @@ export default function NearbyItineraries() {
                       {it.name}
                     </h3>
                     <Badge variant="secondary" className="shrink-0">
-                      <HiOutlineClock className="h-3 w-3 mr-1" /> {formatDuration(it.total_duration)}
+                      <HiOutlineClock className="h-3 w-3 mr-1" />{' '}
+                      {formatDuration(it.total_duration)}
                     </Badge>
                   </div>
                   <div className="text-xs text-stone-500 dark:text-stone-400">

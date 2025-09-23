@@ -93,10 +93,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
   // Get image paths for signed URLs
   const imagePaths = useMemo(
-    () =>
-      itineraries
-        .map((item) => item.image_file?.image_storage_key)
-        .filter(Boolean) as string[],
+    () => itineraries.map((item) => item.image_file?.image_storage_key).filter(Boolean) as string[],
     [itineraries],
   );
 
@@ -418,7 +415,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                         No Image
                       </div>
                     )}
-                    
+
                     {/* Favorite Button */}
                     <Button
                       variant="ghost"
@@ -443,7 +440,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                       <h3 className="font-medium text-stone-900 dark:text-stone-100 line-clamp-2">
                         {itinerary.name}
                       </h3>
-                      
+
                       {viewMode === 'list' && itinerary.description && (
                         <p className="text-xs text-stone-600 dark:text-stone-400 line-clamp-2">
                           {itinerary.description}
@@ -455,7 +452,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                           <HiOutlineClock className="h-3 w-3" />
                           {formatDuration(itinerary.total_duration)}
                         </div>
-                        
+
                         {itinerary.company?.name && (
                           <>
                             <span>•</span>

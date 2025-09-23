@@ -75,9 +75,7 @@ export default function CategoriesGrid() {
               <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-1">
                 {category.name}
               </h3>
-              <p className="text-xs text-stone-500 dark:text-stone-400">
-                {category.description}
-              </p>
+              <p className="text-xs text-stone-500 dark:text-stone-400">{category.description}</p>
             </Card>
           </Link>
         ))}

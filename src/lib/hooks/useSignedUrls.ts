@@ -99,20 +99,21 @@ export const useSignedAudioUrls = (paths: string[], expiresIn: number = 3600) =>
 
   // Check which URLs need fetching
   // Check which URLs need fetching
-  const selectUrlsToFetch = useMemo(() =>
-    createSelector(
-      (state: any) => state.audioTrack.signedUrls,
-      (signedAudioUrls: Record<string, any>) => {
-        // Build list of paths that need fetching
-        return paths.filter((path) => {
-          const cachedUrl = signedAudioUrls[path];
-          const isExpired = !cachedUrl || cachedUrl.expiresAt <= Date.now();
-          // near-expiry check: 5 minutes
-          const isNearExpiry = !cachedUrl || cachedUrl.expiresAt <= Date.now() + 5 * 60 * 1000;
-          return !cachedUrl || isExpired || isNearExpiry;
-        });
-      },
-    ),
+  const selectUrlsToFetch = useMemo(
+    () =>
+      createSelector(
+        (state: any) => state.audioTrack.signedUrls,
+        (signedAudioUrls: Record<string, any>) => {
+          // Build list of paths that need fetching
+          return paths.filter((path) => {
+            const cachedUrl = signedAudioUrls[path];
+            const isExpired = !cachedUrl || cachedUrl.expiresAt <= Date.now();
+            // near-expiry check: 5 minutes
+            const isNearExpiry = !cachedUrl || cachedUrl.expiresAt <= Date.now() + 5 * 60 * 1000;
+            return !cachedUrl || isExpired || isNearExpiry;
+          });
+        },
+      ),
     [paths],
   );
 
@@ -279,19 +280,20 @@ export const useSignedUrls = (
   const dispatch = useAppDispatch();
 
   // Check which URLs need fetching
-  const selectUrlsToFetchGeneric = useMemo(() =>
-    createSelector(
-      (state: any) => state.storage.signedUrls,
-      (signedStorageUrls: Record<string, any>) => {
-        return paths.filter((path) => {
-          const key = `${bucket}:${path}`;
-          const entry = signedStorageUrls[key];
-          const isExpired = !entry || entry.expiresAt <= Date.now();
-          const isNearExpiry = !entry || entry.expiresAt <= Date.now() + 5 * 60 * 1000;
-          return !entry || isExpired || isNearExpiry;
-        });
-      },
-    ),
+  const selectUrlsToFetchGeneric = useMemo(
+    () =>
+      createSelector(
+        (state: any) => state.storage.signedUrls,
+        (signedStorageUrls: Record<string, any>) => {
+          return paths.filter((path) => {
+            const key = `${bucket}:${path}`;
+            const entry = signedStorageUrls[key];
+            const isExpired = !entry || entry.expiresAt <= Date.now();
+            const isNearExpiry = !entry || entry.expiresAt <= Date.now() + 5 * 60 * 1000;
+            return !entry || isExpired || isNearExpiry;
+          });
+        },
+      ),
     [paths, bucket],
   );
 
@@ -331,23 +333,24 @@ export const useSignedUrls = (
 
   // Get all cached URLs for the requested paths
   // Create a memoized selector so we return the same reference when inputs haven't changed
-  const selectSignedUrlsForPaths = useMemo(() =>
-    createSelector(
-      // input selector: the whole signedUrls map from storage slice
-      (state: any) => state.storage.signedUrls,
-      // output selector: build a path->url map for requested paths
-      (signedUrlsState: Record<string, any>) => {
-        const urls: Record<string, string> = {};
-        paths.forEach((path) => {
-          const key = `${bucket}:${path}`;
-          const entry = signedUrlsState[key];
-          if (entry && entry.expiresAt > Date.now()) {
-            urls[path] = entry.url;
-          }
-        });
-        return urls;
-      },
-    ),
+  const selectSignedUrlsForPaths = useMemo(
+    () =>
+      createSelector(
+        // input selector: the whole signedUrls map from storage slice
+        (state: any) => state.storage.signedUrls,
+        // output selector: build a path->url map for requested paths
+        (signedUrlsState: Record<string, any>) => {
+          const urls: Record<string, string> = {};
+          paths.forEach((path) => {
+            const key = `${bucket}:${path}`;
+            const entry = signedUrlsState[key];
+            if (entry && entry.expiresAt > Date.now()) {
+              urls[path] = entry.url;
+            }
+          });
+          return urls;
+        },
+      ),
     // recreate selector only when paths or bucket change
     [paths, bucket],
   );
