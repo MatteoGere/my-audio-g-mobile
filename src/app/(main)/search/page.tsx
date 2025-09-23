@@ -1,272 +1,483 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useCallback, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams, type ReadonlyURLSearchParams } from 'next/navigation';
-import { Button, Badge } from '@/components/ui';
-import SearchBar from '@/components/SearchBar';
-import { useGetAudioItinerariesQuery } from '@/lib/redux/api/apiSlice';
-import { HiOutlineClock, HiOutlineMapPin, HiOutlineHeart } from 'react-icons/hi2';
+import { Card, Button, Input, Badge } from '@/components/ui';
+import { useGetAudioItinerariesQuery, useGetCompaniesQuery } from '@/lib/redux/api/apiSlice';
+import { useSignedUrls } from '@/lib/hooks/useSignedUrls';
+import {
+  HiOutlineMagnifyingGlass,
+  HiOutlineAdjustmentsHorizontal,
+  HiOutlineClock,
+  HiOutlineMapPin,
+  HiOutlineHeart,
+  HiHeart,
+  HiOutlineSquares2X2,
+  HiOutlineBars3,
+} from 'react-icons/hi2';
+
+type ViewMode = 'grid' | 'list';
+type SortOption = 'newest' | 'popular' | 'nearest' | 'duration_asc' | 'duration_desc';
+
+type SearchFilters = {
+  query: string;
+  company: string;
+  minDuration: number;
+  maxDuration: number;
+  maxDistance: number;
+  sortBy: SortOption;
+};
+
+type ItineraryWithImage = {
+  id: string;
+  name: string;
+  description: string;
+  total_duration: number;
+  created_at: string;
+  company_id: string;
+  company?: { id: string; name: string };
+  image_file?: { image_storage_key?: string | null } | null;
+};
+
+function formatDuration(seconds: number) {
+  const minutes = Math.round(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  if (hours > 0) return `${hours}h ${remainingMinutes}m`;
+  return `${minutes}m`;
+}
 
 interface SearchPageContentProps {
   searchParams: ReadonlyURLSearchParams;
 }
 
 function SearchPageContent({ searchParams }: SearchPageContentProps) {
-  const query = searchParams.get('q') ?? '';
-  const duration = searchParams.get('duration') as 'short' | 'medium' | 'long' | null;
-  const location = searchParams.get('location') as 'nearby' | 'anywhere' | null;
-  const company = searchParams.get('company') || '';
-  const type = searchParams.get('type') as 'featured' | 'recent' | 'popular' | null;
-
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
-  const [allResults, setAllResults] = useState<any[]>([]);
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
-  // Fetch search results
+  const [filters, setFilters] = useState<SearchFilters>({
+    query: searchParams.get('q') || '',
+    company: '',
+    minDuration: 0,
+    maxDuration: 300, // 5 hours in minutes
+    maxDistance: 50, // km
+    sortBy: 'newest',
+  });
+
+  // Local debounced search text to avoid calling API on every keystroke
+  const [searchText, setSearchText] = useState<string>(filters.query || '');
+
+  // Fetch companies for filter dropdown
+  const { data: companies = [] } = useGetCompaniesQuery();
+
+  // Fetch itineraries with current filters
   const {
-    data: results,
+    data: itinerariesData = [],
     isLoading,
     error,
+    refetch,
   } = useGetAudioItinerariesQuery({
-    search: query,
     page,
     limit: 20,
-  });
+    search: filters.query || undefined,
+  }) as {
+    data?: ItineraryWithImage[];
+    isLoading: boolean;
+    error: any;
+    refetch: () => void;
+  };
 
-  // Accumulate results for pagination
-  useEffect(() => {
-    if (results && page === 1) {
-      setAllResults(results);
-    } else if (results && page > 1) {
-      setAllResults((prev) => [...prev, ...results]);
+  const itineraries = itinerariesData as ItineraryWithImage[];
+
+  // Get image paths for signed URLs
+  const imagePaths = useMemo(
+    () =>
+      itineraries
+        .map((item) => item.image_file?.image_storage_key)
+        .filter(Boolean) as string[],
+    [itineraries],
+  );
+
+  const { signedUrls } = useSignedUrls(imagePaths, 'image-files', 3600);
+
+  // Filter and sort results client-side (in production, move to backend)
+  const filteredResults = useMemo(() => {
+    let results = [...itineraries];
+
+    // Filter by company
+    if (filters.company) {
+      results = results.filter((item) => item.company_id === filters.company);
     }
-  }, [results, page]);
 
-  // Reset when search changes
+    // Filter by duration
+    const minDurationSec = filters.minDuration * 60;
+    const maxDurationSec = filters.maxDuration * 60;
+    results = results.filter(
+      (item) => item.total_duration >= minDurationSec && item.total_duration <= maxDurationSec,
+    );
+
+    // Sort results
+    switch (filters.sortBy) {
+      case 'newest':
+        results.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        break;
+      case 'duration_asc':
+        results.sort((a, b) => a.total_duration - b.total_duration);
+        break;
+      case 'duration_desc':
+        results.sort((a, b) => b.total_duration - a.total_duration);
+        break;
+      case 'popular':
+        // For now, sort by created_at (in production, use actual popularity metrics)
+        results.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        break;
+      case 'nearest':
+        // For now, keep original order (in production, use location-based sorting)
+        break;
+    }
+
+    return results;
+  }, [itineraries, filters]);
+
+  const updateFilter = useCallback((key: keyof SearchFilters, value: any) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+    setPage(1); // Reset to first page when filters change
+  }, []);
+
+  // Debounce: apply searchText to filters.query only after 450ms of inactivity
   useEffect(() => {
+    const id = setTimeout(() => {
+      setFilters((prev) => {
+        if (prev.query === searchText) return prev;
+        return { ...prev, query: searchText };
+      });
+      setPage(1);
+    }, 700);
+
+    return () => clearTimeout(id);
+  }, [searchText]);
+
+  const clearAllFilters = useCallback(() => {
+    setFilters({
+      query: '',
+      company: '',
+      minDuration: 0,
+      maxDuration: 300,
+      maxDistance: 50,
+      sortBy: 'newest',
+    });
     setPage(1);
-    setAllResults([]);
-  }, [query, duration, location, company, type]);
+  }, []);
 
-  // Filter results based on criteria
-  const filteredResults = allResults.filter((result) => {
-    if (duration) {
-      const durationMinutes = result.total_duration / 60;
-      switch (duration) {
-        case 'short':
-          if (durationMinutes >= 30) return false;
-          break;
-        case 'medium':
-          if (durationMinutes < 30 || durationMinutes > 60) return false;
-          break;
-        case 'long':
-          if (durationMinutes <= 60) return false;
-          break;
+  const toggleFavorite = useCallback((itineraryId: string) => {
+    setFavorites((prev) => {
+      const newFavorites = new Set(prev);
+      if (newFavorites.has(itineraryId)) {
+        newFavorites.delete(itineraryId);
+      } else {
+        newFavorites.add(itineraryId);
       }
-    }
+      return newFavorites;
+    });
+  }, []);
 
-    if (company && !(result as any).company?.name.toLowerCase().includes(company.toLowerCase())) {
-      return false;
-    }
+  const sortOptions = [
+    { value: 'newest', label: 'Newest First' },
+    { value: 'popular', label: 'Most Popular' },
+    { value: 'nearest', label: 'Nearest to Me' },
+    { value: 'duration_asc', label: 'Shortest First' },
+    { value: 'duration_desc', label: 'Longest First' },
+  ];
 
-    return true;
-  });
-
-  const formatDuration = (seconds: number) => {
-    const minutes = Math.round(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-
-    if (hours > 0) {
-      return `${hours}h ${remainingMinutes}m`;
-    }
-    return `${minutes}m`;
-  };
-
-  const getDurationColor = (seconds: number) => {
-    const minutes = seconds / 60;
-    if (minutes < 30)
-      return 'bg-success-100 text-success-700 dark:bg-success-900/20 dark:text-success-300';
-    if (minutes < 60)
-      return 'bg-warning-100 text-warning-700 dark:bg-warning-900/20 dark:text-warning-300';
-    return 'bg-info-100 text-info-700 dark:bg-info-900/20 dark:text-info-300';
-  };
-
-  const headerTitle: string = query ? `Search Results for "${query}"` : 'Audio Guides';
+  const companyOptions = [
+    { value: '', label: 'All Companies' },
+    ...(companies as any[]).map((company) => ({
+      value: company.id,
+      label: company.name,
+    })),
+  ];
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-900">
       {/* Search Header */}
-      <div className="space-y-4">
-        <SearchBar
-          placeholder="Search audio guides, companies, locations..."
-          showFilters={true}
-          autoFocus={false}
-        />
+      <div className="bg-white dark:bg-stone-800 border-b border-stone-200 dark:border-stone-700 sticky top-0 z-10">
+        <div className="px-4 py-4 space-y-4">
+          {/* Search Input */}
+          <div className="relative">
+            <Input
+              placeholder="Search audio tours..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              icon={<HiOutlineMagnifyingGlass className="h-5 w-5" />}
+              className="pr-12"
+            />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowFilters(!showFilters)}
+              className="absolute right-2 top-1/2 -translate-y-1/2"
+            >
+              <HiOutlineAdjustmentsHorizontal className="h-5 w-5" />
+            </Button>
+          </div>
 
-        {/* Active Filters */}
-        {(query || duration || location || company || type) && (
-          <div className="flex flex-wrap gap-2">
-            {query && <Badge variant="primary">Search: "{query}"</Badge>}
-            {duration && (
-              <Badge variant="secondary">
-                <HiOutlineClock className="h-3 w-3 mr-1" />
-                {duration === 'short' ? '<30 min' : duration === 'medium' ? '30-60 min' : '>60 min'}
-              </Badge>
-            )}
-            {location && (
-              <Badge variant="secondary">
-                <HiOutlineMapPin className="h-3 w-3 mr-1" />
-                {location === 'nearby' ? 'Near me' : 'Anywhere'}
-              </Badge>
-            )}
-            {company && <Badge variant="secondary">Company: {company}</Badge>}
-            {type && (
-              <Badge variant="secondary">{type.charAt(0).toUpperCase() + type.slice(1)}</Badge>
-            )}
+          {/* Quick Sort and View Controls */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <select
+                value={filters.sortBy}
+                onChange={(e) => updateFilter('sortBy', e.target.value)}
+                className="px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800"
+              >
+                {sortOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              {(filters.company || filters.minDuration > 0 || filters.maxDuration < 300) && (
+                <Badge variant="secondary" className="text-xs">
+                  {Object.values(filters).filter((v) => v && v !== 'newest').length} filters
+                </Badge>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1">
+              <Button
+                variant={viewMode === 'grid' ? 'primary' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+              >
+                <HiOutlineSquares2X2 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'primary' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+              >
+                <HiOutlineBars3 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Advanced Filters Panel */}
+        {showFilters && (
+          <div className="px-4 pb-4 border-t border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50">
+            <div className="space-y-4 pt-4">
+              {/* Company Filter */}
+              <div>
+                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                  Company
+                </label>
+                <select
+                  value={filters.company}
+                  onChange={(e) => updateFilter('company', e.target.value)}
+                  className="w-full px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800"
+                >
+                  {companyOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Duration Range */}
+              <div>
+                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                  Duration (minutes)
+                </label>
+                <div className="flex items-center gap-3">
+                  <Input
+                    type="number"
+                    placeholder="Min"
+                    value={filters.minDuration || ''}
+                    onChange={(e) => updateFilter('minDuration', parseInt(e.target.value) || 0)}
+                    className="flex-1"
+                  />
+                  <span className="text-stone-500">to</span>
+                  <Input
+                    type="number"
+                    placeholder="Max"
+                    value={filters.maxDuration || ''}
+                    onChange={(e) => updateFilter('maxDuration', parseInt(e.target.value) || 300)}
+                    className="flex-1"
+                  />
+                </div>
+              </div>
+
+              {/* Distance Filter */}
+              <div>
+                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                  Max Distance (km)
+                </label>
+                <Input
+                  type="number"
+                  placeholder="50"
+                  value={filters.maxDistance || ''}
+                  onChange={(e) => updateFilter('maxDistance', parseInt(e.target.value) || 50)}
+                />
+              </div>
+
+              {/* Clear Filters */}
+              <div className="flex justify-end">
+                <Button variant="outline" size="sm" onClick={clearAllFilters}>
+                  Clear All Filters
+                </Button>
+              </div>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Results Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">{headerTitle}</h2>
-        <span className="text-sm text-stone-500 dark:text-stone-400">
-          {filteredResults.length} {filteredResults.length === 1 ? 'result' : 'results'}
-        </span>
-      </div>
-
-      {/* Loading State */}
-      {isLoading && page === 1 && (
-        <div className="space-y-4">
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className="bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 p-4"
-            >
-              <div className="animate-pulse">
-                <div className="flex space-x-4">
-                  <div className="w-16 h-16 bg-stone-200 dark:bg-stone-700 rounded-lg"></div>
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4"></div>
-                    <div className="h-3 bg-stone-200 dark:bg-stone-700 rounded w-1/2"></div>
-                    <div className="h-3 bg-stone-200 dark:bg-stone-700 rounded w-1/4"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Error State */}
-      {!!error && (
-        <div className="text-center py-8">
-          <p className="text-stone-500 dark:text-stone-400">
-            Something went wrong while searching. Please try again.
-          </p>
-          <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>
-            Retry
-          </Button>
-        </div>
-      )}
-
-      {/* No Results */}
-      {!isLoading && !error && filteredResults.length === 0 && query && (
-        <div className="text-center py-12">
-          <div className="w-16 h-16 mx-auto mb-4 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center">
-            <HiOutlineMapPin className="h-8 w-8 text-stone-400" />
-          </div>
-          <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">
-            No results found
-          </h3>
-          <p className="text-stone-500 dark:text-stone-400 mb-4">
-            We couldn't find any audio guides matching your search.
-          </p>
-          <div className="space-y-2 text-sm text-stone-500 dark:text-stone-400">
-            <p>Try:</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Using different keywords</li>
-              <li>Removing some filters</li>
-              <li>Checking your spelling</li>
-            </ul>
+      {/* Results */}
+      <div className="px-4 py-6">
+        {/* Results Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+              {filters.query ? `Search: "${filters.query}"` : 'Discover Tours'}
+            </h1>
+            <p className="text-stone-600 dark:text-stone-400 mt-1">
+              {filteredResults.length} tour{filteredResults.length !== 1 ? 's' : ''} found
+            </p>
           </div>
         </div>
-      )}
 
-      {/* Results Grid */}
-      {filteredResults.length > 0 && (
-        <div className="space-y-4">
-          {filteredResults.map((result, index) => (
-            <div
-              key={result.id}
-              className="bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 p-4 hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => window.open(`/itinerary/${result.id}`, '_blank')}
-            >
-              <div className="flex space-x-4">
-                {/* Image */}
-                <div className="w-16 h-16 bg-stone-100 dark:bg-stone-700 rounded-lg flex-shrink-0 flex items-center justify-center">
-                  {(result as any).image_file ? (
-                    <img
-                      src="#" // Will be handled by signed URL system
-                      alt={result.name}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  ) : (
-                    <HiOutlineMapPin className="h-6 w-6 text-stone-400" />
-                  )}
+        {isLoading && (
+          <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-4'}>
+            {Array.from({ length: 6 }, (_, i) => (
+              <Card key={i} className="p-0 overflow-hidden animate-pulse">
+                <div className="h-32 bg-stone-200 dark:bg-stone-700" />
+                <div className="p-3 space-y-2">
+                  <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4" />
+                  <div className="h-3 bg-stone-200 dark:bg-stone-700 rounded w-1/2" />
                 </div>
+              </Card>
+            ))}
+          </div>
+        )}
 
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-stone-900 dark:text-stone-100 truncate">
-                        {result.name}
-                      </h3>
-                      <p className="text-sm text-stone-500 dark:text-stone-400 mt-1 line-clamp-2">
-                        {result.description}
-                      </p>
-                    </div>
-                    <button className="ml-2 p-1 text-stone-400 hover:text-red-500 transition-colors">
-                      <HiOutlineHeart className="h-5 w-5" />
-                    </button>
-                  </div>
+        {/* Error State */}
+        {error && !isLoading && (
+          <div className="text-center py-12">
+            <p className="text-stone-500 dark:text-stone-400 mb-4">Failed to load results</p>
+            <Button onClick={() => refetch()}>Try Again</Button>
+          </div>
+        )}
 
-                  {/* Metadata */}
-                  <div className="flex items-center space-x-4 mt-3">
-                    {(result as any).company && (
-                      <span className="text-xs text-stone-500 dark:text-stone-400">
-                        {(result as any).company.name}
-                      </span>
+        {/* Empty State */}
+        {!isLoading && !error && filteredResults.length === 0 && (
+          <div className="text-center py-12">
+            <HiOutlineMagnifyingGlass className="h-12 w-12 text-stone-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">
+              No tours found
+            </h3>
+            <p className="text-stone-500 dark:text-stone-400 mb-4">
+              Try adjusting your search criteria or clear the filters
+            </p>
+            <Button variant="outline" onClick={clearAllFilters}>
+              Clear Filters
+            </Button>
+          </div>
+        )}
+
+        {/* Results Grid/List */}
+        {!isLoading && filteredResults.length > 0 && (
+          <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-4'}>
+            {filteredResults.map((itinerary) => {
+              const imagePath = itinerary.image_file?.image_storage_key;
+              const imageUrl = imagePath ? signedUrls[imagePath] : undefined;
+              const isFavorite = favorites.has(itinerary.id);
+
+              return (
+                <Card
+                  key={itinerary.id}
+                  className={`p-0 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer ${
+                    viewMode === 'list' ? 'flex' : ''
+                  }`}
+                  onClick={() => (window.location.href = `/itinerary/${itinerary.id}`)}
+                >
+                  {/* Image */}
+                  <div
+                    className={`relative bg-stone-100 dark:bg-stone-800 ${
+                      viewMode === 'grid' ? 'h-32' : 'h-24 w-24 flex-shrink-0'
+                    }`}
+                  >
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={itinerary.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full grid place-items-center text-stone-400 text-xs">
+                        No Image
+                      </div>
                     )}
-                    <span
-                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getDurationColor(result.total_duration)}`}
+                    
+                    {/* Favorite Button */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(itinerary.id);
+                      }}
+                      className="absolute top-2 right-2 p-1 bg-white/80 dark:bg-stone-800/80 hover:bg-white dark:hover:bg-stone-800"
                     >
-                      <HiOutlineClock className="h-3 w-3 mr-1" />
-                      {formatDuration(result.total_duration)}
-                    </span>
-                    <span className="text-xs text-stone-500 dark:text-stone-400">Free</span>
+                      {isFavorite ? (
+                        <HiHeart className="h-4 w-4 text-red-500" />
+                      ) : (
+                        <HiOutlineHeart className="h-4 w-4" />
+                      )}
+                    </Button>
                   </div>
-                </div>
-              </div>
-            </div>
-          ))}
 
-          {/* Load More */}
-          {Array.isArray(results) && results.length === 20 && (
-            <div className="text-center pt-4">
-              <Button
-                variant="outline"
-                onClick={() => setPage((prev) => prev + 1)}
-                loading={isLoading && page > 1}
-                disabled={isLoading}
-              >
-                Load More
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
+                  {/* Content */}
+                  <div className="p-3 flex-1">
+                    <div className="space-y-1">
+                      <h3 className="font-medium text-stone-900 dark:text-stone-100 line-clamp-2">
+                        {itinerary.name}
+                      </h3>
+                      
+                      {viewMode === 'list' && itinerary.description && (
+                        <p className="text-xs text-stone-600 dark:text-stone-400 line-clamp-2">
+                          {itinerary.description}
+                        </p>
+                      )}
+
+                      <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400">
+                        <div className="flex items-center gap-1">
+                          <HiOutlineClock className="h-3 w-3" />
+                          {formatDuration(itinerary.total_duration)}
+                        </div>
+                        
+                        {itinerary.company?.name && (
+                          <>
+                            <span>•</span>
+                            <span>{itinerary.company.name}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Load More Button (placeholder for infinite scroll) */}
+        {!isLoading && filteredResults.length > 0 && filteredResults.length >= 20 && (
+          <div className="text-center mt-8">
+            <Button onClick={() => setPage((prev) => prev + 1)}>Load More</Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
