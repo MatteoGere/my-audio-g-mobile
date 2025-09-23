@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
   HiPlay,
@@ -11,34 +11,46 @@ import {
   HiSpeakerXMark,
   HiMapPin,
   HiShare,
-  HiClock,
   HiChevronLeft,
-  HiAdjustmentsHorizontal,
+  HiOutlineQueueList,
+  HiOutlineClock,
 } from 'react-icons/hi2';
 import { Card, Button, Progress } from '@/components/ui';
 import { useGetAudioItineraryQuery, useGetItineraryTracksQuery } from '@/lib/redux/api/apiSlice';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/lib/redux/store';
+import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
+import { useSignedAudioUrls } from '@/lib/hooks/useSignedUrls';
 import {
   setCurrentTrack,
   play,
   pause,
+  stop,
   setCurrentTime,
+  setDuration,
   setPlaybackSpeed,
   toggleMute,
   setVolume,
   updatePlaybackState,
+  nextTrack,
+  previousTrack,
+  setCurrentQueueIndex,
+  setQueue,
+  toggleShuffle,
+  setRepeatMode,
+  setLoadingTrack,
+  setAudioError,
 } from '@/lib/redux/slices/audioSlice';
 
 export default function AudioPlayerPage() {
   const params = useParams();
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const itineraryId = params.id as string;
 
   // Local state
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+  const [showQueue, setShowQueue] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
 
   // Audio element ref
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -57,126 +69,228 @@ export default function AudioPlayerPage() {
   } = useGetItineraryTracksQuery(itineraryId);
 
   // Redux state
-  const audioState = useSelector((state: RootState) => state.audio);
-  const signedUrls = useSelector((state: RootState) => state.storage.signedUrls);
+  const audioState = useAppSelector((state) => state.audio);
+
+  // Prepare audio paths for lazy loading
+  const audioPaths = useMemo(
+    () => (tracks ? tracks.map((track) => track.audio_storage_key).filter(Boolean) : []),
+    [tracks],
+  );
+
+  // Get signed URLs with lazy loading
+  const { signedUrls, isLoading: urlsLoading } = useSignedAudioUrls(audioPaths, 3600);
 
   // Current track data
-  const currentTrack = audioState.currentTrack || tracks?.[0];
-  const currentTrackIndex =
-    tracks?.findIndex((track) => track.id === audioState.currentTrack?.id) ?? 0;
+  const currentTrack = audioState.currentTrack;
+  const currentTrackIndex = useMemo(() => {
+    if (!tracks || !currentTrack) return 0;
+    return tracks.findIndex((track) => track.id === currentTrack.id);
+  }, [tracks, currentTrack]);
 
-  const formatTime = (seconds: number) => {
+  // Helper functions
+  const formatTime = useCallback((seconds: number) => {
+    if (!seconds || isNaN(seconds)) return '0:00';
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+  }, []);
 
-  const progress = currentTrack?.duration
-    ? (audioState.playbackState.currentTime / currentTrack.duration) * 100
-    : 0;
+  const progress = useMemo(() => {
+    if (!currentTrack?.duration || !audioState.playbackState.currentTime) return 0;
+    return (audioState.playbackState.currentTime / currentTrack.duration) * 100;
+  }, [currentTrack?.duration, audioState.playbackState.currentTime]);
 
   // Audio control functions
-  const handlePlayPause = () => {
-    if (!currentTrack) return;
-
-    if (audioState.playbackState.isPlaying) {
-      audioRef.current?.pause();
-      dispatch(pause());
-    } else {
-      audioRef.current?.play();
-      dispatch(play());
-    }
-  };
-
-  const handlePreviousTrack = () => {
-    if (!tracks || tracks.length === 0) return;
-
-    const newIndex = currentTrackIndex > 0 ? currentTrackIndex - 1 : tracks.length - 1;
-    const newTrack = tracks[newIndex];
-    const audioUrl = signedUrls[newTrack.audio_storage_key]?.url;
-
-    dispatch(setCurrentTrack({ track: newTrack as any, audioUrl }));
-    dispatch(setCurrentTime(0));
-  };
-
-  const handleNextTrack = () => {
-    if (!tracks || tracks.length === 0) return;
-
-    const newIndex = currentTrackIndex < tracks.length - 1 ? currentTrackIndex + 1 : 0;
-    const newTrack = tracks[newIndex];
-    const audioUrl = signedUrls[newTrack.audio_storage_key]?.url;
-
-    dispatch(setCurrentTrack({ track: newTrack as any, audioUrl }));
-    dispatch(setCurrentTime(0));
-  };
-
-  const handleSeek = (percentage: number) => {
+  const handlePlayPause = useCallback(() => {
     if (!currentTrack || !audioRef.current) return;
 
+    const audioUrl = signedUrls[currentTrack.audio_storage_key];
+    
+    if (!audioUrl) {
+      dispatch(setAudioError('Audio URL not available'));
+      return;
+    }
+
+    if (audioState.playbackState.isPlaying) {
+      audioRef.current.pause();
+    } else {
+      // Set audio source if not already set
+      if (audioRef.current.src !== audioUrl) {
+        dispatch(setLoadingTrack(true));
+        setIsBuffering(true);
+        audioRef.current.src = audioUrl;
+      }
+      audioRef.current.play().catch((error) => {
+        console.error('Audio play error:', error);
+        dispatch(setAudioError(error.message));
+      });
+    }
+  }, [currentTrack, signedUrls, audioState.playbackState.isPlaying, dispatch]);
+
+  const handlePreviousTrack = useCallback(() => {
+    if (!tracks || tracks.length === 0) return;
+    
+    let newIndex;
+    if (audioState.shuffleMode) {
+      newIndex = Math.floor(Math.random() * tracks.length);
+    } else {
+      newIndex = currentTrackIndex > 0 ? currentTrackIndex - 1 : tracks.length - 1;
+    }
+    
+    const newTrack = tracks[newIndex];
+    dispatch(setCurrentTrack({ track: newTrack as any }));
+    dispatch(setCurrentQueueIndex(newIndex));
+    dispatch(setCurrentTime(0));
+  }, [tracks, currentTrackIndex, audioState.shuffleMode, dispatch]);
+
+  const handleNextTrack = useCallback(() => {
+    if (!tracks || tracks.length === 0) return;
+    
+    let newIndex;
+    if (audioState.shuffleMode) {
+      newIndex = Math.floor(Math.random() * tracks.length);
+    } else {
+      newIndex = currentTrackIndex < tracks.length - 1 ? currentTrackIndex + 1 : 0;
+    }
+    
+    const newTrack = tracks[newIndex];
+    dispatch(setCurrentTrack({ track: newTrack as any }));
+    dispatch(setCurrentQueueIndex(newIndex));
+    dispatch(setCurrentTime(0));
+  }, [tracks, currentTrackIndex, audioState.shuffleMode, dispatch]);
+
+  const handleSeek = useCallback((percentage: number) => {
+    if (!currentTrack || !audioRef.current) return;
+    
     const newTime = (percentage / 100) * currentTrack.duration;
     audioRef.current.currentTime = newTime;
     dispatch(setCurrentTime(newTime));
-  };
+  }, [currentTrack, dispatch]);
 
-  const handleSpeedChange = (rate: number) => {
+  const handleVolumeChange = useCallback((volume: number) => {
+    const normalizedVolume = volume / 100;
+    dispatch(setVolume(normalizedVolume));
     if (audioRef.current) {
-      audioRef.current.playbackRate = rate;
+      audioRef.current.volume = normalizedVolume;
     }
-    dispatch(setPlaybackSpeed(rate));
+  }, [dispatch]);
+
+  const handleSpeedChange = useCallback((speed: number) => {
+    dispatch(setPlaybackSpeed(speed));
+    if (audioRef.current) {
+      audioRef.current.playbackRate = speed;
+    }
     setShowSpeedMenu(false);
-  };
+  }, [dispatch]);
 
-  const handleVolumeChange = (volume: number) => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume / 100;
-    }
-    dispatch(setVolume(volume / 100));
-  };
-
-  const handleMuteToggle = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !audioState.playbackState.isMuted;
-    }
+  const handleMuteToggle = useCallback(() => {
     dispatch(toggleMute());
-  };
+    if (audioRef.current) {
+      audioRef.current.muted = !audioRef.current.muted;
+    }
+  }, [dispatch]);
 
-  const handleTimeUpdate = () => {
+  // Audio event handlers
+  const handleTimeUpdate = useCallback(() => {
     if (audioRef.current) {
       dispatch(setCurrentTime(audioRef.current.currentTime));
     }
-  };
+  }, [dispatch]);
 
-  const handleTrackEnd = () => {
-    handleNextTrack();
-  };
+  const handleTrackEnd = useCallback(() => {
+    if (audioState.repeatMode === 'one') {
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play();
+      }
+    } else if (audioState.repeatMode === 'all' || currentTrackIndex < (tracks?.length || 0) - 1) {
+      handleNextTrack();
+    } else {
+      dispatch(stop());
+    }
+  }, [audioState.repeatMode, currentTrackIndex, tracks?.length, handleNextTrack, dispatch]);
 
-  // Set up audio element when track changes
+  const handleLoadStart = useCallback(() => {
+    setIsBuffering(true);
+    dispatch(setLoadingTrack(true));
+  }, [dispatch]);
+
+  const handleCanPlay = useCallback(() => {
+    setIsBuffering(false);
+    dispatch(setLoadingTrack(false));
+  }, [dispatch]);
+
+  const handleLoadedMetadata = useCallback(() => {
+    if (audioRef.current && currentTrack) {
+      dispatch(setDuration(audioRef.current.duration));
+    }
+  }, [dispatch, currentTrack]);
+
+  const handleError = useCallback(() => {
+    setIsBuffering(false);
+    dispatch(setLoadingTrack(false));
+    dispatch(setAudioError('Failed to load audio'));
+  }, [dispatch]);
+
+  // Initialize queue and first track
   useEffect(() => {
-    if (currentTrack && audioRef.current) {
-      const audioUrl =
-        signedUrls[currentTrack.audio_storage_key]?.url || audioState.currentAudioUrl;
-      if (audioUrl) {
-        audioRef.current.src = audioUrl;
-        audioRef.current.currentTime = audioState.playbackState.currentTime;
-        audioRef.current.playbackRate = audioState.playbackState.playbackSpeed;
-        audioRef.current.volume = audioState.playbackState.volume;
-        audioRef.current.muted = audioState.playbackState.isMuted;
+    if (tracks && tracks.length > 0) {
+      // Set up queue
+      const queueItems = tracks.map((track, index) => ({
+        track: track as any,
+        index,
+      }));
+      dispatch(setQueue(queueItems));
 
-        if (audioState.playbackState.isPlaying) {
-          audioRef.current.play();
-        }
+      // Set first track if no current track
+      if (!currentTrack) {
+        dispatch(setCurrentTrack({ track: tracks[0] as any }));
+        dispatch(setCurrentQueueIndex(0));
       }
     }
-  }, [currentTrack, signedUrls, audioState.currentAudioUrl, audioState.playbackState]);
+  }, [tracks, currentTrack, dispatch]);
 
-  // Initialize first track
+  // Audio element setup
   useEffect(() => {
-    if (tracks && tracks.length > 0 && !audioState.currentTrack) {
-      const firstTrack = tracks[0];
-      const audioUrl = signedUrls[firstTrack.audio_storage_key]?.url;
-      dispatch(setCurrentTrack({ track: firstTrack as any, audioUrl }));
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    // Apply current state to audio element
+    audio.volume = audioState.playbackState.volume;
+    audio.playbackRate = audioState.playbackState.playbackSpeed;
+    audio.muted = audioState.playbackState.isMuted;
+
+    return () => {
+      // Cleanup
+      if (audio.src) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, [audioState.playbackState]);
+
+  // Media Session API integration
+  useEffect(() => {
+    if ('mediaSession' in navigator && currentTrack) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: currentTrack.name || 'Audio Track',
+        artist: itinerary?.name || 'Audio Guide',
+        album: itinerary?.name,
+        artwork: currentTrack.image_file_id ? [
+          {
+            src: '/placeholder-track.jpg', // You can use signed image URL here
+            sizes: '512x512',
+            type: 'image/jpeg',
+          },
+        ] : undefined,
+      });
+
+      navigator.mediaSession.setActionHandler('play', handlePlayPause);
+      navigator.mediaSession.setActionHandler('pause', handlePlayPause);
+      navigator.mediaSession.setActionHandler('previoustrack', handlePreviousTrack);
+      navigator.mediaSession.setActionHandler('nexttrack', handleNextTrack);
     }
-  }, [tracks, audioState.currentTrack, signedUrls, dispatch]);
+  }, [currentTrack, itinerary, handlePlayPause, handlePreviousTrack, handleNextTrack]);
 
   // Loading state
   if (itineraryLoading || tracksLoading) {
@@ -184,14 +298,14 @@ export default function AudioPlayerPage() {
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-sea-50 dark:from-stone-900 dark:to-stone-800">
         <div className="container mx-auto px-4 py-6 max-w-md">
           <div className="animate-pulse space-y-6">
-            <div className="h-6 bg-gray-300 rounded w-1/3"></div>
-            <div className="aspect-square bg-gray-300 rounded-lg"></div>
-            <div className="h-4 bg-gray-300 rounded w-2/3 mx-auto"></div>
-            <div className="h-2 bg-gray-300 rounded"></div>
+            <div className="h-6 bg-stone-200 dark:bg-stone-700 rounded w-1/3"></div>
+            <div className="aspect-square bg-stone-200 dark:bg-stone-700 rounded-lg"></div>
+            <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-2/3 mx-auto"></div>
+            <div className="h-2 bg-stone-200 dark:bg-stone-700 rounded"></div>
             <div className="flex justify-center space-x-4">
-              <div className="w-12 h-12 bg-gray-300 rounded-full"></div>
-              <div className="w-16 h-16 bg-gray-300 rounded-full"></div>
-              <div className="w-12 h-12 bg-gray-300 rounded-full"></div>
+              <div className="w-12 h-12 bg-stone-200 dark:bg-stone-700 rounded-full"></div>
+              <div className="w-16 h-16 bg-stone-200 dark:bg-stone-700 rounded-full"></div>
+              <div className="w-12 h-12 bg-stone-200 dark:bg-stone-700 rounded-full"></div>
             </div>
           </div>
         </div>
@@ -205,8 +319,10 @@ export default function AudioPlayerPage() {
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-sea-50 dark:from-stone-900 dark:to-stone-800">
         <div className="container mx-auto px-4 py-6 max-w-md">
           <Card className="p-8 text-center">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Audio Not Available</h2>
-            <p className="text-gray-600 mb-4">
+            <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-2">
+              Audio Not Available
+            </h2>
+            <p className="text-stone-600 dark:text-stone-400 mb-4">
               Unable to load the audio tracks for this itinerary.
             </p>
             <Button onClick={() => router.back()}>Go Back</Button>
@@ -223,13 +339,13 @@ export default function AudioPlayerPage() {
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleTrackEnd}
-        onLoadedMetadata={() => {
-          if (audioRef.current) {
-            dispatch(updatePlaybackState({ duration: audioRef.current.duration }));
-          }
-        }}
+        onLoadStart={handleLoadStart}
+        onCanPlay={handleCanPlay}
+        onLoadedMetadata={handleLoadedMetadata}
         onPlay={() => dispatch(play())}
         onPause={() => dispatch(pause())}
+        onError={handleError}
+        preload="none" // Lazy loading
       />
 
       {/* Header */}
@@ -238,15 +354,20 @@ export default function AudioPlayerPage() {
           <HiChevronLeft className="w-5 h-5" />
         </Button>
         <h1 className="font-semibold text-stone-900 dark:text-stone-100">Now Playing</h1>
-        <Button variant="ghost" size="sm">
-          <HiAdjustmentsHorizontal className="w-5 h-5" />
+        <Button variant="ghost" size="sm" onClick={() => setShowQueue(!showQueue)}>
+          <HiOutlineQueueList className="w-5 h-5" />
         </Button>
       </div>
 
       <div className="container mx-auto px-4 py-6 max-w-md space-y-6">
         {/* Track Image/Visual */}
         <Card className="overflow-hidden">
-          <div className="aspect-square bg-gradient-to-br from-primary-200 to-sea-200 dark:from-primary-800 dark:to-sea-800 flex items-center justify-center">
+          <div className="aspect-square bg-gradient-to-br from-primary-200 to-sea-200 dark:from-primary-800 dark:to-sea-800 flex items-center justify-center relative">
+            {isBuffering && (
+              <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+              </div>
+            )}
             {currentTrack?.image_file_id ? (
               <img
                 src={`/placeholder-track-${currentTrackIndex + 1}.jpg`}
@@ -254,7 +375,7 @@ export default function AudioPlayerPage() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <span className="text-6xl">�</span>
+              <span className="text-6xl">🎵</span>
             )}
           </div>
         </Card>
@@ -302,8 +423,11 @@ export default function AudioPlayerPage() {
             size="lg"
             className="w-16 h-16 rounded-full p-0"
             onClick={handlePlayPause}
+            disabled={isBuffering || urlsLoading}
           >
-            {audioState.playbackState.isPlaying ? (
+            {isBuffering ? (
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+            ) : audioState.playbackState.isPlaying ? (
               <HiPause className="w-8 h-8" />
             ) : (
               <HiPlay className="w-8 h-8" />
@@ -346,10 +470,10 @@ export default function AudioPlayerPage() {
 
               {showSpeedMenu && (
                 <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 p-2 z-10">
-                  {[0.5, 0.75, 1.0, 1.25, 1.5, 2.0].map((speed) => (
+                  {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
                     <button
                       key={speed}
-                      className="block w-full text-left px-3 py-1 hover:bg-stone-100 dark:hover:bg-stone-700 rounded text-sm"
+                      className="block w-full text-left px-3 py-1 text-sm hover:bg-stone-100 dark:hover:bg-stone-700 rounded"
                       onClick={() => handleSpeedChange(speed)}
                     >
                       {speed}x
@@ -374,7 +498,7 @@ export default function AudioPlayerPage() {
               size="sm"
               onClick={() => setShowVolumeSlider(!showVolumeSlider)}
             >
-              <HiAdjustmentsHorizontal className="w-4 h-4" />
+              <HiSpeakerWave className="w-5 h-5" />
             </Button>
 
             {showVolumeSlider && (
@@ -402,16 +526,26 @@ export default function AudioPlayerPage() {
           </p>
         </Card>
 
-        {/* Up Next - Other Tracks */}
-        {tracks && tracks.length > 1 && (
+        {/* Queue - Show when toggled */}
+        {showQueue && tracks && tracks.length > 1 && (
           <Card className="p-4">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">Up Next</h3>
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
+              Up Next ({tracks.length - 1} tracks)
+            </h3>
             <div className="space-y-3 max-h-48 overflow-y-auto">
               {tracks
-                .filter((track, index) => index !== currentTrackIndex)
-                .slice(0, 5) // Show max 5 upcoming tracks
+                .filter((_, index) => index !== currentTrackIndex)
+                .slice(0, 10)
                 .map((track, index) => (
-                  <div key={track.id} className="flex items-center justify-between">
+                  <div
+                    key={track.id}
+                    className="flex items-center justify-between cursor-pointer hover:bg-stone-50 dark:hover:bg-stone-800 rounded p-2"
+                    onClick={() => {
+                      const trackIndex = tracks.findIndex((t) => t.id === track.id);
+                      dispatch(setCurrentTrack({ track: track as any }));
+                      dispatch(setCurrentQueueIndex(trackIndex));
+                    }}
+                  >
                     <div className="flex-1">
                       <p className="font-medium text-stone-900 dark:text-stone-100 text-sm">
                         {track.name || `Track ${index + 1}`}
@@ -420,15 +554,7 @@ export default function AudioPlayerPage() {
                         {formatTime(track.duration || 0)}
                       </p>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        const trackIndex = tracks.findIndex((t) => t.id === track.id);
-                        const audioUrl = signedUrls[track.audio_storage_key]?.url;
-                        dispatch(setCurrentTrack({ track: track as any, audioUrl }));
-                      }}
-                    >
+                    <Button variant="ghost" size="sm">
                       <HiPlay className="w-4 h-4" />
                     </Button>
                   </div>
@@ -451,11 +577,51 @@ export default function AudioPlayerPage() {
             <HiMapPin className="w-4 h-4 mr-2" />
             Map
           </Button>
-          <Button variant="outline" className="flex-1">
-            <HiClock className="w-4 h-4 mr-2" />
-            Timer
+          <Button 
+            variant={audioState.shuffleMode ? "primary" : "outline"} 
+            className="flex-1"
+            onClick={() => dispatch(toggleShuffle())}
+          >
+            🔀
+          </Button>
+          <Button 
+            variant={audioState.repeatMode !== 'none' ? "primary" : "outline"} 
+            className="flex-1"
+            onClick={() => {
+              const modes: ('none' | 'one' | 'all')[] = ['none', 'one', 'all'];
+              const currentIndex = modes.indexOf(audioState.repeatMode);
+              const nextMode = modes[(currentIndex + 1) % modes.length];
+              dispatch(setRepeatMode(nextMode));
+            }}
+          >
+            {audioState.repeatMode === 'one' ? '🔂' : audioState.repeatMode === 'all' ? '🔁' : '🔁'}
           </Button>
         </div>
+
+        {/* Error Display */}
+        {audioState.audioError && (
+          <Card className="p-4 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+            <p className="text-red-600 dark:text-red-400 text-sm">
+              {audioState.audioError}
+            </p>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="mt-2"
+              onClick={() => {
+                dispatch(setAudioError(null));
+                if (audioRef.current && currentTrack) {
+                  const audioUrl = signedUrls[currentTrack.audio_storage_key];
+                  if (audioUrl) {
+                    audioRef.current.src = audioUrl;
+                  }
+                }
+              }}
+            >
+              Retry
+            </Button>
+          </Card>
+        )}
       </div>
     </div>
   );

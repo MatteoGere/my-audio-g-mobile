@@ -152,16 +152,29 @@ export const useSignedAudioUrls = (paths: string[], expiresIn: number = 3600) =>
   }, [data, error, dispatch, expiresIn]);
 
   // Get all cached URLs for the requested paths
-  const signedUrls = useAppSelector((state) => {
-    const urls: Record<string, string> = {};
-    paths.forEach((path) => {
-      const url = selectSignedAudioUrl(state, path);
-      if (url) {
-        urls[path] = url;
-      }
-    });
-    return urls;
-  });
+  // Create a memoized selector so we return the same reference when inputs haven't changed
+  const selectSignedAudioUrlsForPaths = useMemo(
+    () =>
+      createSelector(
+        // input selector: the whole signedUrls map from audioTrack slice
+        (state: any) => state.audioTrack.signedUrls,
+        // output selector: build a path->url map for requested paths
+        (signedAudioUrlsState: Record<string, any>) => {
+          const urls: Record<string, string> = {};
+          paths.forEach((path) => {
+            const entry = signedAudioUrlsState[path];
+            if (entry && entry.expiresAt > Date.now()) {
+              urls[path] = entry.url;
+            }
+          });
+          return urls;
+        },
+      ),
+    // recreate selector only when paths change
+    [paths],
+  );
+
+  const signedUrls = useAppSelector((state) => selectSignedAudioUrlsForPaths(state));
 
   // Refresh all URLs
   const refreshUrls = useCallback(() => {

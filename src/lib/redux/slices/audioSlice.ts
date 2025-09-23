@@ -3,7 +3,6 @@ import { AudioTrack } from './itinerariesSlice';
 import {
   PlaybackState as AppPlaybackState,
   QueueItem as AppQueueItem,
-  AudioPlayerState,
 } from '@/types/app-types';
 
 // Legacy types for backward compatibility
@@ -20,7 +19,6 @@ export interface PlaybackState {
 
 export interface QueueItem {
   track: AudioTrack;
-  audioUrl?: string;
   index: number;
 }
 
@@ -53,16 +51,6 @@ export interface AudioState {
   // Loading and errors
   isLoadingTrack: boolean;
   audioError: string | null;
-
-  // Audio context and effects
-  audioEffects: {
-    equalizer: {
-      enabled: boolean;
-      preset: 'flat' | 'bass' | 'treble' | 'voice' | 'custom';
-      bands: number[]; // EQ band values
-    };
-    skipSilence: boolean;
-  };
 }
 
 // Initial state
@@ -92,14 +80,6 @@ const initialState: AudioState = {
   mediaSessionActive: false,
   isLoadingTrack: false,
   audioError: null,
-  audioEffects: {
-    equalizer: {
-      enabled: false,
-      preset: 'flat',
-      bands: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 10 band EQ
-    },
-    skipSilence: false,
-  },
 };
 
 // Audio slice
@@ -113,6 +93,7 @@ export const audioSlice = createSlice({
       state.currentTrack = track;
       state.currentAudioUrl = audioUrl || null;
       state.audioError = null;
+      state.playerView = 'mini';
 
       // Add to history
       if (track.id && !state.playHistory.includes(track.id)) {
@@ -132,11 +113,14 @@ export const audioSlice = createSlice({
     play: (state) => {
       state.playbackState.isPlaying = true;
       state.playbackState.isPaused = false;
+      state.playbackState.isLoading = false;
     },
+    
     pause: (state) => {
       state.playbackState.isPlaying = false;
       state.playbackState.isPaused = true;
     },
+    
     stop: (state) => {
       state.playbackState.isPlaying = false;
       state.playbackState.isPaused = false;
@@ -147,120 +131,117 @@ export const audioSlice = createSlice({
     updatePlaybackState: (state, action: PayloadAction<Partial<PlaybackState>>) => {
       state.playbackState = { ...state.playbackState, ...action.payload };
     },
+
     setCurrentTime: (state, action: PayloadAction<number>) => {
       state.playbackState.currentTime = action.payload;
-      // Update progress tracking
+      
+      // Update track progress
       if (state.currentTrack?.id) {
         state.trackProgress[state.currentTrack.id] = action.payload;
       }
     },
+
     setDuration: (state, action: PayloadAction<number>) => {
       state.playbackState.duration = action.payload;
     },
+
     setVolume: (state, action: PayloadAction<number>) => {
       state.playbackState.volume = Math.max(0, Math.min(1, action.payload));
     },
+
     setPlaybackSpeed: (state, action: PayloadAction<number>) => {
-      state.playbackState.playbackSpeed = Math.max(0.25, Math.min(3.0, action.payload));
+      state.playbackState.playbackSpeed = action.payload;
     },
+
     toggleMute: (state) => {
       state.playbackState.isMuted = !state.playbackState.isMuted;
     },
 
     // Queue management
-    setQueue: (state, action: PayloadAction<{ tracks: AudioTrack[]; startIndex?: number }>) => {
-      const { tracks, startIndex = 0 } = action.payload;
-      state.queue = tracks.map((track, index) => ({
-        track,
-        index,
-      }));
-      state.currentQueueIndex = Math.max(0, Math.min(startIndex, tracks.length - 1));
+    setQueue: (state, action: PayloadAction<QueueItem[]>) => {
+      state.queue = action.payload;
     },
-    addToQueue: (state, action: PayloadAction<AudioTrack[]>) => {
-      const newItems = action.payload.map((track, index) => ({
+
+    addToQueue: (state, action: PayloadAction<{ track: AudioTrack; index?: number }>) => {
+      const { track, index } = action.payload;
+      const queueItem: QueueItem = {
         track,
-        index: state.queue.length + index,
-      }));
-      state.queue.push(...newItems);
-    },
-    removeFromQueue: (state, action: PayloadAction<number>) => {
-      const indexToRemove = action.payload;
-      state.queue.splice(indexToRemove, 1);
-      // Adjust current index if needed
-      if (state.currentQueueIndex > indexToRemove) {
-        state.currentQueueIndex--;
-      } else if (
-        state.currentQueueIndex === indexToRemove &&
-        state.currentQueueIndex >= state.queue.length
-      ) {
-        state.currentQueueIndex = Math.max(0, state.queue.length - 1);
+        index: index ?? state.queue.length,
+      };
+      
+      if (index !== undefined) {
+        state.queue.splice(index, 0, queueItem);
+      } else {
+        state.queue.push(queueItem);
       }
-      // Reindex remaining items
-      state.queue.forEach((item, index) => {
-        item.index = index;
-      });
     },
+
+    removeFromQueue: (state, action: PayloadAction<number>) => {
+      const index = action.payload;
+      state.queue.splice(index, 1);
+      
+      // Adjust current index if necessary
+      if (state.currentQueueIndex > index) {
+        state.currentQueueIndex--;
+      } else if (state.currentQueueIndex === index) {
+        state.currentQueueIndex = Math.min(state.currentQueueIndex, state.queue.length - 1);
+      }
+    },
+
     clearQueue: (state) => {
       state.queue = [];
       state.currentQueueIndex = -1;
     },
+
     setCurrentQueueIndex: (state, action: PayloadAction<number>) => {
-      state.currentQueueIndex = Math.max(0, Math.min(action.payload, state.queue.length - 1));
+      state.currentQueueIndex = action.payload;
     },
 
     // Navigation
     nextTrack: (state) => {
       if (state.queue.length === 0) return;
-
-      if (state.repeatMode === 'one') {
-        // Stay on current track
-        return;
-      }
-
+      
+      let nextIndex;
       if (state.shuffleMode) {
-        // Random next track
-        const availableIndices = state.queue
-          .map((_, i) => i)
-          .filter((i) => i !== state.currentQueueIndex);
-        if (availableIndices.length > 0) {
-          const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-          state.currentQueueIndex = randomIndex;
-        }
+        nextIndex = Math.floor(Math.random() * state.queue.length);
       } else {
-        // Sequential next
-        if (state.currentQueueIndex < state.queue.length - 1) {
-          state.currentQueueIndex++;
-        } else if (state.repeatMode === 'all') {
-          state.currentQueueIndex = 0;
-        }
+        nextIndex = state.currentQueueIndex < state.queue.length - 1 
+          ? state.currentQueueIndex + 1 
+          : (state.repeatMode === 'all' ? 0 : state.currentQueueIndex);
+      }
+      
+      if (nextIndex !== state.currentQueueIndex) {
+        state.currentQueueIndex = nextIndex;
+        state.currentTrack = state.queue[nextIndex]?.track || null;
+        state.playbackState.currentTime = 0;
+        state.audioError = null;
       }
     },
+
     previousTrack: (state) => {
       if (state.queue.length === 0) return;
-
+      
+      let prevIndex;
       if (state.shuffleMode) {
-        // Go to last played track from history
-        if (state.playHistory.length > 1) {
-          const previousTrackId = state.playHistory[1];
-          const queueIndex = state.queue.findIndex((item) => item.track.id === previousTrackId);
-          if (queueIndex !== -1) {
-            state.currentQueueIndex = queueIndex;
-          }
-        }
+        prevIndex = Math.floor(Math.random() * state.queue.length);
       } else {
-        // Sequential previous
-        if (state.currentQueueIndex > 0) {
-          state.currentQueueIndex--;
-        } else if (state.repeatMode === 'all') {
-          state.currentQueueIndex = state.queue.length - 1;
-        }
+        prevIndex = state.currentQueueIndex > 0 
+          ? state.currentQueueIndex - 1 
+          : (state.repeatMode === 'all' ? state.queue.length - 1 : state.currentQueueIndex);
+      }
+      
+      if (prevIndex !== state.currentQueueIndex) {
+        state.currentQueueIndex = prevIndex;
+        state.currentTrack = state.queue[prevIndex]?.track || null;
+        state.playbackState.currentTime = 0;
+        state.audioError = null;
       }
     },
 
-    // Playback modes
     toggleShuffle: (state) => {
       state.shuffleMode = !state.shuffleMode;
     },
+
     setRepeatMode: (state, action: PayloadAction<'none' | 'one' | 'all'>) => {
       state.repeatMode = action.payload;
     },
@@ -269,46 +250,50 @@ export const audioSlice = createSlice({
     setPlayerView: (state, action: PayloadAction<'mini' | 'full' | 'hidden'>) => {
       state.playerView = action.payload;
     },
+
     toggleQueue: (state) => {
       state.showQueue = !state.showQueue;
     },
+
     setShowQueue: (state, action: PayloadAction<boolean>) => {
       state.showQueue = action.payload;
     },
 
-    // Background and media session
+    // Background and session
     setBackgroundEnabled: (state, action: PayloadAction<boolean>) => {
       state.isBackgroundEnabled = action.payload;
     },
+
     setMediaSessionActive: (state, action: PayloadAction<boolean>) => {
       state.mediaSessionActive = action.payload;
     },
 
-    // Loading and errors
+    // Loading and error states
     setLoadingTrack: (state, action: PayloadAction<boolean>) => {
       state.isLoadingTrack = action.payload;
+      state.playbackState.isLoading = action.payload;
+      if (action.payload) {
+        state.audioError = null;
+      }
     },
+
     setAudioError: (state, action: PayloadAction<string | null>) => {
       state.audioError = action.payload;
+      state.isLoadingTrack = false;
+      state.playbackState.isLoading = false;
+      if (action.payload) {
+        state.playbackState.isPlaying = false;
+      }
     },
 
     // Progress tracking
     updateTrackProgress: (state, action: PayloadAction<{ trackId: string; progress: number }>) => {
-      state.trackProgress[action.payload.trackId] = action.payload.progress;
-    },
-    setLastPlayedTrackId: (state, action: PayloadAction<string | null>) => {
-      state.lastPlayedTrackId = action.payload;
+      const { trackId, progress } = action.payload;
+      state.trackProgress[trackId] = progress;
     },
 
-    // Audio effects
-    updateEqualizer: (
-      state,
-      action: PayloadAction<Partial<AudioState['audioEffects']['equalizer']>>,
-    ) => {
-      state.audioEffects.equalizer = { ...state.audioEffects.equalizer, ...action.payload };
-    },
-    setSkipSilence: (state, action: PayloadAction<boolean>) => {
-      state.audioEffects.skipSilence = action.payload;
+    setLastPlayedTrackId: (state, action: PayloadAction<string | null>) => {
+      state.lastPlayedTrackId = action.payload;
     },
 
     // Reset
@@ -347,8 +332,6 @@ export const {
   setAudioError,
   updateTrackProgress,
   setLastPlayedTrackId,
-  updateEqualizer,
-  setSkipSilence,
   resetAudio,
 } = audioSlice.actions;
 
@@ -368,8 +351,5 @@ export const selectShuffleMode = (state: { audio: AudioState }) => state.audio.s
 export const selectRepeatMode = (state: { audio: AudioState }) => state.audio.repeatMode;
 export const selectTrackProgress = (state: { audio: AudioState }, trackId: string) =>
   state.audio.trackProgress[trackId] || 0;
-export const selectIsPlaying = (state: { audio: AudioState }) =>
-  state.audio.playbackState.isPlaying;
-export const selectAudioError = (state: { audio: AudioState }) => state.audio.audioError;
 
 export default audioSlice.reducer;
