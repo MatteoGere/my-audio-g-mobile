@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { ReduxProvider } from '@/lib/redux';
 import { I18nProvider } from '@/i18n/I18nProvider';
+import { AuthProvider } from '@/components/auth/AuthProvider';
 
 export const metadata: Metadata = {
   title: 'MyAudioG - Audio Guide Experience',
@@ -47,7 +48,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased bg-sand-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 min-h-screen">
         <ReduxProvider>
-          <I18nProvider>{children}</I18nProvider>
+          <AuthProvider>
+            <I18nProvider>{children}</I18nProvider>
+          </AuthProvider>
         </ReduxProvider>
       </body>
     </html>

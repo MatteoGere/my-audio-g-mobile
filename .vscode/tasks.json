@@ -149,6 +149,13 @@
 			"command": "npx next build",
 			"args": [],
 			"group": "build"
+		},
+		{
+			"label": "Build Next.js app",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"group": "build"
 		}
 	]
 }

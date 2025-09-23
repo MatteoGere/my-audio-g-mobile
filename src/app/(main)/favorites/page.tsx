@@ -1,8 +1,12 @@
+'use client';
+
 import { Card, Button } from '@/components/ui';
+import { NavigationGuard } from '@/components/navigation/NavigationGuard';
 
 export default function FavoritesPage() {
   return (
-    <div className="space-y-6">
+    <NavigationGuard requireAuth={true}>
+      <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2">
@@ -73,6 +77,7 @@ export default function FavoritesPage() {
           <Button variant="primary">Explore Tours</Button>
         </Card>
       )}
-    </div>
+      </div>
+    </NavigationGuard>
   );
 }

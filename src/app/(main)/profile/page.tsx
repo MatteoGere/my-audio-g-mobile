@@ -3,6 +3,7 @@
 import { Card, Button, Switch } from '@/components/ui';
 import { useAuth } from '@/lib/hooks';
 import { useRouter } from 'next/navigation';
+import { NavigationGuard } from '@/components/navigation/NavigationGuard';
 
 export default function ProfilePage() {
   const { user, isAuthenticated, signOut } = useAuth();
@@ -17,35 +18,10 @@ export default function ProfilePage() {
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="space-y-6">
-        <Card className="p-8 text-center">
-          <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full mx-auto mb-4 flex items-center justify-center">
-            <span className="text-primary-600 dark:text-primary-400 text-2xl">👤</span>
-          </div>
-          <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">
-            Sign in to access your profile
-          </h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">
-            Create an account to save favorites and track your progress
-          </p>
-          <div className="space-y-2">
-            <Button variant="primary" className="w-full" onClick={() => router.push('/login')}>
-              Sign In
-            </Button>
-            <Button variant="outline" className="w-full" onClick={() => router.push('/register')}>
-              Create Account
-            </Button>
-          </div>
-        </Card>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6">
-      {/* Profile Header */}
+    <NavigationGuard requireAuth={true}>
+      <div className="space-y-6">
+        {/* Profile Header */}
       <Card className="p-6">
         <div className="flex items-center space-x-4">
           <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
@@ -150,5 +126,6 @@ export default function ProfilePage() {
         </Button>
       </div>
     </div>
+    </NavigationGuard>
   );
 }
