@@ -14,8 +14,12 @@ import {
   HiChevronLeft,
   HiOutlineQueueList,
   HiOutlineClock,
+  HiOutlinePlus,
+  HiOutlineHeart,
+  HiHeart,
 } from 'react-icons/hi2';
 import { Card, Button, Progress } from '@/components/ui';
+import { QueueManager } from '@/components/audio/QueueManager';
 import { useGetAudioItineraryQuery, useGetItineraryTracksQuery } from '@/lib/redux/api/apiSlice';
 import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
 import { useSignedAudioUrls } from '@/lib/hooks/useSignedUrls';
@@ -70,6 +74,7 @@ export default function AudioPlayerPage() {
 
   // Redux state
   const audioState = useAppSelector((state) => state.audio);
+  const { queue } = audioState;
 
   // Prepare audio paths for lazy loading
   const audioPaths = useMemo(
@@ -526,75 +531,83 @@ export default function AudioPlayerPage() {
           </p>
         </Card>
 
-        {/* Queue - Show when toggled */}
-        {showQueue && tracks && tracks.length > 1 && (
-          <Card className="p-4">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
-              Up Next ({tracks.length - 1} tracks)
-            </h3>
-            <div className="space-y-3 max-h-48 overflow-y-auto">
-              {tracks
-                .filter((_, index) => index !== currentTrackIndex)
-                .slice(0, 10)
-                .map((track, index) => (
-                  <div
-                    key={track.id}
-                    className="flex items-center justify-between cursor-pointer hover:bg-stone-50 dark:hover:bg-stone-800 rounded p-2"
-                    onClick={() => {
-                      const trackIndex = tracks.findIndex((t) => t.id === track.id);
-                      dispatch(setCurrentTrack({ track: track as any }));
-                      dispatch(setCurrentQueueIndex(trackIndex));
-                    }}
-                  >
-                    <div className="flex-1">
-                      <p className="font-medium text-stone-900 dark:text-stone-100 text-sm">
-                        {track.name || `Track ${index + 1}`}
-                      </p>
-                      <p className="text-xs text-stone-500 dark:text-stone-400">
-                        {formatTime(track.duration || 0)}
-                      </p>
-                    </div>
-                    <Button variant="ghost" size="sm">
-                      <HiPlay className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ))}
-            </div>
-          </Card>
+        {/* Enhanced Queue Manager */}
+        {showQueue && (
+          <QueueManager 
+            isVisible={showQueue}
+            onClose={() => setShowQueue(false)}
+          />
         )}
 
-        {/* Additional Controls */}
-        <div className="flex space-x-2">
-          <Button variant="outline" className="flex-1">
-            <HiShare className="w-4 h-4 mr-2" />
-            Share
-          </Button>
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={() => router.push(`/map?itinerary=${itineraryId}&track=${currentTrack?.id}`)}
+        {/* Playlist Management Controls */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* Queue Toggle */}
+          <Button 
+            variant={showQueue ? "primary" : "outline"} 
+            className="flex items-center justify-center space-x-2"
+            onClick={() => setShowQueue(!showQueue)}
           >
-            <HiMapPin className="w-4 h-4 mr-2" />
-            Map
+            <HiOutlineQueueList className="w-4 h-4" />
+            <span>Queue ({queue.length})</span>
           </Button>
+
+          {/* Add to Favorites */}
+          <Button variant="outline" className="flex items-center justify-center space-x-2">
+            <HiOutlineHeart className="w-4 h-4" />
+            <span>Favorite</span>
+          </Button>
+        </div>
+
+        {/* Playback Mode Controls */}
+        <div className="grid grid-cols-4 gap-2">
           <Button 
             variant={audioState.shuffleMode ? "primary" : "outline"} 
-            className="flex-1"
+            size="sm"
+            className="flex flex-col items-center justify-center space-y-1 h-12"
             onClick={() => dispatch(toggleShuffle())}
+            title={audioState.shuffleMode ? "Shuffle: On" : "Shuffle: Off"}
           >
-            🔀
+            <span className="text-lg">🔀</span>
+            <span className="text-xs">Shuffle</span>
           </Button>
+          
           <Button 
             variant={audioState.repeatMode !== 'none' ? "primary" : "outline"} 
-            className="flex-1"
+            size="sm"
+            className="flex flex-col items-center justify-center space-y-1 h-12"
             onClick={() => {
               const modes: ('none' | 'one' | 'all')[] = ['none', 'one', 'all'];
               const currentIndex = modes.indexOf(audioState.repeatMode);
               const nextMode = modes[(currentIndex + 1) % modes.length];
               dispatch(setRepeatMode(nextMode));
             }}
+            title={`Repeat: ${audioState.repeatMode === 'one' ? 'One' : audioState.repeatMode === 'all' ? 'All' : 'Off'}`}
           >
-            {audioState.repeatMode === 'one' ? '🔂' : audioState.repeatMode === 'all' ? '🔁' : '🔁'}
+            <span className="text-lg">
+              {audioState.repeatMode === 'one' ? '🔂' : audioState.repeatMode === 'all' ? '🔁' : '🔁'}
+            </span>
+            <span className="text-xs">Repeat</span>
+          </Button>
+
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="flex flex-col items-center justify-center space-y-1 h-12"
+            onClick={() => router.push(`/map?itinerary=${itineraryId}&track=${currentTrack?.id}`)}
+            title="View on Map"
+          >
+            <HiMapPin className="w-4 h-4" />
+            <span className="text-xs">Map</span>
+          </Button>
+
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="flex flex-col items-center justify-center space-y-1 h-12"
+            title="Share Track"
+          >
+            <HiShare className="w-4 h-4" />
+            <span className="text-xs">Share</span>
           </Button>
         </div>
 

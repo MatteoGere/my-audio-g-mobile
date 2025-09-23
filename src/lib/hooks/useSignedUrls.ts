@@ -176,13 +176,12 @@ export const useSignedAudioUrls = (paths: string[], expiresIn: number = 3600) =>
 
   const signedUrls = useAppSelector((state) => selectSignedAudioUrlsForPaths(state));
 
-  // Refresh all URLs
+    // Refresh all URLs
   const refreshUrls = useCallback(() => {
-    paths.forEach((path) => {
-      dispatch(removeSignedAudioUrl(path));
+    validPaths.forEach((path) => {
+      dispatch(fetchSignedUrl({ path, bucket, expiresIn }));
     });
-    refetch();
-  }, [dispatch, paths, refetch]);
+  }, [validPaths, bucket, expiresIn, dispatch]);
 
   return {
     signedUrls,
@@ -199,11 +198,21 @@ export const useSignedUrl = (
   expiresIn: number = 3600,
 ) => {
   const dispatch = useAppDispatch();
-  const cachedUrl = useAppSelector((state) => selectSignedUrl(state, path, bucket));
-  const isExpired = useAppSelector((state) => selectIsUrlExpired(state, path, bucket));
-  const isNearExpiry = useAppSelector((state) => selectIsUrlNearExpiry(state, path, bucket, 5));
+  
+  // Skip the hook entirely if path is empty or invalid
+  const isValidPath = Boolean(path && path.trim() && path !== '__SKIP__');
+  
+  const cachedUrl = useAppSelector((state) => 
+    isValidPath ? selectSignedUrl(state, path, bucket) : undefined
+  );
+  const isExpired = useAppSelector((state) => 
+    isValidPath ? selectIsUrlExpired(state, path, bucket) : false
+  );
+  const isNearExpiry = useAppSelector((state) => 
+    isValidPath ? selectIsUrlNearExpiry(state, path, bucket, 5) : false
+  );
 
-  const shouldSkip = Boolean(cachedUrl && !isExpired && !isNearExpiry);
+  const shouldSkip = !isValidPath || Boolean(cachedUrl && !isExpired && !isNearExpiry);
 
   // Use the appropriate hook based on bucket
   const {
@@ -272,14 +281,16 @@ export const useSignedUrl = (
 
   // Force refresh function
   const refreshUrl = useCallback(() => {
-    dispatch(removeSignedUrl({ path, bucket }));
-    refetch();
-  }, [dispatch, path, bucket, refetch]);
+    if (isValidPath) {
+      dispatch(removeSignedUrl({ path, bucket }));
+      refetch();
+    }
+  }, [dispatch, path, bucket, refetch, isValidPath]);
 
   return {
-    signedUrl: cachedUrl || undefined,
-    isLoading: shouldSkip ? false : isLoading,
-    error,
+    signedUrl: isValidPath ? (cachedUrl || undefined) : undefined,
+    isLoading: isValidPath && !shouldSkip ? isLoading : false,
+    error: isValidPath ? error : undefined,
     refreshUrl,
   };
 };
@@ -292,13 +303,16 @@ export const useSignedUrls = (
 ) => {
   const dispatch = useAppDispatch();
 
+  // Filter out empty or invalid paths
+  const validPaths = paths.filter(path => Boolean(path && path.trim() && path !== '__SKIP__'));
+
   // Check which URLs need fetching
   const selectUrlsToFetchGeneric = useMemo(
     () =>
       createSelector(
         (state: any) => state.storage.signedUrls,
         (signedStorageUrls: Record<string, any>) => {
-          return paths.filter((path) => {
+          return validPaths.filter((path) => {
             const key = `${bucket}:${path}`;
             const entry = signedStorageUrls[key];
             const isExpired = !entry || entry.expiresAt <= Date.now();
@@ -354,7 +368,7 @@ export const useSignedUrls = (
         // output selector: build a path->url map for requested paths
         (signedUrlsState: Record<string, any>) => {
           const urls: Record<string, string> = {};
-          paths.forEach((path) => {
+          validPaths.forEach((path) => {
             const key = `${bucket}:${path}`;
             const entry = signedUrlsState[key];
             if (entry && entry.expiresAt > Date.now()) {
@@ -364,8 +378,8 @@ export const useSignedUrls = (
           return urls;
         },
       ),
-    // recreate selector only when paths or bucket change
-    [paths, bucket],
+    // recreate selector only when validPaths or bucket change
+    [validPaths, bucket],
   );
 
   const signedUrls = useAppSelector((state) => selectSignedUrlsForPaths(state));
