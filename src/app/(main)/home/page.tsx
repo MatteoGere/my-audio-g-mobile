@@ -1,6 +1,7 @@
 import { Card, Button } from '@/components/ui';
 import Link from 'next/link';
 import FeaturedCarousel from '@/components/FeaturedCarousel';
+import NearbyItineraries from '@/components/NearbyItineraries';
 
 export default function HomePage() {
   return (
@@ -42,8 +43,11 @@ export default function HomePage() {
         </Card>
       </div>
 
-      {/* Featured Section */}
-      <FeaturedCarousel />
+  {/* Featured Section */}
+  <FeaturedCarousel />
+
+  {/* Nearby Recommendations */}
+  <NearbyItineraries />
 
       {/* Categories */}
       <div>

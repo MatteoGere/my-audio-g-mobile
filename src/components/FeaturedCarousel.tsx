@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Card, Badge } from '@/components/ui';
-import { useGetAudioItinerariesQuery, useGetBatchSignedUrlsQuery } from '@/lib/redux/api/apiSlice';
+import { useGetAudioItinerariesQuery } from '@/lib/redux/api/apiSlice';
+import { useSignedUrls } from '@/lib/hooks/useSignedUrls';
 import { HiOutlineChevronLeft, HiOutlineChevronRight, HiOutlineClock } from 'react-icons/hi2';
 
 type Itinerary = {
@@ -36,26 +37,9 @@ export default function FeaturedCarousel() {
     [items],
   );
 
-  const shouldFetchSigned = imagePaths.length > 0;
-  const { data: signedBatch, isLoading: isSigning } = useGetBatchSignedUrlsQuery(
-    shouldFetchSigned
-      ? {
-          paths: imagePaths,
-          bucket: 'image-files',
-          expiresIn: 3600,
-        }
-      : (undefined as any),
-  );
-
-  const urlMap = useMemo(() => {
-    const map = new Map<string, string>();
-    if (signedBatch) {
-      for (const entry of signedBatch) {
-        if (entry.path && entry.url) map.set(entry.path, entry.url);
-      }
-    }
-    return map;
-  }, [signedBatch]);
+  // Use caching hook for signed URLs to avoid redundant generation
+  const { signedUrls, isLoading: isSigning } = useSignedUrls(imagePaths, 'image-files', 3600);
+  const urlMap = useMemo(() => new Map<string, string>(Object.entries(signedUrls)), [signedUrls]);
 
   // Auto-scroll logic
   const containerRef = useRef<HTMLDivElement | null>(null);
