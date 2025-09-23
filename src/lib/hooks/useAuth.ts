@@ -248,8 +248,8 @@ export const useAuth = () => {
     }
   }, []);
 
-  // Refresh session function
-  const refreshSession = async () => {
+  // Refresh session function (memoized)
+  const refreshSession = useCallback(async () => {
     try {
       setError(null);
       const { data, error } = await supabase.auth.refreshSession();
@@ -262,7 +262,7 @@ export const useAuth = () => {
       console.error('Error refreshing session:', err);
       throw err;
     }
-  };
+  }, []);
 
   return {
     user,
@@ -276,11 +276,11 @@ export const useAuth = () => {
     refreshSession,
     forgotPassword,
     resetPassword,
-    clearError: () => {
+    clearError: useCallback(() => {
       setError(null);
       dispatch(clearAuthError());
-    },
-    updateActivity: () => dispatch(updateLastActivity()),
+    }, [dispatch]),
+    updateActivity: useCallback(() => dispatch(updateLastActivity()), [dispatch]),
   };
 };
 

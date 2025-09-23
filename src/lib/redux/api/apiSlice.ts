@@ -408,8 +408,17 @@ export const apiSlice = createApi({
         expiresIn?: number;
       }
     >({
-      queryFn: async ({ paths, bucket, expiresIn = 3600 }) => {
+      queryFn: async (params) => {
         try {
+          // Guard against undefined params to avoid destructuring errors
+          if (!params || !Array.isArray(params.paths) || params.paths.length === 0) {
+            return {
+              error: { status: 'FETCH_ERROR', error: 'Missing or invalid "paths" parameter' },
+            };
+          }
+
+          const { paths, bucket, expiresIn = 3600 } = params;
+
           const results = await Promise.allSettled(
             paths.map(async (path) => {
               const { data, error } = await supabase.storage
@@ -429,7 +438,7 @@ export const apiSlice = createApi({
               return {
                 path: paths[index],
                 url: '',
-                error: result.reason.message || 'Failed to create signed URL',
+                error: result.reason?.message || 'Failed to create signed URL',
               };
             }
           });
