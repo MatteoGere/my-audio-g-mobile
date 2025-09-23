@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useMemo } from 'react';
+import { createSelector } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import {
   useGetSignedAudioUrlQuery,
@@ -97,14 +98,25 @@ export const useSignedAudioUrls = (paths: string[], expiresIn: number = 3600) =>
   const dispatch = useAppDispatch();
 
   // Check which URLs need fetching
-  const urlsToFetch = useAppSelector((state) => {
-    return paths.filter((path) => {
-      const cachedUrl = selectSignedAudioUrl(state, path);
-      const isExpired = selectIsAudioUrlExpired(state, path);
-      const isNearExpiry = selectIsAudioUrlNearExpiry(state, path, 5);
-      return !cachedUrl || isExpired || isNearExpiry;
-    });
-  });
+  // Check which URLs need fetching
+  const selectUrlsToFetch = useMemo(() =>
+    createSelector(
+      (state: any) => state.audioTrack.signedUrls,
+      (signedAudioUrls: Record<string, any>) => {
+        // Build list of paths that need fetching
+        return paths.filter((path) => {
+          const cachedUrl = signedAudioUrls[path];
+          const isExpired = !cachedUrl || cachedUrl.expiresAt <= Date.now();
+          // near-expiry check: 5 minutes
+          const isNearExpiry = !cachedUrl || cachedUrl.expiresAt <= Date.now() + 5 * 60 * 1000;
+          return !cachedUrl || isExpired || isNearExpiry;
+        });
+      },
+    ),
+    [paths],
+  );
+
+  const urlsToFetch = useAppSelector((state) => selectUrlsToFetch(state));
 
   // Only fetch if we have paths that need fetching
   const shouldSkip = urlsToFetch.length === 0;
@@ -267,14 +279,23 @@ export const useSignedUrls = (
   const dispatch = useAppDispatch();
 
   // Check which URLs need fetching
-  const urlsToFetch = useAppSelector((state) => {
-    return paths.filter((path) => {
-      const cachedUrl = selectSignedUrl(state, path, bucket);
-      const isExpired = selectIsUrlExpired(state, path, bucket);
-      const isNearExpiry = selectIsUrlNearExpiry(state, path, bucket, 5);
-      return !cachedUrl || isExpired || isNearExpiry;
-    });
-  });
+  const selectUrlsToFetchGeneric = useMemo(() =>
+    createSelector(
+      (state: any) => state.storage.signedUrls,
+      (signedStorageUrls: Record<string, any>) => {
+        return paths.filter((path) => {
+          const key = `${bucket}:${path}`;
+          const entry = signedStorageUrls[key];
+          const isExpired = !entry || entry.expiresAt <= Date.now();
+          const isNearExpiry = !entry || entry.expiresAt <= Date.now() + 5 * 60 * 1000;
+          return !entry || isExpired || isNearExpiry;
+        });
+      },
+    ),
+    [paths, bucket],
+  );
+
+  const urlsToFetch = useAppSelector((state) => selectUrlsToFetchGeneric(state));
 
   const shouldSkip = urlsToFetch.length === 0;
 
@@ -309,16 +330,29 @@ export const useSignedUrls = (
   }, [data, error, dispatch, bucket, expiresIn]);
 
   // Get all cached URLs for the requested paths
-  const signedUrls = useAppSelector((state) => {
-    const urls: Record<string, string> = {};
-    paths.forEach((path) => {
-      const url = selectSignedUrl(state, path, bucket);
-      if (url) {
-        urls[path] = url;
-      }
-    });
-    return urls;
-  });
+  // Create a memoized selector so we return the same reference when inputs haven't changed
+  const selectSignedUrlsForPaths = useMemo(() =>
+    createSelector(
+      // input selector: the whole signedUrls map from storage slice
+      (state: any) => state.storage.signedUrls,
+      // output selector: build a path->url map for requested paths
+      (signedUrlsState: Record<string, any>) => {
+        const urls: Record<string, string> = {};
+        paths.forEach((path) => {
+          const key = `${bucket}:${path}`;
+          const entry = signedUrlsState[key];
+          if (entry && entry.expiresAt > Date.now()) {
+            urls[path] = entry.url;
+          }
+        });
+        return urls;
+      },
+    ),
+    // recreate selector only when paths or bucket change
+    [paths, bucket],
+  );
+
+  const signedUrls = useAppSelector((state) => selectSignedUrlsForPaths(state));
 
   // Refresh all URLs
   const refreshUrls = useCallback(() => {
