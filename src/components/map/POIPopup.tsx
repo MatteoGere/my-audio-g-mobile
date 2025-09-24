@@ -28,13 +28,14 @@ export const POIPopup: React.FC<POIPopupProps> = ({
   // Get signed URL for track image if available
   const { signedUrl: imageUrl, isLoading: imageLoading } = useSignedUrl(
     poi.imageStorageKey || '',
-    'image-files'
+    'image-files',
+    3600
   );
 
   // Check if this track is currently playing
   const currentTrackId = useAppSelector((state) => state.audio.currentTrack?.id);
   const playbackState = useAppSelector((state) => state.audio.playbackState);
-  const isPlaying = playbackState === 'playing';
+  const isPlaying = playbackState.isPlaying;
   const isCurrentTrack = currentTrackId === poi.trackId;
 
   // Format duration
