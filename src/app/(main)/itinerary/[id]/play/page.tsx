@@ -87,10 +87,10 @@ export default function AudioPlayerPage() {
   // Current track data
   const currentTrack = audioState.currentTrack;
   
-  // Memoize the image key to prevent unnecessary signed URL calls
+  // Memoize the image key to prevent unnecessary signed URL calls - only based on the storage key itself
   const currentTrackImageKey = useMemo(() => {
     return (currentTrack as any)?.image_file?.image_storage_key || '';
-  }, [currentTrack?.id, (currentTrack as any)?.image_file?.image_storage_key]);
+  }, [(currentTrack as any)?.image_file?.image_storage_key]);
   
   // Get signed URL for current track image (only when key actually changes)
   const { signedUrl: currentTrackImageUrl } = useSignedUrl(currentTrackImageKey, 'image-files');
@@ -214,12 +214,51 @@ export default function AudioPlayerPage() {
         ] : undefined,
       });
 
-      navigator.mediaSession.setActionHandler('play', handlePlayPause);
-      navigator.mediaSession.setActionHandler('pause', handlePlayPause);
-      navigator.mediaSession.setActionHandler('previoustrack', handlePreviousTrack);
-      navigator.mediaSession.setActionHandler('nexttrack', handleNextTrack);
+      // Use stable function references for media session handlers
+      navigator.mediaSession.setActionHandler('play', () => {
+        if (currentTrack) {
+          dispatch(audioState.playbackState.isPlaying ? pause() : play());
+        }
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        if (currentTrack) {
+          dispatch(audioState.playbackState.isPlaying ? pause() : play());
+        }
+      });
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        // Handle previous track logic inline
+        if (tracks && tracks.length > 0) {
+          const currentIndex = tracks.findIndex((track) => track.id === currentTrack.id);
+          let newIndex;
+          if (audioState.shuffleMode) {
+            newIndex = Math.floor(Math.random() * tracks.length);
+          } else {
+            newIndex = currentIndex > 0 ? currentIndex - 1 : tracks.length - 1;
+          }
+          const newTrack = tracks[newIndex];
+          dispatch(setCurrentTrack({ track: newTrack as any }));
+          dispatch(setCurrentQueueIndex(newIndex));
+          dispatch(setCurrentTime(0));
+        }
+      });
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        // Handle next track logic inline
+        if (tracks && tracks.length > 0) {
+          const currentIndex = tracks.findIndex((track) => track.id === currentTrack.id);
+          let newIndex;
+          if (audioState.shuffleMode) {
+            newIndex = Math.floor(Math.random() * tracks.length);
+          } else {
+            newIndex = currentIndex < tracks.length - 1 ? currentIndex + 1 : 0;
+          }
+          const newTrack = tracks[newIndex];
+          dispatch(setCurrentTrack({ track: newTrack as any }));
+          dispatch(setCurrentQueueIndex(newIndex));
+          dispatch(setCurrentTime(0));
+        }
+      });
     }
-  }, [currentTrack, itinerary, currentTrackImageUrl, handlePlayPause, handlePreviousTrack, handleNextTrack]);
+  }, [currentTrack?.id, itinerary?.name, currentTrackImageUrl, tracks, audioState.shuffleMode, dispatch]);
 
   // Loading state
   if (itineraryLoading || tracksLoading) {
@@ -285,6 +324,7 @@ export default function AudioPlayerPage() {
             )}
             {currentTrack?.image_file_id && currentTrackImageUrl ? (
               <img
+                key={currentTrackImageKey}
                 src={currentTrackImageUrl}
                 alt={currentTrack.name || 'Track'}
                 className="w-full h-full object-cover"

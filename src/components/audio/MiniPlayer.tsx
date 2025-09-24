@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
 import { useSignedUrl } from '@/lib/hooks/useSignedUrls';
@@ -27,6 +27,7 @@ import {
 
 export function MiniPlayer() {
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useAppDispatch();
   const { currentTrack, playbackState, queue, playerView } = useAppSelector((state) => state.audio);
   
@@ -45,10 +46,10 @@ export function MiniPlayer() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }, []);
 
-  // Memoize the image key to prevent unnecessary signed URL calls
+  // Memoize the image key to prevent unnecessary signed URL calls - only based on the storage key itself
   const currentTrackImageKey = useMemo(() => {
     return (currentTrack as any)?.image_file?.image_storage_key || '';
-  }, [currentTrack?.id, (currentTrack as any)?.image_file?.image_storage_key]);
+  }, [(currentTrack as any)?.image_file?.image_storage_key]);
 
   // Get signed URL for current track image (only when key actually changes)
   const { signedUrl: currentTrackImageUrl } = useSignedUrl(currentTrackImageKey, 'image-files');
@@ -126,8 +127,8 @@ export function MiniPlayer() {
     dispatch(toggleMute());
   }, [dispatch]);
 
-  // Don't render if no track is loaded or player is hidden
-  if (!currentTrack || playerView === 'hidden') {
+  // Don't render if no track is loaded, player is hidden, or on play page
+  if (!currentTrack || playerView === 'hidden' || pathname?.includes('/play')) {
     return null;
   }
 
@@ -158,6 +159,7 @@ export function MiniPlayer() {
         <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary-100 to-sea-100 dark:from-primary-800 dark:to-sea-800 flex items-center justify-center flex-shrink-0">
           {currentTrack?.image_file_id && currentTrackImageUrl ? (
             <img
+              key={currentTrackImageKey}
               src={currentTrackImageUrl}
               alt={currentTrack.name || 'Track'}
               className="w-full h-full object-cover rounded-lg"

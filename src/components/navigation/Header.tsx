@@ -5,6 +5,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
 import { useAuth, useUserProfile } from '@/lib/hooks';
+import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
+import { setPlayerView } from '@/lib/redux/slices/audioSlice';
 import {
   HiOutlineChevronLeft,
   HiOutlineMagnifyingGlass,
@@ -12,6 +14,7 @@ import {
   HiOutlineCog6Tooth,
   HiOutlineArrowRightOnRectangle,
   HiOutlineChevronDown,
+  HiOutlineMusicalNote,
 } from 'react-icons/hi2';
 
 interface HeaderProps {
@@ -29,9 +32,14 @@ export function Header({
 }: HeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
   const { isAuthenticated, user, signOut } = useAuth();
   const { profile } = useUserProfile();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  
+  // Audio player state for reopen button
+  const { currentTrack, playerView } = useAppSelector((state) => state.audio);
+  const shouldShowReopenButton = currentTrack && playerView === 'hidden' && !pathname?.includes('/play');
 
   // Dynamic title based on route
   const getPageTitle = () => {
@@ -111,6 +119,19 @@ export function Header({
         {/* Right Section */}
         <div className="flex items-center space-x-2">
           {customActions}
+
+          {/* Reopen MiniPlayer Button */}
+          {shouldShowReopenButton && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => dispatch(setPlayerView('minimized'))}
+              className="p-2 text-primary-600"
+              title="Show player"
+            >
+              <HiOutlineMusicalNote className="h-5 w-5" />
+            </Button>
+          )}
 
           {showSearchButton && (
             <Button
