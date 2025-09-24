@@ -10,3 +10,6 @@ export {
   usePreloadSignedUrls,
   useSignedUrlCacheHealth,
 } from './useSignedUrls';
+
+// Location hooks
+export { useLocation } from './useLocation';

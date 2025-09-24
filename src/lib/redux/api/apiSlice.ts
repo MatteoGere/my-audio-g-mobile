@@ -295,6 +295,93 @@ export const apiSlice = createApi({
       providesTags: (result, error, id) => [{ type: 'AudioTrack', id }],
     }),
 
+    // ===== POI ENDPOINTS =====
+    getPoisForMap: builder.query<
+      Array<{
+        trackId: string;
+        trackName: string;
+        itineraryId: string;
+        itineraryName: string;
+        latitude: number;
+        longitude: number;
+        duration: number;
+        imageStorageKey: string | null;
+        audioStorageKey: string;
+        companyId: string;
+        companyName: string;
+      }>,
+      { bounds?: { north: number; south: number; east: number; west: number }; itineraryId?: string }
+    >({
+      queryFn: async ({ bounds, itineraryId }) => {
+        try {
+          let query = supabase
+            .from('audio_track')
+            .select(
+              `
+              id,
+              name,
+              duration,
+              audio_storage_key,
+              image_file:image_file_id (
+                image_storage_key
+              ),
+              audio_track_poi!inner (
+                latitude,
+                longitude
+              ),
+              audio_itinerary!inner (
+                id,
+                name,
+                company:company_id (
+                  id,
+                  name
+                )
+              )
+            `,
+            )
+            .not('audio_track_poi', 'is', null);
+
+          // Filter by itinerary if specified
+          if (itineraryId) {
+            query = query.eq('itinerary_id', itineraryId);
+          }
+
+          // Filter by bounds if specified
+          if (bounds) {
+            query = query
+              .gte('audio_track_poi.latitude', bounds.south)
+              .lte('audio_track_poi.latitude', bounds.north)
+              .gte('audio_track_poi.longitude', bounds.west)
+              .lte('audio_track_poi.longitude', bounds.east);
+          }
+
+          const { data, error } = await query.order('track_order', { ascending: true });
+
+          if (error) throw error;
+
+          // Transform the data to match our POIMarkerData interface
+          const transformedData = data?.map((track: any) => ({
+            trackId: track.id,
+            trackName: track.name,
+            itineraryId: track.audio_itinerary.id,
+            itineraryName: track.audio_itinerary.name,
+            latitude: track.audio_track_poi.latitude,
+            longitude: track.audio_track_poi.longitude,
+            duration: track.duration,
+            imageStorageKey: track.image_file?.image_storage_key || null,
+            audioStorageKey: track.audio_storage_key,
+            companyId: track.audio_itinerary.company.id,
+            companyName: track.audio_itinerary.company.name,
+          })) || [];
+
+          return { data: transformedData };
+        } catch (error: any) {
+          return { error: { status: 'FETCH_ERROR', error: error.message } };
+        }
+      },
+      providesTags: ['AudioTrack', 'AudioItinerary'],
+    }),
+
     // ===== USER FAVORITES =====
     getUserFavorites: builder.query<
       Database['public']['Tables']['user_favourite']['Row'][],
@@ -499,6 +586,9 @@ export const {
   // Tracks
   useGetItineraryTracksQuery,
   useGetAudioTrackQuery,
+
+  // POI
+  useGetPoisForMapQuery,
 
   // Favorites
   useGetUserFavoritesQuery,
