@@ -10,6 +10,7 @@ import { POIMarkerData } from '@/types/app-types';
 import { POIMarker } from './POIMarker';
 import { UserLocationMarker } from './UserLocationMarker';
 import { MapEventHandler } from './MapEventHandler';
+import { RouteVisualization } from './RouteVisualization';
 import 'leaflet/dist/leaflet.css';
 import './map.css';
 
@@ -32,6 +33,8 @@ interface MapComponentProps {
   onMapClick?: (lat: number, lng: number) => void;
   selectedPoiId?: string;
   itineraryFilter?: string; // Show only POIs from this itinerary
+  showRoute?: boolean; // Show route between POIs
+  animatedRoute?: boolean;
 }
 
 export const MapComponent: React.FC<MapComponentProps> = ({
@@ -44,6 +47,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   onMapClick,
   selectedPoiId,
   itineraryFilter,
+  showRoute = false,
+  animatedRoute = false,
 }) => {
   const dispatch = useAppDispatch();
   const mapRef = useRef<LeafletMap>(null);
@@ -169,6 +174,17 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           onBoundsChange={handleMapBoundsChange}
           onClick={onMapClick}
         />
+
+        {/* Route Visualization */}
+        {showRoute && (
+          <RouteVisualization
+            pois={filteredPois}
+            itineraryId={itineraryFilter}
+            color={itineraryFilter ? itineraryColors[itineraryFilter] : undefined}
+            showDirections={true}
+            animated={animatedRoute}
+          />
+        )}
 
         {/* User Location Marker */}
         {showUserLocation && isLocationEnabled && userLocation && (

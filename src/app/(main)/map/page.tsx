@@ -47,11 +47,13 @@ export default function MapPage() {
     setSelectedPoiId(poi.trackId);
     dispatch(selectPoi({
       id: poi.trackId,
-      type: 'audio_track',
-      position: { lat: poi.latitude, lng: poi.longitude },
+      type: 'track',
+      latitude: poi.latitude,
+      longitude: poi.longitude,
       title: poi.trackName,
       description: poi.itineraryName,
-      audio_track: {} as any, // This would be populated with full track data
+      trackId: poi.trackId,
+      itineraryId: poi.itineraryId,
     }));
     dispatch(setHighlightedTrackId(poi.trackId));
   }, [dispatch]);
@@ -156,7 +158,7 @@ export default function MapPage() {
           interactive={true}
           onMarkerClick={handleMarkerClick}
           onMapClick={handleMapClick}
-          selectedPoiId={selectedPoiId}
+          selectedPoiId={selectedPoiId || undefined}
         />
       </div>
 

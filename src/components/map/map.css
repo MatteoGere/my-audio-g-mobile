@@ -137,3 +137,14 @@
   font-weight: bold;
   font-size: 12px;
 }
+
+/* Route animation */
+@keyframes dash {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.animated-route {
+  animation: dash 1s linear infinite;
+}
