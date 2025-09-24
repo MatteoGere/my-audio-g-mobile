@@ -2,6 +2,11 @@ import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/supabase-types';
 
+type TrackWithPoi = Database['public']['Tables']['audio_track']['Row'] & {
+  image_file?: Pick<Database['public']['Tables']['image_file']['Row'], 'image_storage_key' | 'image_type'> | null;
+  audio_track_poi?: Pick<Database['public']['Tables']['audio_track_poi']['Row'], 'latitude' | 'longitude'> | null;
+};
+
 // Create Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -264,6 +269,42 @@ export const apiSlice = createApi({
       },
     ),
 
+    getTracksByItineraryIds: builder.query<TrackWithPoi[], string[]>({
+      queryFn: async (itineraryIds) => {
+        try {
+          if (!Array.isArray(itineraryIds) || itineraryIds.length === 0) {
+            return { data: [] };
+          }
+
+          const { data, error } = await supabase
+            .from('audio_track')
+            .select(
+              `
+              *,
+              image_file:image_file_id (
+                image_storage_key,
+                image_type
+              ),
+              audio_track_poi (
+                latitude,
+                longitude
+              )
+            `,
+            )
+            .in('audio_itinerary_id', itineraryIds)
+            .order('audio_itinerary_id', { ascending: true })
+            .order('audio_itinerary_order', { ascending: true });
+
+          if (error) throw error;
+
+          return { data: data ?? [] };
+        } catch (error: any) {
+          return { error: { status: 'FETCH_ERROR', error: error.message } };
+        }
+      },
+      providesTags: ['AudioTrack'],
+    }),
+
     getAudioTrack: builder.query<Database['public']['Tables']['audio_track']['Row'], string>({
       queryFn: async (trackId) => {
         try {
@@ -498,6 +539,7 @@ export const {
 
   // Tracks
   useGetItineraryTracksQuery,
+  useGetTracksByItineraryIdsQuery,
   useGetAudioTrackQuery,
 
   // Favorites

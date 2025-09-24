@@ -125,7 +125,7 @@ export function Header({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => dispatch(setPlayerView('minimized'))}
+              onClick={() => dispatch(setPlayerView('mini'))}
               className="p-2 text-primary-600"
               title="Show player"
             >
