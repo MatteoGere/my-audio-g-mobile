@@ -30,7 +30,7 @@ export function MiniPlayer() {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const { currentTrack, playbackState, queue, playerView } = useAppSelector((state) => state.audio);
-  
+
   const [isDragging, setIsDragging] = useState(false);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
@@ -74,40 +74,49 @@ export function MiniPlayer() {
     }
   }, [dispatch, queue.length]);
 
-  const handleSeek = useCallback((clientX: number) => {
-    if (!progressBarRef.current || !currentTrack?.duration) return;
+  const handleSeek = useCallback(
+    (clientX: number) => {
+      if (!progressBarRef.current || !currentTrack?.duration) return;
 
-    const rect = progressBarRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    const newTime = (percentage / 100) * currentTrack.duration;
-    
-    dispatch(setCurrentTime(newTime));
-  }, [currentTrack?.duration, dispatch]);
+      const rect = progressBarRef.current.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+      const newTime = (percentage / 100) * currentTrack.duration;
 
-  const handleProgressClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    handleSeek(e.clientX);
-  }, [handleSeek]);
+      dispatch(setCurrentTime(newTime));
+    },
+    [currentTrack?.duration, dispatch],
+  );
 
-  const handleProgressMouseDown = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsDragging(true);
-    handleSeek(e.clientX);
-
-    const handleMouseMove = (e: MouseEvent) => {
+  const handleProgressClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
       handleSeek(e.clientX);
-    };
+    },
+    [handleSeek],
+  );
 
-    const handleMouseUp = () => {
-      setIsDragging(false);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
+  const handleProgressMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setIsDragging(true);
+      handleSeek(e.clientX);
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  }, [handleSeek]);
+      const handleMouseMove = (e: MouseEvent) => {
+        handleSeek(e.clientX);
+      };
+
+      const handleMouseUp = () => {
+        setIsDragging(false);
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    },
+    [handleSeek],
+  );
 
   const handleOpenFullPlayer = useCallback(() => {
     if (currentTrack && queue.length > 0) {
@@ -122,10 +131,13 @@ export function MiniPlayer() {
     dispatch(setPlayerView('hidden'));
   }, [dispatch]);
 
-  const handleMuteToggle = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    dispatch(toggleMute());
-  }, [dispatch]);
+  const handleMuteToggle = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      dispatch(toggleMute());
+    },
+    [dispatch],
+  );
 
   // Don't render if no track is loaded, player is hidden, or on play page
   if (!currentTrack || playerView === 'hidden' || pathname?.includes('/play')) {
@@ -135,18 +147,18 @@ export function MiniPlayer() {
   return (
     <div className="fixed bottom-16 left-0 right-0 z-30 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border-t border-stone-200 dark:border-stone-700 shadow-[0_-2px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_-2px_20px_rgba(0,0,0,0.4)]">
       {/* Interactive Progress Bar */}
-      <div 
+      <div
         ref={progressBarRef}
         className="h-1 bg-stone-200 dark:bg-stone-700 cursor-pointer relative group hover:h-2 transition-all duration-200"
         onClick={handleProgressClick}
         onMouseDown={handleProgressMouseDown}
       >
-        <div 
+        <div
           className="h-full bg-gradient-to-r from-primary-500 to-primary-600 transition-all duration-300 relative"
           style={{ width: `${progress}%` }}
         >
           {/* Progress thumb - visible on hover */}
-          <div 
+          <div
             className={`absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-primary-600 rounded-full shadow-md transition-opacity duration-200 ${
               isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
             }`}
@@ -170,10 +182,7 @@ export function MiniPlayer() {
         </div>
 
         {/* Track Info - Clickable to open full player */}
-        <div 
-          className="flex-1 min-w-0 cursor-pointer"
-          onClick={handleOpenFullPlayer}
-        >
+        <div className="flex-1 min-w-0 cursor-pointer" onClick={handleOpenFullPlayer}>
           <p className="text-sm font-semibold text-stone-900 dark:text-stone-100 truncate">
             {currentTrack.name || 'Audio Track'}
           </p>
@@ -184,7 +193,10 @@ export function MiniPlayer() {
             {queue.length > 1 && (
               <>
                 <span>•</span>
-                <span>Track {(queue.findIndex(item => item.track.id === currentTrack.id) || 0) + 1} of {queue.length}</span>
+                <span>
+                  Track {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1} of{' '}
+                  {queue.length}
+                </span>
               </>
             )}
           </div>
@@ -193,9 +205,9 @@ export function MiniPlayer() {
         {/* Playback Controls */}
         <div className="flex items-center space-x-1">
           {/* Mute/Volume */}
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className="p-2 hidden sm:flex"
             onClick={handleMuteToggle}
             title={playbackState.isMuted ? 'Unmute' : 'Mute'}
@@ -208,9 +220,9 @@ export function MiniPlayer() {
           </Button>
 
           {/* Previous Track */}
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className="p-2"
             onClick={handlePrevious}
             disabled={queue.length <= 1}
@@ -220,9 +232,9 @@ export function MiniPlayer() {
           </Button>
 
           {/* Play/Pause */}
-          <Button 
-            variant="primary" 
-            size="sm" 
+          <Button
+            variant="primary"
+            size="sm"
             className="w-10 h-10 rounded-full p-0 shadow-md hover:shadow-lg transition-shadow"
             onClick={handlePlayPause}
             title={playbackState.isPlaying ? 'Pause' : 'Play'}
@@ -237,9 +249,9 @@ export function MiniPlayer() {
           </Button>
 
           {/* Next Track */}
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className="p-2"
             onClick={handleNext}
             disabled={queue.length <= 1}
@@ -249,9 +261,9 @@ export function MiniPlayer() {
           </Button>
 
           {/* Expand to Full Player */}
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className="p-2"
             onClick={handleOpenFullPlayer}
             title="Open full player"
@@ -260,9 +272,9 @@ export function MiniPlayer() {
           </Button>
 
           {/* Close Mini Player */}
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className="p-2"
             onClick={handleCloseMiniPlayer}
             title="Close player"

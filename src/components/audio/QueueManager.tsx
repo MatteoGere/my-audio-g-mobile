@@ -28,8 +28,10 @@ interface QueueManagerProps {
 
 export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
   const dispatch = useAppDispatch();
-  const { queue, currentQueueIndex, currentTrack, playbackState } = useAppSelector((state) => state.audio);
-  
+  const { queue, currentQueueIndex, currentTrack, playbackState } = useAppSelector(
+    (state) => state.audio,
+  );
+
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
@@ -41,24 +43,32 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
   }, []);
 
   const totalDuration = queue.reduce((total, item) => total + (item.track.duration || 0), 0);
-  const remainingDuration = queue.slice(currentQueueIndex + 1).reduce((total, item) => total + (item.track.duration || 0), 0);
+  const remainingDuration = queue
+    .slice(currentQueueIndex + 1)
+    .reduce((total, item) => total + (item.track.duration || 0), 0);
 
-  const handlePlayTrack = useCallback((index: number) => {
-    const queueItem = queue[index];
-    if (queueItem) {
-      dispatch(setCurrentTrack({ track: queueItem.track }));
-      dispatch(setCurrentQueueIndex(index));
-      if (!playbackState.isPlaying) {
-        dispatch(play());
+  const handlePlayTrack = useCallback(
+    (index: number) => {
+      const queueItem = queue[index];
+      if (queueItem) {
+        dispatch(setCurrentTrack({ track: queueItem.track }));
+        dispatch(setCurrentQueueIndex(index));
+        if (!playbackState.isPlaying) {
+          dispatch(play());
+        }
       }
-    }
-  }, [queue, dispatch, playbackState.isPlaying]);
+    },
+    [queue, dispatch, playbackState.isPlaying],
+  );
 
-  const handleRemoveTrack = useCallback((index: number) => {
-    if (queue.length > 1) {
-      dispatch(removeFromQueue(index));
-    }
-  }, [queue.length, dispatch]);
+  const handleRemoveTrack = useCallback(
+    (index: number) => {
+      if (queue.length > 1) {
+        dispatch(removeFromQueue(index));
+      }
+    },
+    [queue.length, dispatch],
+  );
 
   const handleClearQueue = useCallback(() => {
     if (queue.length > 0) {
@@ -81,22 +91,25 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
     setDragOverIndex(null);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent, dropIndex: number) => {
-    e.preventDefault();
-    
-    if (draggedIndex === null || draggedIndex === dropIndex) {
+  const handleDrop = useCallback(
+    (e: React.DragEvent, dropIndex: number) => {
+      e.preventDefault();
+
+      if (draggedIndex === null || draggedIndex === dropIndex) {
+        setDraggedIndex(null);
+        setDragOverIndex(null);
+        return;
+      }
+
+      // Note: For now, we'll keep track reordering simple
+      // In a full implementation, you'd want to add a reorderQueue action
+      console.log(`Would move track from ${draggedIndex} to ${dropIndex}`);
+
       setDraggedIndex(null);
       setDragOverIndex(null);
-      return;
-    }
-
-    // Note: For now, we'll keep track reordering simple
-    // In a full implementation, you'd want to add a reorderQueue action
-    console.log(`Would move track from ${draggedIndex} to ${dropIndex}`);
-    
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-  }, [draggedIndex]);
+    },
+    [draggedIndex],
+  );
 
   const handleDragEnd = useCallback(() => {
     setDraggedIndex(null);
@@ -122,7 +135,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           {queue.length > 1 && (
             <Button
@@ -148,17 +161,18 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
           const isCurrentTrack = index === currentQueueIndex;
           const isPastTrack = index < currentQueueIndex;
           const isDragOver = dragOverIndex === index;
-          
+
           return (
             <div
               key={`${queueItem.track.id}-${index}`}
               className={`
                 relative flex items-center p-3 border-b border-stone-100 dark:border-stone-800 transition-all duration-200
-                ${isCurrentTrack 
-                  ? 'bg-primary-50 dark:bg-primary-900/20 border-l-4 border-l-primary-500' 
-                  : isPastTrack 
-                    ? 'opacity-60' 
-                    : 'hover:bg-stone-50 dark:hover:bg-stone-800/50'
+                ${
+                  isCurrentTrack
+                    ? 'bg-primary-50 dark:bg-primary-900/20 border-l-4 border-l-primary-500'
+                    : isPastTrack
+                      ? 'opacity-60'
+                      : 'hover:bg-stone-50 dark:hover:bg-stone-800/50'
                 }
                 ${isDragOver ? 'bg-primary-100 dark:bg-primary-900/30' : ''}
                 ${draggedIndex === index ? 'opacity-50' : ''}
@@ -182,15 +196,23 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                 {isCurrentTrack && playbackState.isPlaying ? (
                   <div className="flex space-x-0.5">
                     <div className="w-0.5 h-3 bg-primary-600 animate-pulse"></div>
-                    <div className="w-0.5 h-3 bg-primary-600 animate-pulse" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-0.5 h-3 bg-primary-600 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                    <div
+                      className="w-0.5 h-3 bg-primary-600 animate-pulse"
+                      style={{ animationDelay: '0.1s' }}
+                    ></div>
+                    <div
+                      className="w-0.5 h-3 bg-primary-600 animate-pulse"
+                      style={{ animationDelay: '0.2s' }}
+                    ></div>
                   </div>
                 ) : (
-                  <span className={`text-xs font-medium ${
-                    isCurrentTrack 
-                      ? 'text-primary-600 dark:text-primary-400' 
-                      : 'text-stone-500 dark:text-stone-400'
-                  }`}>
+                  <span
+                    className={`text-xs font-medium ${
+                      isCurrentTrack
+                        ? 'text-primary-600 dark:text-primary-400'
+                        : 'text-stone-500 dark:text-stone-400'
+                    }`}
+                  >
                     {index + 1}
                   </span>
                 )}
@@ -198,11 +220,13 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
 
               {/* Track Info */}
               <div className="flex-1 min-w-0 cursor-pointer" onClick={() => handlePlayTrack(index)}>
-                <p className={`text-sm font-medium truncate ${
-                  isCurrentTrack 
-                    ? 'text-primary-900 dark:text-primary-100' 
-                    : 'text-stone-900 dark:text-stone-100'
-                }`}>
+                <p
+                  className={`text-sm font-medium truncate ${
+                    isCurrentTrack
+                      ? 'text-primary-900 dark:text-primary-100'
+                      : 'text-stone-900 dark:text-stone-100'
+                  }`}
+                >
                   {queueItem.track.name || `Track ${index + 1}`}
                 </p>
                 <div className="flex items-center space-x-2 text-xs text-stone-600 dark:text-stone-400">
@@ -214,9 +238,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                     </span>
                   )}
                   {isPastTrack && (
-                    <span className="text-stone-500 dark:text-stone-500">
-                      • Played
-                    </span>
+                    <span className="text-stone-500 dark:text-stone-500">• Played</span>
                   )}
                 </div>
               </div>
@@ -228,7 +250,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                     variant="ghost"
                     size="sm"
                     className="p-2"
-                    onClick={() => playbackState.isPlaying ? dispatch(pause()) : dispatch(play())}
+                    onClick={() => (playbackState.isPlaying ? dispatch(pause()) : dispatch(play()))}
                   >
                     {playbackState.isPlaying ? (
                       <HiOutlinePause className="w-4 h-4" />

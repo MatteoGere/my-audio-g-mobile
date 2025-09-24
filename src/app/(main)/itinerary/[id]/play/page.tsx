@@ -86,12 +86,12 @@ export default function AudioPlayerPage() {
 
   // Current track data
   const currentTrack = audioState.currentTrack;
-  
+
   // Memoize the image key to prevent unnecessary signed URL calls - only based on the storage key itself
   const currentTrackImageKey = useMemo(() => {
     return (currentTrack as any)?.image_file?.image_storage_key || '';
   }, [(currentTrack as any)?.image_file?.image_storage_key]);
-  
+
   // Get signed URL for current track image (only when key actually changes)
   const { signedUrl: currentTrackImageUrl } = useSignedUrl(currentTrackImageKey, 'image-files');
   const currentTrackIndex = useMemo(() => {
@@ -125,14 +125,14 @@ export default function AudioPlayerPage() {
 
   const handlePreviousTrack = useCallback(() => {
     if (!tracks || tracks.length === 0) return;
-    
+
     let newIndex;
     if (audioState.shuffleMode) {
       newIndex = Math.floor(Math.random() * tracks.length);
     } else {
       newIndex = currentTrackIndex > 0 ? currentTrackIndex - 1 : tracks.length - 1;
     }
-    
+
     const newTrack = tracks[newIndex];
     dispatch(setCurrentTrack({ track: newTrack as any }));
     dispatch(setCurrentQueueIndex(newIndex));
@@ -141,36 +141,45 @@ export default function AudioPlayerPage() {
 
   const handleNextTrack = useCallback(() => {
     if (!tracks || tracks.length === 0) return;
-    
+
     let newIndex;
     if (audioState.shuffleMode) {
       newIndex = Math.floor(Math.random() * tracks.length);
     } else {
       newIndex = currentTrackIndex < tracks.length - 1 ? currentTrackIndex + 1 : 0;
     }
-    
+
     const newTrack = tracks[newIndex];
     dispatch(setCurrentTrack({ track: newTrack as any }));
     dispatch(setCurrentQueueIndex(newIndex));
     dispatch(setCurrentTime(0));
   }, [tracks, currentTrackIndex, audioState.shuffleMode, dispatch]);
 
-  const handleSeek = useCallback((percentage: number) => {
-    if (!currentTrack) return;
-    
-    const newTime = (percentage / 100) * currentTrack.duration;
-    dispatch(setCurrentTime(newTime));
-  }, [currentTrack, dispatch]);
+  const handleSeek = useCallback(
+    (percentage: number) => {
+      if (!currentTrack) return;
 
-  const handleVolumeChange = useCallback((volume: number) => {
-    const normalizedVolume = volume / 100;
-    dispatch(setVolume(normalizedVolume));
-  }, [dispatch]);
+      const newTime = (percentage / 100) * currentTrack.duration;
+      dispatch(setCurrentTime(newTime));
+    },
+    [currentTrack, dispatch],
+  );
 
-  const handleSpeedChange = useCallback((speed: number) => {
-    dispatch(setPlaybackSpeed(speed));
-    setShowSpeedMenu(false);
-  }, [dispatch]);
+  const handleVolumeChange = useCallback(
+    (volume: number) => {
+      const normalizedVolume = volume / 100;
+      dispatch(setVolume(normalizedVolume));
+    },
+    [dispatch],
+  );
+
+  const handleSpeedChange = useCallback(
+    (speed: number) => {
+      dispatch(setPlaybackSpeed(speed));
+      setShowSpeedMenu(false);
+    },
+    [dispatch],
+  );
 
   const handleMuteToggle = useCallback(() => {
     dispatch(toggleMute());
@@ -205,13 +214,16 @@ export default function AudioPlayerPage() {
         title: currentTrack.name || 'Audio Track',
         artist: itinerary?.name || 'Audio Guide',
         album: itinerary?.name,
-        artwork: currentTrack.image_file_id && currentTrackImageUrl ? [
-          {
-            src: currentTrackImageUrl,
-            sizes: '512x512',
-            type: 'image/jpeg',
-          },
-        ] : undefined,
+        artwork:
+          currentTrack.image_file_id && currentTrackImageUrl
+            ? [
+                {
+                  src: currentTrackImageUrl,
+                  sizes: '512x512',
+                  type: 'image/jpeg',
+                },
+              ]
+            : undefined,
       });
 
       // Use stable function references for media session handlers
@@ -258,7 +270,14 @@ export default function AudioPlayerPage() {
         }
       });
     }
-  }, [currentTrack?.id, itinerary?.name, currentTrackImageUrl, tracks, audioState.shuffleMode, dispatch]);
+  }, [
+    currentTrack?.id,
+    itinerary?.name,
+    currentTrackImageUrl,
+    tracks,
+    audioState.shuffleMode,
+    dispatch,
+  ]);
 
   // Loading state
   if (itineraryLoading || tracksLoading) {
@@ -482,18 +501,13 @@ export default function AudioPlayerPage() {
         </Card>
 
         {/* Enhanced Queue Manager */}
-        {showQueue && (
-          <QueueManager 
-            isVisible={showQueue}
-            onClose={() => setShowQueue(false)}
-          />
-        )}
+        {showQueue && <QueueManager isVisible={showQueue} onClose={() => setShowQueue(false)} />}
 
         {/* Playlist Management Controls */}
         <div className="grid grid-cols-2 gap-3">
           {/* Queue Toggle */}
-          <Button 
-            variant={showQueue ? "primary" : "outline"} 
+          <Button
+            variant={showQueue ? 'primary' : 'outline'}
             className="flex items-center justify-center space-x-2"
             onClick={() => setShowQueue(!showQueue)}
           >
@@ -510,19 +524,19 @@ export default function AudioPlayerPage() {
 
         {/* Playback Mode Controls */}
         <div className="grid grid-cols-4 gap-2">
-          <Button 
-            variant={audioState.shuffleMode ? "primary" : "outline"} 
+          <Button
+            variant={audioState.shuffleMode ? 'primary' : 'outline'}
             size="sm"
             className="flex flex-col items-center justify-center space-y-1 h-12"
             onClick={() => dispatch(toggleShuffle())}
-            title={audioState.shuffleMode ? "Shuffle: On" : "Shuffle: Off"}
+            title={audioState.shuffleMode ? 'Shuffle: On' : 'Shuffle: Off'}
           >
             <span className="text-lg">🔀</span>
             <span className="text-xs">Shuffle</span>
           </Button>
-          
-          <Button 
-            variant={audioState.repeatMode !== 'none' ? "primary" : "outline"} 
+
+          <Button
+            variant={audioState.repeatMode !== 'none' ? 'primary' : 'outline'}
             size="sm"
             className="flex flex-col items-center justify-center space-y-1 h-12"
             onClick={() => {
@@ -534,13 +548,17 @@ export default function AudioPlayerPage() {
             title={`Repeat: ${audioState.repeatMode === 'one' ? 'One' : audioState.repeatMode === 'all' ? 'All' : 'Off'}`}
           >
             <span className="text-lg">
-              {audioState.repeatMode === 'one' ? '🔂' : audioState.repeatMode === 'all' ? '🔁' : '🔁'}
+              {audioState.repeatMode === 'one'
+                ? '🔂'
+                : audioState.repeatMode === 'all'
+                  ? '🔁'
+                  : '🔁'}
             </span>
             <span className="text-xs">Repeat</span>
           </Button>
 
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             className="flex flex-col items-center justify-center space-y-1 h-12"
             onClick={() => router.push(`/map?itinerary=${itineraryId}&track=${currentTrack?.id}`)}
@@ -550,8 +568,8 @@ export default function AudioPlayerPage() {
             <span className="text-xs">Map</span>
           </Button>
 
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             className="flex flex-col items-center justify-center space-y-1 h-12"
             title="Share Track"
@@ -564,12 +582,10 @@ export default function AudioPlayerPage() {
         {/* Error Display */}
         {audioState.audioError && (
           <Card className="p-4 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
-            <p className="text-red-600 dark:text-red-400 text-sm">
-              {audioState.audioError}
-            </p>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <p className="text-red-600 dark:text-red-400 text-sm">{audioState.audioError}</p>
+            <Button
+              variant="outline"
+              size="sm"
               className="mt-2"
               onClick={() => {
                 dispatch(setAudioError(null));

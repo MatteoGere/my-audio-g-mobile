@@ -1,9 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AudioTrack } from './itinerariesSlice';
-import {
-  PlaybackState as AppPlaybackState,
-  QueueItem as AppQueueItem,
-} from '@/types/app-types';
+import { PlaybackState as AppPlaybackState, QueueItem as AppQueueItem } from '@/types/app-types';
 
 // Legacy types for backward compatibility
 export interface PlaybackState {
@@ -115,12 +112,12 @@ export const audioSlice = createSlice({
       state.playbackState.isPaused = false;
       state.playbackState.isLoading = false;
     },
-    
+
     pause: (state) => {
       state.playbackState.isPlaying = false;
       state.playbackState.isPaused = true;
     },
-    
+
     stop: (state) => {
       state.playbackState.isPlaying = false;
       state.playbackState.isPaused = false;
@@ -134,7 +131,7 @@ export const audioSlice = createSlice({
 
     setCurrentTime: (state, action: PayloadAction<number>) => {
       state.playbackState.currentTime = action.payload;
-      
+
       // Update track progress
       if (state.currentTrack?.id) {
         state.trackProgress[state.currentTrack.id] = action.payload;
@@ -168,7 +165,7 @@ export const audioSlice = createSlice({
         track,
         index: index ?? state.queue.length,
       };
-      
+
       if (index !== undefined) {
         state.queue.splice(index, 0, queueItem);
       } else {
@@ -179,7 +176,7 @@ export const audioSlice = createSlice({
     removeFromQueue: (state, action: PayloadAction<number>) => {
       const index = action.payload;
       state.queue.splice(index, 1);
-      
+
       // Adjust current index if necessary
       if (state.currentQueueIndex > index) {
         state.currentQueueIndex--;
@@ -200,16 +197,19 @@ export const audioSlice = createSlice({
     // Navigation
     nextTrack: (state) => {
       if (state.queue.length === 0) return;
-      
+
       let nextIndex;
       if (state.shuffleMode) {
         nextIndex = Math.floor(Math.random() * state.queue.length);
       } else {
-        nextIndex = state.currentQueueIndex < state.queue.length - 1 
-          ? state.currentQueueIndex + 1 
-          : (state.repeatMode === 'all' ? 0 : state.currentQueueIndex);
+        nextIndex =
+          state.currentQueueIndex < state.queue.length - 1
+            ? state.currentQueueIndex + 1
+            : state.repeatMode === 'all'
+              ? 0
+              : state.currentQueueIndex;
       }
-      
+
       if (nextIndex !== state.currentQueueIndex) {
         state.currentQueueIndex = nextIndex;
         state.currentTrack = state.queue[nextIndex]?.track || null;
@@ -220,16 +220,19 @@ export const audioSlice = createSlice({
 
     previousTrack: (state) => {
       if (state.queue.length === 0) return;
-      
+
       let prevIndex;
       if (state.shuffleMode) {
         prevIndex = Math.floor(Math.random() * state.queue.length);
       } else {
-        prevIndex = state.currentQueueIndex > 0 
-          ? state.currentQueueIndex - 1 
-          : (state.repeatMode === 'all' ? state.queue.length - 1 : state.currentQueueIndex);
+        prevIndex =
+          state.currentQueueIndex > 0
+            ? state.currentQueueIndex - 1
+            : state.repeatMode === 'all'
+              ? state.queue.length - 1
+              : state.currentQueueIndex;
       }
-      
+
       if (prevIndex !== state.currentQueueIndex) {
         state.currentQueueIndex = prevIndex;
         state.currentTrack = state.queue[prevIndex]?.track || null;

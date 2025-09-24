@@ -36,10 +36,11 @@ export function Header({
   const { isAuthenticated, user, signOut } = useAuth();
   const { profile } = useUserProfile();
   const [showUserMenu, setShowUserMenu] = useState(false);
-  
+
   // Audio player state for reopen button
   const { currentTrack, playerView } = useAppSelector((state) => state.audio);
-  const shouldShowReopenButton = currentTrack && playerView === 'hidden' && !pathname?.includes('/play');
+  const shouldShowReopenButton =
+    currentTrack && playerView === 'hidden' && !pathname?.includes('/play');
 
   // Dynamic title based on route
   const getPageTitle = () => {
@@ -125,7 +126,7 @@ export function Header({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => dispatch(setPlayerView('minimized'))}
+              onClick={() => dispatch(setPlayerView('mini'))}
               className="p-2 text-primary-600"
               title="Show player"
             >

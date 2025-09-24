@@ -18,7 +18,7 @@ import {
 
 /**
  * Global Audio Manager Component
- * 
+ *
  * This component manages the single audio element that's used across the entire app.
  * It handles:
  * - Audio element lifecycle
@@ -30,13 +30,15 @@ import {
 export function AudioManager() {
   const dispatch = useAppDispatch();
   const audioRef = useRef<HTMLAudioElement>(null);
-  const { currentTrack, playbackState, queue, currentQueueIndex } = useAppSelector((state) => state.audio);
+  const { currentTrack, playbackState, queue, currentQueueIndex } = useAppSelector(
+    (state) => state.audio,
+  );
 
   // Get signed URLs for the current track
   const currentAudioPath = currentTrack?.audio_storage_key;
   const { signedUrls, isLoading: urlsLoading } = useSignedAudioUrls(
     currentAudioPath ? [currentAudioPath] : [],
-    3600
+    3600,
   );
 
   // Current audio URL
@@ -83,7 +85,7 @@ export function AudioManager() {
   const handleEnded = useCallback(() => {
     // Handle track end based on repeat mode
     const { repeatMode } = useAppSelector((state) => state.audio);
-    
+
     if (repeatMode === 'one') {
       // Repeat current track
       if (audioRef.current) {
@@ -100,30 +102,33 @@ export function AudioManager() {
     }
   }, [dispatch, currentQueueIndex, queue.length]);
 
-  const handleError = useCallback((e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
-    const audio = e.currentTarget;
-    let errorMessage = 'Failed to load audio';
-    
-    if (audio.error) {
-      switch (audio.error.code) {
-        case MediaError.MEDIA_ERR_ABORTED:
-          errorMessage = 'Audio loading was aborted';
-          break;
-        case MediaError.MEDIA_ERR_NETWORK:
-          errorMessage = 'Network error occurred';
-          break;
-        case MediaError.MEDIA_ERR_DECODE:
-          errorMessage = 'Audio format not supported';
-          break;
-        case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
-          errorMessage = 'Audio source not supported';
-          break;
+  const handleError = useCallback(
+    (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
+      const audio = e.currentTarget;
+      let errorMessage = 'Failed to load audio';
+
+      if (audio.error) {
+        switch (audio.error.code) {
+          case MediaError.MEDIA_ERR_ABORTED:
+            errorMessage = 'Audio loading was aborted';
+            break;
+          case MediaError.MEDIA_ERR_NETWORK:
+            errorMessage = 'Network error occurred';
+            break;
+          case MediaError.MEDIA_ERR_DECODE:
+            errorMessage = 'Audio format not supported';
+            break;
+          case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+            errorMessage = 'Audio source not supported';
+            break;
+        }
       }
-    }
-    
-    dispatch(setAudioError(errorMessage));
-    dispatch(setLoadingTrack(false));
-  }, [dispatch]);
+
+      dispatch(setAudioError(errorMessage));
+      dispatch(setLoadingTrack(false));
+    },
+    [dispatch],
+  );
 
   // Update audio source when track changes
   useEffect(() => {
@@ -190,13 +195,16 @@ export function AudioManager() {
         title: currentTrack.name || 'Audio Track',
         artist: itineraryName,
         album: itineraryName,
-        artwork: currentTrack.image_file_id && currentTrackImageUrl ? [
-          {
-            src: currentTrackImageUrl,
-            sizes: '512x512',
-            type: 'image/jpeg',
-          },
-        ] : undefined,
+        artwork:
+          currentTrack.image_file_id && currentTrackImageUrl
+            ? [
+                {
+                  src: currentTrackImageUrl,
+                  sizes: '512x512',
+                  type: 'image/jpeg',
+                },
+              ]
+            : undefined,
       });
 
       // Set action handlers
@@ -232,7 +240,7 @@ export function AudioManager() {
           const seekTime = event.seekOffset || 10;
           audioRef.current.currentTime = Math.min(
             audioRef.current.duration || 0,
-            audioRef.current.currentTime + seekTime
+            audioRef.current.currentTime + seekTime,
           );
         }
       });
@@ -252,7 +260,14 @@ export function AudioManager() {
         navigator.mediaSession.setActionHandler('seekforward', null);
       }
     };
-  }, [currentTrack, currentTrackImageUrl, queue, currentQueueIndex, playbackState.isPlaying, dispatch]);
+  }, [
+    currentTrack,
+    currentTrackImageUrl,
+    queue,
+    currentQueueIndex,
+    playbackState.isPlaying,
+    dispatch,
+  ]);
 
   return (
     <audio

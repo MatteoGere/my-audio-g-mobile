@@ -202,18 +202,18 @@ export const useSignedUrl = (
   expiresIn: number = 3600,
 ) => {
   const dispatch = useAppDispatch();
-  
+
   // Skip the hook entirely if path is empty or invalid
   const isValidPath = Boolean(path && path.trim() && path !== '__SKIP__');
-  
-  const cachedUrl = useAppSelector((state) => 
-    isValidPath ? selectSignedUrl(state, path, bucket) : undefined
+
+  const cachedUrl = useAppSelector((state) =>
+    isValidPath ? selectSignedUrl(state, path, bucket) : undefined,
   );
-  const isExpired = useAppSelector((state) => 
-    isValidPath ? selectIsUrlExpired(state, path, bucket) : false
+  const isExpired = useAppSelector((state) =>
+    isValidPath ? selectIsUrlExpired(state, path, bucket) : false,
   );
-  const isNearExpiry = useAppSelector((state) => 
-    isValidPath ? selectIsUrlNearExpiry(state, path, bucket, 5) : false
+  const isNearExpiry = useAppSelector((state) =>
+    isValidPath ? selectIsUrlNearExpiry(state, path, bucket, 5) : false,
   );
 
   const shouldSkip = !isValidPath || Boolean(cachedUrl && !isExpired && !isNearExpiry);
@@ -292,7 +292,7 @@ export const useSignedUrl = (
   }, [dispatch, path, bucket, refetch, isValidPath]);
 
   return {
-    signedUrl: isValidPath ? (cachedUrl || undefined) : undefined,
+    signedUrl: isValidPath ? cachedUrl || undefined : undefined,
     isLoading: isValidPath && !shouldSkip ? isLoading : false,
     error: isValidPath ? error : undefined,
     refreshUrl,
@@ -308,7 +308,7 @@ export const useSignedUrls = (
   const dispatch = useAppDispatch();
 
   // Filter out empty or invalid paths
-  const validPaths = paths.filter(path => Boolean(path && path.trim() && path !== '__SKIP__'));
+  const validPaths = paths.filter((path) => Boolean(path && path.trim() && path !== '__SKIP__'));
 
   // Check which URLs need fetching
   const selectUrlsToFetchGeneric = useMemo(
