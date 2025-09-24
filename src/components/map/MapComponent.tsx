@@ -11,6 +11,7 @@ import { POIMarker } from './POIMarker';
 import { UserLocationMarker } from './UserLocationMarker';
 import { MapEventHandler } from './MapEventHandler';
 import 'leaflet/dist/leaflet.css';
+import './map.css';
 
 // Fix for default markers in react-leaflet
 import L from 'leaflet';

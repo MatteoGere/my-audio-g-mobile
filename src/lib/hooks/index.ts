@@ -13,3 +13,6 @@ export {
 
 // Location hooks
 export { useLocation } from './useLocation';
+
+// Map hooks
+export { useMapPOIs } from './useMapPOIs';
