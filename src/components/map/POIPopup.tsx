@@ -28,13 +28,13 @@ export const POIPopup: React.FC<POIPopupProps> = ({
   // Get signed URL for track image if available
   const { signedUrl: imageUrl, isLoading: imageLoading } = useSignedUrl(
     poi.imageStorageKey || '',
-    'image-files',
-    { skip: !poi.imageStorageKey }
+    'image-files'
   );
 
   // Check if this track is currently playing
   const currentTrackId = useAppSelector((state) => state.audio.currentTrack?.id);
-  const isPlaying = useAppSelector((state) => state.audio.isPlaying);
+  const playbackState = useAppSelector((state) => state.audio.playbackState);
+  const isPlaying = playbackState === 'playing';
   const isCurrentTrack = currentTrackId === poi.trackId;
 
   // Format duration
@@ -58,7 +58,6 @@ export const POIPopup: React.FC<POIPopupProps> = ({
       minWidth={280}
       maxWidth={320}
       className="poi-popup"
-      onClose={onClose}
     >
       <div className="bg-white rounded-lg overflow-hidden shadow-lg">
         {/* Header Image */}

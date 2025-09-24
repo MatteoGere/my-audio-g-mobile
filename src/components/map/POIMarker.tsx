@@ -5,6 +5,7 @@ import { Marker, Tooltip } from 'react-leaflet';
 import { DivIcon } from 'leaflet';
 import { renderToString } from 'react-dom/server';
 import { POIMarkerData } from '@/types/app-types';
+import { POIPopup } from './POIPopup';
 import { FaPlay, FaMusic, FaMapMarkerAlt } from 'react-icons/fa';
 
 interface POIMarkerProps {
@@ -12,7 +13,9 @@ interface POIMarkerProps {
   color: string;
   isSelected?: boolean;
   showLabel?: boolean;
+  showPopup?: boolean;
   onClick?: () => void;
+  onPlayClick?: (poi: POIMarkerData) => void;
 }
 
 export const POIMarker: React.FC<POIMarkerProps> = ({
@@ -20,7 +23,9 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
   color,
   isSelected = false,
   showLabel = true,
+  showPopup = false,
   onClick,
+  onPlayClick,
 }) => {
   // Create custom POI marker icon
   const createPOIIcon = useMemo(() => {
@@ -80,7 +85,7 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
       }}
     >
       {/* Tooltip with track info */}
-      {showLabel && (
+      {showLabel && !showPopup && (
         <Tooltip
           direction="top"
           offset={[0, -40]}
@@ -99,6 +104,15 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
             </div>
           </div>
         </Tooltip>
+      )}
+
+      {/* Interactive popup */}
+      {showPopup && (
+        <POIPopup
+          poi={poi}
+          color={color}
+          onPlayClick={onPlayClick}
+        />
       )}
     </Marker>
   );

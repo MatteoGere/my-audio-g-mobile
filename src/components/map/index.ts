@@ -1,6 +1,7 @@
 // Map Components
 export { MapComponent } from './MapComponent';
 export { POIMarker } from './POIMarker';
+export { POIPopup } from './POIPopup';
 export { UserLocationMarker } from './UserLocationMarker';
 export { MapEventHandler } from './MapEventHandler';
 
