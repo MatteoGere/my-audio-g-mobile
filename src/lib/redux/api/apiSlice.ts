@@ -355,7 +355,7 @@ export const apiSlice = createApi({
               .lte('audio_track_poi.longitude', bounds.east);
           }
 
-          const { data, error } = await query.order('track_order', { ascending: true });
+          const { data, error } = await query.order('audio_itinerary_order', { ascending: true });
 
           if (error) throw error;
 
