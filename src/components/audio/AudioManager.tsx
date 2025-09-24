@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
-import { useSignedAudioUrls } from '@/lib/hooks/useSignedUrls';
+import { useSignedAudioUrls, useSignedUrl } from '@/lib/hooks/useSignedUrls';
 import {
   play,
   pause,
@@ -41,6 +41,14 @@ export function AudioManager() {
 
   // Current audio URL
   const currentAudioUrl = currentAudioPath ? signedUrls[currentAudioPath] : null;
+
+  // Memoize the image key to prevent unnecessary signed URL calls
+  const currentTrackImageKey = useMemo(() => {
+    return (currentTrack as any)?.image_file?.image_storage_key || '';
+  }, [currentTrack?.id, (currentTrack as any)?.image_file?.image_storage_key]);
+
+  // Get signed URL for current track image (only when key actually changes)
+  const { signedUrl: currentTrackImageUrl } = useSignedUrl(currentTrackImageKey, 'image-files');
 
   // Audio event handlers
   const handleTimeUpdate = useCallback(() => {
@@ -182,9 +190,9 @@ export function AudioManager() {
         title: currentTrack.name || 'Audio Track',
         artist: itineraryName,
         album: itineraryName,
-        artwork: currentTrack.image_file_id ? [
+        artwork: currentTrack.image_file_id && currentTrackImageUrl ? [
           {
-            src: '/placeholder-track.jpg', // Could use signed image URL here
+            src: currentTrackImageUrl,
             sizes: '512x512',
             type: 'image/jpeg',
           },
@@ -244,7 +252,7 @@ export function AudioManager() {
         navigator.mediaSession.setActionHandler('seekforward', null);
       }
     };
-  }, [currentTrack, queue, currentQueueIndex, playbackState.isPlaying, dispatch]);
+  }, [currentTrack, currentTrackImageUrl, queue, currentQueueIndex, playbackState.isPlaying, dispatch]);
 
   return (
     <audio

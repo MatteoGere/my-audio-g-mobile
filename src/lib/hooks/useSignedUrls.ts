@@ -97,6 +97,9 @@ export const useSignedAudioUrl = (path: string, expiresIn: number = 3600) => {
 export const useSignedAudioUrls = (paths: string[], expiresIn: number = 3600) => {
   const dispatch = useAppDispatch();
 
+  // Filter out empty or invalid paths
+  const validPaths = paths.filter((path) => Boolean(path && path.trim() && path !== '__SKIP__'));
+
   // Check which URLs need fetching
   // Check which URLs need fetching
   const selectUrlsToFetch = useMemo(
@@ -114,7 +117,7 @@ export const useSignedAudioUrls = (paths: string[], expiresIn: number = 3600) =>
           });
         },
       ),
-    [paths],
+    [validPaths],
   );
 
   const urlsToFetch = useAppSelector((state) => selectUrlsToFetch(state));
@@ -170,18 +173,19 @@ export const useSignedAudioUrls = (paths: string[], expiresIn: number = 3600) =>
           return urls;
         },
       ),
-    // recreate selector only when paths change
-    [paths],
+    // recreate selector only when validPaths change
+    [validPaths],
   );
 
   const signedUrls = useAppSelector((state) => selectSignedAudioUrlsForPaths(state));
 
-    // Refresh all URLs
+  // Refresh all URLs: remove cached entries for requested paths then trigger a refetch
   const refreshUrls = useCallback(() => {
     validPaths.forEach((path) => {
-      dispatch(fetchSignedUrl({ path, bucket, expiresIn }));
+      dispatch(removeSignedAudioUrl(path));
     });
-  }, [validPaths, bucket, expiresIn, dispatch]);
+    refetch();
+  }, [validPaths, refetch, dispatch]);
 
   return {
     signedUrls,

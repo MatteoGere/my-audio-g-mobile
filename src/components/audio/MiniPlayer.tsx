@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
+import { useSignedUrl } from '@/lib/hooks/useSignedUrls';
 import { Button } from '@/components/ui';
 import {
   HiOutlinePlay,
@@ -44,10 +45,13 @@ export function MiniPlayer() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }, []);
 
-  // Don't render if no track is loaded or player is hidden
-  if (!currentTrack || playerView === 'hidden') {
-    return null;
-  }
+  // Memoize the image key to prevent unnecessary signed URL calls
+  const currentTrackImageKey = useMemo(() => {
+    return (currentTrack as any)?.image_file?.image_storage_key || '';
+  }, [currentTrack?.id, (currentTrack as any)?.image_file?.image_storage_key]);
+
+  // Get signed URL for current track image (only when key actually changes)
+  const { signedUrl: currentTrackImageUrl } = useSignedUrl(currentTrackImageKey, 'image-files');
 
   const handlePlayPause = useCallback(() => {
     if (playbackState.isPlaying) {
@@ -122,6 +126,11 @@ export function MiniPlayer() {
     dispatch(toggleMute());
   }, [dispatch]);
 
+  // Don't render if no track is loaded or player is hidden
+  if (!currentTrack || playerView === 'hidden') {
+    return null;
+  }
+
   return (
     <div className="fixed bottom-16 left-0 right-0 z-30 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border-t border-stone-200 dark:border-stone-700 shadow-[0_-2px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_-2px_20px_rgba(0,0,0,0.4)]">
       {/* Interactive Progress Bar */}
@@ -147,9 +156,9 @@ export function MiniPlayer() {
       <div className="flex items-center px-4 py-3 space-x-3">
         {/* Track Image/Icon */}
         <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary-100 to-sea-100 dark:from-primary-800 dark:to-sea-800 flex items-center justify-center flex-shrink-0">
-          {currentTrack?.image_file_id ? (
+          {currentTrack?.image_file_id && currentTrackImageUrl ? (
             <img
-              src={`/placeholder-track.jpg`}
+              src={currentTrackImageUrl}
               alt={currentTrack.name || 'Track'}
               className="w-full h-full object-cover rounded-lg"
             />
