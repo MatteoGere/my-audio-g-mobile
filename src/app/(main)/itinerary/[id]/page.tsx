@@ -1,6 +1,6 @@
-'use client';
+ 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Card, Button, Badge } from '@/components/ui';
 import { useGetAudioItineraryQuery, useGetItineraryTracksQuery } from '@/lib/redux/api/apiSlice';
@@ -41,9 +41,41 @@ export default function ItineraryDetailPage() {
     return `${minutes} min`;
   };
 
+  // Small collapsible text helper for long track descriptions
+  function CollapsibleText({ id, text }: { id: string; text: string }) {
+    const [expanded, setExpanded] = useState(false);
+    const shouldCollapse = text.length > 240; // heuristic threshold
+
+    if (!shouldCollapse) {
+      return (
+        <p className="text-sm text-muted leading-relaxed mb-1">{text}</p>
+      );
+    }
+
+    return (
+      <div className="mb-1">
+        <p
+          id={id}
+          className={"text-sm text-muted leading-relaxed " + (expanded ? '' : 'line-clamp-2')}
+        >
+          {text}
+        </p>
+        <button
+          type="button"
+          aria-expanded={expanded}
+          aria-controls={id}
+          onClick={() => setExpanded((s) => !s)}
+          className="mt-1 text-sm text-primary hover:underline"
+        >
+          {expanded ? 'Show less' : 'Show more'}
+        </button>
+      </div>
+    );
+  }
+
   if (itineraryLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 px-5">
         <Card padding="lg" className="overflow-hidden animate-pulse">
           <div className="h-48 bg-background" />
           <div className="space-y-3">
@@ -65,8 +97,8 @@ export default function ItineraryDetailPage() {
   }
 
   if (itineraryError || !itinerary) {
-    return (
-      <div className="space-y-6">
+  return (
+  <div className="space-y-6 px-5">
         <Card padding="lg" className="text-center">
           <h2 className="text-lg font-semibold mb-2">Itinerary not found</h2>
           <p className="text-muted mb-4">The itinerary may have been removed or is unavailable.</p>
@@ -79,7 +111,7 @@ export default function ItineraryDetailPage() {
   return (
     <div className="space-y-6">
       {/* Hero Section */}
-      <Card padding="lg" className="overflow-hidden">
+  <Card padding="lg" className="overflow-hidden">
         {heroImageUrl ? (
           <img src={heroImageUrl} alt={itinerary.name} className="h-48 w-full object-cover" />
         ) : (
@@ -143,28 +175,32 @@ export default function ItineraryDetailPage() {
 
           {tracks?.map((track) => (
             <Card key={track.id} padding="md">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                   <span className="text-primary-foreground text-sm font-semibold">
                     {track.audio_itinerary_order}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-foreground mb-1">
-                    {track.name || 'Untitled track'}
-                  </h3>
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium text-foreground mb-1">
+                      {track.name || 'Untitled track'}
+                    </h3>
+                    <span className="text-xs text-muted">{formatDuration(track.duration)}</span>
+                  </div>
                   {track.description && (
-                    <p className="text-sm text-muted mb-1">{track.description}</p>
+                    <CollapsibleText id={`track-desc-${track.id}`} text={track.description} />
                   )}
-                  <span className="text-xs text-muted">{formatDuration(track.duration)}</span>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => router.push(`/itinerary/${id}/play`)}
-                >
-                  ▶
-                </Button>
+                <div className="flex-shrink-0 self-start">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => router.push(`/itinerary/${id}/play`)}
+                  >
+                    ▶
+                  </Button>
+                </div>
               </div>
             </Card>
           ))}
