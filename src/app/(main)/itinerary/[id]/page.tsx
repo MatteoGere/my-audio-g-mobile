@@ -1,4 +1,4 @@
- 'use client';
+'use client';
 
 import { useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -47,16 +47,14 @@ export default function ItineraryDetailPage() {
     const shouldCollapse = text.length > 240; // heuristic threshold
 
     if (!shouldCollapse) {
-      return (
-        <p className="text-sm text-muted leading-relaxed mb-1">{text}</p>
-      );
+      return <p className="text-sm text-muted leading-relaxed mb-1">{text}</p>;
     }
 
     return (
       <div className="mb-1">
         <p
           id={id}
-          className={"text-sm text-muted leading-relaxed " + (expanded ? '' : 'line-clamp-2')}
+          className={'text-sm text-muted leading-relaxed ' + (expanded ? '' : 'line-clamp-2')}
         >
           {text}
         </p>
@@ -97,8 +95,8 @@ export default function ItineraryDetailPage() {
   }
 
   if (itineraryError || !itinerary) {
-  return (
-  <div className="space-y-6 px-5">
+    return (
+      <div className="space-y-6 px-5">
         <Card padding="lg" className="text-center">
           <h2 className="text-lg font-semibold mb-2">Itinerary not found</h2>
           <p className="text-muted mb-4">The itinerary may have been removed or is unavailable.</p>
@@ -111,7 +109,7 @@ export default function ItineraryDetailPage() {
   return (
     <div className="space-y-6">
       {/* Hero Section */}
-  <Card padding="lg" className="overflow-hidden">
+      <Card padding="lg" className="overflow-hidden">
         {heroImageUrl ? (
           <img src={heroImageUrl} alt={itinerary.name} className="h-48 w-full object-cover" />
         ) : (

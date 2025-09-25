@@ -263,67 +263,67 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
         {/* Advanced Filters Panel */}
         {showFilters && (
-            <div className="space-y-4 pt-4">
-              {/* Company Filter */}
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-3">Company</label>
-                <Select
-                  options={companyOptions}
-                  value={filters.company}
-                  onValueChange={(val) => updateFilter('company', String(val || ''))}
-                  placeholder="All Companies"
-                />
-              </div>
+          <div className="space-y-4 pt-4">
+            {/* Company Filter */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-3">Company</label>
+              <Select
+                options={companyOptions}
+                value={filters.company}
+                onValueChange={(val) => updateFilter('company', String(val || ''))}
+                placeholder="All Companies"
+              />
+            </div>
 
-              {/* Duration Range */}
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-3">
-                  Duration (minutes)
-                </label>
-                <div className="flex items-center gap-3">
-                  <Input
-                    type="number"
-                    placeholder="Min"
-                    value={filters.minDuration || ''}
-                    onChange={(e) => updateFilter('minDuration', parseInt(e.target.value) || 0)}
-                    className="flex-1"
-                  />
-                  <span className="text-muted">to</span>
-                  <Input
-                    type="number"
-                    placeholder="Max"
-                    value={filters.maxDuration || ''}
-                    onChange={(e) => updateFilter('maxDuration', parseInt(e.target.value) || 300)}
-                    className="flex-1"
-                  />
-                </div>
-              </div>
-
-              {/* Distance Filter */}
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-3">
-                  Max Distance (km)
-                </label>
+            {/* Duration Range */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-3">
+                Duration (minutes)
+              </label>
+              <div className="flex items-center gap-3">
                 <Input
                   type="number"
-                  placeholder="50"
-                  value={filters.maxDistance || ''}
-                  onChange={(e) => updateFilter('maxDistance', parseInt(e.target.value) || 50)}
+                  placeholder="Min"
+                  value={filters.minDuration || ''}
+                  onChange={(e) => updateFilter('minDuration', parseInt(e.target.value) || 0)}
+                  className="flex-1"
+                />
+                <span className="text-muted">to</span>
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  value={filters.maxDuration || ''}
+                  onChange={(e) => updateFilter('maxDuration', parseInt(e.target.value) || 300)}
+                  className="flex-1"
                 />
               </div>
-
-              {/* Clear Filters */}
-              <div className="flex justify-end mt-2">
-                <Button variant="outline" size="sm" onClick={clearAllFilters}>
-                  Clear All Filters
-                </Button>
-              </div>
             </div>
+
+            {/* Distance Filter */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-3">
+                Max Distance (km)
+              </label>
+              <Input
+                type="number"
+                placeholder="50"
+                value={filters.maxDistance || ''}
+                onChange={(e) => updateFilter('maxDistance', parseInt(e.target.value) || 50)}
+              />
+            </div>
+
+            {/* Clear Filters */}
+            <div className="flex justify-end mt-2">
+              <Button variant="outline" size="sm" onClick={clearAllFilters}>
+                Clear All Filters
+              </Button>
+            </div>
+          </div>
         )}
       </Card>
 
-  {/* Results */}
-  <div>
+      {/* Results */}
+      <div>
         {/* Results Header (not contained in a Card — mobile-first list view) */}
         <div className="mb-4">
           <div className="flex items-center justify-between">
@@ -455,7 +455,9 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                     {/* Content */}
                     <div className="flex-1">
                       <div className="space-y-1">
-                        <h3 className="font-medium text-foreground line-clamp-2">{itinerary.name}</h3>
+                        <h3 className="font-medium text-foreground line-clamp-2">
+                          {itinerary.name}
+                        </h3>
 
                         {viewMode === 'list' && itinerary.description && (
                           <p className="text-xs text-muted line-clamp-2">{itinerary.description}</p>

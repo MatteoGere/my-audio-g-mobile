@@ -211,7 +211,9 @@ export default function NearbyItineraries() {
                         {formatDuration(it.total_duration)}
                       </Badge>
                     </div>
-                    <div className="text-xs text-muted">{formatDistance(it.distance_meters)} away</div>
+                    <div className="text-xs text-muted">
+                      {formatDistance(it.distance_meters)} away
+                    </div>
                   </div>
                 </Card>
               </Link>
