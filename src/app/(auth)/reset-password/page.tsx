@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
+import { HiCheck } from 'react-icons/hi2';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button, Input } from '@/components/ui';
@@ -92,20 +93,8 @@ function ResetPasswordInner() {
         {/* Success Message */}
         <div className="text-center">
           <div className="mx-auto w-16 h-16 bg-surface rounded-full flex items-center justify-center mb-4">
-            <svg
-              className="w-8 h-8 text-success"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          </div>
+              <HiCheck className="w-8 h-8 text-success" aria-hidden="true" />
+            </div>
           <h2 className="text-2xl font-bold text-foreground">Password Reset Successful</h2>
           <p className="text-sm text-muted mt-2">
             Your password has been successfully updated. You can now sign in with your new password.

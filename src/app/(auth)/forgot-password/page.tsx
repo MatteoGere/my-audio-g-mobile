@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { HiCheck } from 'react-icons/hi2';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button, Input, Card } from '@/components/ui';
@@ -62,19 +63,7 @@ export default function ForgotPasswordPage() {
         {/* Success Message */}
         <div className="text-center">
           <div className="mx-auto w-16 h-16 bg-success/20 rounded-full flex items-center justify-center mb-4">
-            <svg
-              className="w-8 h-8 text-success"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+            <HiCheck className="w-8 h-8 text-success" aria-hidden="true" />
           </div>
           <h2 className="text-2xl font-bold text-foreground">Check Your Email</h2>
           <p className="text-sm text-muted mt-2">
