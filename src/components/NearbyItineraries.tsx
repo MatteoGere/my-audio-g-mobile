@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useMemo, useState } from 'react';
 import { Card, Badge, Button } from '@/components/ui';
@@ -7,6 +7,7 @@ import { useGetNearbyItinerariesQuery } from '@/lib/redux/api/apiSlice';
 import { useSignedUrls } from '@/lib/hooks/useSignedUrls';
 import { supabase } from '@/lib/redux/api/apiSlice';
 import { HiOutlineClock, HiOutlineMapPin } from 'react-icons/hi2';
+import { useLocation } from '@/lib/hooks';
 
 type NearbyItem = {
   id: string;
@@ -36,27 +37,25 @@ export default function NearbyItineraries() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [geoError, setGeoError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-    if (typeof window === 'undefined' || !('geolocation' in navigator)) {
-      setGeoError('Geolocation not supported');
-      return;
+  // Use centralized location hook instead of calling navigator directly.
+  // We consume `userLocation` from the hook (keeps single source of truth in the store).
+  const { userLocation, requestLocation, locationError } = useLocation();
+
+  // Sync local coords state with store-backed userLocation
++  useEffect(() => {
+    if (userLocation) {
+      setCoords({ lat: userLocation.latitude, lng: userLocation.longitude });
+      setGeoError(null);
+    } else {
+      // if there's no userLocation available, clear coords so queries are skipped
++      setCoords(null);
     }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        if (cancelled) return;
-        setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-      },
-      (err) => {
-        if (cancelled) return;
-        setGeoError(err.message || 'Location permission denied');
-      },
-      { enableHighAccuracy: false, maximumAge: 60_000, timeout: 10_000 },
-    );
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  }, [userLocation]);
+
+  // Keep local geoError in sync if the hook reports an error later
+  useEffect(() => {
+    if (locationError) setGeoError(locationError);
+  }, [locationError]);
 
   const {
     data = [],
@@ -128,10 +127,16 @@ export default function NearbyItineraries() {
   if (geoError) {
     return (
       <div className="space-y-2">
-        <div className="text-sm text-muted">
-          Location access is disabled. Enable it to see tours near you.
-        </div>
-        <Button size="sm" variant="outline" onClick={() => refetch()}>
+        <div className="text-sm text-muted">{geoError || 'Location access is disabled. Enable it to see tours near you.'}</div>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={async () => {
+            // Trigger centralized permission/request flow. The hook will update store and
+            // the effect above will populate coords so the query runs automatically.
+            await requestLocation();
+          }}
+        >
           Retry
         </Button>
       </div>

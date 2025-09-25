@@ -68,7 +68,7 @@ export const useLocation = (): UseLocationReturn => {
       }
 
       // Try to get current position to trigger permission request
-      await getCurrentPosition({ timeout: 10000 });
+      await getCurrentPosition();
     } catch (error: any) {
       console.error('Location request failed:', error);
       handleLocationError(error);
