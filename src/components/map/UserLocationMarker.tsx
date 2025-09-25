@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import tokens from '@/design/tokens';
 import { Marker, Circle } from 'react-leaflet';
 import { DivIcon, LatLngExpression } from 'leaflet';
 import { renderToString } from 'react-dom/server';
@@ -26,7 +27,7 @@ export const UserLocationMarker: React.FC<UserLocationMarkerProps> = ({
         {/* Outer ring */}
   <div className="absolute w-8 h-8 bg-primary/20 rounded-full animate-ping" />
         {/* Main marker */}
-  <div className="relative w-4 h-4 bg-primary border-2 border-white rounded-full shadow-lg">
+  <div className="relative w-4 h-4 bg-primary border-2 border-surface rounded-full shadow-lg">
           {/* Direction arrow if heading is available */}
           {heading !== undefined && (
             <div
@@ -56,8 +57,8 @@ export const UserLocationMarker: React.FC<UserLocationMarkerProps> = ({
           center={position}
           radius={accuracy}
           pathOptions={{
-            color: '#3B82F6',
-            fillColor: '#3B82F6',
+            color: tokens.colors.primary,
+            fillColor: tokens.colors.primary,
             fillOpacity: 0.1,
             weight: 2,
             opacity: 0.5,

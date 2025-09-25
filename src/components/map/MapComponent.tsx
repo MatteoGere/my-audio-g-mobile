@@ -11,6 +11,7 @@ import { POIMarker } from './POIMarker';
 import { UserLocationMarker } from './UserLocationMarker';
 import { MapEventHandler } from './MapEventHandler';
 import { RouteVisualization } from './RouteVisualization';
+import tokens from '@/design/tokens';
 import 'leaflet/dist/leaflet.css';
 import './map.css';
 
@@ -70,11 +71,12 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   // Generate colors for itineraries
   const itineraryColors = useMemo(() => {
     const colors: Record<string, string> = {};
+    // Prefer semantic tokens for primary semantic colors and fall back to tuned hexes for variety
     const colorPalette = [
-      '#3B82F6', // blue
-      '#EF4444', // red
-      '#10B981', // green
-      '#F59E0B', // yellow
+      tokens.colors.primary,
+      tokens.colors.error,
+      tokens.colors.success,
+      tokens.colors.warning,
       '#8B5CF6', // purple
       '#EC4899', // pink
       '#06B6D4', // cyan

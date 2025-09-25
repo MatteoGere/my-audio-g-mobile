@@ -165,7 +165,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
         <FaFilter className="mr-2" />
         Filters
         {activeFiltersCount > 0 && (
-          <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+          <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
             {activeFiltersCount}
           </span>
         )}
@@ -173,7 +173,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
 
       {/* Filters Panel */}
       {isOpen && (
-        <Card className="absolute top-full left-0 right-0 mt-2 p-4 z-20 max-w-md">
+        <Card className="absolute top-full left-0 right-0 mt-2 z-20 max-w-md" padding="md">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-semibold text-foreground">Filters</h3>
             <div className="flex gap-2">

@@ -122,9 +122,9 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-surface/95 backdrop-blur-md border border-muted">
+    <Card className="w-full max-w-md mx-auto bg-surface/95 backdrop-blur-md border border-muted" padding="md">
       {/* Header */}
-  <div className="flex items-center justify-between p-4 border-b border-muted">
+  <div className="flex items-center justify-between border-b border-muted">
         <div className="flex items-center space-x-3">
           <HiOutlineMusicalNote className="w-5 h-5 text-primary" />
           <div>
@@ -156,7 +156,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
         </div>
       </div>
 
-      {/* Queue List */}
+    {/* Queue List */}
   <div className="max-h-96 overflow-y-auto">
         {queue.map((queueItem, index) => {
           const isCurrentTrack = index === currentQueueIndex;
@@ -272,11 +272,13 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
 
       {/* Queue Actions */}
       {queue.length > 0 && (
-  <div className="p-4 border-t border-muted bg-surface/50">
+  <div className="border-t border-muted bg-surface/50" >
+    <div className="p-4">
           <div className="flex items-center justify-between text-xs text-muted">
             <span>Drag to reorder tracks</span>
             <span>{queue.length - currentQueueIndex - 1} tracks remaining</span>
           </div>
+    </div>
         </div>
       )}
     </Card>

@@ -4,7 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
 import { useSignedUrl } from '@/lib/hooks/useSignedUrls';
-import { Button } from '@/components/ui';
+import { Button, Card } from '@/components/ui';
 import {
   HiOutlinePlay,
   HiOutlinePause,
@@ -145,7 +145,7 @@ export function MiniPlayer() {
   }
 
   return (
-    <div className="fixed bottom-16 left-0 right-0 z-30 bg-surface/95 backdrop-blur-md border-t border-muted shadow-[0_-2px_20px_rgba(0,0,0,0.1)]">
+  <div className="fixed bottom-16 left-0 right-0 z-30 bg-surface/95 backdrop-blur-md border-t border-muted shadow-[0_-2px_20px_rgba(0,0,0,0.1)]">
       {/* Interactive Progress Bar */}
       <div
         ref={progressBarRef}
@@ -166,9 +166,9 @@ export function MiniPlayer() {
         </div>
       </div>
 
-      <div className="flex items-center px-4 py-3 space-x-3">
+      <Card padding="sm" className="flex items-center space-x-3">
         {/* Track Image/Icon */}
-  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary-100 to-amber-100 flex items-center justify-center flex-shrink-0">
+  <div className="w-12 h-12 rounded-lg bg-surface flex items-center justify-center flex-shrink-0">
           {currentTrack?.image_file_id && currentTrackImageUrl ? (
             <img
               key={currentTrackImageKey}
@@ -282,7 +282,7 @@ export function MiniPlayer() {
             <HiOutlineXMark className="w-4 h-4" />
           </Button>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

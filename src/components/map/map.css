@@ -18,10 +18,10 @@
 
 /* POI Tooltip Styles */
 .poi-tooltip {
-  background: rgba(255, 255, 255, 0.95) !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  background: var(--color-surface) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
   border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
   backdrop-filter: blur(10px) !important;
 }
 
@@ -37,22 +37,22 @@
 }
 
 .leaflet-control-zoom a {
-  background: rgba(255, 255, 255, 0.95) !important;
-  color: #374151 !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  background: var(--color-surface) !important;
+  color: var(--color-muted) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
   font-size: 18px !important;
   line-height: 1 !important;
   backdrop-filter: blur(10px) !important;
 }
 
 .leaflet-control-zoom a:hover {
-  background: rgba(255, 255, 255, 1) !important;
-  color: #111827 !important;
+  background: var(--color-surface) !important;
+  color: var(--color-foreground) !important;
 }
 
 /* Attribution Styles */
 .leaflet-control-attribution {
-  background: rgba(255, 255, 255, 0.8) !important;
+  background: var(--color-surface) !important;
   backdrop-filter: blur(10px) !important;
   border-radius: 4px !important;
   font-size: 10px !important;
@@ -60,25 +60,25 @@
 
 /* Dark theme overrides (apply only when .dark class is present) */
 .dark .poi-tooltip {
-  background: rgba(31, 41, 55, 0.95) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: #f9fafb !important;
+  background: var(--color-surface) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: var(--color-foreground) !important;
 }
 
 .dark .leaflet-control-zoom a {
-  background: rgba(31, 41, 55, 0.95) !important;
-  color: #f9fafb !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: var(--color-surface) !important;
+  color: var(--color-foreground) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 .dark .leaflet-control-zoom a:hover {
-  background: rgba(31, 41, 55, 1) !important;
-  color: #ffffff !important;
+  background: var(--color-surface) !important;
+  color: var(--color-foreground) !important;
 }
 
 .dark .leaflet-control-attribution {
-  background: rgba(31, 41, 55, 0.8) !important;
-  color: #d1d5db !important;
+  background: var(--color-surface) !important;
+  color: var(--color-muted) !important;
 }
 
 /* Responsive adjustments */
@@ -124,10 +124,10 @@
 }
 
 .cluster-marker .cluster-content {
-  background: #3b82f6;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
   border-radius: 50%;
-  border: 2px solid white;
+  border: 2px solid var(--color-surface);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;

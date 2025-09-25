@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
+import tokens from '@/design/tokens';
 import { Polyline } from 'react-leaflet';
 import { POIMarkerData } from '@/types/app-types';
 
@@ -15,7 +16,7 @@ interface RouteVisualizationProps {
 export const RouteVisualization: React.FC<RouteVisualizationProps> = ({
   pois,
   itineraryId,
-  color = '#3B82F6',
+  color = tokens.colors.primary as string,
   showDirections = true,
   animated = false,
 }) => {
@@ -46,8 +47,9 @@ export const RouteVisualization: React.FC<RouteVisualizationProps> = ({
           a = (a << 5) - a + b.charCodeAt(0);
           return a & a;
         }, 0);
-        const colors = ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899'];
-        const itineraryColor = colors[Math.abs(hash) % colors.length];
+  // Use a small palette for visual distinction but fall back to semantic tokens when reasonable
+  const colors = [tokens.colors.primary, tokens.colors.error, tokens.colors.success, tokens.colors.warning, '#8B5CF6', '#EC4899'];
+  const itineraryColor = (colors[Math.abs(hash) % colors.length] as string) || tokens.colors.primary;
 
         grouped[poi.itineraryId] = {
           pois: [],

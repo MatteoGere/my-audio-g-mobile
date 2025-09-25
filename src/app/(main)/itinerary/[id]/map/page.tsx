@@ -11,6 +11,7 @@ import { POIMarkerData } from '@/types/app-types';
 import { FaArrowLeft, FaPlay, FaRoute } from 'react-icons/fa';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import tokens from '@/design/tokens';
 
 export default function ItineraryMapPage() {
   const params = useParams();
@@ -85,10 +86,10 @@ export default function ItineraryMapPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="bg-surface rounded-lg shadow-lg p-6 flex items-center gap-3">
+        <Card padding="lg" className="flex items-center gap-3">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
           <span className="text-muted">Loading itinerary map...</span>
-        </div>
+        </Card>
       </div>
     );
   }
@@ -97,8 +98,8 @@ export default function ItineraryMapPage() {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
-          <h1 className="text-xl font-semibold text-gray-900 mb-2">Itinerary not found</h1>
-          <p className="text-gray-600 mb-4">The requested itinerary could not be loaded.</p>
+          <h1 className="text-xl font-semibold text-foreground mb-2">Itinerary not found</h1>
+          <p className="text-muted mb-4">The requested itinerary could not be loaded.</p>
           <Button onClick={() => router.back()}>Go Back</Button>
         </div>
       </div>
@@ -107,8 +108,8 @@ export default function ItineraryMapPage() {
 
   return (
     <div className="relative w-full h-full bg-background">
-      {/* Header */}(
-  <div className="absolute top-4 left-4 right-4 z-10 bg-surface rounded-lg shadow-lg p-4 border border-muted">
+    {/* Header */}
+  <Card padding="md" className="absolute top-4 left-4 right-4 z-10 border border-muted">
         <div className="flex items-center gap-3 mb-3">
           <Button variant="outline" size="sm" onClick={() => router.back()} className="px-3">
             <FaArrowLeft />
@@ -125,7 +126,7 @@ export default function ItineraryMapPage() {
           <Button
             onClick={handlePlayItinerary}
             className="flex-1 flex items-center gap-2"
-            style={{ backgroundColor: itineraryColors[itineraryId] || '#3B82F6' }}
+            style={{ backgroundColor: itineraryColors[itineraryId] || (tokens.colors.primary as string) }}
           >
             <FaPlay />
             <span>Play Itinerary</span>
@@ -135,8 +136,8 @@ export default function ItineraryMapPage() {
           </Button>
           {/* fullscreen removed */}
         </div>
-      </div>
-      ){/* Map Container */}
+      </Card>
+      {/* Map Container */}
       <div className="w-full h-[calc(100vh-8rem)] mt-32">
         <MapComponent
           className="w-full h-full"
@@ -158,7 +159,7 @@ export default function ItineraryMapPage() {
               <h3 className="font-semibold text-foreground mb-2">Tracks in this itinerary</h3>
               <div className="space-y-1">
                 {pois.map((poi, index) => (
-                  <div
+                    <div
                     key={poi.trackId}
                     className={`flex items-center gap-3 p-2 rounded cursor-pointer transition-colors ${
                       selectedPoiId === poi.trackId
@@ -169,7 +170,7 @@ export default function ItineraryMapPage() {
                   >
                     <div
                       className="w-3 h-3 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: itineraryColors[poi.itineraryId] || '#3B82F6' }}
+                      style={{ backgroundColor: itineraryColors[poi.itineraryId] || (tokens.colors.primary as string) }}
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">

@@ -33,18 +33,18 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
       <div className="relative flex items-center justify-center">
         {/* Selection ring */}
         {isSelected && (
-          <div
-            className="absolute w-12 h-12 border-2 border-white rounded-full animate-pulse"
+                <div
+                  className="absolute w-12 h-12 border-2 border-muted rounded-full animate-pulse"
             style={{ backgroundColor: `${color}40` }}
           />
         )}
 
         {/* Main marker */}
-        <div
-          className="relative w-8 h-8 rounded-full border-2 border-white shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
+              <div
+                className="relative w-8 h-8 rounded-full border-2 border-muted shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
           style={{ backgroundColor: color }}
         >
-          <FaMusic className="text-white text-sm" />
+                <FaMusic className="text-primary-foreground text-sm" />
         </div>
 
         {/* Pointer */}
