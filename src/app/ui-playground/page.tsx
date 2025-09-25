@@ -141,12 +141,12 @@ export default function UIPlayground() {
           </div>
 
           {/* Breadcrumb */}
-          <Card className="p-4 mb-8">
+          <Card padding="md" className="mb-8">
             <Breadcrumb items={breadcrumbItems} />
           </Card>
 
           {/* Base Components */}
-          <Card className="p-6 mb-8">
+          <Card padding="lg" className="mb-8">
             <h2 className="text-2xl font-semibold mb-6">Base Components</h2>
 
             {/* Buttons */}
@@ -204,7 +204,7 @@ export default function UIPlayground() {
           </Card>
 
           {/* Form Components */}
-          <Card className="p-6 mb-8">
+          <Card padding="lg" className="mb-8">
             <h2 className="text-2xl font-semibold mb-6">Form Components</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -248,7 +248,7 @@ export default function UIPlayground() {
           </Card>
 
           {/* Data Display Components */}
-          <Card className="p-6 mb-8">
+          <Card padding="lg" className="mb-8">
             <h2 className="text-2xl font-semibold mb-6">Data Display</h2>
 
             {/* Badges */}
@@ -326,7 +326,7 @@ export default function UIPlayground() {
           </Card>
 
           {/* Interactive Components */}
-          <Card className="p-6 mb-8">
+          <Card padding="lg" className="mb-8">
             <h2 className="text-2xl font-semibold mb-6">Interactive Components</h2>
 
             <div className="space-y-8">
@@ -390,7 +390,7 @@ export default function UIPlayground() {
           </Card>
 
           {/* Navigation Components */}
-          <Card className="p-6 mb-8">
+          <Card padding="lg" className="mb-8">
             <h2 className="text-2xl font-semibold mb-6">Navigation Components</h2>
 
             {/* Accordion */}

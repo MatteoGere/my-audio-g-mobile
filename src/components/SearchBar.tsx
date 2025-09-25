@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Input, Button, Badge } from '@/components/ui';
+import { Input, Button, Badge, Card } from '@/components/ui';
 import { useGetAudioItinerariesQuery } from '@/lib/redux/api/apiSlice';
 import {
   HiOutlineMapPin,
@@ -287,10 +287,11 @@ export default function SearchBar({
 
       {/* Dropdown */}
       {isExpanded && (
-  <div className="absolute top-full left-0 right-0 mt-2 bg-surface border border-muted rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto">
+  <div className="absolute top-full left-0 right-0 mt-2 z-50">
+    <Card padding="md" className="bg-surface border border-muted rounded-xl shadow-lg max-h-80 overflow-y-auto">
           {/* Loading */}
           {isLoading && query.length >= 2 && (
-            <div className="p-4 text-center text-muted">
+            <div className="text-center text-muted">
               <div className="inline-flex items-center">
                 <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full mr-2"></div>
                 Searching...
@@ -377,13 +378,14 @@ export default function SearchBar({
 
           {/* No results */}
           {query.length >= 2 && !isLoading && suggestions.length === 0 && (
-            <div className="p-4 text-center text-muted">
+            <div className="text-center text-muted">
               <p>No audio guides found for "{query}"</p>
               <button onClick={() => handleSearch()} className="mt-2 text-primary font-bold" tabIndex={0}>
                 Search anyway
               </button>
             </div>
           )}
+        </Card>
         </div>
       )}
 

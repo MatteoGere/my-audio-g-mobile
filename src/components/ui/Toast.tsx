@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { cn } from '@/lib/utils';
+import { Card } from '@/components/ui';
 import {
   HiOutlineInformationCircle,
   HiOutlineCheckCircle,
@@ -159,9 +160,10 @@ const ToastComponent: React.FC<Toast> = ({
   const Icon = variantConfig.IconComp;
 
   return (
-    <div
+    <Card
+      padding="md"
       className={cn(
-        'relative w-full pointer-events-auto overflow-hidden rounded-xl min-w-[44px] min-h-[44px] border p-4 shadow-lg transition-all duration-300 ease-in-out',
+        'relative w-full pointer-events-auto overflow-hidden min-w-[44px] min-h-[44px] border shadow-lg transition-all duration-300 ease-in-out',
         variantConfig.container,
         isVisible && !isLeaving
           ? 'transform translate-x-0 opacity-100'
@@ -202,7 +204,7 @@ const ToastComponent: React.FC<Toast> = ({
           <HiOutlineXMark className="h-4 w-4 text-muted" aria-hidden="true" />
         </button>
       </div>
-    </div>
+    </Card>
   );
 };
 

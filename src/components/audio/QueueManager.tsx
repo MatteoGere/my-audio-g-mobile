@@ -272,13 +272,13 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
 
       {/* Queue Actions */}
       {queue.length > 0 && (
-  <div className="border-t border-muted bg-surface/50" >
-    <div className="p-4">
-          <div className="flex items-center justify-between text-xs text-muted">
-            <span>Drag to reorder tracks</span>
-            <span>{queue.length - currentQueueIndex - 1} tracks remaining</span>
-          </div>
-    </div>
+        <div className="border-t border-muted bg-surface/50">
+          <Card padding="md" className="bg-surface/50 border-none shadow-none">
+            <div className="flex items-center justify-between text-xs text-muted">
+              <span>Drag to reorder tracks</span>
+              <span>{queue.length - currentQueueIndex - 1} tracks remaining</span>
+            </div>
+          </Card>
         </div>
       )}
     </Card>

@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { Card } from '@/components/ui';
 import { HiOutlineXMark } from 'react-icons/hi2';
 
 export interface ModalProps {
@@ -84,34 +85,36 @@ const Modal: React.FC<ModalProps> = ({
       >
         {/* Header */}
         {(title || showCloseButton) && (
-          <div className="flex items-center justify-between p-6 border-b border-muted">
-            <div className="space-y-1">
-              {title && (
-                <h2 id="modal-title" className="text-lg font-semibold text-foreground">
-                  {title}
-                </h2>
-              )}
-              {description && (
-                <p id="modal-description" className="text-sm text-muted">
-                  {description}
-                </p>
+          <Card padding="lg" className="border-b border-muted">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                {title && (
+                  <h2 id="modal-title" className="text-lg font-semibold text-foreground">
+                    {title}
+                  </h2>
+                )}
+                {description && (
+                  <p id="modal-description" className="text-sm text-muted">
+                    {description}
+                  </p>
+                )}
+              </div>
+
+              {showCloseButton && (
+                <button
+                  onClick={onClose}
+                  className="p-1 rounded-md hover:bg-surface transition-colors"
+                  aria-label="Close modal"
+                >
+                  <HiOutlineXMark className="h-5 w-5 text-muted" aria-hidden="true" />
+                </button>
               )}
             </div>
-
-            {showCloseButton && (
-              <button
-                onClick={onClose}
-                className="p-1 rounded-md hover:bg-surface transition-colors"
-                aria-label="Close modal"
-              >
-                <HiOutlineXMark className="h-5 w-5 text-muted" aria-hidden="true" />
-              </button>
-            )}
-          </div>
+          </Card>
         )}
 
         {/* Content */}
-        <div className={cn('p-6', size === 'full' && 'flex-1 overflow-auto')}>{children}</div>
+        <Card padding="lg" className={cn(size === 'full' && 'flex-1 overflow-auto', 'border-none')}>{children}</Card>
       </div>
     </div>
   );

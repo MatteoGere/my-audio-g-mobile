@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { Card } from '@/components/ui';
 
 export interface PopoverProps {
   trigger: React.ReactNode;
@@ -191,10 +192,10 @@ const Popover: React.FC<PopoverProps> = ({
       </div>
 
       {isOpen && !disabled && (
-        <div
-          ref={contentRef}
+        <Card
+          padding="md"
           className={cn(
-            'absolute z-50 bg-surface border border-muted rounded-lg shadow-lg p-4',
+            'absolute z-50 border rounded-lg shadow-lg bg-surface',
             positionClasses.content,
             positionClasses.align,
             className,
@@ -206,8 +207,10 @@ const Popover: React.FC<PopoverProps> = ({
             marginRight: actualPosition === 'left' ? offset : undefined,
           }}
         >
-          {content}
-        </div>
+          <div ref={contentRef}>
+            {content}
+          </div>
+        </Card>
       )}
     </div>
   );
