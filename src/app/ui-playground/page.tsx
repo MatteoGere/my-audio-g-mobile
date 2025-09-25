@@ -45,17 +45,17 @@ const tabItems = [
   {
     id: 'tab1',
     label: 'Overview',
-    content: <div className="p-4">This is the overview tab content with some example text.</div>,
+    content: <Card padding="md">This is the overview tab content with some example text.</Card>,
   },
   {
     id: 'tab2',
     label: 'Details',
-    content: <div className="p-4">Here are the detailed information and specifications.</div>,
+    content: <Card padding="md">Here are the detailed information and specifications.</Card>,
   },
   {
     id: 'tab3',
     label: 'Reviews',
-    content: <div className="p-4">Customer reviews and feedback would be displayed here.</div>,
+    content: <Card padding="md">Customer reviews and feedback would be displayed here.</Card>,
   },
 ];
 
@@ -366,12 +366,12 @@ export default function UIPlayground() {
                   <Popover
                     trigger={<Button variant="outline">Click for popover</Button>}
                     content={
-                      <div className="p-4 w-64">
+                      <Card padding="md" className="w-64">
                         <h4 className="font-semibold mb-2">Popover Content</h4>
                         <p className="text-sm text-muted">
                           This is a popover with more detailed information.
                         </p>
-                      </div>
+                      </Card>
                     }
                     position="bottom"
                   />
