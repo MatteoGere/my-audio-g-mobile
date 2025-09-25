@@ -80,10 +80,10 @@ export default function FeaturedCarousel() {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100">Featured Tours</h2>
-        <div className="flex items-center gap-2">
+        <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">Featured Tours</h2>
+        <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" onClick={onPrev} aria-label="Previous">
             <HiOutlineChevronLeft className="h-5 w-5" />
           </Button>
@@ -99,10 +99,10 @@ export default function FeaturedCarousel() {
           {[...Array(3)].map((_, i) => (
             <Card
               key={i}
-              className="min-w-[240px] w-[240px] p-0 overflow-hidden animate-pulse border-stone-200 dark:border-stone-700"
+              className="min-w-[240px] w-[240px] p-0 flex flex-col overflow-hidden rounded-xl animate-pulse shadow-md"
             >
-              <div className="h-36 bg-stone-200 dark:bg-stone-700" />
-              <div className="p-3 space-y-2">
+              <div className="h-36 bg-stone-200 dark:bg-stone-700 rounded-t-xl" />
+              <div className="p-4 flex flex-col gap-2">
                 <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4" />
                 <div className="h-3 bg-stone-200 dark:bg-stone-700 rounded w-1/2" />
               </div>
@@ -126,21 +126,21 @@ export default function FeaturedCarousel() {
             const path = it.image_file?.image_storage_key ?? '';
             const imgUrl = path ? urlMap.get(path) : undefined;
             return (
-              <Link key={it.id} href={`/itinerary/${it.id}`} className="block">
-                <Card className="min-w-[260px] w-[260px] p-0 overflow-hidden snap-start border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800">
-                  <div className="relative h-40 bg-stone-100 dark:bg-stone-800">
+              <Link key={it.id} href={`/itinerary/${it.id}`} className="block" tabIndex={0}>
+                <Card className="min-w-[260px] w-[260px] p-0 flex flex-col overflow-hidden rounded-xl shadow-md snap-start transition-colors hover:bg-stone-100 dark:hover:bg-stone-800">
+                  <div className="relative h-40 bg-stone-100 dark:bg-stone-800 rounded-t-xl">
                     {imgUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={imgUrl} alt={it.name} className="w-full h-full object-cover" />
+                      <img src={imgUrl} alt={it.name} className="w-full h-full object-cover rounded-t-xl" />
                     ) : (
                       <div className="w-full h-full grid place-items-center text-stone-400">
                         No Image
                       </div>
                     )}
                   </div>
-                  <div className="p-3 space-y-1">
+                  <div className="p-4 flex flex-col gap-2">
                     <div className="flex items-center justify-between gap-2">
-                      <h3 className="font-medium text-stone-900 dark:text-stone-100 truncate">
+                      <h3 className="font-bold text-stone-900 dark:text-stone-100 truncate">
                         {it.name}
                       </h3>
                       <Badge variant="secondary" className="shrink-0">

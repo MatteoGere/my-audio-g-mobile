@@ -10,6 +10,7 @@ import {
   HiOutlineXMark,
   HiOutlineMagnifyingGlass,
 } from 'react-icons/hi2';
+import { cn } from '@/lib/utils';
 
 export interface SearchFilters {
   duration?: 'short' | 'medium' | 'long'; // <30min, 30-60min, >60min
@@ -216,7 +217,7 @@ export default function SearchBar({
   ];
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={cn('relative space-y-4', className)}>
       {/* Search Input */}
       <div className="relative">
         <Input
@@ -238,7 +239,9 @@ export default function SearchBar({
               setIsExpanded(false);
               searchInputRef.current?.focus();
             }}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
+            tabIndex={0}
+            aria-label="Clear search"
           >
             <HiOutlineXMark className="h-4 w-4" />
           </button>
@@ -247,7 +250,7 @@ export default function SearchBar({
 
       {/* Filter Shortcuts */}
       {showFilters && (
-        <div className="flex flex-wrap gap-2 mt-3">
+        <div className="flex flex-wrap gap-3 mt-3">
           {filterShortcuts.map((filter) => (
             <Badge
               key={filter.key}
@@ -258,7 +261,7 @@ export default function SearchBar({
                   ? 'primary'
                   : 'outline'
               }
-              className="cursor-pointer hover:bg-primary-100 dark:hover:bg-primary-900/20"
+              className="cursor-pointer min-w-[44px] min-h-[32px] flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-bold hover:bg-primary-100 dark:hover:bg-primary-900/20"
               onClick={() => {
                 const newFilters = { ...filters };
 
@@ -273,8 +276,9 @@ export default function SearchBar({
 
                 setFilters(newFilters);
               }}
+              tabIndex={0}
             >
-              {filter.icon && <filter.icon className="h-3 w-3 mr-1" />}
+              {filter.icon && <filter.icon className="h-4 w-4 mr-1" />}
               {filter.label}
             </Badge>
           ))}
@@ -283,7 +287,7 @@ export default function SearchBar({
 
       {/* Dropdown */}
       {isExpanded && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto">
           {/* Loading */}
           {isLoading && query.length >= 2 && (
             <div className="p-4 text-center text-stone-500 dark:text-stone-400">
@@ -297,21 +301,24 @@ export default function SearchBar({
           {/* Suggestions */}
           {suggestions.length > 0 && (
             <div className="py-2">
-              <div className="px-3 py-1 text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wide">
+              <div className="px-3 py-1 text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
                 Audio Guides
               </div>
               {suggestions.map((suggestion, index) => (
                 <button
                   key={suggestion.id}
                   onClick={() => handleSuggestionClick(suggestion)}
-                  className={`w-full px-3 py-2 text-left hover:bg-stone-50 dark:hover:bg-stone-700 ${
-                    selectedSuggestionIndex === index ? 'bg-primary-50 dark:bg-primary-900/20' : ''
-                  }`}
+                  className={cn(
+                    'w-full px-3 py-2 text-left rounded-lg transition-colors',
+                    'hover:bg-stone-100 dark:hover:bg-stone-700',
+                    selectedSuggestionIndex === index && 'bg-primary-50 dark:bg-primary-900/20',
+                  )}
+                  tabIndex={0}
                 >
-                  <div className="font-medium text-stone-900 dark:text-stone-100">
+                  <div className="font-bold text-stone-900 dark:text-stone-100">
                     {suggestion.title}
                   </div>
-                  <div className="text-sm text-stone-500 dark:text-stone-400 flex items-center space-x-2">
+                  <div className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-2 mt-1">
                     {suggestion.company && <span>{suggestion.company}</span>}
                     {suggestion.duration && (
                       <span className="flex items-center">
@@ -329,12 +336,13 @@ export default function SearchBar({
           {showHistory && searchHistory.length > 0 && query.length === 0 && (
             <div className="py-2 border-t border-stone-200 dark:border-stone-700">
               <div className="px-3 py-1 flex items-center justify-between">
-                <span className="text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wide">
+                <span className="text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
                   Recent Searches
                 </span>
                 <button
                   onClick={clearHistory}
                   className="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                  tabIndex={0}
                 >
                   Clear
                 </button>
@@ -342,15 +350,16 @@ export default function SearchBar({
               {searchHistory.map((item, index) => (
                 <div
                   key={index}
-                  className={`flex items-center px-3 py-2 hover:bg-stone-50 dark:hover:bg-stone-700 ${
-                    selectedSuggestionIndex === suggestions.length + index
-                      ? 'bg-primary-50 dark:bg-primary-900/20'
-                      : ''
-                  }`}
+                  className={cn(
+                    'flex items-center px-3 py-2 rounded-lg transition-colors',
+                    'hover:bg-stone-100 dark:hover:bg-stone-700',
+                    selectedSuggestionIndex === suggestions.length + index && 'bg-primary-50 dark:bg-primary-900/20',
+                  )}
                 >
                   <button
                     onClick={() => handleSuggestionClick(item)}
                     className="flex-1 text-left text-stone-700 dark:text-stone-300"
+                    tabIndex={0}
                   >
                     {item}
                   </button>
@@ -360,6 +369,8 @@ export default function SearchBar({
                       removeHistoryItem(item);
                     }}
                     className="ml-2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
+                    tabIndex={0}
+                    aria-label={`Remove ${item} from history`}
                   >
                     <HiOutlineXMark className="h-3 w-3" />
                   </button>
@@ -374,7 +385,8 @@ export default function SearchBar({
               <p>No audio guides found for "{query}"</p>
               <button
                 onClick={() => handleSearch()}
-                className="mt-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                className="mt-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-bold"
+                tabIndex={0}
               >
                 Search anyway
               </button>

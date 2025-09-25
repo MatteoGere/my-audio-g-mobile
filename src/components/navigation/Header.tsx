@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
+import { Avatar } from '@/components/ui';
 import { useAuth, useUserProfile } from '@/lib/hooks';
 import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
 import { setPlayerView } from '@/lib/redux/slices/audioSlice';
@@ -102,23 +103,23 @@ export function Header({
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white dark:bg-stone-800 border-b border-stone-200 dark:border-stone-700 shadow-soft">
-      <div className="flex items-center justify-between h-14 px-4">
+    <header className="sticky top-0 z-50 bg-white dark:bg-stone-800 border-b border-stone-200 dark:border-stone-700 shadow-md">
+      <div className="flex items-center justify-between h-16 px-5 gap-4">
         {/* Left Section */}
-        <div className="flex items-center space-x-2 flex-1">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           {showBackButton && (
-            <Button variant="ghost" size="sm" onClick={() => router.back()} className="p-2">
+            <Button variant="ghost" size="sm" onClick={() => router.back()}>
               <HiOutlineChevronLeft className="h-5 w-5" />
             </Button>
           )}
 
-          <h1 className="text-lg font-semibold text-stone-900 dark:text-stone-100 truncate">
+          <h1 className="text-xl font-bold text-stone-900 dark:text-stone-100 truncate">
             {getPageTitle()}
           </h1>
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-3">
           {customActions}
 
           {/* Reopen MiniPlayer Button */}
@@ -127,7 +128,7 @@ export function Header({
               variant="ghost"
               size="sm"
               onClick={() => dispatch(setPlayerView('mini'))}
-              className="p-2 text-primary-600"
+              className="text-primary-600"
               title="Show player"
             >
               <HiOutlineMusicalNote className="h-5 w-5" />
@@ -139,7 +140,6 @@ export function Header({
               variant="ghost"
               size="sm"
               onClick={() => router.push('/search')}
-              className="p-2"
             >
               <HiOutlineMagnifyingGlass className="h-5 w-5" />
             </Button>
@@ -152,19 +152,21 @@ export function Header({
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="p-1 flex items-center space-x-2"
+                className="flex items-center gap-2"
               >
-                <div className="w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                  {getUserInitials()}
-                </div>
+                {/* Usa Avatar UI component per consistenza */}
+                <span className="sr-only">User menu</span>
+                <span className="inline-flex">
+                  <Avatar size="sm" fallback={getUserDisplayName()} />
+                </span>
                 <HiOutlineChevronDown className="h-4 w-4 text-stone-500" />
               </Button>
 
               {/* User Dropdown Menu */}
               {showUserMenu && (
-                <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 z-50">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-stone-800 rounded-xl shadow-lg border border-stone-200 dark:border-stone-700 py-1 z-50">
                   <div className="px-4 py-3 border-b border-stone-200 dark:border-stone-700">
-                    <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
+                    <p className="text-sm font-bold text-stone-900 dark:text-stone-100">
                       {getUserDisplayName()}
                     </p>
                     <p className="text-xs text-stone-500 dark:text-stone-400">{user?.email}</p>
@@ -173,26 +175,26 @@ export function Header({
                   <Link
                     href="/profile"
                     onClick={() => setShowUserMenu(false)}
-                    className="flex items-center px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700"
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg"
                   >
-                    <HiOutlineUser className="h-4 w-4 mr-3" />
+                    <HiOutlineUser className="h-4 w-4" />
                     Profile Settings
                   </Link>
 
                   <Link
                     href="/favorites"
                     onClick={() => setShowUserMenu(false)}
-                    className="flex items-center px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700"
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg"
                   >
-                    <HiOutlineCog6Tooth className="h-4 w-4 mr-3" />
+                    <HiOutlineCog6Tooth className="h-4 w-4" />
                     Preferences
                   </Link>
 
                   <button
                     onClick={handleSignOut}
-                    className="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
                   >
-                    <HiOutlineArrowRightOnRectangle className="h-4 w-4 mr-3" />
+                    <HiOutlineArrowRightOnRectangle className="h-4 w-4" />
                     Sign Out
                   </button>
                 </div>
