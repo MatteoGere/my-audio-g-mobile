@@ -1,56 +1,226 @@
-import { Card, Button } from '@/components/ui';
+'use client';
+
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { MapComponent } from '@/components/map';
+import { useMapPOIs, useLocation } from '@/lib/hooks';
+import { useAppDispatch, useAppSelector } from '@/lib/redux';
+import { selectPoi, setHighlightedTrackId, setMapView } from '@/lib/redux/slices/mapSlice';
+import { POIMarkerData } from '@/types/app-types';
+import { FaExpand, FaCompress, FaLocationArrow, FaFilter, FaSearch } from 'react-icons/fa';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 
 export default function MapPage() {
+  const dispatch = useAppDispatch();
+  const { userLocation, requestLocation, startTracking, stopTracking, getCurrentPosition } = useLocation();
+  
+  // State
+  // fullscreen removed: map is always shown in standard mode
+  const [selectedPoiId, setSelectedPoiId] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
+
+  // Redux state
+  const mapCenter = useAppSelector((state) => state.map.center);
+  const mapZoom = useAppSelector((state) => state.map.zoom);
+  const isLocationEnabled = useAppSelector((state) => state.map.isLocationEnabled);
+
+  // Fetch POIs for the map
+  const { pois, isLoading, itineraryColors, refreshPOIs } = useMapPOIs({
+    enableCaching: true,
+  });
+
+  // Filter POIs based on search
+  const filteredPois = React.useMemo(() => {
+    if (!searchTerm) return pois;
+    
+    const lowercaseSearch = searchTerm.toLowerCase();
+    return pois.filter(poi => 
+      poi.trackName.toLowerCase().includes(lowercaseSearch) ||
+      poi.itineraryName.toLowerCase().includes(lowercaseSearch) ||
+      poi.companyName.toLowerCase().includes(lowercaseSearch)
+    );
+  }, [pois, searchTerm]);
+
+  // Handle marker click
+  const handleMarkerClick = useCallback((poi: POIMarkerData) => {
+    setSelectedPoiId(poi.trackId);
+    dispatch(selectPoi({
+      id: poi.trackId,
+      type: 'track',
+      latitude: poi.latitude,
+      longitude: poi.longitude,
+      title: poi.trackName,
+      description: poi.itineraryName,
+      trackId: poi.trackId,
+      itineraryId: poi.itineraryId,
+    }));
+    dispatch(setHighlightedTrackId(poi.trackId));
+  }, [dispatch]);
+
+  // Handle play button click
+  const handlePlayClick = useCallback((poi: POIMarkerData) => {
+    // TODO: Integrate with audio player
+    console.log('Play audio for track:', poi.trackId);
+    // dispatch(playTrack(poi.trackId));
+  }, []);
+
+  // Handle map click
+  const handleMapClick = useCallback((lat: number, lng: number) => {
+    // Clear selection when clicking empty map area
+    setSelectedPoiId(null);
+    dispatch(selectPoi(null));
+    dispatch(setHighlightedTrackId(null));
+  }, [dispatch]);
+
+  // Center on user location
+  const centerOnUser = useCallback(async () => {
+    try {
+      // Use getCurrentPosition which returns the resolved coordinates immediately.
+      const loc = await getCurrentPosition();
+      if (loc) {
+        dispatch(setMapView({ center: { latitude: loc.latitude, longitude: loc.longitude }, zoom: mapZoom }));
+      }
+    } catch (e) {
+      // If getCurrentPosition fails, fall back to requesting permission which will update store
+      if (!isLocationEnabled) {
+        await requestLocation();
+      }
+      if (userLocation) {
+        dispatch(setMapView({ center: userLocation, zoom: mapZoom }));
+      }
+    }
+  }, [getCurrentPosition, requestLocation, isLocationEnabled, userLocation, dispatch, mapZoom]);
+
+  // Calculate available height between header and bottom navigation
+  const [mapHeightStyle, setMapHeightStyle] = useState<string | undefined>(undefined);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function updateHeight() {
+      try {
+        const header = document.querySelector('header');
+        const bottomNav = document.querySelector('nav[role="navigation"], nav.fixed, .fixed');
+
+        const headerHeight = header ? (header as HTMLElement).getBoundingClientRect().height : 0;
+        const bottomHeight = bottomNav ? (bottomNav as HTMLElement).getBoundingClientRect().height : 0;
+
+        const viewportHeight = window.innerHeight;
+
+        // Use container top offset so we account for any page padding/margins above the map
+  // Small extra gap so map doesn't touch bottom nav and a little breathing room
+  const extraGap = 8; // pixels (reduced per request)
+
+    // Compute available viewport space between header and bottom navigation.
+    // Note: do NOT subtract the container's top offset here — that often double-counts
+    // spacing and produces a smaller height than available. Using header/bottom heights
+    // is more reliable across layouts.
+    const available = Math.max(0, viewportHeight - headerHeight - bottomHeight - extraGap);
+
+        // Ensure a sensible minimum height
+        const minH = 200;
+        const newHeight = `${Math.max(minH, Math.floor(available))}px`;
+        setMapHeightStyle(newHeight);
+        // Wait a frame so React applies the inline style to the DOM, then dispatch
+        // a resize event so Leaflet can recalculate tile layout. A tiny timeout
+        // after rAF ensures mobile browsers finished layout.
+        try {
+          requestAnimationFrame(() => {
+            window.setTimeout(() => {
+              try { window.dispatchEvent(new Event('map-resize')); } catch (e) { /* ignore */ }
+            }, 50);
+          });
+        } catch (e) {
+          // ignore in environments without window/requestAnimationFrame
+        }
+      } catch (e) {
+        setMapHeightStyle(undefined);
+      }
+    }
+
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
+
   return (
-    <div className="space-y-6">
-      {/* Map Placeholder */}
-      <Card className="h-96 flex items-center justify-center bg-sea-50 dark:bg-sea-900 border-dashed">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-sea-200 dark:bg-sea-700 rounded-full mx-auto mb-4 flex items-center justify-center">
-            <span className="text-sea-600 dark:text-sea-400 text-2xl">🗺️</span>
+    <div className="relative w-full h-full bg-gray-50">
+      {/* Search bar moved to bottom (replaces stats banner) - top search removed */}
+
+  {/* Map Controls */}
+  <div className={`absolute top-4 right-4 z-10 flex flex-col gap-3 pointer-events-auto`}>
+        {/* Center on User */}
+        <Button
+          onClick={centerOnUser}
+          className="bg-white text-gray-700 hover:bg-gray-50 shadow-lg p-3 min-w-[44px] min-h-[44px]"
+          variant="outline"
+          disabled={!isLocationEnabled && !userLocation}
+          aria-label="Center on user"
+        >
+          <FaLocationArrow />
+        </Button>
+      </div>
+
+      {/* Map Container */}
+      <div
+        ref={containerRef}
+        className="w-full"
+        style={mapHeightStyle ? { height: mapHeightStyle } : undefined}
+      >
+        <MapComponent
+          className="w-full h-full"
+          pois={filteredPois}
+          showUserLocation={true}
+          interactive={true}
+          onMarkerClick={handleMarkerClick}
+          onMapClick={handleMapClick}
+          selectedPoiId={selectedPoiId || undefined}
+        />
+      </div>
+
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-20">
+          <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <span className="text-gray-700">Loading map data...</span>
           </div>
-          <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">Interactive Map</h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400">
-            Map integration will be implemented with Leaflet
-          </p>
         </div>
-      </Card>
+      )}
 
-      {/* Location Controls */}
-      <div className="flex space-x-2">
-        <Button variant="primary" className="flex-1">
-          Find My Location
-        </Button>
-        <Button variant="outline" className="flex-1">
-          Search Area
-        </Button>
-      </div>
+  {/* Search and Filter Bar (moved to bottom) */}
+  <div className={`absolute bottom-4 left-4 right-4 z-10 bg-white rounded-lg shadow-lg p-3`}>
+          <div className="flex gap-2 items-center">
+            <div className="flex-1 relative">
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+              <Input
+                type="text"
+                placeholder="Search tracks, itineraries, or companies..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 w-full"
+              />
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFilters(!showFilters)}
+              className="px-3"
+            >
+              <FaFilter />
+            </Button>
+          </div>
 
-      {/* Nearby Tours */}
-      <div>
-        <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
-          Nearby Tours
-        </h2>
-        <div className="space-y-4">
-          {[1, 2, 3].map((item) => (
-            <Card key={item} className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <h3 className="font-medium text-stone-900 dark:text-stone-100">
-                    Park Nature Walk
-                  </h3>
-                  <p className="text-sm text-stone-600 dark:text-stone-400">
-                    0.3 km away • 25 minutes
-                  </p>
-                </div>
-                <Button variant="ghost" size="sm">
-                  View
-                </Button>
+          {/* Filter Options */}
+          {showFilters && (
+            <div className="mt-3 pt-3 border-t border-gray-200">
+              <div className="text-sm text-gray-600">
+                Showing {filteredPois.length} of {pois.length} locations
               </div>
-            </Card>
-          ))}
+              {/* TODO: Add more filter options */}
+            </div>
+          )}
         </div>
-      </div>
     </div>
   );
 }

@@ -153,6 +153,23 @@ export interface POI {
 }
 
 /**
+ * POI Marker Data for map rendering
+ */
+export interface POIMarkerData {
+  trackId: string;
+  trackName: string;
+  itineraryId: string;
+  itineraryName: string;
+  latitude: number;
+  longitude: number;
+  duration: number;
+  imageStorageKey?: string | null;
+  audioStorageKey: string;
+  companyId: string;
+  companyName: string;
+}
+
+/**
  * Map marker configuration
  */
 export interface MapMarkerConfig {
