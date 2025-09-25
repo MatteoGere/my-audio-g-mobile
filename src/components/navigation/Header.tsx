@@ -114,7 +114,7 @@ export function Header({
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white dark:bg-carbon-800 border-b border-carbon-200 dark:border-carbon-700 shadow-md">
+    <header className="sticky top-0 z-50 bg-surface border-b border-carbon-200 shadow-md">
       <div className="flex items-center justify-between h-16 px-5 gap-4">
         {/* Left Section */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -124,7 +124,7 @@ export function Header({
             </Button>
           )}
 
-          <h1 className="text-xl font-bold text-carbon-900 dark:text-carbon-100 truncate">
+          <h1 className="text-xl font-bold text-foreground truncate">
             {getPageTitle()}
           </h1>
         </div>
@@ -139,7 +139,7 @@ export function Header({
               variant="ghost"
               size="sm"
               onClick={() => dispatch(setPlayerView('mini'))}
-              className="text-primary-600"
+              className="text-primary"
               title="Show player"
             >
               <HiOutlineMusicalNote className="h-5 w-5" />
@@ -193,23 +193,21 @@ export function Header({
                 <span className="inline-flex">
                   <Avatar size="sm" fallback={getUserDisplayName()} />
                 </span>
-                <HiOutlineChevronDown className="h-4 w-4 text-carbon-500" />
+                <HiOutlineChevronDown className="h-4 w-4 text-muted" />
               </Button>
 
               {/* User Dropdown Menu */}
               {showUserMenu && (
-                <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-carbon-800 rounded-xl shadow-lg border border-carbon-200 dark:border-carbon-700 py-1 z-50">
-                  <div className="px-4 py-3 border-b border-carbon-200 dark:border-carbon-700">
-                    <p className="text-sm font-bold text-carbon-900 dark:text-carbon-100">
-                      {getUserDisplayName()}
-                    </p>
-                    <p className="text-xs text-carbon-500 dark:text-carbon-400">{user?.email}</p>
+                <div className="absolute right-0 top-full mt-2 w-56 bg-surface rounded-xl shadow-lg border border-carbon-200 py-1 z-50">
+                  <div className="px-4 py-3 border-b border-carbon-200">
+                    <p className="text-sm font-bold text-foreground">{getUserDisplayName()}</p>
+                    <p className="text-xs text-muted">{user?.email}</p>
                   </div>
 
                   <Link
                     href="/profile"
                     onClick={() => setShowUserMenu(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-carbon-700 dark:text-carbon-300 hover:bg-carbon-100 dark:hover:bg-carbon-700 rounded-lg"
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-background rounded-lg"
                   >
                     <HiOutlineUser className="h-4 w-4" />
                     Profile Settings
@@ -218,7 +216,7 @@ export function Header({
                   <Link
                     href="/favorites"
                     onClick={() => setShowUserMenu(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-carbon-700 dark:text-carbon-300 hover:bg-carbon-100 dark:hover:bg-carbon-700 rounded-lg"
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-background rounded-lg"
                   >
                     <HiOutlineCog6Tooth className="h-4 w-4" />
                     Preferences
@@ -226,7 +224,7 @@ export function Header({
 
                   <button
                     onClick={handleSignOut}
-                    className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
+                    className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg"
                   >
                     <HiOutlineArrowRightOnRectangle className="h-4 w-4" />
                     Sign Out

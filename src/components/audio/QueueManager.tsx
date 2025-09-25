@@ -121,16 +121,16 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-white/95 dark:bg-carbon-900/95 backdrop-blur-md border border-carbon-200 dark:border-carbon-700">
+    <Card className="w-full max-w-md mx-auto bg-surface/95 backdrop-blur-md border border-carbon-200">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-carbon-200 dark:border-carbon-700">
+  <div className="flex items-center justify-between p-4 border-b border-carbon-200">
         <div className="flex items-center space-x-3">
-          <HiOutlineMusicalNote className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+          <HiOutlineMusicalNote className="w-5 h-5 text-primary" />
           <div>
-            <h3 className="font-semibold text-carbon-900 dark:text-carbon-100">
+            <h3 className="font-semibold text-foreground">
               Queue ({queue.length} tracks)
             </h3>
-            <p className="text-xs text-carbon-600 dark:text-carbon-400">
+            <p className="text-xs text-muted">
               {formatTime(totalDuration)} total • {formatTime(remainingDuration)} remaining
             </p>
           </div>
@@ -139,11 +139,11 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
         <div className="flex items-center space-x-2">
           {queue.length > 1 && (
             <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClearQueue}
-              className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/20"
-            >
+                variant="ghost"
+                size="sm"
+                onClick={handleClearQueue}
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
               <HiOutlineTrash className="w-4 h-4" />
             </Button>
           )}
@@ -156,7 +156,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
       </div>
 
       {/* Queue List */}
-      <div className="max-h-96 overflow-y-auto">
+  <div className="max-h-96 overflow-y-auto">
         {queue.map((queueItem, index) => {
           const isCurrentTrack = index === currentQueueIndex;
           const isPastTrack = index < currentQueueIndex;
@@ -165,18 +165,16 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
           return (
             <div
               key={`${queueItem.track.id}-${index}`}
-              className={`
-                relative flex items-center p-3 border-b border-carbon-100 dark:border-carbon-800 transition-all duration-200
-                ${
-                  isCurrentTrack
-                    ? 'bg-primary-50 dark:bg-primary-900/20 border-l-4 border-l-primary-500'
-                    : isPastTrack
-                      ? 'opacity-60'
-                      : 'hover:bg-carbon-50 dark:hover:bg-carbon-800/50'
-                }
-                ${isDragOver ? 'bg-primary-100 dark:bg-primary-900/30' : ''}
-                ${draggedIndex === index ? 'opacity-50' : ''}
-              `}
+              className={cn(
+                'relative flex items-center p-3 border-b border-carbon-100 transition-all duration-200',
+                isCurrentTrack
+                  ? 'bg-primary/20 border-l-4 border-l-primary-500'
+                  : isPastTrack
+                  ? 'opacity-60'
+                  : 'hover:bg-background',
+                isDragOver && 'bg-primary/20',
+                draggedIndex === index && 'opacity-50',
+              )}
               draggable={!isCurrentTrack}
               onDragStart={(e) => handleDragStart(e, index)}
               onDragOver={(e) => handleDragOver(e, index)}
@@ -186,13 +184,13 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
             >
               {/* Drag Handle */}
               {!isCurrentTrack && (
-                <div className="cursor-move mr-2 text-carbon-400 dark:text-carbon-600">
+                <div className="cursor-move mr-2 text-muted">
                   <HiOutlineBars3 className="w-4 h-4" />
                 </div>
               )}
 
               {/* Track Number/Status */}
-              <div className="w-8 h-8 rounded-full bg-carbon-100 dark:bg-carbon-800 flex items-center justify-center mr-3 flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-surface flex items-center justify-center mr-3 flex-shrink-0">
                 {isCurrentTrack && playbackState.isPlaying ? (
                   <div className="flex space-x-0.5">
                     <div className="w-0.5 h-3 bg-primary-600 animate-pulse"></div>
@@ -206,39 +204,25 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                     ></div>
                   </div>
                 ) : (
-                  <span
-                    className={`text-xs font-medium ${
-                      isCurrentTrack
-                        ? 'text-primary-600 dark:text-primary-400'
-                        : 'text-carbon-500 dark:text-carbon-400'
-                    }`}
-                  >
-                    {index + 1}
-                  </span>
+                  <span className={cn('text-xs font-medium', isCurrentTrack ? 'text-primary' : 'text-muted')}>{index + 1}</span>
                 )}
               </div>
 
               {/* Track Info */}
               <div className="flex-1 min-w-0 cursor-pointer" onClick={() => handlePlayTrack(index)}>
-                <p
-                  className={`text-sm font-medium truncate ${
-                    isCurrentTrack
-                      ? 'text-primary-900 dark:text-primary-100'
-                      : 'text-carbon-900 dark:text-carbon-100'
-                  }`}
-                >
+                <p className={cn('text-sm font-medium truncate', isCurrentTrack ? 'text-primary' : 'text-foreground')}>
                   {queueItem.track.name || `Track ${index + 1}`}
                 </p>
-                <div className="flex items-center space-x-2 text-xs text-carbon-600 dark:text-carbon-400">
+                <div className="flex items-center space-x-2 text-xs text-muted">
                   <HiOutlineClock className="w-3 h-3" />
                   <span>{formatTime(queueItem.track.duration || 0)}</span>
                   {isCurrentTrack && (
-                    <span className="text-primary-600 dark:text-primary-400 font-medium">
+                    <span className="text-primary font-medium">
                       • Now Playing
                     </span>
                   )}
                   {isPastTrack && (
-                    <span className="text-carbon-500 dark:text-carbon-500">• Played</span>
+                    <span className="text-muted">• Played</span>
                   )}
                 </div>
               </div>
@@ -273,7 +257,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/20"
+                    className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50"
                     onClick={() => handleRemoveTrack(index)}
                   >
                     <HiOutlineTrash className="w-4 h-4" />
@@ -287,8 +271,8 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
 
       {/* Queue Actions */}
       {queue.length > 0 && (
-        <div className="p-4 border-t border-carbon-200 dark:border-carbon-700 bg-carbon-50 dark:bg-carbon-800/50">
-          <div className="flex items-center justify-between text-xs text-carbon-600 dark:text-carbon-400">
+        <div className="p-4 border-t border-carbon-200 bg-surface/50">
+          <div className="flex items-center justify-between text-xs text-muted">
             <span>Drag to reorder tracks</span>
             <span>{queue.length - currentQueueIndex - 1} tracks remaining</span>
           </div>

@@ -58,7 +58,7 @@ export function BottomNavigation() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-carbon-800 border-t border-carbon-200 dark:border-carbon-700 shadow-lg">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-surface border-t border-carbon-200 shadow-lg">
       <div className="flex items-center justify-around h-16 px-5 gap-4">
         {navigationItems.map((item) => {
           const Icon = item.icon;
@@ -71,8 +71,8 @@ export function BottomNavigation() {
               className={cn(
                 'flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-xl min-w-[44px] min-h-[44px] flex-1 transition-all duration-200',
                 active
-                  ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 shadow-md'
-                  : 'text-carbon-600 dark:text-carbon-400 hover:text-carbon-900 dark:hover:text-carbon-100 hover:bg-carbon-100 dark:hover:bg-carbon-700',
+                  ? 'text-primary bg-primary/20 shadow-md'
+                  : 'text-muted hover:text-foreground hover:bg-surface',
               )}
               tabIndex={0}
             >

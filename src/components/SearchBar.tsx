@@ -239,7 +239,7 @@ export default function SearchBar({
               setIsExpanded(false);
               searchInputRef.current?.focus();
             }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-carbon-400 hover:text-carbon-600 dark:hover:text-carbon-300"
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground"
             tabIndex={0}
             aria-label="Clear search"
           >
@@ -261,7 +261,7 @@ export default function SearchBar({
                   ? 'primary'
                   : 'outline'
               }
-              className="cursor-pointer min-w-[44px] min-h-[32px] flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-bold hover:bg-primary-100 dark:hover:bg-primary-900/20"
+              className="cursor-pointer min-w-[44px] min-h-[32px] flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-bold hover:bg-background"
               onClick={() => {
                 const newFilters = { ...filters };
 
@@ -287,10 +287,10 @@ export default function SearchBar({
 
       {/* Dropdown */}
       {isExpanded && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-carbon-800 border border-carbon-200 dark:border-carbon-700 rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto">
+  <div className="absolute top-full left-0 right-0 mt-2 bg-surface border border-carbon-200 rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto">
           {/* Loading */}
           {isLoading && query.length >= 2 && (
-            <div className="p-4 text-center text-carbon-500 dark:text-carbon-400">
+            <div className="p-4 text-center text-muted">
               <div className="inline-flex items-center">
                 <div className="animate-spin h-4 w-4 border-2 border-primary-600 border-t-transparent rounded-full mr-2"></div>
                 Searching...
@@ -301,7 +301,7 @@ export default function SearchBar({
           {/* Suggestions */}
           {suggestions.length > 0 && (
             <div className="py-2">
-              <div className="px-3 py-1 text-xs font-bold text-carbon-500 dark:text-carbon-400 uppercase tracking-wide">
+              <div className="px-3 py-1 text-xs font-bold text-muted uppercase tracking-wide">
                 Audio Guides
               </div>
               {suggestions.map((suggestion, index) => (
@@ -310,15 +310,15 @@ export default function SearchBar({
                   onClick={() => handleSuggestionClick(suggestion)}
                   className={cn(
                     'w-full px-3 py-2 text-left rounded-lg transition-colors',
-                    'hover:bg-carbon-100 dark:hover:bg-carbon-700',
-                    selectedSuggestionIndex === index && 'bg-primary-50 dark:bg-primary-900/20',
+                    'hover:bg-background',
+                      selectedSuggestionIndex === index && 'bg-primary/20',
                   )}
                   tabIndex={0}
                 >
-                  <div className="font-bold text-carbon-900 dark:text-carbon-100">
+                  <div className="font-bold text-foreground">
                     {suggestion.title}
                   </div>
-                  <div className="text-xs text-carbon-500 dark:text-carbon-400 flex items-center gap-2 mt-1">
+                  <div className="text-xs text-muted flex items-center gap-2 mt-1">
                     {suggestion.company && <span>{suggestion.company}</span>}
                     {suggestion.duration && (
                       <span className="flex items-center">
@@ -334,32 +334,27 @@ export default function SearchBar({
 
           {/* Search History */}
           {showHistory && searchHistory.length > 0 && query.length === 0 && (
-            <div className="py-2 border-t border-carbon-200 dark:border-carbon-700">
+            <div className="py-2 border-t border-carbon-200">
               <div className="px-3 py-1 flex items-center justify-between">
-                <span className="text-xs font-bold text-carbon-500 dark:text-carbon-400 uppercase tracking-wide">
+                <span className="text-xs font-bold text-muted uppercase tracking-wide">
                   Recent Searches
                 </span>
-                <button
-                  onClick={clearHistory}
-                  className="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
-                  tabIndex={0}
-                >
+                <button onClick={clearHistory} className="text-xs text-primary hover:text-primary/80" tabIndex={0}>
                   Clear
                 </button>
               </div>
               {searchHistory.map((item, index) => (
                 <div
                   key={index}
-                  className={cn(
+                    className={cn(
                     'flex items-center px-3 py-2 rounded-lg transition-colors',
-                    'hover:bg-carbon-100 dark:hover:bg-carbon-700',
-                    selectedSuggestionIndex === suggestions.length + index &&
-                      'bg-primary-50 dark:bg-primary-900/20',
+                    'hover:bg-background',
+                    selectedSuggestionIndex === suggestions.length + index && 'bg-primary/20',
                   )}
                 >
                   <button
                     onClick={() => handleSuggestionClick(item)}
-                    className="flex-1 text-left text-carbon-700 dark:text-carbon-300"
+                    className="flex-1 text-left text-foreground"
                     tabIndex={0}
                   >
                     {item}
@@ -369,7 +364,7 @@ export default function SearchBar({
                       e.stopPropagation();
                       removeHistoryItem(item);
                     }}
-                    className="ml-2 text-carbon-400 hover:text-carbon-600 dark:hover:text-carbon-300"
+                    className="ml-2 text-muted hover:text-foreground"
                     tabIndex={0}
                     aria-label={`Remove ${item} from history`}
                   >
@@ -382,13 +377,9 @@ export default function SearchBar({
 
           {/* No results */}
           {query.length >= 2 && !isLoading && suggestions.length === 0 && (
-            <div className="p-4 text-center text-carbon-500 dark:text-carbon-400">
+            <div className="p-4 text-center text-muted">
               <p>No audio guides found for "{query}"</p>
-              <button
-                onClick={() => handleSearch()}
-                className="mt-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-bold"
-                tabIndex={0}
-              >
+              <button onClick={() => handleSearch()} className="mt-2 text-primary font-bold" tabIndex={0}>
                 Search anyway
               </button>
             </div>
