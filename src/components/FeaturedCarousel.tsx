@@ -45,6 +45,7 @@ export default function FeaturedCarousel() {
   // Auto-scroll logic
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [index, setIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const scrollToIndex = (i: number) => {
     const container = containerRef.current;
@@ -65,6 +66,28 @@ export default function FeaturedCarousel() {
       });
     }, 4000);
     return () => clearInterval(interval);
+  }, [items.length]);
+
+  // Observe children to update active indicator based on visibility
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const children = Array.from(container.children) as HTMLElement[];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = children.indexOf(entry.target as HTMLElement);
+            if (idx >= 0) setActiveIndex(idx);
+          }
+        });
+      },
+      { root: container, threshold: 0.5 },
+    );
+
+    children.forEach((child) => observer.observe(child));
+    return () => observer.disconnect();
   }, [items.length]);
 
   const onPrev = () => {
@@ -123,7 +146,7 @@ export default function FeaturedCarousel() {
         <div className="-mx-5">
           <div
             ref={containerRef}
-            className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-thin scrollbar-thumb-primary/60 scrollbar-track-transparent pb-2"
+            className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-track-transparent pb-2 hide-scrollbar"
           >
           {(items as Itinerary[]).map((it) => {
             const path = it.image_file?.image_storage_key ?? '';
@@ -170,6 +193,26 @@ export default function FeaturedCarousel() {
               </Link>
             );
           })}
+            </div>
+
+            {/* Indicator bars */}
+            <div className="flex items-center justify-center gap-2 mt-3">
+              {(items as Itinerary[]).map((_, i) => (
+                <button
+                  key={`ind-${i}`}
+                  aria-label={`Show item ${i + 1}`}
+                  onClick={() => {
+                    setIndex(i);
+                    scrollToIndex(i);
+                  }}
+                  className={
+                    'h-1.5 rounded-full hover:cursor-pointer transition-all duration-200  ' +
+                    (i === activeIndex
+                      ? 'bg-primary w-10'
+                      : 'bg-muted/30 w-6 hover:w-10 hover:bg-primary/40')
+                  }
+                />
+              ))}
             </div>
           </div>
         )}

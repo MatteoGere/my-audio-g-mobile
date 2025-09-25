@@ -220,3 +220,17 @@ body {
 .muted {
   color: var(--color-muted);
 }
+
+/* Utility: hide scrollbars while preserving scroll functionality
+   - Works on WebKit (Safari, modern Chrome) and Firefox
+   - Use the class `hide-scrollbar` on scrollable containers to hide the scrollbar
+   - We keep `scrollbar-thin` available on elements that explicitly want a thin visible scrollbar
+*/
+.hide-scrollbar {
+  /* WebKit-based browsers */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
