@@ -9,12 +9,44 @@ import {
   HiOutlineMagnifyingGlass,
   HiOutlineAdjustmentsHorizontal,
   HiOutlineClock,
-  HiOutlineMapPin,
-  HiOutlineHeart,
-  HiHeart,
   HiOutlineSquares2X2,
   HiOutlineBars3,
 } from 'react-icons/hi2';
+
+// Small collapsible text helper (copied from itinerary detail page)
+function CollapsibleText({ id, text }: { id: string; text: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const shouldCollapse = text.length > 150;
+
+  if (!shouldCollapse) {
+    return <p className="text-sm text-muted leading-relaxed mb-1">{text}</p>;
+  }
+
+  return (
+    <div className="mb-1">
+      <p id={id} className={'text-sm text-muted leading-relaxed ' + (expanded ? '' : 'line-clamp-2')}>
+        {text}
+      </p>
+      <button
+        type="button"
+        aria-expanded={expanded}
+        aria-controls={id}
+        onClick={(e) => {
+          // Prevent the click from bubbling to the parent article which navigates
+          e.stopPropagation();
+          setExpanded((s) => !s);
+        }}
+        onKeyDown={(e) => {
+          // Prevent keyboard events from triggering parent handlers
+          e.stopPropagation();
+        }}
+        className="mt-1 text-sm text-primary hover:underline"
+      >
+        {expanded ? 'Show less' : 'Show more'}
+      </button>
+    </div>
+  );
+}
 
 type ViewMode = 'grid' | 'list';
 type SortOption = 'newest' | 'popular' | 'nearest' | 'duration_asc' | 'duration_desc';
@@ -351,8 +383,8 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                 <div
                   className={
                     viewMode === 'grid'
-                      ? 'h-32 bg-background rounded-md mb-3 w-full'
-                      : 'h-24 w-24 bg-background rounded-md flex-shrink-0 mr-4'
+                      ? 'h-48 bg-background rounded-md mb-3 w-full'
+                      : 'h-48 w-48 bg-background rounded-md flex-shrink-0 mr-4'
                   }
                 />
                 <div className="flex-1">
@@ -394,7 +426,6 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
             {filteredResults.map((itinerary) => {
               const imagePath = itinerary.image_file?.image_storage_key;
               const imageUrl = imagePath ? signedUrls[imagePath] : undefined;
-              const isFavorite = favorites.has(itinerary.id);
 
               return (
                 <article
@@ -433,23 +464,6 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                           No Image
                         </div>
                       )}
-
-                      {/* Favorite Button */}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleFavorite(itinerary.id);
-                        }}
-                        className="absolute top-2 right-2 p-1 bg-surface/80 hover:bg-surface"
-                      >
-                        {isFavorite ? (
-                          <HiHeart className="h-4 w-4 text-error" />
-                        ) : (
-                          <HiOutlineHeart className="h-4 w-4" />
-                        )}
-                      </Button>
                     </div>
 
                     {/* Content */}
@@ -460,7 +474,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                         </h3>
 
                         {viewMode === 'list' && itinerary.description && (
-                          <p className="text-xs text-muted line-clamp-2">{itinerary.description}</p>
+                          <CollapsibleText id={`search-desc-${itinerary.id}`} text={itinerary.description} />
                         )}
 
                         <div className="flex items-center gap-2 text-xs text-muted">

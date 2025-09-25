@@ -212,7 +212,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   }, [center.latitude, center.longitude, zoom, isUserInteracting]);
 
   // Map container classes
-  const mapClasses = `relative w-full h-full overflow-hidden rounded-lg ${className}`.trim();
+  const mapClasses = `relative w-full h-full overflow-hidden ${className}`.trim();
 
   return (
     <div className={mapClasses}>

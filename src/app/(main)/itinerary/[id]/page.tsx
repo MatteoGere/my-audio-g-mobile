@@ -111,9 +111,13 @@ export default function ItineraryDetailPage() {
       {/* Hero Section */}
       <Card padding="lg" className="overflow-hidden">
         {heroImageUrl ? (
-          <img src={heroImageUrl} alt={itinerary.name} className="h-48 w-full object-cover" />
+          <img
+            src={heroImageUrl}
+            alt={itinerary.name}
+            className="h-48 w-full object-cover rounded-t-xl"
+          />
         ) : (
-          <div className="h-48 bg-surface flex items-center justify-center">
+          <div className="h-48 bg-surface flex items-center justify-center rounded-t-xl">
             <span className="text-primary text-4xl">🏛️</span>
           </div>
         )}

@@ -128,7 +128,7 @@ export default function MapPage() {
 
         // Use container top offset so we account for any page padding/margins above the map
         // Small extra gap so map doesn't touch bottom nav and a little breathing room
-        const extraGap = 8; // pixels (reduced per request)
+        const extraGap = 32; // pixels (reduced per request)
 
         // Compute available viewport space between header and bottom navigation.
         // Note: do NOT subtract the container's top offset here — that often double-counts
@@ -167,13 +167,13 @@ export default function MapPage() {
   }, []);
 
   return (
-    <div className="relative w-full h-full bg-background">
+    <div className="relative w-full h-full bg-background scale-105">
       {/* Search bar moved to bottom (replaces stats banner) - top search removed */}
 
       {/* Map Controls */}
       <div className={`absolute top-4 right-4 z-10 flex flex-col gap-3 pointer-events-auto`}>
         {/* Center on User */}
-        <div className="rounded-full">
+        <div className="">
           <Button
             onClick={centerOnUser}
             className="min-w-[44px] min-h-[44px] p-0"
