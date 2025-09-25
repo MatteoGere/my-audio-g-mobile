@@ -476,10 +476,8 @@ export default function AudioPlayerPage() {
 
         {/* Track Description */}
         <Card className="p-4">
-          <h3 className="font-semibold text-carbon-900 dark:text-carbon-100 mb-2">
-            About this track
-          </h3>
-          <p className="text-sm text-carbon-600 dark:text-carbon-400 leading-relaxed">
+          <h3 className="font-semibold text-foreground mb-2">About this track</h3>
+          <p className="text-sm text-muted leading-relaxed">
             {currentTrack?.description || 'No description available for this track.'}
           </p>
         </Card>
@@ -565,8 +563,8 @@ export default function AudioPlayerPage() {
 
         {/* Error Display */}
         {audioState.audioError && (
-          <Card className="p-4 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
-            <p className="text-red-600 dark:text-red-400 text-sm">{audioState.audioError}</p>
+          <Card className="p-4 bg-error-50 border-error-200">
+            <p className="text-error-600 text-sm">{audioState.audioError}</p>
             <Button
               variant="outline"
               size="sm"

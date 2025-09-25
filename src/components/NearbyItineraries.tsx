@@ -128,7 +128,7 @@ export default function NearbyItineraries() {
   if (geoError) {
     return (
       <div className="space-y-2">
-        <div className="text-sm text-carbon-600 dark:text-carbon-400">
+        <div className="text-sm text-muted">
           Location access is disabled. Enable it to see tours near you.
         </div>
         <Button size="sm" variant="outline" onClick={() => refetch()}>
@@ -158,10 +158,10 @@ export default function NearbyItineraries() {
               key={i}
               className="p-0 flex flex-col overflow-hidden rounded-xl animate-pulse shadow-md"
             >
-              <div className="h-24 bg-background rounded-t-xl" />
+              <div className="h-24 bg-surface rounded-t-xl" />
               <div className="p-4 flex flex-col gap-2">
-                <div className="h-4 bg-background rounded w-3/4" />
-                <div className="h-3 bg-background rounded w-1/2" />
+                <div className="h-4 bg-surface rounded w-3/4" />
+                <div className="h-3 bg-surface rounded w-1/2" />
               </div>
             </Card>
           ))}
@@ -176,14 +176,14 @@ export default function NearbyItineraries() {
       {/* Results */}
       {items.length > 0 && (
         <div className="grid grid-cols-2 gap-4">
-          {items.map((it) => {
+            {items.map((it) => {
             const path =
               it.image_file?.image_storage_key ??
               (it.image_file_id ? imageFileMap[it.image_file_id] : '');
             const imgUrl = path ? signedUrls[path] : undefined;
             return (
               <Link key={it.id} href={`/itinerary/${it.id}`} className="block" tabIndex={0}>
-                <Card className="p-0 flex flex-col overflow-hidden rounded-xl shadow-md hover:bg-background">
+                <Card className="p-0 flex flex-col overflow-hidden rounded-xl shadow-md hover:bg-surface">
                   <div className="relative h-24 bg-surface rounded-t-xl">
                     {imgUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element

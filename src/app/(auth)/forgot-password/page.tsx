@@ -61,13 +61,8 @@ export default function ForgotPasswordPage() {
       <div className="space-y-6">
         {/* Success Message */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-success-100 dark:bg-success-900/20 rounded-full flex items-center justify-center mb-4">
-            <svg
-              className="w-8 h-8 text-success-600 dark:text-success-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+          <div className="mx-auto w-16 h-16 bg-success-100 rounded-full flex items-center justify-center mb-4">
+            <svg className="w-8 h-8 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -76,17 +71,13 @@ export default function ForgotPasswordPage() {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100">
-            Check Your Email
-          </h2>
-          <p className="text-sm text-carbon-600 dark:text-carbon-400 mt-2">
-            We've sent a password reset link to <strong>{email}</strong>
-          </p>
+          <h2 className="text-2xl font-bold text-foreground">Check Your Email</h2>
+          <p className="text-sm text-muted mt-2">We've sent a password reset link to <strong>{email}</strong></p>
         </div>
 
         {/* Instructions */}
-        <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
-          <div className="space-y-2 text-sm text-amber-700 dark:text-amber-300">
+        <div className="p-4 rounded-lg bg-surface border border-amber-200">
+          <div className="space-y-2 text-sm text-muted">
             <p>
               <strong>What's next?</strong>
             </p>
@@ -116,7 +107,7 @@ export default function ForgotPasswordPage() {
                 setIsSubmitted(false);
                 setEmail('');
               }}
-              className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+              className="text-sm text-primary hover:text-primary-700 transition-colors"
             >
               Try a different email address
             </button>
@@ -129,13 +120,9 @@ export default function ForgotPasswordPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100">
-          Forgot Password?
-        </h2>
-        <p className="text-sm text-carbon-600 dark:text-carbon-400 mt-2">
-          No worries! Enter your email and we'll send you reset instructions.
-        </p>
+        <div className="text-center">
+        <h2 className="text-2xl font-bold text-foreground">Forgot Password?</h2>
+        <p className="text-sm text-muted mt-2">No worries! Enter your email and we'll send you reset instructions.</p>
       </div>
 
       {/* Reset Form */}
@@ -152,9 +139,9 @@ export default function ForgotPasswordPage() {
         />
 
         {error && (
-          <div className="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800">
-            <p className="text-sm text-error-700 dark:text-error-300">{error}</p>
-          </div>
+          <div className="p-3 rounded-lg bg-error-50 border border-error-200">
+              <p className="text-sm text-error-700">{error}</p>
+            </div>
         )}
 
         <Button
@@ -173,7 +160,7 @@ export default function ForgotPasswordPage() {
       <div className="text-center">
         <Link
           href="/login"
-          className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+              className="text-sm text-primary hover:text-primary-700 transition-colors"
         >
           ← Back to Sign In
         </Link>

@@ -176,7 +176,7 @@ export default function RegisterPage() {
                 });
                 setAcceptTerms(false);
               }}
-              className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+              className="text-sm text-primary hover:text-primary-700 transition-colors"
             >
               Register a different account
             </button>
@@ -293,7 +293,7 @@ export default function RegisterPage() {
             </label>
           </div>
           {validationErrors.terms && (
-            <p className="text-sm text-error-600 dark:text-error-400 ml-6">
+            <p className="text-sm text-error-600 ml-6">
               {validationErrors.terms}
             </p>
           )}

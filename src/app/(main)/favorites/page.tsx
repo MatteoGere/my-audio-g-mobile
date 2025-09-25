@@ -63,15 +63,13 @@ export default function FavoritesPage() {
         {/* Empty State (when no favorites) */}
         {false && (
           <Card className="p-8 text-center">
-            <div className="w-16 h-16 bg-carbon-100 dark:bg-carbon-800 rounded-full mx-auto mb-4 flex items-center justify-center">
-              <span className="text-carbon-400 text-2xl">💝</span>
-            </div>
-            <h3 className="font-semibold text-carbon-900 dark:text-carbon-100 mb-2">
-              No favorites yet
-            </h3>
-            <p className="text-sm text-carbon-600 dark:text-carbon-400 mb-4">
-              Start exploring tours and save your favorites here
-            </p>
+                <div className="w-16 h-16 bg-surface rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <span className="text-muted text-2xl">💝</span>
+                </div>
+                <h3 className="font-semibold text-foreground mb-2">No favorites yet</h3>
+                <p className="text-sm text-muted mb-4">
+                  Start exploring tours and save your favorites here
+                </p>
             <Button variant="primary">Explore Tours</Button>
           </Card>
         )}

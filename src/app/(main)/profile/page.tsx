@@ -40,9 +40,7 @@ export default function ProfilePage() {
 
         {/* Settings */}
         <div>
-          <h3 className="text-lg font-semibold text-carbon-900 dark:text-carbon-100 mb-4">
-            Settings
-          </h3>
+          <h3 className="text-lg font-semibold text-foreground mb-4">Settings</h3>
           <div className="space-y-4">
             <Card className="p-4">
               <div className="flex items-center justify-between">
