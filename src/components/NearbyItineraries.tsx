@@ -152,7 +152,7 @@ export default function NearbyItineraries() {
 
       {/* Loading state */}
       {isLoading && (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {[...Array(4)].map((_, i) => (
             <Card
               key={i}
@@ -174,7 +174,7 @@ export default function NearbyItineraries() {
 
       {/* Results */}
       {items.length > 0 && (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {items.map((it) => {
             const path =
               it.image_file?.image_storage_key ??
@@ -200,17 +200,18 @@ export default function NearbyItineraries() {
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center justify-between gap-2">
+                  <div className="flex flex-col gap-3 mt-3">
+                    <div className="flex items-center justify-between gap-3">
                       <h3 className="font-bold text-foreground truncate">{it.name}</h3>
-                      <Badge variant="secondary" className="shrink-0">
-                        <HiOutlineClock className="h-3 w-3 mr-1" />{' '}
+                      <Badge
+                        variant="secondary"
+                        className="shrink-0 px-2 py-0.5 rounded-md text-xs inline-flex items-center gap-1"
+                      >
+                        <HiOutlineClock className="h-3 w-3" />
                         {formatDuration(it.total_duration)}
                       </Badge>
                     </div>
-                    <div className="text-xs text-muted">
-                      {formatDistance(it.distance_meters)} away
-                    </div>
+                    <div className="text-xs text-muted">{formatDistance(it.distance_meters)} away</div>
                   </div>
                 </Card>
               </Link>
