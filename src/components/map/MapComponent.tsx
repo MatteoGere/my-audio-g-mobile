@@ -27,7 +27,6 @@ interface MapComponentProps {
   className?: string;
   pois?: POIMarkerData[];
   showUserLocation?: boolean;
-  fullscreen?: boolean;
   interactive?: boolean;
   onMarkerClick?: (poi: POIMarkerData) => void;
   onMapClick?: (lat: number, lng: number) => void;
@@ -41,7 +40,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   className = '',
   pois = [],
   showUserLocation = true,
-  fullscreen = false,
   interactive = true,
   onMarkerClick,
   onMapClick,
@@ -138,7 +136,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     dispatch(setBounds(bounds));
   };
 
-  // Ensure map resizes properly when entering/exiting fullscreen to avoid black screen
+  // Ensure map resizes properly on mount
   useEffect(() => {
     if (mapRef.current) {
       // small timeout to let DOM styles apply
@@ -152,14 +150,10 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         }
       }, 120);
     }
-  }, [fullscreen]);
+  }, []);
 
   // Map container classes
-  const mapClasses = `
-    relative w-full h-full overflow-hidden rounded-lg
-    ${fullscreen ? 'fixed inset-0 z-50 rounded-none' : ''}
-    ${className}
-  `.trim();
+  const mapClasses = `relative w-full h-full overflow-hidden rounded-lg ${className}`.trim();
 
   return (
     <div className={mapClasses}>

@@ -8,7 +8,7 @@ import { useGetAudioItineraryQuery } from '@/lib/redux/api/apiSlice';
 import { useAppDispatch } from '@/lib/redux';
 import { selectPoi, setHighlightedTrackId } from '@/lib/redux/slices/mapSlice';
 import { POIMarkerData } from '@/types/app-types';
-import { FaArrowLeft, FaPlay, FaExpand, FaRoute } from 'react-icons/fa';
+import { FaArrowLeft, FaPlay, FaRoute } from 'react-icons/fa';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 
@@ -19,7 +19,6 @@ export default function ItineraryMapPage() {
   const itineraryId = params.id as string;
 
   // State
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedPoiId, setSelectedPoiId] = useState<string | null>(null);
   const [showRoute, setShowRoute] = useState(true);
 
@@ -102,7 +101,7 @@ export default function ItineraryMapPage() {
   return (
     <div className="relative w-full h-full bg-gray-50">
       {/* Header */}
-      {!isFullscreen && (
+      (
         <div className="absolute top-4 left-4 right-4 z-10 bg-white rounded-lg shadow-lg p-4">
           <div className="flex items-center gap-3 mb-3">
             <Button
@@ -137,24 +136,17 @@ export default function ItineraryMapPage() {
             >
               <FaRoute />
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => setIsFullscreen(true)}
-              className="px-3"
-            >
-              <FaExpand />
-            </Button>
+            {/* fullscreen removed */}
           </div>
         </div>
-      )}
+      )
 
       {/* Map Container */}
-      <div className={`w-full ${isFullscreen ? 'h-screen' : 'h-[calc(100vh-8rem)]'} ${!isFullscreen ? 'mt-32' : ''}`}>
+      <div className="w-full h-[calc(100vh-8rem)] mt-32">
         <MapComponent
           className="w-full h-full"
           pois={pois}
           showUserLocation={true}
-          fullscreen={isFullscreen}
           interactive={true}
           onMarkerClick={handleMarkerClick}
           selectedPoiId={selectedPoiId || undefined}
@@ -164,36 +156,8 @@ export default function ItineraryMapPage() {
         />
       </div>
 
-      {/* Fullscreen Controls */}
-      {isFullscreen && (
-        <div className="absolute top-4 left-4 right-4 z-10 flex justify-between items-center">
-          <div className="bg-white rounded-lg shadow-lg p-3">
-            <h2 className="font-semibold text-gray-900">{itinerary.name}</h2>
-            <p className="text-sm text-gray-600">{pois.length} locations</p>
-          </div>
-          
-          <div className="flex gap-2">
-            <Button
-              onClick={handlePlayItinerary}
-              className="bg-white text-gray-700 hover:bg-gray-50 shadow-lg px-4 py-2"
-              variant="outline"
-            >
-              <FaPlay className="mr-2" />
-              Play
-            </Button>
-            <Button
-              onClick={() => setIsFullscreen(false)}
-              className="bg-white text-gray-700 hover:bg-gray-50 shadow-lg p-3"
-              variant="outline"
-            >
-              Exit Fullscreen
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Track List Sidebar (when not fullscreen) */}
-      {!isFullscreen && pois.length > 0 && (
+      {/* Track List Sidebar */}
+      {pois.length > 0 && (
         <div className="absolute bottom-4 left-4 right-4 z-10">
           <Card className="max-h-32 overflow-y-auto">
             <div className="p-3">
