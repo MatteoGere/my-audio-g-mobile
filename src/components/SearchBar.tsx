@@ -229,7 +229,7 @@ export default function SearchBar({
           onFocus={() => setIsExpanded(true)}
           placeholder={placeholder}
           className="pl-10 pr-4"
-          icon={<HiOutlineMagnifyingGlass className="h-5 w-5 text-carbon-400" />}
+          icon={<HiOutlineMagnifyingGlass className="h-5 w-5 text-muted" />}
         />
 
         {query && (
@@ -287,12 +287,12 @@ export default function SearchBar({
 
       {/* Dropdown */}
       {isExpanded && (
-  <div className="absolute top-full left-0 right-0 mt-2 bg-surface border border-carbon-200 rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto">
+  <div className="absolute top-full left-0 right-0 mt-2 bg-surface border border-muted rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto">
           {/* Loading */}
           {isLoading && query.length >= 2 && (
             <div className="p-4 text-center text-muted">
               <div className="inline-flex items-center">
-                <div className="animate-spin h-4 w-4 border-2 border-primary-600 border-t-transparent rounded-full mr-2"></div>
+                <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full mr-2"></div>
                 Searching...
               </div>
             </div>
@@ -334,7 +334,7 @@ export default function SearchBar({
 
           {/* Search History */}
           {showHistory && searchHistory.length > 0 && query.length === 0 && (
-            <div className="py-2 border-t border-carbon-200">
+            <div className="py-2 border-t border-muted">
               <div className="px-3 py-1 flex items-center justify-between">
                 <span className="text-xs font-bold text-muted uppercase tracking-wide">
                   Recent Searches

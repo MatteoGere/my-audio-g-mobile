@@ -114,7 +114,7 @@ export function Header({
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-surface border-b border-carbon-200 shadow-md">
+  <header className="sticky top-0 z-50 bg-surface border-b border-muted shadow-md">
       <div className="flex items-center justify-between h-16 px-5 gap-4">
         {/* Left Section */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -198,8 +198,8 @@ export function Header({
 
               {/* User Dropdown Menu */}
               {showUserMenu && (
-                <div className="absolute right-0 top-full mt-2 w-56 bg-surface rounded-xl shadow-lg border border-carbon-200 py-1 z-50">
-                  <div className="px-4 py-3 border-b border-carbon-200">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-surface rounded-xl shadow-lg border border-muted py-1 z-50">
+                  <div className="px-4 py-3 border-b border-muted">
                     <p className="text-sm font-bold text-foreground">{getUserDisplayName()}</p>
                     <p className="text-xs text-muted">{user?.email}</p>
                   </div>

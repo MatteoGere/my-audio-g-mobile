@@ -24,13 +24,13 @@ export const UserLocationMarker: React.FC<UserLocationMarkerProps> = ({
     const iconHtml = renderToString(
       <div className="relative flex items-center justify-center">
         {/* Outer ring */}
-        <div className="absolute w-8 h-8 bg-blue-500 bg-opacity-20 rounded-full animate-ping" />
+  <div className="absolute w-8 h-8 bg-primary/20 rounded-full animate-ping" />
         {/* Main marker */}
-        <div className="relative w-4 h-4 bg-blue-600 border-2 border-white rounded-full shadow-lg">
+  <div className="relative w-4 h-4 bg-primary border-2 border-white rounded-full shadow-lg">
           {/* Direction arrow if heading is available */}
           {heading !== undefined && (
             <div
-              className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full text-blue-600"
+              className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full text-primary"
               style={{ transform: `translateX(-50%) translateY(-100%) rotate(${heading}deg)` }}
             >
               <FaLocationArrow size={12} />

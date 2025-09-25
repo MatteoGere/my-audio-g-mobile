@@ -53,10 +53,10 @@ export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onC
       <div className="bg-white rounded-lg overflow-hidden shadow-lg">
         {/* Header Image */}
         {poi.imageStorageKey && (
-          <div className="relative h-32 bg-gray-200">
+          <div className="relative h-32 bg-muted/20">
             {imageLoading ? (
-              <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-                <FaMusic className="text-gray-400 text-2xl" />
+              <div className="absolute inset-0 bg-muted/20 animate-pulse flex items-center justify-center">
+                <FaMusic className="text-muted text-2xl" />
               </div>
             ) : imageUrl ? (
               <Image
@@ -67,8 +67,8 @@ export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onC
                 sizes="320px"
               />
             ) : (
-              <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
-                <FaMusic className="text-gray-400 text-2xl" />
+              <div className="absolute inset-0 bg-muted/20 flex items-center justify-center">
+                <FaMusic className="text-muted text-2xl" />
               </div>
             )}
 
@@ -76,7 +76,7 @@ export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onC
             <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
               <Button
                 onClick={handlePlayClick}
-                className="bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-800 rounded-full p-3 shadow-lg"
+                className="bg-surface bg-opacity-95 hover:bg-opacity-100 text-foreground rounded-full p-3 shadow-lg"
                 variant="ghost"
               >
                 {isCurrentTrack && isPlaying ? (

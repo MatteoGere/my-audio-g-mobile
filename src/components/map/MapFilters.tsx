@@ -165,7 +165,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
         <FaFilter className="mr-2" />
         Filters
         {activeFiltersCount > 0 && (
-          <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+          <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
             {activeFiltersCount}
           </span>
         )}
@@ -175,7 +175,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
       {isOpen && (
         <Card className="absolute top-full left-0 right-0 mt-2 p-4 z-20 max-w-md">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="font-semibold text-gray-900">Filters</h3>
+            <h3 className="font-semibold text-foreground">Filters</h3>
             <div className="flex gap-2">
               {activeFiltersCount > 0 && (
                 <Button variant="ghost" size="sm" onClick={clearFilters}>
@@ -191,9 +191,9 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
           <div className="space-y-4">
             {/* Search */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+              <label className="block text-sm font-medium text-muted mb-1">Search</label>
               <div className="relative">
-                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted text-sm" />
                 <Input
                   type="text"
                   placeholder="Search tracks..."
@@ -206,7 +206,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
 
             {/* Sort */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Sort by</label>
+              <label className="block text-sm font-medium text-muted mb-1">Sort by</label>
               <Select
                 options={[
                   { value: 'name', label: 'Name' },
@@ -221,7 +221,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
             {/* Companies */}
             {uniqueCompanies.length > 0 && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-muted mb-2">
                   <FaBuilding className="inline mr-1" />
                   Companies ({uniqueCompanies.length})
                 </label>
@@ -240,7 +240,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
                       />
                       <label
                         htmlFor={`company-${company}`}
-                        className="ml-2 text-sm text-gray-700 cursor-pointer truncate"
+                        className="ml-2 text-sm text-muted cursor-pointer truncate"
                       >
                         {company}
                       </label>
@@ -253,7 +253,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
             {/* Itineraries */}
             {uniqueItineraries.length > 0 && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-muted mb-2">
                   <FaMapMarkerAlt className="inline mr-1" />
                   Itineraries ({uniqueItineraries.length})
                 </label>
@@ -272,7 +272,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
                       />
                       <label
                         htmlFor={`itinerary-${itinerary}`}
-                        className="ml-2 text-sm text-gray-700 cursor-pointer truncate"
+                        className="ml-2 text-sm text-muted cursor-pointer truncate"
                       >
                         {itinerary}
                       </label>
@@ -284,7 +284,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
 
             {/* Duration Range */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-muted mb-2">
                 <FaClock className="inline mr-1" />
                 Duration Range
               </label>
@@ -305,11 +305,11 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
                     }
                     className="w-full"
                   />
-                  <div className="text-xs text-gray-500 text-center">
+                  <div className="text-xs text-muted text-center">
                     {formatDuration(filters.durationRange.min)}
                   </div>
                 </div>
-                <span className="text-gray-500">to</span>
+                <span className="text-muted">to</span>
                 <div className="flex-1">
                   <Input
                     type="range"
@@ -326,7 +326,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
                     }
                     className="w-full"
                   />
-                  <div className="text-xs text-gray-500 text-center">
+                  <div className="text-xs text-muted text-center">
                     {formatDuration(filters.durationRange.max)}
                   </div>
                 </div>

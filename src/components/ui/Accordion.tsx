@@ -127,7 +127,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
   return (
     <div
       className={cn(
-        'border-b border-carbon-200 last:border-b-0',
+  'border-b border-muted last:border-b-0',
         disabled && 'opacity-50',
         className,
       )}

@@ -143,7 +143,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                 variant="ghost"
                 size="sm"
                 onClick={handleClearQueue}
-                className="text-error hover:text-error-700 hover:bg-error/10"
+                className="text-error hover:text-error hover:bg-error/10"
               >
               <HiOutlineTrash className="w-4 h-4" />
             </Button>
@@ -258,7 +258,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="p-2 text-error hover:text-error-700 hover:bg-error/10"
+                    className="p-2 text-error hover:text-error hover:bg-error/10"
                     onClick={() => handleRemoveTrack(index)}
                   >
                     <HiOutlineTrash className="w-4 h-4" />

@@ -29,7 +29,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       'flex min-h-[80px] min-h-[44px] w-full rounded-lg border bg-surface px-4 py-3 text-base font-bold placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 shadow-sm';
 
     const variants = {
-      default: 'border-carbon-200 hover:border-carbon-300 focus:border-primary',
+  default: 'border-muted hover:border-muted/80 focus:border-primary',
       error: 'border-error text-error focus-visible:ring-error',
     };
 

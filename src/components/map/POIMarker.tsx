@@ -97,11 +97,11 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
           className="poi-tooltip"
         >
           <div className="text-sm">
-            <div className="font-semibold text-gray-900">{poi.trackName}</div>
-            <div className="text-gray-600 text-xs">
+            <div className="font-semibold text-foreground">{poi.trackName}</div>
+            <div className="text-muted text-xs">
               {poi.itineraryName} • {formatDuration(poi.duration)}
             </div>
-            <div className="text-gray-500 text-xs mt-1">{poi.companyName}</div>
+            <div className="text-muted text-xs mt-1">{poi.companyName}</div>
           </div>
         </Tooltip>
       )}
