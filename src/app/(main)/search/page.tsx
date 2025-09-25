@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams, type ReadonlyURLSearchParams } from 'next/navigation';
-import { Card, Button, Input, Badge } from '@/components/ui';
+import { Card, Button, Input, Badge, Select } from '@/components/ui';
 import { useGetAudioItinerariesQuery, useGetCompaniesQuery } from '@/lib/redux/api/apiSlice';
 import { useSignedUrls } from '@/lib/hooks/useSignedUrls';
 import {
@@ -263,27 +263,21 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
         {/* Advanced Filters Panel */}
         {showFilters && (
-          <Card padding="md" className="border-t border-muted bg-background/50">
             <div className="space-y-4 pt-4">
               {/* Company Filter */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Company</label>
-                <select
+                <label className="block text-sm font-medium text-foreground mb-3">Company</label>
+                <Select
+                  options={companyOptions}
                   value={filters.company}
-                  onChange={(e) => updateFilter('company', e.target.value)}
-                  className="w-full px-3 py-2 border border-muted rounded-lg text-sm bg-surface"
-                >
-                  {companyOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                  onValueChange={(val) => updateFilter('company', String(val || ''))}
+                  placeholder="All Companies"
+                />
               </div>
 
               {/* Duration Range */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-foreground mb-3">
                   Duration (minutes)
                 </label>
                 <div className="flex items-center gap-3">
@@ -307,7 +301,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
               {/* Distance Filter */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-foreground mb-3">
                   Max Distance (km)
                 </label>
                 <Input
@@ -319,13 +313,12 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
               </div>
 
               {/* Clear Filters */}
-              <div className="flex justify-end">
+              <div className="flex justify-end mt-2">
                 <Button variant="outline" size="sm" onClick={clearAllFilters}>
                   Clear All Filters
                 </Button>
               </div>
             </div>
-          </Card>
         )}
       </Card>
 
