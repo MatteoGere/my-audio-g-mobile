@@ -221,7 +221,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         center={[center.latitude, center.longitude]}
         zoom={zoom}
         className="w-full h-full z-0"
-        zoomControl={true}
+        // disable Leaflet's default zoom controls because we render custom controls
+        zoomControl={false}
         attributionControl={true}
         scrollWheelZoom={interactive}
         dragging={interactive}

@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux';
 import { selectPoi, setHighlightedTrackId, setMapView } from '@/lib/redux/slices/mapSlice';
 import { POIMarkerData } from '@/types/app-types';
 import { FaExpand, FaCompress, FaLocationArrow, FaFilter, FaSearch } from 'react-icons/fa';
+import { HiOutlinePlus, HiOutlineMinus } from 'react-icons/hi2';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { Card } from '@/components/ui';
@@ -172,17 +173,35 @@ export default function MapPage() {
       {/* Map Controls */}
       <div className={`absolute top-4 right-4 z-10 flex flex-col gap-3 pointer-events-auto`}>
         {/* Center on User */}
-        <Card padding="sm" className="shadow-lg rounded-full">
+        <div className="rounded-full">
           <Button
             onClick={centerOnUser}
-            className="min-w-[44px] min-h-[44px]"
-            variant="outline"
+            className="min-w-[44px] min-h-[44px] p-0"
+        
             disabled={!isLocationEnabled && !userLocation}
             aria-label="Center on user"
           >
-            <FaLocationArrow />
+            <FaLocationArrow className="h-5 w-5" />
           </Button>
-        </Card>
+        </div>
+
+        {/* Custom Zoom Controls (icon-only, no background) */}
+        <div className="flex flex-col items-center gap-2">
+          <Button
+            onClick={() => dispatch(setMapView({ center: mapCenter, zoom: mapZoom + 1 }))}
+            className="min-w-[44px] min-h-[44px] p-0"
+            aria-label="Zoom in"
+          >
+            <HiOutlinePlus className="h-5 w-5" />
+          </Button>
+          <Button
+            onClick={() => dispatch(setMapView({ center: mapCenter, zoom: Math.max(1, mapZoom - 1) }))}
+            className="min-w-[44px] min-h-[44px] p-0"
+            aria-label="Zoom out"
+          >
+            <HiOutlineMinus className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
 
       {/* Map Container */}
@@ -213,7 +232,7 @@ export default function MapPage() {
       )}
 
       {/* Search and Filter Bar (moved to bottom) */}
-      <Card padding="sm" className={`absolute bottom-4 left-4 right-4 z-10 rounded-lg shadow-lg`}>
+      <div  className={`absolute bottom-4 left-4 right-4 z-10 rounded-lg shadow-lg`}>
         <div className="flex gap-2 items-center">
           <div className="flex-1 relative">
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted text-sm" />
@@ -222,11 +241,10 @@ export default function MapPage() {
               placeholder="Search tracks, itineraries, or companies..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full bg-surface"
+              className="pr-4 py-2 w-full bg-surface"
             />
           </div>
           <Button
-            variant="outline"
             size="sm"
             onClick={() => setShowFilters(!showFilters)}
             className="px-3"
@@ -237,14 +255,15 @@ export default function MapPage() {
 
         {/* Filter Options */}
         {showFilters && (
-          <div className="mt-3 pt-3 border-t border-muted">
+          <Card padding="sm" className="mt-3 bg-surface">
             <div className="text-sm text-muted">
               Showing {filteredPois.length} of {pois.length} locations
             </div>
             {/* TODO: Add more filter options */}
-          </div>
+          </Card>
         )}
-      </Card>
+      </div>
+
     </div>
   );
 }
