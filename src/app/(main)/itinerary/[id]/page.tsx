@@ -181,7 +181,7 @@ export default function ItineraryDetailPage() {
 
       {/* Company Info */}
       {(itinerary as any)?.company?.name && (
-        <Card className="p-4">
+        <Card padding="md">
             <h3 className="font-medium text-foreground mb-2">About {(itinerary as any).company.name}</h3>
             {(itinerary as any).company?.description && (
               <p className="text-sm text-muted mb-3">{(itinerary as any).company.description}</p>

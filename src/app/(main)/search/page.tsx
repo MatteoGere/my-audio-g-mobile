@@ -332,6 +332,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
       {/* Results */}
       <div className="px-4 py-6">
+        <Card padding="md">
         {/* Results Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -475,6 +476,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
             <Button onClick={() => setPage((prev) => prev + 1)}>Load More</Button>
           </div>
         )}
+        </Card>
       </div>
     </div>
   );
