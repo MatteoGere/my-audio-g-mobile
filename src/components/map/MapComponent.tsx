@@ -138,6 +138,22 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     dispatch(setBounds(bounds));
   };
 
+  // Ensure map resizes properly when entering/exiting fullscreen to avoid black screen
+  useEffect(() => {
+    if (mapRef.current) {
+      // small timeout to let DOM styles apply
+      window.setTimeout(() => {
+        try {
+          if (mapRef.current) {
+            mapRef.current.invalidateSize();
+          }
+        } catch (e) {
+          // ignore if map not yet ready
+        }
+      }, 120);
+    }
+  }, [fullscreen]);
+
   // Map container classes
   const mapClasses = `
     relative w-full h-full overflow-hidden rounded-lg
@@ -207,10 +223,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         ))}
       </MapContainer>
 
-      {/* Fullscreen overlay */}
-      {fullscreen && (
-        <div className="absolute inset-0 bg-black bg-opacity-50 pointer-events-none" />
-      )}
+      {/* No fullscreen overlay here; fullscreen is handled by container classes and map resize */}
     </div>
   );
 };

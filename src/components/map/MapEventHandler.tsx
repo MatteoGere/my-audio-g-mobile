@@ -2,6 +2,7 @@
 
 import { useMapEvents } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet';
+import { useRef, useEffect } from 'react';
 
 interface MapEventHandlerProps {
   onMove?: (center: { lat: number; lng: number }, zoom: number) => void;
@@ -18,6 +19,29 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
   onBoundsChange,
   onClick,
 }) => {
+  // Timer ref used to debounce bounds updates (400ms)
+  const boundsDebounceRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (boundsDebounceRef.current) {
+        clearTimeout(boundsDebounceRef.current);
+      }
+    };
+  }, []);
+
+  const scheduleBoundsUpdate = (payload: { north: number; south: number; east: number; west: number }) => {
+    if (!onBoundsChange) return;
+    if (boundsDebounceRef.current) {
+      clearTimeout(boundsDebounceRef.current);
+    }
+    // window.setTimeout returns a number in browsers
+    boundsDebounceRef.current = window.setTimeout(() => {
+      onBoundsChange(payload);
+      boundsDebounceRef.current = null;
+    }, 800);
+  };
+
   const map = useMapEvents({
     movestart: () => {
       onMoveStart?.();
@@ -31,10 +55,10 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
     
     moveend: () => {
       onMoveEnd?.();
-      
-      // Update bounds
+
+      // Update bounds (debounced)
       const bounds = map.getBounds();
-      onBoundsChange?.({
+      scheduleBoundsUpdate({
         north: bounds.getNorth(),
         south: bounds.getSouth(),
         east: bounds.getEast(),
@@ -46,10 +70,10 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
       const center = map.getCenter();
       const zoom = map.getZoom();
       onMove?.(center, zoom);
-      
-      // Update bounds after zoom
+
+      // Update bounds after zoom (debounced)
       const bounds = map.getBounds();
-      onBoundsChange?.({
+      scheduleBoundsUpdate({
         north: bounds.getNorth(),
         south: bounds.getSouth(),
         east: bounds.getEast(),
