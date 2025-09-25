@@ -199,8 +199,8 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Search Header */}
-  <div className="bg-surface border-b border-muted sticky top-0 z-10">
-        <div className="px-4 py-4 space-y-4">
+      <Card padding="md" className="bg-surface border-b border-muted sticky top-0 z-10">
+        <div className="space-y-4">
           {/* Search Input */}
           <div className="relative">
             <Input
@@ -262,7 +262,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
         {/* Advanced Filters Panel */}
         {showFilters && (
-          <div className="px-4 pb-4 border-t border-muted bg-background/50">
+          <Card padding="md" className="border-t border-muted bg-background/50">
             <div className="space-y-4 pt-4">
               {/* Company Filter */}
               <div>
@@ -326,9 +326,9 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                 </Button>
               </div>
             </div>
-          </div>
+          </Card>
         )}
-      </div>
+      </Card>
 
       {/* Results */}
       <div className="px-4 py-6">

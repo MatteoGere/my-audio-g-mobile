@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button, Input, Checkbox, Textarea } from '@/components/ui';
+import { Button, Input, Checkbox, Textarea, Card } from '@/components/ui';
 import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function RegisterPage() {
@@ -137,7 +137,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Instructions */}
-  <div className="p-4 rounded-lg bg-surface border border-muted">
+        <Card padding="md" className="rounded-lg bg-surface border border-muted">
           <div className="space-y-2 text-sm text-muted">
             <p>
               <strong>What's next?</strong>
@@ -148,7 +148,7 @@ export default function RegisterPage() {
               <li>Sign in to start exploring audio guides</li>
             </ul>
           </div>
-        </div>
+        </Card>
 
         {/* Actions */}
         <div className="space-y-4">

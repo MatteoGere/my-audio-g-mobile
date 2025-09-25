@@ -99,10 +99,11 @@ export default function FeaturedCarousel() {
           {[...Array(3)].map((_, i) => (
             <Card
               key={i}
-              className="min-w-[240px] w-[240px] p-0 flex flex-col overflow-hidden rounded-xl animate-pulse shadow-md"
+              padding="md"
+              className="min-w-[240px] w-[240px] flex flex-col overflow-hidden rounded-xl animate-pulse shadow-md"
             >
               <div className="h-36 bg-background rounded-t-xl" />
-              <div className="p-4 flex flex-col gap-2">
+              <div className="flex flex-col gap-2">
                 <div className="h-4 bg-background rounded w-3/4" />
                 <div className="h-3 bg-background rounded w-1/2" />
               </div>
@@ -127,7 +128,7 @@ export default function FeaturedCarousel() {
             const imgUrl = path ? urlMap.get(path) : undefined;
             return (
               <Link key={it.id} href={`/itinerary/${it.id}`} className="block" tabIndex={0}>
-                <Card className="min-w-[260px] w-[260px] p-0 flex flex-col overflow-hidden rounded-xl shadow-md snap-start transition-colors hover:bg-background">
+                <Card padding="md" className="min-w-[260px] w-[260px] flex flex-col overflow-hidden rounded-xl shadow-md snap-start transition-colors hover:bg-background">
                   <div className="relative h-40 bg-surface rounded-t-xl">
                     {imgUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -142,7 +143,7 @@ export default function FeaturedCarousel() {
                       </div>
                     )}
                   </div>
-                  <div className="p-4 flex flex-col gap-2">
+                  <div className="flex flex-col gap-2">
                     <div className="flex items-center justify-between gap-2">
                       <h3 className="font-bold text-foreground truncate">
                         {it.name}

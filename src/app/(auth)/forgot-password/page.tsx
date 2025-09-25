@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button, Input } from '@/components/ui';
+import { Button, Input, Card } from '@/components/ui';
 import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function ForgotPasswordPage() {
@@ -76,7 +76,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         {/* Instructions */}
-  <div className="p-4 rounded-lg bg-surface border border-muted">
+        <Card padding="md" className="rounded-lg bg-surface border border-muted">
           <div className="space-y-2 text-sm text-muted">
             <p>
               <strong>What's next?</strong>
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
               <li>Follow the instructions to create a new password</li>
             </ul>
           </div>
-        </div>
+        </Card>
 
         {/* Actions */}
         <div className="space-y-4">

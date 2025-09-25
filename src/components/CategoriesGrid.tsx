@@ -64,7 +64,7 @@ export default function CategoriesGrid() {
       <div className="grid grid-cols-2 gap-4">
         {STATIC_CATEGORIES.map((category) => (
           <Link key={category.id} href={`/search${category.searchParams}`} tabIndex={0}>
-            <Card className="p-4 flex flex-col items-center justify-center gap-2 rounded-xl shadow-md min-h-[120px] transition-colors hover:bg-background">
+            <Card padding="md" className="flex flex-col items-center justify-center gap-2 rounded-xl shadow-md min-h-[120px] transition-colors hover:bg-background">
               <div className="w-14 h-14 bg-surface rounded-lg flex items-center justify-center mb-2">
                 <span className="text-2xl" role="img" aria-label={category.name}>
                   {category.icon}
@@ -92,7 +92,7 @@ export default function CategoriesGrid() {
                 href={`/search?company=${encodeURIComponent(company.name)}`}
                 tabIndex={0}
               >
-                <Card className="p-4 flex flex-col items-center justify-center gap-2 rounded-xl shadow-md min-h-[100px] transition-colors hover:bg-background">
+                <Card padding="md" className="flex flex-col items-center justify-center gap-2 rounded-xl shadow-md min-h-[100px] transition-colors hover:bg-background">
                   <div className="w-10 h-10 bg-surface rounded-lg flex items-center justify-center mb-2">
                     <span className="text-primary text-base font-bold">
                       {company.name.charAt(0).toUpperCase()}
@@ -119,7 +119,8 @@ export default function CategoriesGrid() {
           {[...Array(2)].map((_, i) => (
             <Card
               key={i}
-              className="p-4 flex flex-col items-center justify-center gap-2 rounded-xl animate-pulse shadow-md"
+              padding="md"
+              className="flex flex-col items-center justify-center gap-2 rounded-xl animate-pulse shadow-md"
             >
               <div className="w-10 h-10 bg-background rounded-lg mb-2" />
               <div className="h-4 bg-background rounded w-3/4" />

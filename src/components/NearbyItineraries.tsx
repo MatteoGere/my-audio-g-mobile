@@ -156,10 +156,11 @@ export default function NearbyItineraries() {
           {[...Array(4)].map((_, i) => (
             <Card
               key={i}
-              className="p-0 flex flex-col overflow-hidden rounded-xl animate-pulse shadow-md"
+              padding="md"
+              className="flex flex-col overflow-hidden rounded-xl animate-pulse shadow-md"
             >
               <div className="h-24 bg-surface rounded-t-xl" />
-              <div className="p-4 flex flex-col gap-2">
+              <div className="flex flex-col gap-2">
                 <div className="h-4 bg-surface rounded w-3/4" />
                 <div className="h-3 bg-surface rounded w-1/2" />
               </div>
@@ -183,7 +184,7 @@ export default function NearbyItineraries() {
             const imgUrl = path ? signedUrls[path] : undefined;
             return (
               <Link key={it.id} href={`/itinerary/${it.id}`} className="block" tabIndex={0}>
-                <Card className="p-0 flex flex-col overflow-hidden rounded-xl shadow-md hover:bg-surface">
+                <Card padding="md" className="flex flex-col overflow-hidden rounded-xl shadow-md hover:bg-surface">
                   <div className="relative h-24 bg-surface rounded-t-xl">
                     {imgUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -198,7 +199,7 @@ export default function NearbyItineraries() {
                       </div>
                     )}
                   </div>
-                  <div className="p-4 flex flex-col gap-2">
+                  <div className="flex flex-col gap-2">
                     <div className="flex items-center justify-between gap-2">
                       <h3 className="font-bold text-foreground truncate">
                         {it.name}
