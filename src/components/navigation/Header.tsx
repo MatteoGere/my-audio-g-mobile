@@ -224,7 +224,7 @@ export function Header({
 
                   <button
                     onClick={handleSignOut}
-                    className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg"
+                    className="flex items-center gap-3 w-full px-4 py-2 text-sm text-error hover:bg-error/10 rounded-lg"
                   >
                     <HiOutlineArrowRightOnRectangle className="h-4 w-4" />
                     Sign Out

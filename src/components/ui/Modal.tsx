@@ -72,7 +72,7 @@ const Modal: React.FC<ModalProps> = ({
       {/* Modal Content */}
       <div
         className={cn(
-          'relative w-full m-4 bg-surface rounded-xl shadow-xl border border-carbon-200 overflow-hidden',
+          'relative w-full m-4 bg-surface rounded-xl shadow-xl border border-muted overflow-hidden',
           sizes[size],
           size === 'full' && 'h-full',
           className,
@@ -84,7 +84,7 @@ const Modal: React.FC<ModalProps> = ({
       >
         {/* Header */}
         {(title || showCloseButton) && (
-          <div className="flex items-center justify-between p-6 border-b border-carbon-200">
+          <div className="flex items-center justify-between p-6 border-b border-muted">
             <div className="space-y-1">
               {title && (
                 <h2 id="modal-title" className="text-lg font-semibold text-foreground">

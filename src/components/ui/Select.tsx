@@ -119,7 +119,7 @@ const Select: React.FC<SelectProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full z-50 mt-1 w-full rounded-md border border-carbon-200 bg-surface shadow-medium">
+      <div className="absolute top-full z-50 mt-1 w-full rounded-md border border-muted bg-surface shadow-medium">
           <ul className="max-h-60 overflow-auto py-1" role="listbox">
             {options.map((option) => (
               <li

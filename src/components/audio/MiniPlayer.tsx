@@ -145,7 +145,7 @@ export function MiniPlayer() {
   }
 
   return (
-    <div className="fixed bottom-16 left-0 right-0 z-30 bg-surface/95 backdrop-blur-md border-t border-carbon-200 shadow-[0_-2px_20px_rgba(0,0,0,0.1)]">
+    <div className="fixed bottom-16 left-0 right-0 z-30 bg-surface/95 backdrop-blur-md border-t border-muted shadow-[0_-2px_20px_rgba(0,0,0,0.1)]">
       {/* Interactive Progress Bar */}
       <div
         ref={progressBarRef}
@@ -154,12 +154,12 @@ export function MiniPlayer() {
         onMouseDown={handleProgressMouseDown}
       >
         <div
-          className="h-full bg-gradient-to-r from-primary-500 to-primary-600 transition-all duration-300 relative"
+          className="h-full bg-gradient-to-r from-primary to-primary transition-all duration-300 relative"
           style={{ width: `${progress}%` }}
         >
           {/* Progress thumb - visible on hover */}
           <div
-            className={`absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-primary-600 rounded-full shadow-md transition-opacity duration-200 ${
+            className={`absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-primary rounded-full shadow-md transition-opacity duration-200 ${
               isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
             }`}
           />

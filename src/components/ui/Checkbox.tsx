@@ -24,7 +24,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 
     // Regole: min-w-[44px] min-h-[44px] (container), rounded, gap-2+, focus ring, label font-bold
     const checkboxStyles = cn(
-      'peer h-5 w-5 min-w-[20px] min-h-[20px] rounded border border-carbon-300 bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200',
+  'peer h-5 w-5 min-w-[20px] min-h-[20px] rounded border border-muted bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200',
       'checked:bg-primary checked:border-primary checked:text-primary-foreground',
       error && 'border-error',
       className,

@@ -122,9 +122,9 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-surface/95 backdrop-blur-md border border-carbon-200">
+    <Card className="w-full max-w-md mx-auto bg-surface/95 backdrop-blur-md border border-muted">
       {/* Header */}
-  <div className="flex items-center justify-between p-4 border-b border-carbon-200">
+  <div className="flex items-center justify-between p-4 border-b border-muted">
         <div className="flex items-center space-x-3">
           <HiOutlineMusicalNote className="w-5 h-5 text-primary" />
           <div>
@@ -143,7 +143,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                 variant="ghost"
                 size="sm"
                 onClick={handleClearQueue}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="text-error hover:text-error-700 hover:bg-error/10"
               >
               <HiOutlineTrash className="w-4 h-4" />
             </Button>
@@ -167,9 +167,9 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
             <div
               key={`${queueItem.track.id}-${index}`}
               className={cn(
-                'relative flex items-center p-3 border-b border-carbon-100 transition-all duration-200',
+                'relative flex items-center p-3 border-b border-muted transition-all duration-200',
                 isCurrentTrack
-                  ? 'bg-primary/20 border-l-4 border-l-primary-500'
+                  ? 'bg-primary/20 border-l-4 border-l-primary'
                   : isPastTrack
                   ? 'opacity-60'
                   : 'hover:bg-background',
@@ -194,13 +194,13 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
               <div className="w-8 h-8 rounded-full bg-surface flex items-center justify-center mr-3 flex-shrink-0">
                 {isCurrentTrack && playbackState.isPlaying ? (
                   <div className="flex space-x-0.5">
-                    <div className="w-0.5 h-3 bg-primary-600 animate-pulse"></div>
+                    <div className="w-0.5 h-3 bg-primary animate-pulse"></div>
                     <div
-                      className="w-0.5 h-3 bg-primary-600 animate-pulse"
+                      className="w-0.5 h-3 bg-primary animate-pulse"
                       style={{ animationDelay: '0.1s' }}
                     ></div>
                     <div
-                      className="w-0.5 h-3 bg-primary-600 animate-pulse"
+                      className="w-0.5 h-3 bg-primary animate-pulse"
                       style={{ animationDelay: '0.2s' }}
                     ></div>
                   </div>
@@ -258,7 +258,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    className="p-2 text-error hover:text-error-700 hover:bg-error/10"
                     onClick={() => handleRemoveTrack(index)}
                   >
                     <HiOutlineTrash className="w-4 h-4" />
@@ -272,7 +272,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
 
       {/* Queue Actions */}
       {queue.length > 0 && (
-        <div className="p-4 border-t border-carbon-200 bg-surface/50">
+  <div className="p-4 border-t border-muted bg-surface/50">
           <div className="flex items-center justify-between text-xs text-muted">
             <span>Drag to reorder tracks</span>
             <span>{queue.length - currentQueueIndex - 1} tracks remaining</span>

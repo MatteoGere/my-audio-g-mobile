@@ -129,7 +129,7 @@ const ToastComponent: React.FC<Toast> = ({
 
   const variants = {
     default: {
-      container: 'bg-surface border-carbon-200',
+  container: 'bg-surface border-muted',
       icon: 'text-info',
       IconComp: HiOutlineInformationCircle,
     },
@@ -196,7 +196,7 @@ const ToastComponent: React.FC<Toast> = ({
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="flex-shrink-0 p-1 rounded-md hover:bg-carbon-100 transition-colors"
+          className="flex-shrink-0 p-1 rounded-md hover:bg-surface/80 transition-colors"
           aria-label="Close notification"
         >
           <HiOutlineXMark className="h-4 w-4 text-muted" aria-hidden="true" />

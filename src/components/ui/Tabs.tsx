@@ -88,7 +88,7 @@ const TabsList: React.FC<{ items: TabItem[] }> = ({ items }) => {
     orientation === 'horizontal'
       ? 'border-b border-carbon-200'
       : 'flex-col border-r border-carbon-200 min-w-[200px]',
-    variant === 'pills' && 'bg-carbon-100 p-1 rounded-md border-0',
+  variant === 'pills' && 'bg-surface p-1 rounded-md border-0',
     variant === 'underline' && 'border-b-2 border-carbon-200',
   );
 
@@ -111,7 +111,7 @@ const TabsList: React.FC<{ items: TabItem[] }> = ({ items }) => {
         'rounded-md',
         activeTab === item.id
           ? 'bg-surface text-foreground shadow-sm'
-          : 'text-muted hover:text-foreground hover:bg-carbon-200',
+          : 'text-muted hover:text-foreground hover:bg-surface/60',
       );
     }
 
