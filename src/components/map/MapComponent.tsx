@@ -54,6 +54,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   // Redux state
   const center = useAppSelector((state) => state.map.center);
   const zoom = useAppSelector((state) => state.map.zoom);
+  const isUserInteracting = useAppSelector((state) => state.map.isUserInteracting);
+  const followUserLocation = useAppSelector((state) => state.map.followUserLocation);
   const mapStyle = useAppSelector((state) => state.map.mapStyle);
   const showPOILabels = useAppSelector((state) => state.map.showPOILabels);
   
@@ -139,18 +141,62 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   // Ensure map resizes properly on mount
   useEffect(() => {
     if (mapRef.current) {
-      // small timeout to let DOM styles apply
-      window.setTimeout(() => {
-        try {
-          if (mapRef.current) {
-            mapRef.current.invalidateSize();
-          }
-        } catch (e) {
-          // ignore if map not yet ready
-        }
-      }, 120);
+      // Try multiple invalidations with small delays — sometimes the DOM needs a
+      // couple frames to finish layout (mobile browsers / Next.js hydration quirks).
+      const doInvalidate = () => {
+        try { if (mapRef.current) mapRef.current.invalidateSize(); } catch (e) { /* ignore */ }
+      };
+
+      doInvalidate();
+      const t1 = window.setTimeout(doInvalidate, 120);
+      const t2 = window.setTimeout(doInvalidate, 300);
+      const t3 = window.setTimeout(doInvalidate, 700);
+
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+        clearTimeout(t3);
+      };
     }
   }, []);
+
+  // Listen for explicit resize events from the page so Leaflet can re-render tiles
+  useEffect(() => {
+    const handler = () => {
+      try {
+        if (mapRef.current) mapRef.current.invalidateSize();
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    window.addEventListener('map-resize', handler);
+    return () => window.removeEventListener('map-resize', handler);
+  }, []);
+
+  // Follow Redux center/zoom updates by setting the map view when needed.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    // If the user is interacting with the map, avoid interrupting them
+    if (isUserInteracting) return;
+
+    try {
+      const currentCenter = map.getCenter();
+      const currentZoom = map.getZoom();
+
+      const latChanged = Math.abs(currentCenter.lat - center.latitude) > 1e-6;
+      const lngChanged = Math.abs(currentCenter.lng - center.longitude) > 1e-6;
+      const zoomChanged = currentZoom !== zoom;
+
+      if (latChanged || lngChanged || zoomChanged) {
+        map.setView([center.latitude, center.longitude], zoom, { animate: true });
+      }
+    } catch (e) {
+      // ignore if map not ready
+    }
+  }, [center.latitude, center.longitude, zoom, isUserInteracting]);
 
   // Map container classes
   const mapClasses = `relative w-full h-full overflow-hidden rounded-lg ${className}`.trim();

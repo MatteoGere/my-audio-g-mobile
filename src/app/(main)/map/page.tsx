@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { MapComponent } from '@/components/map';
 import { useMapPOIs, useLocation } from '@/lib/hooks';
 import { useAppDispatch, useAppSelector } from '@/lib/redux';
-import { selectPoi, setHighlightedTrackId } from '@/lib/redux/slices/mapSlice';
+import { selectPoi, setHighlightedTrackId, setMapView } from '@/lib/redux/slices/mapSlice';
 import { POIMarkerData } from '@/types/app-types';
 import { FaExpand, FaCompress, FaLocationArrow, FaFilter, FaSearch } from 'react-icons/fa';
 import Button from '@/components/ui/Button';
@@ -12,7 +12,7 @@ import Input from '@/components/ui/Input';
 
 export default function MapPage() {
   const dispatch = useAppDispatch();
-  const { userLocation, requestLocation, startTracking, stopTracking } = useLocation();
+  const { userLocation, requestLocation, startTracking, stopTracking, getCurrentPosition } = useLocation();
   
   // State
   // fullscreen removed: map is always shown in standard mode
@@ -75,13 +75,22 @@ export default function MapPage() {
 
   // Center on user location
   const centerOnUser = useCallback(async () => {
-    if (!isLocationEnabled) {
-      await requestLocation();
+    try {
+      // Use getCurrentPosition which returns the resolved coordinates immediately.
+      const loc = await getCurrentPosition();
+      if (loc) {
+        dispatch(setMapView({ center: { latitude: loc.latitude, longitude: loc.longitude }, zoom: mapZoom }));
+      }
+    } catch (e) {
+      // If getCurrentPosition fails, fall back to requesting permission which will update store
+      if (!isLocationEnabled) {
+        await requestLocation();
+      }
+      if (userLocation) {
+        dispatch(setMapView({ center: userLocation, zoom: mapZoom }));
+      }
     }
-    if (userLocation) {
-      // The map will auto-center when location is updated
-    }
-  }, [isLocationEnabled, requestLocation, userLocation]);
+  }, [getCurrentPosition, requestLocation, isLocationEnabled, userLocation, dispatch, mapZoom]);
 
   // Calculate available height between header and bottom navigation
   const [mapHeightStyle, setMapHeightStyle] = useState<string | undefined>(undefined);
@@ -99,16 +108,31 @@ export default function MapPage() {
         const viewportHeight = window.innerHeight;
 
         // Use container top offset so we account for any page padding/margins above the map
-        const containerTop = containerRef.current ? containerRef.current.getBoundingClientRect().top : 0;
-
   // Small extra gap so map doesn't touch bottom nav and a little breathing room
   const extraGap = 8; // pixels (reduced per request)
 
-        const available = Math.max(0, viewportHeight - containerTop - bottomHeight - extraGap);
+    // Compute available viewport space between header and bottom navigation.
+    // Note: do NOT subtract the container's top offset here — that often double-counts
+    // spacing and produces a smaller height than available. Using header/bottom heights
+    // is more reliable across layouts.
+    const available = Math.max(0, viewportHeight - headerHeight - bottomHeight - extraGap);
 
         // Ensure a sensible minimum height
         const minH = 200;
-        setMapHeightStyle(`${Math.max(minH, Math.floor(available))}px`);
+        const newHeight = `${Math.max(minH, Math.floor(available))}px`;
+        setMapHeightStyle(newHeight);
+        // Wait a frame so React applies the inline style to the DOM, then dispatch
+        // a resize event so Leaflet can recalculate tile layout. A tiny timeout
+        // after rAF ensures mobile browsers finished layout.
+        try {
+          requestAnimationFrame(() => {
+            window.setTimeout(() => {
+              try { window.dispatchEvent(new Event('map-resize')); } catch (e) { /* ignore */ }
+            }, 50);
+          });
+        } catch (e) {
+          // ignore in environments without window/requestAnimationFrame
+        }
       } catch (e) {
         setMapHeightStyle(undefined);
       }
