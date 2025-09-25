@@ -38,7 +38,7 @@ const Card: React.FC<CardProps> = ({
     default: '',
     elevated: 'shadow-lg hover:shadow-xl',
     // Use semantic border color that adapts via CSS variables
-    outlined: 'border border-carbon-200',
+    outlined: 'border border-muted',
   };
 
   // p-4 default, gap tra card gestito dal container

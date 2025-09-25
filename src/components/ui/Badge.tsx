@@ -29,7 +29,7 @@ const Badge: React.FC<BadgeProps> = ({
     'inline-flex items-center justify-center rounded-full min-w-[24px] min-h-[24px] font-bold transition-all duration-200 shadow-sm';
 
   const variants = {
-    default: 'bg-carbon-100 text-carbon-800 border border-carbon-200',
+    default: 'bg-surface text-foreground border border-muted',
     primary: 'bg-primary text-primary-foreground',
     secondary: 'bg-secondary text-secondary-foreground',
     accent: 'bg-accent text-accent-foreground',
@@ -37,7 +37,7 @@ const Badge: React.FC<BadgeProps> = ({
     success: 'bg-success/10 text-success border border-success/20',
     warning: 'bg-warning/10 text-warning border border-warning/20',
     error: 'bg-error/10 text-error border border-error/20',
-    outline: 'bg-transparent text-foreground border border-carbon-300 hover:bg-carbon-50',
+    outline: 'bg-transparent text-foreground border border-muted hover:bg-surface',
   };
 
   const sizes = {

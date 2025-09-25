@@ -25,8 +25,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       secondary:
         'bg-secondary text-secondary-foreground hover:bg-secondary/90 active:bg-secondary/95 shadow-md',
       accent: 'bg-accent text-accent-foreground hover:bg-accent/90 active:bg-accent/95 shadow-md',
-      outline:
-        'border border-primary text-primary bg-transparent hover:bg-primary hover:text-primary-foreground active:bg-primary/95 shadow-md',
+      // Outline uses muted border and surface hover to avoid hardcoded color tokens
+      outline: 'border border-muted text-foreground bg-transparent hover:bg-surface active:bg-surface/95 shadow-md',
       ghost: 'text-foreground hover:bg-surface active:bg-surface/80',
     };
 
