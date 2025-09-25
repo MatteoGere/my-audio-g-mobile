@@ -90,9 +90,58 @@ export default function MapPage() {
 
   return (
     <div className="relative w-full h-full bg-gray-50">
-      {/* Search and Filter Bar */}
-      {!isFullscreen && (
-        <div className="absolute top-4 left-4 right-4 z-10 bg-white rounded-lg shadow-lg p-3">
+      {/* Search bar moved to bottom (replaces stats banner) - top search removed */}
+
+  {/* Map Controls */}
+  <div className={`absolute ${isFullscreen ? 'top-6 right-6 z-[9999]' : 'top-4 right-4 z-10'} flex flex-col gap-3 pointer-events-auto`}>
+        {/* Fullscreen Toggle */}
+        <Button
+          onClick={toggleFullscreen}
+          className="bg-white text-gray-700 hover:bg-gray-50 shadow-lg p-3 min-w-[44px] min-h-[44px]"
+          variant="outline"
+          aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+        >
+          {isFullscreen ? <FaCompress /> : <FaExpand />}
+        </Button>
+
+        {/* Center on User */}
+        <Button
+          onClick={centerOnUser}
+          className="bg-white text-gray-700 hover:bg-gray-50 shadow-lg p-3 min-w-[44px] min-h-[44px]"
+          variant="outline"
+          disabled={!isLocationEnabled && !userLocation}
+          aria-label="Center on user"
+        >
+          <FaLocationArrow />
+        </Button>
+      </div>
+
+      {/* Map Container */}
+      <div className={`w-full ${isFullscreen ? 'h-screen' : 'h-[calc(100vh-6rem)]'}`}>
+        <MapComponent
+          className="w-full h-full"
+          pois={filteredPois}
+          showUserLocation={true}
+          fullscreen={isFullscreen}
+          interactive={true}
+          onMarkerClick={handleMarkerClick}
+          onMapClick={handleMapClick}
+          selectedPoiId={selectedPoiId || undefined}
+        />
+      </div>
+
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-20">
+          <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <span className="text-gray-700">Loading map data...</span>
+          </div>
+        </div>
+      )}
+
+      {/* Search and Filter Bar (moved to bottom) - visible in fullscreen too */}
+      <div className={`absolute ${isFullscreen ? 'bottom-6 left-6 right-6 z-[9999]' : 'bottom-4 left-4 right-4 z-10'} bg-white rounded-lg shadow-lg p-3`}>
           <div className="flex gap-2 items-center">
             <div className="flex-1 relative">
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
@@ -124,69 +173,6 @@ export default function MapPage() {
             </div>
           )}
         </div>
-      )}
-
-      {/* Map Controls */}
-      <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
-        {/* Fullscreen Toggle */}
-        <Button
-          onClick={toggleFullscreen}
-          className="bg-white text-gray-700 hover:bg-gray-50 shadow-lg p-3"
-          variant="outline"
-        >
-          {isFullscreen ? <FaCompress /> : <FaExpand />}
-        </Button>
-
-        {/* Center on User */}
-        <Button
-          onClick={centerOnUser}
-          className="bg-white text-gray-700 hover:bg-gray-50 shadow-lg p-3"
-          variant="outline"
-          disabled={!isLocationEnabled && !userLocation}
-        >
-          <FaLocationArrow />
-        </Button>
-      </div>
-
-      {/* Map Container */}
-      <div className={`w-full ${isFullscreen ? 'h-screen' : 'h-[calc(100vh-6rem)]'}`}>
-        <MapComponent
-          className="w-full h-full"
-          pois={filteredPois}
-          showUserLocation={true}
-          fullscreen={isFullscreen}
-          interactive={true}
-          onMarkerClick={handleMarkerClick}
-          onMapClick={handleMapClick}
-          selectedPoiId={selectedPoiId || undefined}
-        />
-      </div>
-
-      {/* Loading Overlay */}
-      {isLoading && (
-        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-20">
-          <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-            <span className="text-gray-700">Loading map data...</span>
-          </div>
-        </div>
-      )}
-
-      {/* Stats Bar */}
-      {!isFullscreen && (
-        <div className="absolute bottom-4 left-4 right-4 z-10 bg-white rounded-lg shadow-lg p-3">
-          <div className="flex justify-between items-center text-sm text-gray-600">
-            <div>
-              {filteredPois.length} locations • {new Set(filteredPois.map(p => p.itineraryId)).size} itineraries
-            </div>
-            <div>
-              {userLocation && (
-                <span className="text-green-600">Location enabled</span>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
