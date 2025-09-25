@@ -115,7 +115,7 @@ export default function RegisterPage() {
         {/* Success Message */}
         <div className="text-center">
           <div className="mx-auto w-16 h-16 bg-surface rounded-full flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-success-600"
+            <svg className="w-8 h-8 text-success"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -137,7 +137,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Instructions */}
-        <div className="p-4 rounded-lg bg-surface border border-carbon-200">
+  <div className="p-4 rounded-lg bg-surface border border-muted">
           <div className="space-y-2 text-sm text-muted">
             <p>
               <strong>What's next?</strong>
@@ -176,7 +176,7 @@ export default function RegisterPage() {
                 });
                 setAcceptTerms(false);
               }}
-              className="text-sm text-primary hover:text-primary-700 transition-colors"
+              className="text-sm text-primary hover:text-primary transition-colors"
             >
               Register a different account
             </button>
@@ -301,7 +301,7 @@ export default function RegisterPage() {
 
         {error && (
           <div className="p-3 rounded-lg bg-surface border border-carbon-200">
-            <p className="text-sm text-error-700">{error}</p>
+            <p className="text-sm text-error">{error}</p>
           </div>
         )}
 

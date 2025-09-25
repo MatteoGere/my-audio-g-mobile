@@ -70,7 +70,7 @@ export default function ReduxTest() {
             <Button variant="primary" onClick={() => router.push('/home')}>
               Go to Home
             </Button>
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-muted">
               {t('reduxTest.themeClass')}: <span className="font-mono">{themeClass}</span>
             </div>
           </div>

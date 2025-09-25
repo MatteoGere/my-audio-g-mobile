@@ -262,7 +262,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
         {/* Advanced Filters Panel */}
         {showFilters && (
-          <div className="px-4 pb-4 border-t border-carbon-200 bg-background/50">
+          <div className="px-4 pb-4 border-t border-muted bg-background/50">
             <div className="space-y-4 pt-4">
               {/* Company Filter */}
               <div>
@@ -272,7 +272,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                 <select
                   value={filters.company}
                   onChange={(e) => updateFilter('company', e.target.value)}
-                  className="w-full px-3 py-2 border border-carbon-200 rounded-lg text-sm bg-surface"
+                  className="w-full px-3 py-2 border border-muted rounded-lg text-sm bg-surface"
                 >
                   {companyOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -295,7 +295,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                     onChange={(e) => updateFilter('minDuration', parseInt(e.target.value) || 0)}
                     className="flex-1"
                   />
-                  <span className="text-carbon-500">to</span>
+                  <span className="text-muted">to</span>
                   <Input
                     type="number"
                     placeholder="Max"
@@ -489,7 +489,7 @@ export default function SearchPage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin h-8 w-8 border-2 border-primary-600 border-t-transparent rounded-full"></div>
+          <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full"></div>
         </div>
       }
     >

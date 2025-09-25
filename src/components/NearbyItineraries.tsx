@@ -193,7 +193,7 @@ export default function NearbyItineraries() {
                         className="w-full h-full object-cover rounded-t-xl"
                       />
                     ) : (
-                      <div className="w-full h-full grid place-items-center text-carbon-400 text-xs">
+                      <div className="w-full h-full grid place-items-center text-muted text-xs">
                         No Image
                       </div>
                     )}

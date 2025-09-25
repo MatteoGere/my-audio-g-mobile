@@ -128,7 +128,7 @@ const Select: React.FC<SelectProps> = ({
                 className={cn(
                   'relative cursor-pointer select-none py-2 px-3 text-sm transition-colors',
                   option.disabled && 'cursor-not-allowed opacity-50',
-                  !option.disabled && 'hover:bg-carbon-100',
+                  !option.disabled && 'hover:bg-surface/60',
                   isSelected(option.value) && 'bg-primary text-primary-foreground',
                 )}
                 role="option"

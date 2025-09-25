@@ -137,7 +137,7 @@ export default function FeaturedCarousel() {
                         className="w-full h-full object-cover rounded-t-xl"
                       />
                     ) : (
-                      <div className="w-full h-full grid place-items-center text-carbon-400">
+                      <div className="w-full h-full grid place-items-center text-muted">
                         No Image
                       </div>
                     )}

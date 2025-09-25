@@ -85,9 +85,9 @@ export default function ItineraryMapPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-          <span className="text-gray-700">Loading itinerary map...</span>
+        <div className="bg-surface rounded-lg shadow-lg p-6 flex items-center gap-3">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+          <span className="text-muted">Loading itinerary map...</span>
         </div>
       </div>
     );
@@ -106,16 +106,16 @@ export default function ItineraryMapPage() {
   }
 
   return (
-    <div className="relative w-full h-full bg-gray-50">
+    <div className="relative w-full h-full bg-background">
       {/* Header */}(
-      <div className="absolute top-4 left-4 right-4 z-10 bg-white rounded-lg shadow-lg p-4">
+  <div className="absolute top-4 left-4 right-4 z-10 bg-surface rounded-lg shadow-lg p-4 border border-muted">
         <div className="flex items-center gap-3 mb-3">
           <Button variant="outline" size="sm" onClick={() => router.back()} className="px-3">
             <FaArrowLeft />
           </Button>
           <div className="flex-1">
-            <h1 className="text-lg font-bold text-gray-900 truncate">{itinerary.name}</h1>
-            <p className="text-sm text-gray-600">
+            <h1 className="text-lg font-bold text-foreground truncate">{itinerary.name}</h1>
+            <p className="text-sm text-muted">
               {pois.length} locations • Total: {formatDuration(itinerary.total_duration || 0)}
             </p>
           </div>
@@ -155,15 +155,15 @@ export default function ItineraryMapPage() {
         <div className="absolute bottom-4 left-4 right-4 z-10">
           <Card className="max-h-32 overflow-y-auto">
             <div className="p-3">
-              <h3 className="font-semibold text-gray-900 mb-2">Tracks in this itinerary</h3>
+              <h3 className="font-semibold text-foreground mb-2">Tracks in this itinerary</h3>
               <div className="space-y-1">
                 {pois.map((poi, index) => (
                   <div
                     key={poi.trackId}
                     className={`flex items-center gap-3 p-2 rounded cursor-pointer transition-colors ${
                       selectedPoiId === poi.trackId
-                        ? 'bg-blue-50 border border-blue-200'
-                        : 'hover:bg-gray-50'
+                        ? 'bg-primary/10 border border-primary/30'
+                        : 'hover:bg-surface/60'
                     }`}
                     onClick={() => handleMarkerClick(poi)}
                   >
@@ -172,10 +172,10 @@ export default function ItineraryMapPage() {
                       style={{ backgroundColor: itineraryColors[poi.itineraryId] || '#3B82F6' }}
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
+                      <p className="text-sm font-medium text-foreground truncate">
                         {index + 1}. {poi.trackName}
                       </p>
-                      <p className="text-xs text-gray-500">{formatDuration(poi.duration)}</p>
+                      <p className="text-xs text-muted">{formatDuration(poi.duration)}</p>
                     </div>
                     <Button
                       size="sm"

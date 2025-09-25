@@ -26,7 +26,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       {/* Auth Content */}
       <main className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
-          <div className="bg-surface rounded-2xl shadow-soft p-6 border border-carbon-200">
+          <div className="bg-surface rounded-2xl shadow-soft p-6 border border-muted">
             {children}
           </div>
         </div>

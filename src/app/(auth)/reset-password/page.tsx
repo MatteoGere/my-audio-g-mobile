@@ -93,7 +93,7 @@ function ResetPasswordInner() {
 				<div className="text-center">
 					<div className="mx-auto w-16 h-16 bg-surface rounded-full flex items-center justify-center mb-4">
 						<svg
-							className="w-8 h-8 text-success-600"
+							className="w-8 h-8 text-success"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
@@ -174,7 +174,7 @@ function ResetPasswordInner() {
 						id="showPassword"
 						checked={showPassword}
 						onChange={(e) => setShowPassword(e.target.checked)}
-						className="rounded text-primary-600 focus:ring-primary-500"
+						className="rounded text-primary focus:ring-primary"
 					/>
 					<label htmlFor="showPassword" className="text-sm text-muted">
 						Show passwords

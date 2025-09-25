@@ -69,7 +69,7 @@ export default function ItineraryDetailPage() {
       <div className="space-y-6">
         <Card className="p-6 text-center">
           <h2 className="text-lg font-semibold mb-2">Itinerary not found</h2>
-          <p className="text-carbon-600 mb-4">
+          <p className="text-muted mb-4">
             The itinerary may have been removed or is unavailable.
           </p>
           <Button onClick={() => router.back()}>Go Back</Button>

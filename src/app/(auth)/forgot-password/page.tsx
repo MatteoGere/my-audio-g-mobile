@@ -61,8 +61,8 @@ export default function ForgotPasswordPage() {
       <div className="space-y-6">
         {/* Success Message */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-success-100 rounded-full flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="mx-auto w-16 h-16 bg-success/20 rounded-full flex items-center justify-center mb-4">
+            <svg className="w-8 h-8 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -76,7 +76,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         {/* Instructions */}
-        <div className="p-4 rounded-lg bg-surface border border-amber-200">
+  <div className="p-4 rounded-lg bg-surface border border-muted">
           <div className="space-y-2 text-sm text-muted">
             <p>
               <strong>What's next?</strong>
@@ -139,8 +139,8 @@ export default function ForgotPasswordPage() {
         />
 
         {error && (
-          <div className="p-3 rounded-lg bg-error-50 border border-error-200">
-              <p className="text-sm text-error-700">{error}</p>
+      <div className="p-3 rounded-lg bg-error/10 border border-error/30">
+        <p className="text-sm text-error">{error}</p>
             </div>
         )}
 

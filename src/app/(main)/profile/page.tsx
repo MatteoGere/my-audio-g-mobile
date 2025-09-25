@@ -117,7 +117,7 @@ export default function ProfilePage() {
           </Button>
           <Button
             variant="ghost"
-            className="w-full text-error-600 hover:text-error-700"
+            className="w-full text-error hover:text-error"
             onClick={handleSignOut}
           >
             Sign Out
