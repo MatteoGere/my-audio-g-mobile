@@ -44,9 +44,9 @@ export default function ItineraryDetailPage() {
   if (itineraryLoading) {
     return (
       <div className="space-y-6">
-        <Card className="overflow-hidden animate-pulse">
+        <Card padding="lg" className="overflow-hidden animate-pulse">
           <div className="h-48 bg-background" />
-          <div className="p-6 space-y-3">
+          <div className="space-y-3">
             <div className="h-6 bg-background rounded w-2/3" />
             <div className="h-4 bg-background rounded w-1/3" />
             <div className="h-4 bg-background rounded w-full" />
@@ -67,7 +67,7 @@ export default function ItineraryDetailPage() {
   if (itineraryError || !itinerary) {
     return (
       <div className="space-y-6">
-        <Card className="p-6 text-center">
+        <Card padding="lg" className="text-center">
           <h2 className="text-lg font-semibold mb-2">Itinerary not found</h2>
           <p className="text-muted mb-4">
             The itinerary may have been removed or is unavailable.
@@ -81,7 +81,7 @@ export default function ItineraryDetailPage() {
   return (
     <div className="space-y-6">
       {/* Hero Section */}
-  <Card padding="none" className="overflow-hidden">
+  <Card padding="lg" className="overflow-hidden">
         {heroImageUrl ? (
           <img src={heroImageUrl} alt={itinerary.name} className="h-48 w-full object-cover" />
         ) : (
@@ -89,7 +89,7 @@ export default function ItineraryDetailPage() {
             <span className="text-primary text-4xl">🏛️</span>
           </div>
         )}
-  <div className="p-6">
+  <div>
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
               <h1 className="text-xl font-bold text-foreground mb-2">

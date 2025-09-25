@@ -347,9 +347,9 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         {isLoading && (
           <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-4'}>
             {Array.from({ length: 6 }, (_, i) => (
-              <Card key={i} padding="none" className="overflow-hidden animate-pulse">
-                <div className="h-32 bg-background" />
-                <div className="p-3 space-y-2">
+              <Card key={i} padding="md" className="overflow-hidden animate-pulse">
+                <div className="h-32 bg-background rounded-md mb-3" />
+                <div className="space-y-2">
                   <div className="h-4 bg-background rounded w-3/4" />
                   <div className="h-3 bg-background rounded w-1/2" />
                 </div>
@@ -393,7 +393,8 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
               return (
                 <Card
                   key={itinerary.id}
-                  className={`p-0 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer ${
+                  padding="none"
+                  className={`overflow-hidden hover:shadow-lg transition-shadow cursor-pointer ${
                     viewMode === 'list' ? 'flex' : ''
                   }`}
                   onClick={() => (window.location.href = `/itinerary/${itinerary.id}`)}
@@ -435,7 +436,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                   </div>
 
                   {/* Content */}
-                  <div className="p-3 flex-1">
+                  <div className="flex-1 p-3">
                     <div className="space-y-1">
                       <h3 className="font-medium text-foreground line-clamp-2">
                         {itinerary.name}

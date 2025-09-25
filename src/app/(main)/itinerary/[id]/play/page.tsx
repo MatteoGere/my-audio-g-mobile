@@ -322,15 +322,17 @@ export default function AudioPlayerPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 bg-surface/80 backdrop-blur-sm">
-        <Button variant="ghost" size="sm" onClick={() => router.back()}>
-          <HiChevronLeft className="w-5 h-5" />
-        </Button>
-        <h1 className="font-semibold text-foreground">Now Playing</h1>
-        <Button variant="ghost" size="sm" onClick={() => setShowQueue(!showQueue)}>
-          <HiOutlineQueueList className="w-5 h-5" />
-        </Button>
-      </div>
+      <Card padding="md" className="bg-surface/80 backdrop-blur-sm rounded-none">
+        <div className="flex items-center justify-between">
+          <Button variant="ghost" size="sm" onClick={() => router.back()}>
+            <HiChevronLeft className="w-5 h-5" />
+          </Button>
+          <h1 className="font-semibold text-foreground">Now Playing</h1>
+          <Button variant="ghost" size="sm" onClick={() => setShowQueue(!showQueue)}>
+            <HiOutlineQueueList className="w-5 h-5" />
+          </Button>
+        </div>
+      </Card>
 
       <div className="container mx-auto px-4 py-6 max-w-md space-y-6">
         {/* Track Image/Visual */}
@@ -437,15 +439,15 @@ export default function AudioPlayerPage() {
                 <span className="text-sm font-medium text-foreground">{audioState.playbackState.playbackSpeed}x</span>
               </button>
 
-              {showSpeedMenu && (
-                <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-surface rounded-lg shadow-lg border border-muted p-2 z-10">
-                  {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
-                    <button key={speed} className="block w-full text-left px-3 py-1 text-sm hover:bg-background rounded" onClick={() => handleSpeedChange(speed)}>
-                      {speed}x
-                    </button>
-                  ))}
-                </div>
-              )}
+                {showSpeedMenu && (
+                  <Card padding="sm" className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 rounded-lg shadow-lg border-muted z-10">
+                    {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
+                      <button key={speed} className="block w-full text-left px-3 py-1 text-sm hover:bg-background rounded" onClick={() => handleSpeedChange(speed)}>
+                        {speed}x
+                      </button>
+                    ))}
+                  </Card>
+                )}
             </div>
 
             <Button
@@ -467,9 +469,9 @@ export default function AudioPlayerPage() {
             </Button>
 
             {showVolumeSlider && (
-              <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-surface rounded-lg shadow-lg border border-muted p-3 z-10">
+              <Card padding="sm" className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 rounded-lg shadow-lg border-muted z-10">
                 <input type="range" min="0" max="100" value={audioState.playbackState.volume * 100} onChange={(e) => handleVolumeChange(parseInt(e.target.value))} className="w-20 h-2 bg-background rounded-lg appearance-none cursor-pointer" />
-              </div>
+              </Card>
             )}
           </div>
         </div>
@@ -483,7 +485,7 @@ export default function AudioPlayerPage() {
         </Card>
 
         {/* Enhanced Queue Manager */}
-        {showQueue && <QueueManager isVisible={showQueue} onClose={() => setShowQueue(false)} />}
+    {showQueue && <QueueManager isVisible={showQueue} onClose={() => setShowQueue(false)} />}
 
         {/* Playlist Management Controls */}
   <div className="grid grid-cols-2 gap-3">

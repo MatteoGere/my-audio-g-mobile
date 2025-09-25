@@ -9,6 +9,7 @@ import { POIMarkerData } from '@/types/app-types';
 import { FaExpand, FaCompress, FaLocationArrow, FaFilter, FaSearch } from 'react-icons/fa';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import { Card } from '@/components/ui';
 
 export default function MapPage() {
   const dispatch = useAppDispatch();
@@ -171,15 +172,17 @@ export default function MapPage() {
       {/* Map Controls */}
       <div className={`absolute top-4 right-4 z-10 flex flex-col gap-3 pointer-events-auto`}>
         {/* Center on User */}
-        <Button
-          onClick={centerOnUser}
-          className="shadow-lg p-3 min-w-[44px] min-h-[44px]"
-          variant="outline"
-          disabled={!isLocationEnabled && !userLocation}
-          aria-label="Center on user"
-        >
-          <FaLocationArrow />
-        </Button>
+        <Card padding="sm" className="shadow-lg rounded-full">
+          <Button
+            onClick={centerOnUser}
+            className="min-w-[44px] min-h-[44px]"
+            variant="outline"
+            disabled={!isLocationEnabled && !userLocation}
+            aria-label="Center on user"
+          >
+            <FaLocationArrow />
+          </Button>
+        </Card>
       </div>
 
       {/* Map Container */}
@@ -202,15 +205,15 @@ export default function MapPage() {
       {/* Loading Overlay */}
       {isLoading && (
         <div className="absolute inset-0 bg-surface/75 flex items-center justify-center z-20">
-          <div className="bg-surface rounded-lg shadow-lg p-6 flex items-center gap-3">
+          <Card padding="lg" className="bg-surface rounded-lg shadow-lg flex items-center gap-3">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
             <span className="text-muted">Loading map data...</span>
-          </div>
+          </Card>
         </div>
       )}
 
       {/* Search and Filter Bar (moved to bottom) */}
-      <div className={`absolute bottom-4 left-4 right-4 z-10 bg-surface rounded-lg shadow-lg p-3`}>
+      <Card padding="sm" className={`absolute bottom-4 left-4 right-4 z-10 rounded-lg shadow-lg`}> 
         <div className="flex gap-2 items-center">
           <div className="flex-1 relative">
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted text-sm" />
@@ -236,7 +239,7 @@ export default function MapPage() {
             {/* TODO: Add more filter options */}
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 }
