@@ -283,7 +283,7 @@ export default function AudioPlayerPage() {
   if (itineraryLoading || tracksLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-6 max-w-md">
+        <div className="container mx-auto  py-6 max-w-md">
           <div className="animate-pulse space-y-6">
             <div className="h-6 bg-background rounded w-1/3"></div>
             <div className="aspect-square bg-background rounded-lg"></div>
@@ -304,7 +304,7 @@ export default function AudioPlayerPage() {
   if (itineraryError || tracksError || !currentTrack) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-6 max-w-md">
+        <div className="container mx-auto  py-6 max-w-md">
           <Card padding="lg" className="text-center">
             <h2 className="text-xl font-semibold text-foreground mb-2">Audio Not Available</h2>
             <p className="text-muted mb-4">Unable to load the audio tracks for this itinerary.</p>
@@ -330,7 +330,7 @@ export default function AudioPlayerPage() {
         </div>
       </Card>
 
-      <div className="container mx-auto px-4 py-6 max-w-md space-y-6">
+      <div className="container mx-auto  py-6 max-w-md space-y-6">
         {/* Track Image/Visual */}
         <Card padding="none" className="overflow-hidden">
           <div className="aspect-square bg-surface flex items-center justify-center relative">

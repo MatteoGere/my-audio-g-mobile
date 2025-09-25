@@ -329,8 +329,8 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         )}
       </Card>
 
-      {/* Results */}
-      <div className="px-5">
+  {/* Results */}
+  <div>
         {/* Results Header (not contained in a Card — mobile-first list view) */}
         <div className="mb-4">
           <div className="flex items-center justify-between">
@@ -348,11 +348,12 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         {isLoading && (
           <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-3'}>
             {Array.from({ length: 6 }, (_, i) => (
-              <div
+              <Card
                 key={i}
+                padding="md"
                 className={`overflow-hidden animate-pulse bg-surface rounded-xl shadow-md transition-shadow ${
                   viewMode === 'list' ? 'flex items-start' : ''
-                } p-4`}
+                }`}
               >
                 <div
                   className={
@@ -367,7 +368,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                     <div className="h-3 bg-background rounded w-1/2" />
                   </div>
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         )}
@@ -414,70 +415,75 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                     }
                   }}
                   onClick={() => (window.location.href = `/itinerary/${itinerary.id}`)}
-                  className={`w-full bg-surface rounded-xl shadow-md overflow-hidden transition-shadow hover:shadow-lg cursor-pointer ${
-                    viewMode === 'list' ? 'flex items-start' : ''
-                  } p-4`}
+                  className={`w-full`}
                 >
-                  {/* Image */}
-                  <div
-                    className={`relative ${
-                      viewMode === 'grid' ? 'h-32 w-full' : 'h-24 w-24 flex-shrink-0 mr-4'
-                    } bg-surface`}
+                  <Card
+                    padding="md"
+                    className={`bg-surface rounded-xl shadow-md overflow-hidden transition-shadow hover:shadow-lg cursor-pointer ${
+                      viewMode === 'list' ? 'flex items-start' : ''
+                    }`}
                   >
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt={itinerary.name}
-                        className="w-full h-full object-cover rounded-md"
-                      />
-                    ) : (
-                      <div className="w-full h-full grid place-items-center text-muted text-xs">
-                        No Image
-                      </div>
-                    )}
-
-                    {/* Favorite Button */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFavorite(itinerary.id);
-                      }}
-                      className="absolute top-2 right-2 p-1 bg-surface/80 hover:bg-surface"
+                    {/* Image */}
+                    <div
+                      className={`relative ${
+                        viewMode === 'grid' ? 'h-32 w-full' : 'h-24 w-24 flex-shrink-0 mr-4'
+                      } bg-surface`}
                     >
-                      {isFavorite ? (
-                        <HiHeart className="h-4 w-4 text-error" />
+                      {imageUrl ? (
+                        <img
+                          src={imageUrl}
+                          alt={itinerary.name}
+                          className="w-full h-full object-cover rounded-md"
+                        />
                       ) : (
-                        <HiOutlineHeart className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1">
-                    <div className="space-y-1">
-                      <h3 className="font-medium text-foreground line-clamp-2">{itinerary.name}</h3>
-
-                      {viewMode === 'list' && itinerary.description && (
-                        <p className="text-xs text-muted line-clamp-2">{itinerary.description}</p>
-                      )}
-
-                      <div className="flex items-center gap-2 text-xs text-muted">
-                        <div className="flex items-center gap-1">
-                          <HiOutlineClock className="h-3 w-3" />
-                          {formatDuration(itinerary.total_duration)}
+                        <div className="w-full h-full grid place-items-center text-muted text-xs">
+                          No Image
                         </div>
+                      )}
 
-                        {itinerary.company?.name && (
-                          <>
-                            <span>•</span>
-                            <span>{itinerary.company.name}</span>
-                          </>
+                      {/* Favorite Button */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFavorite(itinerary.id);
+                        }}
+                        className="absolute top-2 right-2 p-1 bg-surface/80 hover:bg-surface"
+                      >
+                        {isFavorite ? (
+                          <HiHeart className="h-4 w-4 text-error" />
+                        ) : (
+                          <HiOutlineHeart className="h-4 w-4" />
                         )}
+                      </Button>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1">
+                      <div className="space-y-1">
+                        <h3 className="font-medium text-foreground line-clamp-2">{itinerary.name}</h3>
+
+                        {viewMode === 'list' && itinerary.description && (
+                          <p className="text-xs text-muted line-clamp-2">{itinerary.description}</p>
+                        )}
+
+                        <div className="flex items-center gap-2 text-xs text-muted">
+                          <div className="flex items-center gap-1">
+                            <HiOutlineClock className="h-3 w-3" />
+                            {formatDuration(itinerary.total_duration)}
+                          </div>
+
+                          {itinerary.company?.name && (
+                            <>
+                              <span>•</span>
+                              <span>{itinerary.company.name}</span>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </Card>
                 </article>
               );
             })}

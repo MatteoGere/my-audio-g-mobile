@@ -194,8 +194,7 @@ export function MiniPlayer() {
               <>
                 <span>•</span>
                 <span>
-                  Track {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1} of{' '}
-                  {queue.length}
+                  {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1}-{queue.length}
                 </span>
               </>
             )}
