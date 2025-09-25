@@ -72,8 +72,8 @@ export default function LoginPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100">Welcome Back</h2>
-        <p className="text-sm text-carbon-600 dark:text-carbon-400 mt-2">
+        <h2 className="text-2xl font-bold text-foreground">Welcome Back</h2>
+        <p className="text-sm text-muted mt-2">
           Sign in to continue your audio journey
         </p>
       </div>
@@ -105,15 +105,15 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+            className="text-xs text-primary transition-colors"
           >
             {showPassword ? 'Hide password' : 'Show password'}
           </button>
         </div>
 
         {displayError && (
-          <div className="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800">
-            <p className="text-sm text-error-700 dark:text-error-300">{displayError}</p>
+          <div className="p-3 rounded-lg bg-surface border border-carbon-200">
+            <p className="text-sm text-error-700">{displayError}</p>
           </div>
         )}
 
@@ -131,10 +131,7 @@ export default function LoginPage() {
 
       {/* Forgot Password */}
       <div className="text-center">
-        <Link
-          href="/forgot-password"
-          className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
-        >
+          <Link href="/forgot-password" className="text-sm text-primary transition-colors">
           Forgot your password?
         </Link>
       </div>
@@ -145,9 +142,7 @@ export default function LoginPage() {
           <div className="w-full border-t border-carbon-300 dark:border-carbon-600" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-white dark:bg-carbon-800 text-carbon-500 dark:text-carbon-400">
-            Or
-          </span>
+          <span className="px-2 bg-surface text-muted">Or</span>
         </div>
       </div>
 
@@ -157,11 +152,11 @@ export default function LoginPage() {
 
       {/* Sign Up Link */}
       <div className="text-center">
-        <p className="text-sm text-carbon-600 dark:text-carbon-400">
+          <p className="text-sm text-muted">
           Don't have an account?{' '}
           <Link
             href="/register"
-            className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors font-medium"
+            className="text-primary transition-colors font-medium"
           >
             Sign up
           </Link>

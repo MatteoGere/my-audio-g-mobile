@@ -9,10 +9,8 @@ export default function FavoritesPage() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100 mb-2">
-            Your Favorites
-          </h1>
-          <p className="text-carbon-600 dark:text-carbon-400">Your saved audio tours and tracks</p>
+          <h1 className="text-2xl font-bold text-foreground mb-2">Your Favorites</h1>
+          <p className="text-muted">Your saved audio tours and tracks</p>
         </div>
 
         {/* Filter Tabs */}
@@ -33,17 +31,17 @@ export default function FavoritesPage() {
           {[1, 2, 3, 4].map((item) => (
             <Card key={item} className="p-4">
               <div className="flex items-start space-x-4">
-                <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900 rounded-lg flex-shrink-0 flex items-center justify-center">
-                  <span className="text-teal-600 dark:text-teal-400 text-sm font-medium">❤️</span>
-                </div>
+                  <div className="w-16 h-16 bg-teal-100 rounded-lg flex-shrink-0 flex items-center justify-center">
+                    <span className="text-teal text-sm font-medium">❤️</span>
+                  </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-carbon-900 dark:text-carbon-100 mb-1">
+                    <h3 className="font-semibold text-foreground mb-1">
                     Cathedral Architecture Tour
                   </h3>
-                  <p className="text-sm text-carbon-600 dark:text-carbon-400 mb-2">
+                    <p className="text-sm text-muted mb-2">
                     Discover the stunning architectural details of this historic cathedral.
                   </p>
-                  <div className="flex items-center text-xs text-carbon-500 dark:text-carbon-400 space-x-4">
+                    <div className="flex items-center text-xs text-muted space-x-4">
                     <span>30 minutes</span>
                     <span>5 stops</span>
                     <span>Added 3 days ago</span>

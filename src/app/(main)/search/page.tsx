@@ -197,9 +197,9 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-carbon-50 dark:bg-carbon-900">
+    <div className="min-h-screen bg-background">
       {/* Search Header */}
-      <div className="bg-white dark:bg-carbon-800 border-b border-carbon-200 dark:border-carbon-700 sticky top-0 z-10">
+      <div className="bg-surface border-b border-carbon-200 sticky top-0 z-10">
         <div className="px-4 py-4 space-y-4">
           {/* Search Input */}
           <div className="relative">
@@ -226,7 +226,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
               <select
                 value={filters.sortBy}
                 onChange={(e) => updateFilter('sortBy', e.target.value)}
-                className="px-3 py-2 border border-carbon-200 dark:border-carbon-700 rounded-lg text-sm bg-white dark:bg-carbon-800"
+                className="px-3 py-2 border border-carbon-200 rounded-lg text-sm bg-surface"
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -262,17 +262,17 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
         {/* Advanced Filters Panel */}
         {showFilters && (
-          <div className="px-4 pb-4 border-t border-carbon-200 dark:border-carbon-700 bg-carbon-50 dark:bg-carbon-800/50">
+          <div className="px-4 pb-4 border-t border-carbon-200 bg-background/50">
             <div className="space-y-4 pt-4">
               {/* Company Filter */}
               <div>
-                <label className="block text-sm font-medium text-carbon-700 dark:text-carbon-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Company
                 </label>
                 <select
                   value={filters.company}
                   onChange={(e) => updateFilter('company', e.target.value)}
-                  className="w-full px-3 py-2 border border-carbon-200 dark:border-carbon-700 rounded-lg text-sm bg-white dark:bg-carbon-800"
+                  className="w-full px-3 py-2 border border-carbon-200 rounded-lg text-sm bg-surface"
                 >
                   {companyOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -284,7 +284,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
               {/* Duration Range */}
               <div>
-                <label className="block text-sm font-medium text-carbon-700 dark:text-carbon-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Duration (minutes)
                 </label>
                 <div className="flex items-center gap-3">
@@ -308,7 +308,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
               {/* Distance Filter */}
               <div>
-                <label className="block text-sm font-medium text-carbon-700 dark:text-carbon-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Max Distance (km)
                 </label>
                 <Input
@@ -335,10 +335,10 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         {/* Results Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100">
+            <h1 className="text-2xl font-bold text-foreground">
               {filters.query ? `Search: "${filters.query}"` : 'Discover Tours'}
             </h1>
-            <p className="text-carbon-600 dark:text-carbon-400 mt-1">
+            <p className="text-muted mt-1">
               {filteredResults.length} tour{filteredResults.length !== 1 ? 's' : ''} found
             </p>
           </div>
@@ -348,10 +348,10 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
           <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-4'}>
             {Array.from({ length: 6 }, (_, i) => (
               <Card key={i} className="p-0 overflow-hidden animate-pulse">
-                <div className="h-32 bg-carbon-200 dark:bg-carbon-700" />
+                <div className="h-32 bg-background" />
                 <div className="p-3 space-y-2">
-                  <div className="h-4 bg-carbon-200 dark:bg-carbon-700 rounded w-3/4" />
-                  <div className="h-3 bg-carbon-200 dark:bg-carbon-700 rounded w-1/2" />
+                  <div className="h-4 bg-background rounded w-3/4" />
+                  <div className="h-3 bg-background rounded w-1/2" />
                 </div>
               </Card>
             ))}
@@ -361,7 +361,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         {/* Error State */}
         {error && !isLoading && (
           <div className="text-center py-12">
-            <p className="text-carbon-500 dark:text-carbon-400 mb-4">Failed to load results</p>
+            <p className="text-muted mb-4">Failed to load results</p>
             <Button onClick={() => refetch()}>Try Again</Button>
           </div>
         )}
@@ -370,10 +370,10 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         {!isLoading && !error && filteredResults.length === 0 && (
           <div className="text-center py-12">
             <HiOutlineMagnifyingGlass className="h-12 w-12 text-carbon-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-carbon-900 dark:text-carbon-100 mb-2">
+            <h3 className="text-lg font-medium text-foreground mb-2">
               No tours found
             </h3>
-            <p className="text-carbon-500 dark:text-carbon-400 mb-4">
+            <p className="text-muted mb-4">
               Try adjusting your search criteria or clear the filters
             </p>
             <Button variant="outline" onClick={clearAllFilters}>
@@ -400,7 +400,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                 >
                   {/* Image */}
                   <div
-                    className={`relative bg-carbon-100 dark:bg-carbon-800 ${
+                    className={`relative bg-surface ${
                       viewMode === 'grid' ? 'h-32' : 'h-24 w-24 flex-shrink-0'
                     }`}
                   >
@@ -411,7 +411,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full grid place-items-center text-carbon-400 text-xs">
+                      <div className="w-full h-full grid place-items-center text-muted text-xs">
                         No Image
                       </div>
                     )}
@@ -424,7 +424,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                         e.stopPropagation();
                         toggleFavorite(itinerary.id);
                       }}
-                      className="absolute top-2 right-2 p-1 bg-white/80 dark:bg-carbon-800/80 hover:bg-white dark:hover:bg-carbon-800"
+                      className="absolute top-2 right-2 p-1 bg-surface/80 hover:bg-surface"
                     >
                       {isFavorite ? (
                         <HiHeart className="h-4 w-4 text-red-500" />
@@ -437,17 +437,17 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                   {/* Content */}
                   <div className="p-3 flex-1">
                     <div className="space-y-1">
-                      <h3 className="font-medium text-carbon-900 dark:text-carbon-100 line-clamp-2">
+                      <h3 className="font-medium text-foreground line-clamp-2">
                         {itinerary.name}
                       </h3>
 
                       {viewMode === 'list' && itinerary.description && (
-                        <p className="text-xs text-carbon-600 dark:text-carbon-400 line-clamp-2">
+                        <p className="text-xs text-muted line-clamp-2">
                           {itinerary.description}
                         </p>
                       )}
 
-                      <div className="flex items-center gap-2 text-xs text-carbon-500 dark:text-carbon-400">
+                      <div className="flex items-center gap-2 text-xs text-muted">
                         <div className="flex items-center gap-1">
                           <HiOutlineClock className="h-3 w-3" />
                           {formatDuration(itinerary.total_duration)}

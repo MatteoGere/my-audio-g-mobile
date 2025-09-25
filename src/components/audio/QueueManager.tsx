@@ -20,6 +20,7 @@ import {
   play,
   pause,
 } from '@/lib/redux/slices/audioSlice';
+import { cn } from '@/lib/utils';
 
 interface QueueManagerProps {
   onClose?: () => void;

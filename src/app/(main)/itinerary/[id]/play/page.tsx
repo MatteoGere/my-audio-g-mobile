@@ -282,17 +282,17 @@ export default function AudioPlayerPage() {
   // Loading state
   if (itineraryLoading || tracksLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-amber-50 dark:from-carbon-900 dark:to-carbon-800">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-amber-50">
         <div className="container mx-auto px-4 py-6 max-w-md">
           <div className="animate-pulse space-y-6">
-            <div className="h-6 bg-carbon-200 dark:bg-carbon-700 rounded w-1/3"></div>
-            <div className="aspect-square bg-carbon-200 dark:bg-carbon-700 rounded-lg"></div>
-            <div className="h-4 bg-carbon-200 dark:bg-carbon-700 rounded w-2/3 mx-auto"></div>
-            <div className="h-2 bg-carbon-200 dark:bg-carbon-700 rounded"></div>
+            <div className="h-6 bg-background rounded w-1/3"></div>
+            <div className="aspect-square bg-background rounded-lg"></div>
+            <div className="h-4 bg-background rounded w-2/3 mx-auto"></div>
+            <div className="h-2 bg-background rounded"></div>
             <div className="flex justify-center space-x-4">
-              <div className="w-12 h-12 bg-carbon-200 dark:bg-carbon-700 rounded-full"></div>
-              <div className="w-16 h-16 bg-carbon-200 dark:bg-carbon-700 rounded-full"></div>
-              <div className="w-12 h-12 bg-carbon-200 dark:bg-carbon-700 rounded-full"></div>
+              <div className="w-12 h-12 bg-surface rounded-full"></div>
+              <div className="w-16 h-16 bg-surface rounded-full"></div>
+              <div className="w-12 h-12 bg-surface rounded-full"></div>
             </div>
           </div>
         </div>
@@ -303,13 +303,13 @@ export default function AudioPlayerPage() {
   // Error state
   if (itineraryError || tracksError || !currentTrack) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-amber-50 dark:from-carbon-900 dark:to-carbon-800">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-amber-50">
         <div className="container mx-auto px-4 py-6 max-w-md">
           <Card className="p-8 text-center">
-            <h2 className="text-xl font-semibold text-carbon-900 dark:text-carbon-100 mb-2">
+            <h2 className="text-xl font-semibold text-foreground mb-2">
               Audio Not Available
             </h2>
-            <p className="text-carbon-600 dark:text-carbon-400 mb-4">
+            <p className="text-muted mb-4">
               Unable to load the audio tracks for this itinerary.
             </p>
             <Button onClick={() => router.back()}>Go Back</Button>
@@ -320,13 +320,13 @@ export default function AudioPlayerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-amber-50 dark:from-carbon-900 dark:to-carbon-800">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-amber-50">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-sm dark:bg-carbon-900/80">
+      <div className="flex items-center justify-between p-4 bg-surface/80 backdrop-blur-sm">
         <Button variant="ghost" size="sm" onClick={() => router.back()}>
           <HiChevronLeft className="w-5 h-5" />
         </Button>
-        <h1 className="font-semibold text-carbon-900 dark:text-carbon-100">Now Playing</h1>
+        <h1 className="font-semibold text-foreground">Now Playing</h1>
         <Button variant="ghost" size="sm" onClick={() => setShowQueue(!showQueue)}>
           <HiOutlineQueueList className="w-5 h-5" />
         </Button>
@@ -335,7 +335,7 @@ export default function AudioPlayerPage() {
       <div className="container mx-auto px-4 py-6 max-w-md space-y-6">
         {/* Track Image/Visual */}
         <Card className="overflow-hidden">
-          <div className="aspect-square bg-gradient-to-br from-primary-200 to-amber-200 dark:from-primary-800 dark:to-amber-800 flex items-center justify-center relative">
+          <div className="aspect-square bg-gradient-to-br from-primary-200 to-amber-200 flex items-center justify-center relative">
             {isBuffering && (
               <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
@@ -356,13 +356,13 @@ export default function AudioPlayerPage() {
 
         {/* Track Info */}
         <div className="text-center space-y-2">
-          <h1 className="text-xl font-bold text-carbon-900 dark:text-carbon-100">
+          <h1 className="text-xl font-bold text-foreground">
             {currentTrack?.name || 'Loading...'}
           </h1>
-          <p className="text-carbon-600 dark:text-carbon-400 text-sm">
+          <p className="text-muted text-sm">
             {itinerary?.name || 'Audio Tour'}
           </p>
-          <p className="text-carbon-500 dark:text-carbon-500 text-xs">
+          <p className="text-muted text-xs">
             Track {currentTrackIndex + 1} of {tracks?.length || 0}
           </p>
         </div>
@@ -380,7 +380,7 @@ export default function AudioPlayerPage() {
               handleSeek(percentage);
             }}
           />
-          <div className="flex justify-between text-xs text-carbon-500 dark:text-carbon-400">
+          <div className="flex justify-between text-xs text-muted">
             <span>{formatTime(audioState.playbackState.currentTime)}</span>
             <span>{formatTime(currentTrack?.duration || 0)}</span>
           </div>
@@ -433,23 +433,14 @@ export default function AudioPlayerPage() {
             </Button>
 
             <div className="relative">
-              <button
-                className="bg-carbon-100 dark:bg-carbon-800 rounded-lg px-3 py-1"
-                onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-              >
-                <span className="text-sm font-medium text-carbon-700 dark:text-carbon-300">
-                  {audioState.playbackState.playbackSpeed}x
-                </span>
+              <button className="bg-surface rounded-lg px-3 py-1" onClick={() => setShowSpeedMenu(!showSpeedMenu)}>
+                <span className="text-sm font-medium text-foreground">{audioState.playbackState.playbackSpeed}x</span>
               </button>
 
               {showSpeedMenu && (
-                <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-white dark:bg-carbon-800 rounded-lg shadow-lg border border-carbon-200 dark:border-carbon-700 p-2 z-10">
+                <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-surface rounded-lg shadow-lg border border-carbon-200 p-2 z-10">
                   {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
-                    <button
-                      key={speed}
-                      className="block w-full text-left px-3 py-1 text-sm hover:bg-carbon-100 dark:hover:bg-carbon-700 rounded"
-                      onClick={() => handleSpeedChange(speed)}
-                    >
+                    <button key={speed} className="block w-full text-left px-3 py-1 text-sm hover:bg-background rounded" onClick={() => handleSpeedChange(speed)}>
                       {speed}x
                     </button>
                   ))}
@@ -476,15 +467,8 @@ export default function AudioPlayerPage() {
             </Button>
 
             {showVolumeSlider && (
-              <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-white dark:bg-carbon-800 rounded-lg shadow-lg border border-carbon-200 dark:border-carbon-700 p-3 z-10">
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={audioState.playbackState.volume * 100}
-                  onChange={(e) => handleVolumeChange(parseInt(e.target.value))}
-                  className="w-20 h-2 bg-carbon-200 rounded-lg appearance-none cursor-pointer"
-                />
+              <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-surface rounded-lg shadow-lg border border-carbon-200 p-3 z-10">
+                <input type="range" min="0" max="100" value={audioState.playbackState.volume * 100} onChange={(e) => handleVolumeChange(parseInt(e.target.value))} className="w-20 h-2 bg-background rounded-lg appearance-none cursor-pointer" />
               </div>
             )}
           </div>

@@ -45,18 +45,18 @@ export default function ItineraryDetailPage() {
     return (
       <div className="space-y-6">
         <Card className="overflow-hidden animate-pulse">
-          <div className="h-48 bg-carbon-200" />
+          <div className="h-48 bg-background" />
           <div className="p-6 space-y-3">
-            <div className="h-6 bg-carbon-200 rounded w-2/3" />
-            <div className="h-4 bg-carbon-200 rounded w-1/3" />
-            <div className="h-4 bg-carbon-200 rounded w-full" />
-            <div className="h-9 bg-carbon-200 rounded w-full" />
+            <div className="h-6 bg-background rounded w-2/3" />
+            <div className="h-4 bg-background rounded w-1/3" />
+            <div className="h-4 bg-background rounded w-full" />
+            <div className="h-9 bg-background rounded w-full" />
           </div>
         </Card>
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
             <Card key={i} className="p-4 animate-pulse">
-              <div className="h-8 bg-carbon-200 rounded" />
+              <div className="h-8 bg-background rounded" />
             </Card>
           ))}
         </div>
@@ -85,18 +85,18 @@ export default function ItineraryDetailPage() {
         {heroImageUrl ? (
           <img src={heroImageUrl} alt={itinerary.name} className="h-48 w-full object-cover" />
         ) : (
-          <div className="h-48 bg-gradient-to-br from-primary-100 to-amber-100 dark:from-primary-900 dark:to-amber-900 flex items-center justify-center">
-            <span className="text-primary-600 dark:text-primary-400 text-4xl">🏛️</span>
+          <div className="h-48 bg-gradient-to-br from-primary-100 to-amber-100 flex items-center justify-center">
+            <span className="text-primary text-4xl">🏛️</span>
           </div>
         )}
         <div className="p-6">
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
-              <h1 className="text-xl font-bold text-carbon-900 dark:text-carbon-100 mb-2">
+              <h1 className="text-xl font-bold text-foreground mb-2">
                 {itinerary.name}
               </h1>
               {(itinerary as any)?.company?.name && (
-                <p className="text-sm text-carbon-600 dark:text-carbon-400">
+                <p className="text-sm text-muted">
                   by {(itinerary as any).company.name}
                 </p>
               )}
@@ -113,7 +113,7 @@ export default function ItineraryDetailPage() {
           </div>
 
           {itinerary.description && (
-            <p className="text-carbon-700 dark:text-carbon-300 text-sm leading-relaxed mb-4">
+            <p className="text-muted text-sm leading-relaxed mb-4">
               {itinerary.description}
             </p>
           )}

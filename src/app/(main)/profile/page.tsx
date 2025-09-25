@@ -24,16 +24,16 @@ export default function ProfilePage() {
         {/* Profile Header */}
         <Card className="p-6">
           <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
-              <span className="text-primary-600 dark:text-primary-400 text-xl font-semibold">
+            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
+              <span className="text-primary text-xl font-semibold">
                 {user?.email?.charAt(0).toUpperCase()}
               </span>
             </div>
             <div className="flex-1">
-              <h2 className="text-xl font-semibold text-carbon-900 dark:text-carbon-100">
+              <h2 className="text-xl font-semibold text-foreground">
                 {user?.email}
               </h2>
-              <p className="text-sm text-carbon-600 dark:text-carbon-400">Audio Guide Explorer</p>
+              <p className="text-sm text-muted">Audio Guide Explorer</p>
             </div>
           </div>
         </Card>
@@ -47,10 +47,10 @@ export default function ProfilePage() {
             <Card className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-carbon-900 dark:text-carbon-100">
+                  <h4 className="font-medium text-foreground">
                     Push Notifications
                   </h4>
-                  <p className="text-sm text-carbon-600 dark:text-carbon-400">
+                  <p className="text-sm text-muted">
                     Get notified about new tours
                   </p>
                 </div>
@@ -61,10 +61,10 @@ export default function ProfilePage() {
             <Card className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-carbon-900 dark:text-carbon-100">
+                  <h4 className="font-medium text-foreground">
                     Auto-play Next Track
                   </h4>
-                  <p className="text-sm text-carbon-600 dark:text-carbon-400">
+                  <p className="text-sm text-muted">
                     Automatically play the next audio track
                   </p>
                 </div>
@@ -75,10 +75,10 @@ export default function ProfilePage() {
             <Card className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-carbon-900 dark:text-carbon-100">
+                  <h4 className="font-medium text-foreground">
                     Download over WiFi only
                   </h4>
-                  <p className="text-sm text-carbon-600 dark:text-carbon-400">
+                  <p className="text-sm text-muted">
                     Save mobile data usage
                   </p>
                 </div>
@@ -90,25 +90,25 @@ export default function ProfilePage() {
 
         {/* Stats */}
         <div>
-          <h3 className="text-lg font-semibold text-carbon-900 dark:text-carbon-100 mb-4">
+          <h3 className="text-lg font-semibold text-foreground mb-4">
             Your Stats
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <Card className="p-4 text-center">
-              <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">12</div>
-              <div className="text-sm text-carbon-600 dark:text-carbon-400">Tours Completed</div>
+              <div className="text-2xl font-bold text-primary">12</div>
+              <div className="text-sm text-muted">Tours Completed</div>
             </Card>
             <Card className="p-4 text-center">
-              <div className="text-2xl font-bold text-secondary-600 dark:text-secondary-400">5</div>
-              <div className="text-sm text-carbon-600 dark:text-carbon-400">Favorites</div>
+              <div className="text-2xl font-bold text-secondary">5</div>
+              <div className="text-sm text-muted">Favorites</div>
             </Card>
             <Card className="p-4 text-center">
-              <div className="text-2xl font-bold text-accent-600 dark:text-accent-400">24h</div>
-              <div className="text-sm text-carbon-600 dark:text-carbon-400">Listening Time</div>
+              <div className="text-2xl font-bold text-accent">24h</div>
+              <div className="text-sm text-muted">Listening Time</div>
             </Card>
             <Card className="p-4 text-center">
-              <div className="text-2xl font-bold text-teal-600 dark:text-teal-400">8</div>
-              <div className="text-sm text-carbon-600 dark:text-carbon-400">Cities Visited</div>
+              <div className="text-2xl font-bold text-teal">8</div>
+              <div className="text-sm text-muted">Cities Visited</div>
             </Card>
           </div>
         </div>

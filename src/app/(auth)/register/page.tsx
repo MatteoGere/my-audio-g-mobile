@@ -114,9 +114,8 @@ export default function RegisterPage() {
       <div className="space-y-6">
         {/* Success Message */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-success-100 dark:bg-success-900/20 rounded-full flex items-center justify-center mb-4">
-            <svg
-              className="w-8 h-8 text-success-600 dark:text-success-400"
+          <div className="mx-auto w-16 h-16 bg-surface rounded-full flex items-center justify-center mb-4">
+            <svg className="w-8 h-8 text-success-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -129,17 +128,17 @@ export default function RegisterPage() {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100">
+          <h2 className="text-2xl font-bold text-foreground">
             Account Created!
           </h2>
-          <p className="text-sm text-carbon-600 dark:text-carbon-400 mt-2">
+          <p className="text-sm text-muted mt-2">
             We've sent a verification email to <strong>{formData.email}</strong>
           </p>
         </div>
 
         {/* Instructions */}
-        <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
-          <div className="space-y-2 text-sm text-amber-700 dark:text-amber-300">
+        <div className="p-4 rounded-lg bg-surface border border-carbon-200">
+          <div className="space-y-2 text-sm text-muted">
             <p>
               <strong>What's next?</strong>
             </p>
@@ -191,8 +190,8 @@ export default function RegisterPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100">Create Account</h2>
-        <p className="text-sm text-carbon-600 dark:text-carbon-400 mt-2">
+        <h2 className="text-2xl font-bold text-foreground">Create Account</h2>
+        <p className="text-sm text-muted mt-2">
           Join MyAudioG and discover amazing audio experiences
         </p>
       </div>
@@ -254,7 +253,7 @@ export default function RegisterPage() {
             autoComplete="new-password"
             error={validationErrors.password}
           />
-          <p className="text-xs text-carbon-500 dark:text-carbon-400">
+          <p className="text-xs text-muted">
             Must contain uppercase, lowercase, and numbers (minimum 6 characters)
           </p>
         </div>
@@ -270,11 +269,7 @@ export default function RegisterPage() {
             autoComplete="new-password"
             error={validationErrors.confirmPassword}
           />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
-          >
+          <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-xs text-primary transition-colors">
             {showPassword ? 'Hide passwords' : 'Show passwords'}
           </button>
         </div>
@@ -286,22 +281,13 @@ export default function RegisterPage() {
               onChange={(e) => setAcceptTerms(e.target.checked)}
               id="accept-terms"
             />
-            <label
-              htmlFor="accept-terms"
-              className="text-sm text-carbon-600 dark:text-carbon-400 leading-5"
-            >
+            <label htmlFor="accept-terms" className="text-sm text-muted leading-5">
               I agree to the{' '}
-              <Link
-                href="/terms"
-                className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
-              >
+              <Link href="/terms" className="text-primary transition-colors">
                 Terms and Conditions
               </Link>{' '}
               and{' '}
-              <Link
-                href="/privacy"
-                className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
-              >
+              <Link href="/privacy" className="text-primary transition-colors">
                 Privacy Policy
               </Link>
             </label>
@@ -314,8 +300,8 @@ export default function RegisterPage() {
         </div>
 
         {error && (
-          <div className="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800">
-            <p className="text-sm text-error-700 dark:text-error-300">{error}</p>
+          <div className="p-3 rounded-lg bg-surface border border-carbon-200">
+            <p className="text-sm text-error-700">{error}</p>
           </div>
         )}
 
@@ -333,12 +319,9 @@ export default function RegisterPage() {
 
       {/* Sign In Link */}
       <div className="text-center">
-        <p className="text-sm text-carbon-600 dark:text-carbon-400">
+        <p className="text-sm text-muted">
           Already have an account?{' '}
-          <Link
-            href="/login"
-            className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors font-medium"
-          >
+          <Link href="/login" className="text-primary transition-colors font-medium">
             Sign in
           </Link>
         </p>
