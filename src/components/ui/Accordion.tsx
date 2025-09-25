@@ -175,7 +175,7 @@ const AccordionTrigger: React.FC<AccordionTriggerProps> = ({
   return (
     <button
       className={cn(
-        'flex w-full items-center justify-between py-4 px-0 text-left font-medium transition-all hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+        'flex w-full items-center justify-between py-4 px-0 text-left font-bold min-w-[44px] min-h-[44px] rounded-md transition-all hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
         disabled && 'cursor-not-allowed hover:no-underline',
         className,
       )}

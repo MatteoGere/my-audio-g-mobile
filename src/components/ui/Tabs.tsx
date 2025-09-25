@@ -92,10 +92,11 @@ const TabsList: React.FC<{ items: TabItem[] }> = ({ items }) => {
     variant === 'underline' && 'border-b-2 border-stone-200',
   );
 
+  // Regole: touch target min-w-[44px] min-h-[44px], font-bold, rounded, gap
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base',
+    sm: 'px-3 py-1.5 min-w-[44px] min-h-[44px] text-sm font-bold rounded',
+    md: 'px-4 py-2 min-w-[44px] min-h-[44px] text-base font-bold rounded-md',
+    lg: 'px-6 py-3 min-w-[48px] min-h-[48px] text-lg font-bold rounded-lg',
   };
 
   const getTabStyles = (item: TabItem) => {

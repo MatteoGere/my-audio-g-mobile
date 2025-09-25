@@ -165,7 +165,7 @@ const Tooltip: React.FC<TooltipProps> = ({
         <div
           ref={tooltipRef}
           className={cn(
-            'absolute z-50 px-2 py-1 text-xs text-white bg-stone-800 rounded shadow-medium whitespace-nowrap pointer-events-none',
+            'absolute z-50 px-2 py-1 text-xs font-bold text-white bg-stone-800 rounded-lg shadow-lg border border-stone-700 whitespace-nowrap pointer-events-none',
             positions[actualPosition],
             className,
           )}

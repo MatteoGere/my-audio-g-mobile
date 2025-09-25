@@ -31,14 +31,16 @@ const Card: React.FC<CardProps> = ({
   children,
   ...props
 }) => {
-  const baseStyles = 'bg-surface rounded-lg transition-all duration-200';
+  // Regole: rounded-xl, p-4, shadow-md, border, max-w-full
+  const baseStyles = 'bg-surface rounded-xl transition-all duration-200 shadow-md border max-w-full';
 
   const variants = {
-    default: 'border border-stone-200',
-    elevated: 'shadow-soft hover:shadow-medium',
+    default: '',
+    elevated: 'shadow-lg hover:shadow-xl',
     outlined: 'border-2 border-stone-200 hover:border-stone-300',
   };
 
+  // Regole: p-4 (card base), gap-3 tra card
   const paddings = {
     none: '',
     sm: 'p-3',

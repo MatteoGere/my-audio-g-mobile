@@ -54,7 +54,7 @@ const Progress: React.FC<ProgressProps> = ({
       )}
 
       <div
-        className={cn('w-full overflow-hidden rounded-full bg-stone-200', sizes[size], className)}
+        className={cn('w-full px-4 py-2 overflow-hidden rounded bg-stone-200 shadow-sm', sizes[size], className)}
         {...props}
       >
         <div

@@ -42,26 +42,27 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items, separator, maxItems, cla
   }, [items, maxItems]);
 
   return (
-    <nav className={cn('flex items-center space-x-1 text-sm', className)} aria-label="Breadcrumb">
-      <ol className="flex items-center space-x-1">
+    <nav className={cn('flex items-center gap-2 text-sm', className)} aria-label="Breadcrumb">
+      <ol className="flex items-center gap-2">
         {processedItems.map((item, index) => {
           const isLast = index === processedItems.length - 1;
           const isEllipsis = item.label === '...';
 
           return (
-            <li key={`${item.label}-${index}`} className="flex items-center">
+            <li key={`${item.label}-${index}`} className="flex items-center min-w-[44px] min-h-[44px]">
               {/* Breadcrumb item */}
               {item.href ? (
                 <a
                   href={item.href}
                   className={cn(
-                    'hover:text-foreground transition-colors',
+                    'hover:text-foreground transition-colors px-2 py-1 rounded-md min-w-[44px] min-h-[44px] flex items-center',
                     item.disabled || item.current
-                      ? 'text-foreground font-medium cursor-default'
+                      ? 'text-foreground font-bold cursor-default'
                       : 'text-muted hover:text-foreground',
                   )}
                   aria-current={item.current || isLast ? 'page' : undefined}
                   onClick={item.disabled ? (e) => e.preventDefault() : undefined}
+                  tabIndex={item.disabled ? -1 : 0}
                 >
                   {item.label}
                 </a>
@@ -69,22 +70,25 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items, separator, maxItems, cla
                 <button
                   onClick={item.onClick}
                   className={cn(
-                    'hover:text-foreground transition-colors text-left',
+                    'hover:text-foreground transition-colors text-left px-2 py-1 rounded-md min-w-[44px] min-h-[44px] flex items-center',
                     item.current
-                      ? 'text-foreground font-medium cursor-default'
+                      ? 'text-foreground font-bold cursor-default'
                       : 'text-muted hover:text-foreground',
                   )}
                   aria-current={item.current || isLast ? 'page' : undefined}
+                  tabIndex={item.disabled ? -1 : 0}
+                  disabled={item.disabled}
                 >
                   {item.label}
                 </button>
               ) : (
                 <span
                   className={cn(
+                    'px-2 py-1 rounded-md min-w-[44px] min-h-[44px] flex items-center',
                     isEllipsis
                       ? 'text-muted'
                       : item.current || isLast
-                        ? 'text-foreground font-medium'
+                        ? 'text-foreground font-bold'
                         : 'text-muted',
                   )}
                   aria-current={item.current || isLast ? 'page' : undefined}

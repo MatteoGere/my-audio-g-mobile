@@ -24,8 +24,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     },
     ref,
   ) => {
+    // Regole: rounded-lg, min-h-[44px], px-4 py-3, shadow-sm, border, focus ring, font-bold, text-base
     const baseStyles =
-      'flex min-h-[80px] w-full rounded-md border bg-surface px-3 py-2 text-sm placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200';
+      'flex min-h-[80px] min-h-[44px] w-full rounded-lg border bg-surface px-4 py-3 text-base font-bold placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 shadow-sm';
 
     const variants = {
       default: 'border-stone-200 hover:border-stone-300 focus:border-primary',

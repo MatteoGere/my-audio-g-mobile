@@ -24,8 +24,9 @@ const Badge: React.FC<BadgeProps> = ({
   children,
   ...props
 }) => {
+  // Regole: rounded-full, min-w-[24px], min-h-[24px], font-bold, shadow-sm
   const baseStyles =
-    'inline-flex items-center rounded-full font-medium transition-all duration-200';
+    'inline-flex items-center justify-center rounded-full min-w-[24px] min-h-[24px] font-bold transition-all duration-200 shadow-sm';
 
   const variants = {
     default: 'bg-stone-100 text-stone-800 border border-stone-200',

@@ -27,13 +27,14 @@ const Avatar: React.FC<AvatarProps> = ({
   const [imageLoaded, setImageLoaded] = React.useState(false);
   const [imageError, setImageError] = React.useState(false);
 
+  // Regole: rounded-full, min-w-[44px], min-h-[44px], font-bold, shadow-sm
   const sizes = {
     xs: 'h-6 w-6 text-xs',
     sm: 'h-8 w-8 text-sm',
-    md: 'h-10 w-10 text-sm',
-    lg: 'h-12 w-12 text-base',
-    xl: 'h-16 w-16 text-lg',
-    '2xl': 'h-20 w-20 text-xl',
+    md: 'h-11 w-11 min-w-[44px] min-h-[44px] text-base',
+    lg: 'h-14 w-14 min-w-[56px] min-h-[56px] text-lg',
+    xl: 'h-16 w-16 min-w-[64px] min-h-[64px] text-xl',
+    '2xl': 'h-20 w-20 min-w-[80px] min-h-[80px] text-2xl',
   };
 
   const statusSizes = {
@@ -80,7 +81,7 @@ const Avatar: React.FC<AvatarProps> = ({
     <div className="relative inline-block">
       <div
         className={cn(
-          'relative flex items-center justify-center rounded-full bg-stone-100 font-medium text-stone-700 overflow-hidden',
+          'relative flex items-center justify-center rounded-full bg-stone-100 font-bold text-stone-700 overflow-hidden shadow-sm',
           sizes[size],
           className,
         )}

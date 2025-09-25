@@ -1,0 +1,133 @@
+v9CopiaPubblicaRegole Design Sistema - Componenti Atomici Mobile 2025
+Specifiche per app audioguida mobile
+🎯 Principi Generali 2025
+
+Semplicità: interfacce bare-bones, personalizzazione AI, micro-interazioni
+Accessibilità first: priorità assoluta per il 2025
+Leggibilità: tipografia bold e oversized per migliorare l'esperienza
+Performance: ottimizzazione per dispositivi mobili
+
+📏 Spaziatura (Spacing)
+Spaziatura Base
+
+XS: 4px - padding interno piccolo
+S: 8px - gap minimi tra elementi
+M: 16px - spacing standard mobile
+L: 24px - separazione tra sezioni
+XL: 32px - margini importanti
+XXL: 48px - separazioni principali
+
+Spaziatura Bottoni
+
+Padding interno: px-4 py-3 (bottoni standard)
+Padding bottoni grandi: px-6 py-4
+Gap tra bottoni: gap-3 a gap-12 per touch accuracy ottimale
+Spacing verticale: space-y-4 tra righe di bottoni
+Margini dal bordo schermo: mx-5 minimo
+
+Spaziatura Testo
+
+Line height: leading-normal (1.5) o leading-relaxed (1.625)
+Paragrafi: mb-4 tra blocchi di testo
+Titoli e corpo: mb-3 gap minimo
+
+🔲 Layout e Griglia
+Container Principali
+
+Margini laterali: mx-5 (mobile standard)
+Max width contenuto: max-w-full px-5
+Gap tra sezioni: space-y-4 o space-y-6 per mobile
+
+Liste e Card
+
+Gap tra card: gap-3
+Padding card: p-4 interno
+Margini lista: space-y-2 tra elementi
+
+🔘 Stondature (Border Radius)
+Scala Stondature
+
+Nessuna: 0px - elementi formali
+XS: 4px - input, tag piccoli
+S: 8px - bottoni standard, card
+M: 12px - elementi interattivi principali
+L: 16px - card importanti, modali
+XL: 24px - elementi prominenti
+Full: 50% - bottoni circolari, avatar
+
+Applicazione per Componenti
+
+Bottoni primari: rounded-lg o rounded-xl
+Bottoni secondari: rounded-md
+Card contenuti: rounded-xl
+Input field: rounded-lg
+Bottoni play/pause: rounded-full
+Chips/Tags: rounded-full
+
+🌑 Ombre (Shadows)
+Applicazione Ombre Tailwind
+
+Bottoni primari: shadow-md
+Bottoni attivi/pressed: shadow-sm
+Card contenuti: shadow-md
+Player audio: shadow-lg
+Modali: shadow-xl
+Tooltip: shadow-lg
+
+🎨 Classi Tailwind per Audioguida
+Bottoni Player Audio
+Classe base: w-14 h-14 rounded-full shadow-lg
+Touch safe: min-w-[44px] min-h-[44px]
+Spacing: gap-6 da altri controlli
+Card Tracce Audio
+Classe base: rounded-xl p-4 shadow-md
+Gap verticale: space-y-3 tra card
+Container: space-y-3
+Controlli Secondari
+Classe base: rounded-lg min-w-[44px] min-h-[44px]
+Gap orizzontale: gap-4
+Container: flex gap-4
+Indicatori Progresso
+Barra: rounded h-1.5 shadow-sm
+Container: w-full px-4
+Touch area: py-2 (area tappabile più grande)
+🎯 Touch Targets (Tailwind)
+Dimensioni Minime
+Bottoni: min-w-[44px] min-h-[44px]
+Bottoni principali: w-12 h-12 (48px)
+Links: p-2 min-w-[44px] min-h-[44px]
+Zone di Tap
+Espansione invisibile: p-2 su elementi piccoli
+Gap minimo: gap-2 tra target adiacenti
+Safe area: space-x-2 space-y-2
+📱 Responsive Tailwind
+Breakpoints Mobile
+sm: (640px+) - riduci padding: px-4 invece di px-5
+md: (768px+) - valori base
+lg: (1024px+) - aumenta spacing: gap-5 invece di gap-4
+Adattamenti
+Landscape: space-y-2 invece di space-y-4
+Portrait: space-y-4 standard
+Large phones: p-6 invece di p-4
+🔧 Classi Tailwind CSS
+Spacing (Tailwind Classes)
+XS: p-1, m-1, gap-1     /* 4px */
+S:  p-2, m-2, gap-2     /* 8px */
+M:  p-4, m-4, gap-4     /* 16px */
+L:  p-6, m-6, gap-6     /* 24px */
+XL: p-8, m-8, gap-8     /* 32px */
+XXL: p-12, m-12, gap-12 /* 48px */
+Border Radius (Tailwind Classes)
+XS: rounded-sm    /* 2px */
+S:  rounded       /* 4px */
+M:  rounded-md    /* 6px */
+L:  rounded-lg    /* 8px */
+XL: rounded-xl    /* 12px */
+XXL: rounded-2xl  /* 16px */
+Full: rounded-full /* 50% */
+Shadows (Tailwind Classes)
+Livello 1: shadow-sm
+Livello 2: shadow-md
+Livello 3: shadow-lg
+Livello 4: shadow-xl
+Livello 5: shadow-2xl

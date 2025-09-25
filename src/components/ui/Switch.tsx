@@ -63,8 +63,9 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
       variants[variant].thumb,
     );
 
+    // Regole: min-w-[44px] min-h-[44px] (container), gap-4, label font-bold
     return (
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center min-w-[44px] min-h-[44px] space-x-4">
         <div className="relative">
           <input
             type="checkbox"
@@ -93,7 +94,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
             {label && (
               <label
                 className={cn(
-                  'text-sm font-medium leading-none cursor-pointer',
+                  'text-sm font-bold leading-none cursor-pointer',
                   disabled ? 'cursor-not-allowed opacity-50' : 'text-foreground',
                 )}
                 onClick={() =>

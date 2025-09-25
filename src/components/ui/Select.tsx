@@ -83,8 +83,9 @@ const Select: React.FC<SelectProps> = ({
     return selectedValue === optionValue;
   };
 
+  // Regole: rounded-lg, min-h-[44px], px-4 py-3, shadow-sm, border, focus ring, font-bold, text-base
   const buttonStyles = cn(
-    'flex h-10 w-full items-center justify-between rounded-md border bg-surface px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200',
+    'flex min-h-[44px] w-full items-center justify-between rounded-lg border bg-surface px-4 py-3 text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 shadow-sm',
     error ? 'border-error' : 'border-stone-200 hover:border-stone-300',
     isOpen && 'ring-2 ring-primary ring-offset-2',
     className,

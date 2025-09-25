@@ -161,7 +161,7 @@ const ToastComponent: React.FC<Toast> = ({
   return (
     <div
       className={cn(
-        'relative w-full pointer-events-auto overflow-hidden rounded-md border p-4 shadow-medium transition-all duration-300 ease-in-out',
+        'relative w-full pointer-events-auto overflow-hidden rounded-xl min-w-[44px] min-h-[44px] border p-4 shadow-lg transition-all duration-300 ease-in-out',
         variantConfig.container,
         isVisible && !isLeaving
           ? 'transform translate-x-0 opacity-100'
@@ -169,7 +169,7 @@ const ToastComponent: React.FC<Toast> = ({
       )}
       role="alert"
     >
-      <div className="flex gap-3">
+  <div className="flex gap-4 items-center">
         {/* Icon */}
         <div className="flex-shrink-0">
           <Icon className={cn('h-5 w-5', variantConfig.icon)} aria-hidden="true" />
@@ -177,7 +177,7 @@ const ToastComponent: React.FC<Toast> = ({
 
         {/* Content */}
         <div className="flex-1 space-y-1">
-          {title && <div className="text-sm font-medium text-foreground">{title}</div>}
+          {title && <div className="text-base font-bold text-foreground">{title}</div>}
           {description && <div className="text-sm text-muted">{description}</div>}
 
           {/* Action */}
