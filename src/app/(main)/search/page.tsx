@@ -52,7 +52,8 @@ interface SearchPageContentProps {
 }
 
 function SearchPageContent({ searchParams }: SearchPageContentProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  // Mobile-first: default to list view
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -199,7 +200,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Search Header */}
-      <Card padding="md" className="bg-surface border-b border-muted sticky top-0 z-10">
+  <Card padding="md" className="bg-surface border-b border-muted sticky top-0 z-10 mb-6">
         <div className="space-y-4">
           {/* Search Input */}
           <div className="relative">
@@ -331,30 +332,38 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
       </Card>
 
       {/* Results */}
-      <div className="px-4">
-        <Card padding="lg">
-        {/* Results Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">
-              {filters.query ? `Search: "${filters.query}"` : 'Discover Tours'}
-            </h1>
-            <p className="text-muted mt-1">
-              {filteredResults.length} tour{filteredResults.length !== 1 ? 's' : ''} found
-            </p>
+  <div className="px-5">
+        {/* Results Header (not contained in a Card — mobile-first list view) */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">
+                {filters.query ? `Search: "${filters.query}"` : 'Discover Tours'}
+              </h1>
+              <p className="text-muted mt-1">
+                {filteredResults.length} tour{filteredResults.length !== 1 ? 's' : ''} found
+              </p>
+            </div>
           </div>
         </div>
 
         {isLoading && (
-          <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-4'}>
+          <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-3'}>
             {Array.from({ length: 6 }, (_, i) => (
-              <Card key={i} padding="md" className="overflow-hidden animate-pulse">
-                <div className="h-32 bg-background rounded-md mb-3" />
-                <div className="space-y-2">
-                  <div className="h-4 bg-background rounded w-3/4" />
-                  <div className="h-3 bg-background rounded w-1/2" />
+              <div
+                key={i}
+                className={`overflow-hidden animate-pulse bg-surface rounded-xl shadow-md transition-shadow ${
+                  viewMode === 'list' ? 'flex items-start' : ''
+                } p-4`}
+              >
+                <div className={viewMode === 'grid' ? 'h-32 bg-background rounded-md mb-3 w-full' : 'h-24 w-24 bg-background rounded-md flex-shrink-0 mr-4'} />
+                <div className="flex-1">
+                  <div className="space-y-2">
+                    <div className="h-4 bg-background rounded w-3/4" />
+                    <div className="h-3 bg-background rounded w-1/2" />
+                  </div>
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
         )}
@@ -383,34 +392,41 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
           </div>
         )}
 
-        {/* Results Grid/List */}
+        {/* Results List (mobile-first) */}
         {!isLoading && filteredResults.length > 0 && (
-          <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-4'}>
+          <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-3'}>
             {filteredResults.map((itinerary) => {
               const imagePath = itinerary.image_file?.image_storage_key;
               const imageUrl = imagePath ? signedUrls[imagePath] : undefined;
               const isFavorite = favorites.has(itinerary.id);
 
               return (
-                <Card
+                <article
                   key={itinerary.id}
-                  padding="none"
-                  className={`overflow-hidden hover:shadow-lg transition-shadow cursor-pointer ${
-                    viewMode === 'list' ? 'flex' : ''
-                  }`}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Open itinerary ${itinerary.name}`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      window.location.href = `/itinerary/${itinerary.id}`;
+                    }
+                  }}
                   onClick={() => (window.location.href = `/itinerary/${itinerary.id}`)}
+                  className={`w-full bg-surface rounded-xl shadow-md overflow-hidden transition-shadow hover:shadow-lg cursor-pointer ${
+                    viewMode === 'list' ? 'flex items-start' : ''
+                  } p-4`}
                 >
                   {/* Image */}
                   <div
-                    className={`relative bg-surface ${
-                      viewMode === 'grid' ? 'h-32' : 'h-24 w-24 flex-shrink-0'
-                    }`}
+                    className={`relative ${
+                      viewMode === 'grid' ? 'h-32 w-full' : 'h-24 w-24 flex-shrink-0 mr-4'
+                    } bg-surface`}
                   >
                     {imageUrl ? (
                       <img
                         src={imageUrl}
                         alt={itinerary.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-md"
                       />
                     ) : (
                       <div className="w-full h-full grid place-items-center text-muted text-xs">
@@ -419,25 +435,25 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                     )}
 
                     {/* Favorite Button */}
-                      <Button
+                    <Button
                       variant="ghost"
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleFavorite(itinerary.id);
                       }}
-                        className="absolute top-2 right-2 p-1 bg-surface/80 hover:bg-surface"
+                      className="absolute top-2 right-2 p-1 bg-surface/80 hover:bg-surface"
                     >
-                        {isFavorite ? (
-                          <HiHeart className="h-4 w-4 text-error" />
-                        ) : (
-                          <HiOutlineHeart className="h-4 w-4" />
-                        )}
+                      {isFavorite ? (
+                        <HiHeart className="h-4 w-4 text-error" />
+                      ) : (
+                        <HiOutlineHeart className="h-4 w-4" />
+                      )}
                     </Button>
                   </div>
 
                   {/* Content */}
-                  <div className="flex-1 p-3">
+                  <div className="flex-1">
                     <div className="space-y-1">
                       <h3 className="font-medium text-foreground line-clamp-2">
                         {itinerary.name}
@@ -464,7 +480,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                       </div>
                     </div>
                   </div>
-                </Card>
+                </article>
               );
             })}
           </div>
@@ -476,7 +492,6 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
             <Button onClick={() => setPage((prev) => prev + 1)}>Load More</Button>
           </div>
         )}
-        </Card>
       </div>
     </div>
   );
