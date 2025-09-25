@@ -165,7 +165,7 @@ export default function MapPage() {
   }, []);
 
   return (
-    <div className="relative w-full h-full bg-gray-50">
+    <div className="relative w-full h-full bg-background">
       {/* Search bar moved to bottom (replaces stats banner) - top search removed */}
 
       {/* Map Controls */}
@@ -173,7 +173,7 @@ export default function MapPage() {
         {/* Center on User */}
         <Button
           onClick={centerOnUser}
-          className="bg-white text-gray-700 hover:bg-gray-50 shadow-lg p-3 min-w-[44px] min-h-[44px]"
+          className="shadow-lg p-3 min-w-[44px] min-h-[44px]"
           variant="outline"
           disabled={!isLocationEnabled && !userLocation}
           aria-label="Center on user"
@@ -201,41 +201,36 @@ export default function MapPage() {
 
       {/* Loading Overlay */}
       {isLoading && (
-        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-20">
-          <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-            <span className="text-gray-700">Loading map data...</span>
+        <div className="absolute inset-0 bg-surface/75 flex items-center justify-center z-20">
+          <div className="bg-surface rounded-lg shadow-lg p-6 flex items-center gap-3">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            <span className="text-muted">Loading map data...</span>
           </div>
         </div>
       )}
 
       {/* Search and Filter Bar (moved to bottom) */}
-      <div className={`absolute bottom-4 left-4 right-4 z-10 bg-white rounded-lg shadow-lg p-3`}>
+      <div className={`absolute bottom-4 left-4 right-4 z-10 bg-surface rounded-lg shadow-lg p-3`}>
         <div className="flex gap-2 items-center">
           <div className="flex-1 relative">
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted text-sm" />
             <Input
               type="text"
               placeholder="Search tracks, itineraries, or companies..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full"
+              className="pl-10 pr-4 py-2 w-full bg-surface"
             />
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-3"
-          >
+          <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)} className="px-3">
             <FaFilter />
           </Button>
         </div>
 
         {/* Filter Options */}
         {showFilters && (
-          <div className="mt-3 pt-3 border-t border-gray-200">
-            <div className="text-sm text-gray-600">
+          <div className="mt-3 pt-3 border-t border-muted">
+            <div className="text-sm text-muted">
               Showing {filteredPois.length} of {pois.length} locations
             </div>
             {/* TODO: Add more filter options */}

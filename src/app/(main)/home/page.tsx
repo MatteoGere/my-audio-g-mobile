@@ -19,7 +19,7 @@ export default function HomePage() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-2 gap-4">
-        <Card className="p-4 text-center">
+        <Card padding="md" className="text-center">
           <h3 className="font-semibold text-foreground mb-2">Explore Tours</h3>
           <p className="text-sm text-muted mb-3">
             Find amazing audio guides
@@ -31,7 +31,7 @@ export default function HomePage() {
           </Link>
         </Card>
 
-        <Card className="p-4 text-center">
+        <Card padding="md" className="text-center">
           <h3 className="font-semibold text-foreground mb-2">Nearby</h3>
           <p className="text-sm text-muted mb-3">
             Tours near your location

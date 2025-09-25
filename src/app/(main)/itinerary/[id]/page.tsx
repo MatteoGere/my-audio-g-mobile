@@ -55,7 +55,7 @@ export default function ItineraryDetailPage() {
         </Card>
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="p-4 animate-pulse">
+            <Card key={i} padding="md" className="animate-pulse">
               <div className="h-8 bg-background rounded" />
             </Card>
           ))}
@@ -81,15 +81,15 @@ export default function ItineraryDetailPage() {
   return (
     <div className="space-y-6">
       {/* Hero Section */}
-      <Card className="overflow-hidden">
+  <Card padding="none" className="overflow-hidden">
         {heroImageUrl ? (
           <img src={heroImageUrl} alt={itinerary.name} className="h-48 w-full object-cover" />
         ) : (
-          <div className="h-48 bg-gradient-to-br from-primary-100 to-amber-100 flex items-center justify-center">
+          <div className="h-48 bg-surface flex items-center justify-center">
             <span className="text-primary text-4xl">🏛️</span>
           </div>
         )}
-        <div className="p-6">
+  <div className="p-6">
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
               <h1 className="text-xl font-bold text-foreground mb-2">
@@ -106,7 +106,7 @@ export default function ItineraryDetailPage() {
             </Button>
           </div>
 
-          <div className="flex items-center space-x-4 mb-4">
+              <div className="flex items-center gap-4 mb-4">
             <Badge variant="outline">{formatDuration(itinerary.total_duration)}</Badge>
             <Badge variant="outline">{tracks?.length || 0} stops</Badge>
             <Badge variant="secondary">Walking Tour</Badge>
@@ -140,41 +140,25 @@ export default function ItineraryDetailPage() {
           {tracksLoading && (
             <div className="space-y-3">
               {[1, 2].map((i) => (
-                <Card key={i} className="p-4 animate-pulse">
-                  <div className="h-6 bg-carbon-200 rounded" />
+                <Card key={i} padding="md" className="animate-pulse">
+                  <div className="h-6 bg-background rounded" />
                 </Card>
               ))}
             </div>
           )}
 
           {tracks?.map((track) => (
-            <Card key={track.id} className="p-4">
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-primary text-sm font-semibold">
-                    {track.audio_itinerary_order}
-                  </span>
+            <Card key={track.id} padding="md">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary-foreground text-sm font-semibold">{track.audio_itinerary_order}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-foreground mb-1">
-                    {track.name || 'Untitled track'}
-                  </h3>
-                  {track.description && (
-                    <p className="text-sm text-muted mb-1">
-                      {track.description}
-                    </p>
-                  )}
-                  <span className="text-xs text-muted">
-                    {formatDuration(track.duration)}
-                  </span>
+                  <h3 className="font-medium text-foreground mb-1">{track.name || 'Untitled track'}</h3>
+                  {track.description && <p className="text-sm text-muted mb-1">{track.description}</p>}
+                  <span className="text-xs text-muted">{formatDuration(track.duration)}</span>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => router.push(`/itinerary/${id}/play`)}
-                >
-                  ▶
-                </Button>
+                <Button variant="ghost" size="sm" onClick={() => router.push(`/itinerary/${id}/play`)}>▶</Button>
               </div>
             </Card>
           ))}
@@ -182,9 +166,9 @@ export default function ItineraryDetailPage() {
       </div>
 
       {/* Interactive Map Preview */}
-      <Card className="p-6">
+      <Card padding="md">
         <h3 className="font-semibold text-foreground mb-4">Tour Route</h3>
-        <div className="h-32 bg-surface rounded-lg flex items-center justify-center border-dashed border-2 border-amber-200">
+        <div className="h-32 bg-surface rounded-lg flex items-center justify-center border-dashed border-2 border-muted">
           <div className="text-center">
             <span className="text-muted text-2xl block mb-2">🗺️</span>
             <p className="text-sm text-muted">Interactive map with {tracks?.length || 0} stops</p>

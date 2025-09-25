@@ -199,7 +199,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Search Header */}
-      <div className="bg-surface border-b border-carbon-200 sticky top-0 z-10">
+  <div className="bg-surface border-b border-muted sticky top-0 z-10">
         <div className="px-4 py-4 space-y-4">
           {/* Search Input */}
           <div className="relative">
@@ -226,7 +226,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
               <select
                 value={filters.sortBy}
                 onChange={(e) => updateFilter('sortBy', e.target.value)}
-                className="px-3 py-2 border border-carbon-200 rounded-lg text-sm bg-surface"
+                className="px-3 py-2 border border-muted rounded-lg text-sm bg-surface"
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -347,7 +347,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         {isLoading && (
           <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-4'}>
             {Array.from({ length: 6 }, (_, i) => (
-              <Card key={i} className="p-0 overflow-hidden animate-pulse">
+              <Card key={i} padding="none" className="overflow-hidden animate-pulse">
                 <div className="h-32 bg-background" />
                 <div className="p-3 space-y-2">
                   <div className="h-4 bg-background rounded w-3/4" />
@@ -369,7 +369,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         {/* Empty State */}
         {!isLoading && !error && filteredResults.length === 0 && (
           <div className="text-center py-12">
-            <HiOutlineMagnifyingGlass className="h-12 w-12 text-carbon-400 mx-auto mb-4" />
+            <HiOutlineMagnifyingGlass className="h-12 w-12 text-muted mx-auto mb-4" />
             <h3 className="text-lg font-medium text-foreground mb-2">
               No tours found
             </h3>
@@ -417,20 +417,20 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                     )}
 
                     {/* Favorite Button */}
-                    <Button
+                      <Button
                       variant="ghost"
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleFavorite(itinerary.id);
                       }}
-                      className="absolute top-2 right-2 p-1 bg-surface/80 hover:bg-surface"
+                        className="absolute top-2 right-2 p-1 bg-surface/80 hover:bg-surface"
                     >
-                      {isFavorite ? (
-                        <HiHeart className="h-4 w-4 text-red-500" />
-                      ) : (
-                        <HiOutlineHeart className="h-4 w-4" />
-                      )}
+                        {isFavorite ? (
+                          <HiHeart className="h-4 w-4 text-error" />
+                        ) : (
+                          <HiOutlineHeart className="h-4 w-4" />
+                        )}
                     </Button>
                   </div>
 

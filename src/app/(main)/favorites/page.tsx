@@ -6,7 +6,7 @@ import { NavigationGuard } from '@/components/navigation/NavigationGuard';
 export default function FavoritesPage() {
   return (
     <NavigationGuard requireAuth={true}>
-      <div className="space-y-6">
+  <div className="space-y-6">
         {/* Header */}
         <div>
           <h1 className="text-2xl font-bold text-foreground mb-2">Your Favorites</h1>
@@ -29,31 +29,23 @@ export default function FavoritesPage() {
         {/* Favorites List */}
         <div className="space-y-4">
           {[1, 2, 3, 4].map((item) => (
-            <Card key={item} className="p-4">
-              <div className="flex items-start space-x-4">
-                  <div className="w-16 h-16 bg-teal-100 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <span className="text-teal text-sm font-medium">❤️</span>
-                  </div>
+            <Card key={item} padding="md">
+              <div className="flex items-start gap-4">
+                <div className="w-16 h-16 bg-surface rounded-lg flex-shrink-0 flex items-center justify-center">
+                  <span className="text-muted text-sm font-medium">❤️</span>
+                </div>
                 <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-foreground mb-1">
-                    Cathedral Architecture Tour
-                  </h3>
-                    <p className="text-sm text-muted mb-2">
-                    Discover the stunning architectural details of this historic cathedral.
-                  </p>
-                    <div className="flex items-center text-xs text-muted space-x-4">
+                  <h3 className="font-semibold text-foreground mb-1">Cathedral Architecture Tour</h3>
+                  <p className="text-sm text-muted mb-2">Discover the stunning architectural details of this historic cathedral.</p>
+                  <div className="flex items-center text-xs text-muted gap-4">
                     <span>30 minutes</span>
                     <span>5 stops</span>
                     <span>Added 3 days ago</span>
                   </div>
                 </div>
-                <div className="flex flex-col space-y-2">
-                  <Button variant="ghost" size="sm">
-                    Play
-                  </Button>
-                  <Button variant="ghost" size="sm" className="text-error-600 hover:text-error-700">
-                    Remove
-                  </Button>
+                <div className="flex flex-col gap-2">
+                  <Button variant="ghost" size="sm">Play</Button>
+                  <Button variant="ghost" size="sm" className="text-error">Remove</Button>
                 </div>
               </div>
             </Card>
@@ -61,8 +53,8 @@ export default function FavoritesPage() {
         </div>
 
         {/* Empty State (when no favorites) */}
-        {false && (
-          <Card className="p-8 text-center">
+          {false && (
+          <Card padding="lg" className="text-center">
                 <div className="w-16 h-16 bg-surface rounded-full mx-auto mb-4 flex items-center justify-center">
                   <span className="text-muted text-2xl">💝</span>
                 </div>

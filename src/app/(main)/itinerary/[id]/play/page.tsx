@@ -282,7 +282,7 @@ export default function AudioPlayerPage() {
   // Loading state
   if (itineraryLoading || tracksLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-amber-50">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-6 max-w-md">
           <div className="animate-pulse space-y-6">
             <div className="h-6 bg-background rounded w-1/3"></div>
@@ -303,9 +303,9 @@ export default function AudioPlayerPage() {
   // Error state
   if (itineraryError || tracksError || !currentTrack) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-amber-50">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-6 max-w-md">
-          <Card className="p-8 text-center">
+          <Card padding="lg" className="text-center">
             <h2 className="text-xl font-semibold text-foreground mb-2">
               Audio Not Available
             </h2>
@@ -320,7 +320,7 @@ export default function AudioPlayerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-amber-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="flex items-center justify-between p-4 bg-surface/80 backdrop-blur-sm">
         <Button variant="ghost" size="sm" onClick={() => router.back()}>
@@ -334,8 +334,8 @@ export default function AudioPlayerPage() {
 
       <div className="container mx-auto px-4 py-6 max-w-md space-y-6">
         {/* Track Image/Visual */}
-        <Card className="overflow-hidden">
-          <div className="aspect-square bg-gradient-to-br from-primary-200 to-amber-200 flex items-center justify-center relative">
+        <Card padding="none" className="overflow-hidden">
+          <div className="aspect-square bg-surface flex items-center justify-center relative">
             {isBuffering && (
               <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
@@ -367,7 +367,7 @@ export default function AudioPlayerPage() {
           </p>
         </div>
 
-        {/* Progress Bar */}
+  {/* Progress Bar */}
         <div className="space-y-2">
           <Progress
             value={progress}
@@ -388,14 +388,14 @@ export default function AudioPlayerPage() {
 
         {/* Main Controls */}
         <div className="flex items-center justify-center space-x-6">
-          <Button variant="ghost" size="lg" className="p-3" onClick={handlePreviousTrack}>
+          <Button variant="ghost" size="lg" onClick={handlePreviousTrack}>
             <HiBackward className="w-6 h-6" />
           </Button>
 
           <Button
             variant="primary"
             size="lg"
-            className="w-16 h-16 rounded-full p-0"
+            className="w-16 h-16 rounded-full"
             onClick={handlePlayPause}
             disabled={isBuffering || urlsLoading}
           >
@@ -408,7 +408,7 @@ export default function AudioPlayerPage() {
             )}
           </Button>
 
-          <Button variant="ghost" size="lg" className="p-3" onClick={handleNextTrack}>
+          <Button variant="ghost" size="lg" onClick={handleNextTrack}>
             <HiForward className="w-6 h-6" />
           </Button>
         </div>
@@ -438,7 +438,7 @@ export default function AudioPlayerPage() {
               </button>
 
               {showSpeedMenu && (
-                <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-surface rounded-lg shadow-lg border border-carbon-200 p-2 z-10">
+                <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-surface rounded-lg shadow-lg border border-muted p-2 z-10">
                   {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
                     <button key={speed} className="block w-full text-left px-3 py-1 text-sm hover:bg-background rounded" onClick={() => handleSpeedChange(speed)}>
                       {speed}x
@@ -467,7 +467,7 @@ export default function AudioPlayerPage() {
             </Button>
 
             {showVolumeSlider && (
-              <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-surface rounded-lg shadow-lg border border-carbon-200 p-3 z-10">
+              <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-surface rounded-lg shadow-lg border border-muted p-3 z-10">
                 <input type="range" min="0" max="100" value={audioState.playbackState.volume * 100} onChange={(e) => handleVolumeChange(parseInt(e.target.value))} className="w-20 h-2 bg-background rounded-lg appearance-none cursor-pointer" />
               </div>
             )}
@@ -475,7 +475,7 @@ export default function AudioPlayerPage() {
         </div>
 
         {/* Track Description */}
-        <Card className="p-4">
+        <Card padding="md">
           <h3 className="font-semibold text-foreground mb-2">About this track</h3>
           <p className="text-sm text-muted leading-relaxed">
             {currentTrack?.description || 'No description available for this track.'}
@@ -486,7 +486,7 @@ export default function AudioPlayerPage() {
         {showQueue && <QueueManager isVisible={showQueue} onClose={() => setShowQueue(false)} />}
 
         {/* Playlist Management Controls */}
-        <div className="grid grid-cols-2 gap-3">
+  <div className="grid grid-cols-2 gap-3">
           {/* Queue Toggle */}
           <Button
             variant={showQueue ? 'primary' : 'outline'}
@@ -505,7 +505,7 @@ export default function AudioPlayerPage() {
         </div>
 
         {/* Playback Mode Controls */}
-        <div className="grid grid-cols-4 gap-2">
+  <div className="grid grid-cols-4 gap-2">
           <Button
             variant={audioState.shuffleMode ? 'primary' : 'outline'}
             size="sm"
@@ -563,8 +563,8 @@ export default function AudioPlayerPage() {
 
         {/* Error Display */}
         {audioState.audioError && (
-          <Card className="p-4 bg-error-50 border-error-200">
-            <p className="text-error-600 text-sm">{audioState.audioError}</p>
+          <Card padding="md" className="bg-surface border border-error">
+            <p className="text-error text-sm">{audioState.audioError}</p>
             <Button
               variant="outline"
               size="sm"
