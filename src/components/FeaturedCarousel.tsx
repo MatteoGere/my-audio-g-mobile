@@ -45,6 +45,7 @@ export default function FeaturedCarousel() {
   // Auto-scroll logic
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [index, setIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const scrollToIndex = (i: number) => {
     const container = containerRef.current;
@@ -67,6 +68,28 @@ export default function FeaturedCarousel() {
     return () => clearInterval(interval);
   }, [items.length]);
 
+  // Observe children to update active indicator based on visibility
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const children = Array.from(container.children) as HTMLElement[];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = children.indexOf(entry.target as HTMLElement);
+            if (idx >= 0) setActiveIndex(idx);
+          }
+        });
+      },
+      { root: container, threshold: 0.5 },
+    );
+
+    children.forEach((child) => observer.observe(child));
+    return () => observer.disconnect();
+  }, [items.length]);
+
   const onPrev = () => {
     const next = (index - 1 + items.length) % Math.max(items.length, 1);
     setIndex(next);
@@ -80,10 +103,10 @@ export default function FeaturedCarousel() {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="px-5 space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100">Featured Tours</h2>
-        <div className="flex items-center gap-2">
+        <h2 className="text-xl font-bold text-foreground">Featured Tours</h2>
+        <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" onClick={onPrev} aria-label="Previous">
             <HiOutlineChevronLeft className="h-5 w-5" />
           </Button>
@@ -95,16 +118,17 @@ export default function FeaturedCarousel() {
 
       {/* Loading state */}
       {(isLoading || isSigning) && (
-        <div className="flex gap-4 overflow-hidden">
+        <div className="flex gap-3 overflow-hidden">
           {[...Array(3)].map((_, i) => (
             <Card
               key={i}
-              className="min-w-[240px] w-[240px] p-0 overflow-hidden animate-pulse border-stone-200 dark:border-stone-700"
+              padding="md"
+              className="min-w-[240px] w-[240px] flex flex-col overflow-hidden rounded-xl animate-pulse shadow-md p-4"
             >
-              <div className="h-36 bg-stone-200 dark:bg-stone-700" />
-              <div className="p-3 space-y-2">
-                <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4" />
-                <div className="h-3 bg-stone-200 dark:bg-stone-700 rounded w-1/2" />
+              <div className="h-36 bg-background rounded-t-xl" />
+              <div className="flex flex-col gap-2 mt-2">
+                <div className="h-4 bg-background rounded w-3/4" />
+                <div className="h-3 bg-background rounded w-1/2" />
               </div>
             </Card>
           ))}
@@ -113,51 +137,83 @@ export default function FeaturedCarousel() {
 
       {/* Error state */}
       {!!error && !isLoading && (
-        <p className="text-sm text-stone-500 dark:text-stone-400">Failed to load featured tours.</p>
+        <p className="text-sm text-muted">Failed to load featured tours.</p>
       )}
 
       {/* Carousel */}
       {items.length > 0 && (
-        <div
-          ref={containerRef}
-          className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2"
-        >
-          {(items as Itinerary[]).map((it) => {
-            const path = it.image_file?.image_storage_key ?? '';
-            const imgUrl = path ? urlMap.get(path) : undefined;
-            return (
-              <Link key={it.id} href={`/itinerary/${it.id}`} className="block">
-                <Card className="min-w-[260px] w-[260px] p-0 overflow-hidden snap-start border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800">
-                  <div className="relative h-40 bg-stone-100 dark:bg-stone-800">
-                    {imgUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={imgUrl} alt={it.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full grid place-items-center text-stone-400">
-                        No Image
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-3 space-y-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <h3 className="font-medium text-stone-900 dark:text-stone-100 truncate">
-                        {it.name}
-                      </h3>
-                      <Badge variant="secondary" className="shrink-0">
-                        <HiOutlineClock className="h-3 w-3 mr-1" />{' '}
-                        {formatDuration(it.total_duration)}
-                      </Badge>
+        // Full-bleed carousel: extend to viewport edges while outer container keeps px-5
+        <div className="-mx-5">
+          <div
+            ref={containerRef}
+            className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-track-transparent pb-2 hide-scrollbar"
+          >
+            {(items as Itinerary[]).map((it) => {
+              const path = it.image_file?.image_storage_key ?? '';
+              const imgUrl = path ? urlMap.get(path) : undefined;
+              return (
+                <Link key={it.id} href={`/itinerary/${it.id}`} className="block" tabIndex={0}>
+                  <Card
+                    padding="md"
+                    className="min-w-[260px] w-[260px] flex flex-col overflow-hidden rounded-xl shadow-md snap-start transition-colors hover:bg-background p-4"
+                  >
+                    <div className="relative h-40 bg-surface rounded-t-xl">
+                      {imgUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={imgUrl}
+                          alt={it.name}
+                          className="w-full h-full object-cover rounded-t-xl"
+                        />
+                      ) : (
+                        <div className="w-full h-full grid place-items-center text-muted">
+                          No Image
+                        </div>
+                      )}
                     </div>
-                    {it.description && (
-                      <p className="text-xs text-stone-600 dark:text-stone-400 line-clamp-2">
-                        {it.description}
-                      </p>
-                    )}
-                  </div>
-                </Card>
-              </Link>
-            );
-          })}
+                    <div className="flex flex-col gap-3 mt-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <h3 className="text-lg font-bold text-foreground truncate">{it.name}</h3>
+                        <Badge
+                          variant="secondary"
+                          className="shrink-0 px-2 py-0.5 rounded-md text-xs inline-flex items-center gap-1"
+                        >
+                          <HiOutlineClock className="h-3 w-3" />
+                          <span className="leading-none">{formatDuration(it.total_duration)}</span>
+                        </Badge>
+                      </div>
+
+                      {it.description && (
+                        <p className="text-sm text-muted line-clamp-2 leading-relaxed">
+                          {it.description}
+                        </p>
+                      )}
+                    </div>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Indicator bars */}
+          <div className="flex items-center justify-center gap-2 mt-3">
+            {(items as Itinerary[]).map((_, i) => (
+              <button
+                key={`ind-${i}`}
+                aria-label={`Show item ${i + 1}`}
+                onClick={() => {
+                  setIndex(i);
+                  scrollToIndex(i);
+                }}
+                className={
+                  'h-1.5 rounded-full hover:cursor-pointer transition-all duration-200  ' +
+                  (i === activeIndex
+                    ? 'bg-primary w-10'
+                    : 'bg-muted/30 w-6 hover:w-10 hover:bg-primary/40')
+                }
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>

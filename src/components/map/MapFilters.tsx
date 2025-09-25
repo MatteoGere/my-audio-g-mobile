@@ -38,80 +38,86 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
     selectedItineraries: [],
     durationRange: {
       min: 0,
-      max: Math.max(...pois.map(p => p.duration), 3600), // Default max 1 hour
+      max: Math.max(...pois.map((p) => p.duration), 3600), // Default max 1 hour
     },
     sortBy: 'name',
   });
 
   // Get unique companies and itineraries
   const uniqueCompanies = React.useMemo(() => {
-    const companies = new Set(pois.map(poi => poi.companyName));
+    const companies = new Set(pois.map((poi) => poi.companyName));
     return Array.from(companies).sort();
   }, [pois]);
 
   const uniqueItineraries = React.useMemo(() => {
-    const itineraries = new Set(pois.map(poi => poi.itineraryName));
+    const itineraries = new Set(pois.map((poi) => poi.itineraryName));
     return Array.from(itineraries).sort();
   }, [pois]);
 
   // Apply filters
-  const applyFilters = useCallback((newFilters: FilterState) => {
-    let filtered = [...pois];
+  const applyFilters = useCallback(
+    (newFilters: FilterState) => {
+      let filtered = [...pois];
 
-    // Search term filter
-    if (newFilters.searchTerm) {
-      const searchLower = newFilters.searchTerm.toLowerCase();
-      filtered = filtered.filter(poi =>
-        poi.trackName.toLowerCase().includes(searchLower) ||
-        poi.itineraryName.toLowerCase().includes(searchLower) ||
-        poi.companyName.toLowerCase().includes(searchLower)
-      );
-    }
-
-    // Company filter
-    if (newFilters.selectedCompanies.length > 0) {
-      filtered = filtered.filter(poi =>
-        newFilters.selectedCompanies.includes(poi.companyName)
-      );
-    }
-
-    // Itinerary filter
-    if (newFilters.selectedItineraries.length > 0) {
-      filtered = filtered.filter(poi =>
-        newFilters.selectedItineraries.includes(poi.itineraryName)
-      );
-    }
-
-    // Duration filter
-    filtered = filtered.filter(poi =>
-      poi.duration >= newFilters.durationRange.min &&
-      poi.duration <= newFilters.durationRange.max
-    );
-
-    // Sort
-    filtered.sort((a, b) => {
-      switch (newFilters.sortBy) {
-        case 'name':
-          return a.trackName.localeCompare(b.trackName);
-        case 'duration':
-          return a.duration - b.duration;
-        case 'distance':
-          // TODO: Implement distance sorting based on user location
-          return a.trackName.localeCompare(b.trackName);
-        default:
-          return 0;
+      // Search term filter
+      if (newFilters.searchTerm) {
+        const searchLower = newFilters.searchTerm.toLowerCase();
+        filtered = filtered.filter(
+          (poi) =>
+            poi.trackName.toLowerCase().includes(searchLower) ||
+            poi.itineraryName.toLowerCase().includes(searchLower) ||
+            poi.companyName.toLowerCase().includes(searchLower),
+        );
       }
-    });
 
-    onFiltersChange(filtered);
-  }, [pois, onFiltersChange]);
+      // Company filter
+      if (newFilters.selectedCompanies.length > 0) {
+        filtered = filtered.filter((poi) => newFilters.selectedCompanies.includes(poi.companyName));
+      }
+
+      // Itinerary filter
+      if (newFilters.selectedItineraries.length > 0) {
+        filtered = filtered.filter((poi) =>
+          newFilters.selectedItineraries.includes(poi.itineraryName),
+        );
+      }
+
+      // Duration filter
+      filtered = filtered.filter(
+        (poi) =>
+          poi.duration >= newFilters.durationRange.min &&
+          poi.duration <= newFilters.durationRange.max,
+      );
+
+      // Sort
+      filtered.sort((a, b) => {
+        switch (newFilters.sortBy) {
+          case 'name':
+            return a.trackName.localeCompare(b.trackName);
+          case 'duration':
+            return a.duration - b.duration;
+          case 'distance':
+            // TODO: Implement distance sorting based on user location
+            return a.trackName.localeCompare(b.trackName);
+          default:
+            return 0;
+        }
+      });
+
+      onFiltersChange(filtered);
+    },
+    [pois, onFiltersChange],
+  );
 
   // Update filters
-  const updateFilters = useCallback((updates: Partial<FilterState>) => {
-    const newFilters = { ...filters, ...updates };
-    setFilters(newFilters);
-    applyFilters(newFilters);
-  }, [filters, applyFilters]);
+  const updateFilters = useCallback(
+    (updates: Partial<FilterState>) => {
+      const newFilters = { ...filters, ...updates };
+      setFilters(newFilters);
+      applyFilters(newFilters);
+    },
+    [filters, applyFilters],
+  );
 
   // Clear all filters
   const clearFilters = useCallback(() => {
@@ -121,7 +127,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
       selectedItineraries: [],
       durationRange: {
         min: 0,
-        max: Math.max(...pois.map(p => p.duration), 3600),
+        max: Math.max(...pois.map((p) => p.duration), 3600),
       },
       sortBy: 'name',
     };
@@ -135,7 +141,11 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
     if (filters.searchTerm) count++;
     if (filters.selectedCompanies.length > 0) count++;
     if (filters.selectedItineraries.length > 0) count++;
-    if (filters.durationRange.min > 0 || filters.durationRange.max < Math.max(...pois.map(p => p.duration), 3600)) count++;
+    if (
+      filters.durationRange.min > 0 ||
+      filters.durationRange.max < Math.max(...pois.map((p) => p.duration), 3600)
+    )
+      count++;
     return count;
   }, [filters, pois]);
 
@@ -151,15 +161,11 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
   return (
     <div className={className}>
       {/* Filter Toggle Button */}
-      <Button
-        onClick={() => setIsOpen(!isOpen)}
-        variant="outline"
-        className="relative"
-      >
+      <Button onClick={() => setIsOpen(!isOpen)} variant="outline" className="relative">
         <FaFilter className="mr-2" />
         Filters
         {activeFiltersCount > 0 && (
-          <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+          <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
             {activeFiltersCount}
           </span>
         )}
@@ -167,9 +173,9 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
 
       {/* Filters Panel */}
       {isOpen && (
-        <Card className="absolute top-full left-0 right-0 mt-2 p-4 z-20 max-w-md">
+        <Card className="absolute top-full left-0 right-0 mt-2 z-20 max-w-md" padding="md">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="font-semibold text-gray-900">Filters</h3>
+            <h3 className="font-semibold text-foreground">Filters</h3>
             <div className="flex gap-2">
               {activeFiltersCount > 0 && (
                 <Button variant="ghost" size="sm" onClick={clearFilters}>
@@ -185,11 +191,9 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
           <div className="space-y-4">
             {/* Search */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Search
-              </label>
+              <label className="block text-sm font-medium text-muted mb-1">Search</label>
               <div className="relative">
-                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted text-sm" />
                 <Input
                   type="text"
                   placeholder="Search tracks..."
@@ -202,9 +206,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
 
             {/* Sort */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Sort by
-              </label>
+              <label className="block text-sm font-medium text-muted mb-1">Sort by</label>
               <Select
                 options={[
                   { value: 'name', label: 'Name' },
@@ -219,7 +221,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
             {/* Companies */}
             {uniqueCompanies.length > 0 && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-muted mb-2">
                   <FaBuilding className="inline mr-1" />
                   Companies ({uniqueCompanies.length})
                 </label>
@@ -232,13 +234,13 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
                         onChange={(checked) => {
                           const newSelection = checked
                             ? [...filters.selectedCompanies, company]
-                            : filters.selectedCompanies.filter(c => c !== company);
+                            : filters.selectedCompanies.filter((c) => c !== company);
                           updateFilters({ selectedCompanies: newSelection });
                         }}
                       />
                       <label
                         htmlFor={`company-${company}`}
-                        className="ml-2 text-sm text-gray-700 cursor-pointer truncate"
+                        className="ml-2 text-sm text-muted cursor-pointer truncate"
                       >
                         {company}
                       </label>
@@ -251,7 +253,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
             {/* Itineraries */}
             {uniqueItineraries.length > 0 && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-muted mb-2">
                   <FaMapMarkerAlt className="inline mr-1" />
                   Itineraries ({uniqueItineraries.length})
                 </label>
@@ -264,13 +266,13 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
                         onChange={(checked) => {
                           const newSelection = checked
                             ? [...filters.selectedItineraries, itinerary]
-                            : filters.selectedItineraries.filter(i => i !== itinerary);
+                            : filters.selectedItineraries.filter((i) => i !== itinerary);
                           updateFilters({ selectedItineraries: newSelection });
                         }}
                       />
                       <label
                         htmlFor={`itinerary-${itinerary}`}
-                        className="ml-2 text-sm text-gray-700 cursor-pointer truncate"
+                        className="ml-2 text-sm text-muted cursor-pointer truncate"
                       >
                         {itinerary}
                       </label>
@@ -282,7 +284,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
 
             {/* Duration Range */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-muted mb-2">
                 <FaClock className="inline mr-1" />
                 Duration Range
               </label>
@@ -291,36 +293,40 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
                   <Input
                     type="range"
                     min={0}
-                    max={Math.max(...pois.map(p => p.duration))}
+                    max={Math.max(...pois.map((p) => p.duration))}
                     value={filters.durationRange.min}
-                    onChange={(e) => updateFilters({
-                      durationRange: {
-                        ...filters.durationRange,
-                        min: parseInt(e.target.value)
-                      }
-                    })}
+                    onChange={(e) =>
+                      updateFilters({
+                        durationRange: {
+                          ...filters.durationRange,
+                          min: parseInt(e.target.value),
+                        },
+                      })
+                    }
                     className="w-full"
                   />
-                  <div className="text-xs text-gray-500 text-center">
+                  <div className="text-xs text-muted text-center">
                     {formatDuration(filters.durationRange.min)}
                   </div>
                 </div>
-                <span className="text-gray-500">to</span>
+                <span className="text-muted">to</span>
                 <div className="flex-1">
                   <Input
                     type="range"
                     min={0}
-                    max={Math.max(...pois.map(p => p.duration))}
+                    max={Math.max(...pois.map((p) => p.duration))}
                     value={filters.durationRange.max}
-                    onChange={(e) => updateFilters({
-                      durationRange: {
-                        ...filters.durationRange,
-                        max: parseInt(e.target.value)
-                      }
-                    })}
+                    onChange={(e) =>
+                      updateFilters({
+                        durationRange: {
+                          ...filters.durationRange,
+                          max: parseInt(e.target.value),
+                        },
+                      })
+                    }
                     className="w-full"
                   />
-                  <div className="text-xs text-gray-500 text-center">
+                  <div className="text-xs text-muted text-center">
                     {formatDuration(filters.durationRange.max)}
                   </div>
                 </div>

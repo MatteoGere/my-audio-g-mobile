@@ -128,7 +128,7 @@ export default function NearbyItineraries() {
   if (geoError) {
     return (
       <div className="space-y-2">
-        <div className="text-sm text-stone-600 dark:text-stone-400">
+        <div className="text-sm text-muted">
           Location access is disabled. Enable it to see tours near you.
         </div>
         <Button size="sm" variant="outline" onClick={() => refetch()}>
@@ -139,13 +139,11 @@ export default function NearbyItineraries() {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
-          Nearby Recommendations
-        </h2>
+        <h2 className="text-xl font-bold text-foreground">Nearby Recommendations</h2>
         {coords && (
-          <div className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1">
+          <div className="text-xs text-muted flex items-center gap-2">
             <HiOutlineMapPin className="h-4 w-4" />
             {coords.lat.toFixed(3)}, {coords.lng.toFixed(3)}
           </div>
@@ -154,16 +152,17 @@ export default function NearbyItineraries() {
 
       {/* Loading state */}
       {isLoading && (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {[...Array(4)].map((_, i) => (
             <Card
               key={i}
-              className="p-0 overflow-hidden animate-pulse border-stone-200 dark:border-stone-700"
+              padding="md"
+              className="flex flex-col overflow-hidden rounded-xl animate-pulse shadow-md"
             >
-              <div className="h-24 bg-stone-200 dark:bg-stone-700" />
-              <div className="p-3 space-y-2">
-                <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4" />
-                <div className="h-3 bg-stone-200 dark:bg-stone-700 rounded w-1/2" />
+              <div className="h-24 bg-surface rounded-t-xl" />
+              <div className="flex flex-col gap-2">
+                <div className="h-4 bg-surface rounded w-3/4" />
+                <div className="h-3 bg-surface rounded w-1/2" />
               </div>
             </Card>
           ))}
@@ -171,42 +170,48 @@ export default function NearbyItineraries() {
       )}
 
       {/* Error state */}
-      {!!error && !isLoading && (
-        <p className="text-sm text-stone-500 dark:text-stone-400">Failed to load nearby tours.</p>
-      )}
+      {!!error && !isLoading && <p className="text-sm text-muted">Failed to load nearby tours.</p>}
 
       {/* Results */}
       {items.length > 0 && (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {items.map((it) => {
             const path =
               it.image_file?.image_storage_key ??
               (it.image_file_id ? imageFileMap[it.image_file_id] : '');
             const imgUrl = path ? signedUrls[path] : undefined;
             return (
-              <Link key={it.id} href={`/itinerary/${it.id}`} className="block">
-                <Card className="p-0 overflow-hidden border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800">
-                  <div className="relative h-24 bg-stone-100 dark:bg-stone-800">
+              <Link key={it.id} href={`/itinerary/${it.id}`} className="block" tabIndex={0}>
+                <Card
+                  padding="md"
+                  className="flex flex-col overflow-hidden rounded-xl shadow-md hover:bg-surface"
+                >
+                  <div className="relative h-24 bg-surface rounded-t-xl">
                     {imgUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={imgUrl} alt={it.name} className="w-full h-full object-cover" />
+                      <img
+                        src={imgUrl}
+                        alt={it.name}
+                        className="w-full h-full object-cover rounded-t-xl"
+                      />
                     ) : (
-                      <div className="w-full h-full grid place-items-center text-stone-400 text-xs">
+                      <div className="w-full h-full grid place-items-center text-muted text-xs">
                         No Image
                       </div>
                     )}
                   </div>
-                  <div className="p-3 space-y-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <h3 className="font-medium text-stone-900 dark:text-stone-100 truncate">
-                        {it.name}
-                      </h3>
-                      <Badge variant="secondary" className="shrink-0">
-                        <HiOutlineClock className="h-3 w-3 mr-1" />{' '}
+                  <div className="flex flex-col gap-3 mt-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <h3 className="font-bold text-foreground truncate">{it.name}</h3>
+                      <Badge
+                        variant="secondary"
+                        className="shrink-0 px-2 py-0.5 rounded-md text-xs inline-flex items-center gap-1"
+                      >
+                        <HiOutlineClock className="h-3 w-3" />
                         {formatDuration(it.total_duration)}
                       </Badge>
                     </div>
-                    <div className="text-xs text-stone-500 dark:text-stone-400">
+                    <div className="text-xs text-muted">
                       {formatDistance(it.distance_meters)} away
                     </div>
                   </div>

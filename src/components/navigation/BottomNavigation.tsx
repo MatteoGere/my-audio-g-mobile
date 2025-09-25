@@ -58,8 +58,8 @@ export function BottomNavigation() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-stone-800 border-t border-stone-200 dark:border-stone-700 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] dark:shadow-[0_-2px_10px_rgba(0,0,0,0.3)]">
-      <div className="flex items-center justify-around h-16 px-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-surface border-t border-muted shadow-lg">
+      <div className="flex items-center justify-around h-16 px-5 gap-4">
         {navigationItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
@@ -69,22 +69,19 @@ export function BottomNavigation() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex flex-col items-center justify-center space-y-1 px-3 py-2 rounded-lg transition-all duration-200 min-w-0 flex-1',
+                'flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-xl min-w-[44px] min-h-[44px] flex-1 transition-all duration-200',
                 active
-                  ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                  : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-100 dark:hover:bg-stone-700',
+                  ? 'text-primary bg-primary/20 shadow-md'
+                  : 'text-muted hover:text-foreground hover:bg-surface',
               )}
+              tabIndex={0}
             >
-              <div className="relative">
+              <div className="relative flex items-center justify-center">
                 <Icon
-                  className={cn('h-5 w-5 transition-transform duration-200', active && 'scale-110')}
+                  className={cn('h-6 w-6 transition-transform duration-200', active && 'scale-110')}
                 />
                 {item.badge && (
-                  <Badge
-                    variant="error"
-                    size="sm"
-                    className="absolute -top-2 -right-2 min-w-[18px] h-[18px] text-xs px-1 flex items-center justify-center"
-                  >
+                  <Badge variant="error" size="sm" className="absolute -top-2 -right-2">
                     {item.badge > 99 ? '99+' : item.badge}
                   </Badge>
                 )}

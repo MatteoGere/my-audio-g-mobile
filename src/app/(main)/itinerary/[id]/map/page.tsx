@@ -11,6 +11,7 @@ import { POIMarkerData } from '@/types/app-types';
 import { FaArrowLeft, FaPlay, FaRoute } from 'react-icons/fa';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import tokens from '@/design/tokens';
 
 export default function ItineraryMapPage() {
   const params = useParams();
@@ -26,7 +27,11 @@ export default function ItineraryMapPage() {
   const { data: itinerary, isLoading: itineraryLoading } = useGetAudioItineraryQuery(itineraryId);
 
   // Fetch POIs for this specific itinerary
-  const { pois, isLoading: poisLoading, itineraryColors } = useMapPOIs({
+  const {
+    pois,
+    isLoading: poisLoading,
+    itineraryColors,
+  } = useMapPOIs({
     itineraryId,
     enableCaching: true,
   });
@@ -34,20 +39,25 @@ export default function ItineraryMapPage() {
   const isLoading = itineraryLoading || poisLoading;
 
   // Handle marker click
-  const handleMarkerClick = useCallback((poi: POIMarkerData) => {
-    setSelectedPoiId(poi.trackId);
-    dispatch(selectPoi({
-      id: poi.trackId,
-      type: 'track',
-      latitude: poi.latitude,
-      longitude: poi.longitude,
-      title: poi.trackName,
-      description: poi.itineraryName,
-      trackId: poi.trackId,
-      itineraryId: poi.itineraryId,
-    }));
-    dispatch(setHighlightedTrackId(poi.trackId));
-  }, [dispatch]);
+  const handleMarkerClick = useCallback(
+    (poi: POIMarkerData) => {
+      setSelectedPoiId(poi.trackId);
+      dispatch(
+        selectPoi({
+          id: poi.trackId,
+          type: 'track',
+          latitude: poi.latitude,
+          longitude: poi.longitude,
+          title: poi.trackName,
+          description: poi.itineraryName,
+          trackId: poi.trackId,
+          itineraryId: poi.itineraryId,
+        }),
+      );
+      dispatch(setHighlightedTrackId(poi.trackId));
+    },
+    [dispatch],
+  );
 
   // Handle play itinerary
   const handlePlayItinerary = useCallback(() => {
@@ -76,10 +86,10 @@ export default function ItineraryMapPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-          <span className="text-gray-700">Loading itinerary map...</span>
-        </div>
+        <Card padding="lg" className="flex items-center gap-3">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+          <span className="text-muted">Loading itinerary map...</span>
+        </Card>
       </div>
     );
   }
@@ -88,59 +98,47 @@ export default function ItineraryMapPage() {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
-          <h1 className="text-xl font-semibold text-gray-900 mb-2">Itinerary not found</h1>
-          <p className="text-gray-600 mb-4">The requested itinerary could not be loaded.</p>
-          <Button onClick={() => router.back()}>
-            Go Back
-          </Button>
+          <h1 className="text-xl font-semibold text-foreground mb-2">Itinerary not found</h1>
+          <p className="text-muted mb-4">The requested itinerary could not be loaded.</p>
+          <Button onClick={() => router.back()}>Go Back</Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative w-full h-full bg-gray-50">
+    <div className="relative w-full h-full bg-background">
       {/* Header */}
-      (
-        <div className="absolute top-4 left-4 right-4 z-10 bg-white rounded-lg shadow-lg p-4">
-          <div className="flex items-center gap-3 mb-3">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => router.back()}
-              className="px-3"
-            >
-              <FaArrowLeft />
-            </Button>
-            <div className="flex-1">
-              <h1 className="text-lg font-bold text-gray-900 truncate">{itinerary.name}</h1>
-              <p className="text-sm text-gray-600">
-                {pois.length} locations • Total: {formatDuration(itinerary.total_duration || 0)}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-2">
-            <Button
-              onClick={handlePlayItinerary}
-              className="flex-1 flex items-center gap-2"
-              style={{ backgroundColor: itineraryColors[itineraryId] || '#3B82F6' }}
-            >
-              <FaPlay />
-              <span>Play Itinerary</span>
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setShowRoute(!showRoute)}
-              className="px-3"
-            >
-              <FaRoute />
-            </Button>
-            {/* fullscreen removed */}
+      <Card padding="md" className="absolute top-4 left-4 right-4 z-10 border border-muted">
+        <div className="flex items-center gap-3 mb-3">
+          <Button variant="outline" size="sm" onClick={() => router.back()} className="px-3">
+            <FaArrowLeft />
+          </Button>
+          <div className="flex-1">
+            <h1 className="text-lg font-bold text-foreground truncate">{itinerary.name}</h1>
+            <p className="text-sm text-muted">
+              {pois.length} locations • Total: {formatDuration(itinerary.total_duration || 0)}
+            </p>
           </div>
         </div>
-      )
 
+        <div className="flex gap-2">
+          <Button
+            onClick={handlePlayItinerary}
+            className="flex-1 flex items-center gap-2"
+            style={{
+              backgroundColor: itineraryColors[itineraryId] || (tokens.colors.primary as string),
+            }}
+          >
+            <FaPlay />
+            <span>Play Itinerary</span>
+          </Button>
+          <Button variant="outline" onClick={() => setShowRoute(!showRoute)} className="px-3">
+            <FaRoute />
+          </Button>
+          {/* fullscreen removed */}
+        </div>
+      </Card>
       {/* Map Container */}
       <div className="w-full h-[calc(100vh-8rem)] mt-32">
         <MapComponent
@@ -155,35 +153,35 @@ export default function ItineraryMapPage() {
           animatedRoute={false}
         />
       </div>
-
       {/* Track List Sidebar */}
       {pois.length > 0 && (
         <div className="absolute bottom-4 left-4 right-4 z-10">
           <Card className="max-h-32 overflow-y-auto">
             <div className="p-3">
-              <h3 className="font-semibold text-gray-900 mb-2">Tracks in this itinerary</h3>
+              <h3 className="font-semibold text-foreground mb-2">Tracks in this itinerary</h3>
               <div className="space-y-1">
                 {pois.map((poi, index) => (
                   <div
                     key={poi.trackId}
                     className={`flex items-center gap-3 p-2 rounded cursor-pointer transition-colors ${
-                      selectedPoiId === poi.trackId 
-                        ? 'bg-blue-50 border border-blue-200' 
-                        : 'hover:bg-gray-50'
+                      selectedPoiId === poi.trackId
+                        ? 'bg-primary/10 border border-primary/30'
+                        : 'hover:bg-surface/60'
                     }`}
                     onClick={() => handleMarkerClick(poi)}
                   >
                     <div
                       className="w-3 h-3 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: itineraryColors[poi.itineraryId] || '#3B82F6' }}
+                      style={{
+                        backgroundColor:
+                          itineraryColors[poi.itineraryId] || (tokens.colors.primary as string),
+                      }}
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
+                      <p className="text-sm font-medium text-foreground truncate">
                         {index + 1}. {poi.trackName}
                       </p>
-                      <p className="text-xs text-gray-500">
-                        {formatDuration(poi.duration)}
-                      </p>
+                      <p className="text-xs text-muted">{formatDuration(poi.duration)}</p>
                     </div>
                     <Button
                       size="sm"

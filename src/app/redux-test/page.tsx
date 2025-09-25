@@ -7,6 +7,7 @@ import { Card, CardHeader, CardBody } from '@/components/ui';
 import { Button } from '@/components/ui';
 
 export default function ReduxTest() {
+  const router = require('next/navigation').useRouter();
   const language = useAppSelector((state) => state.userPreferences.language);
   const theme = useAppSelector((state) => state.userPreferences.theme);
   const dispatch = useAppDispatch();
@@ -65,8 +66,13 @@ export default function ReduxTest() {
               </Button>
             </div>
           </div>
-          <div className="mt-4 text-xs text-gray-500">
-            {t('reduxTest.themeClass')}: <span className="font-mono">{themeClass}</span>
+          <div className="flex flex-col gap-2 mt-4">
+            <Button variant="primary" onClick={() => router.push('/home')}>
+              Go to Home
+            </Button>
+            <div className="text-xs text-muted">
+              {t('reduxTest.themeClass')}: <span className="font-mono">{themeClass}</span>
+            </div>
           </div>
         </CardBody>
       </Card>

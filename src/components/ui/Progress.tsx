@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { Card } from '@/components/ui';
 import { HiOutlineArrowPath } from 'react-icons/hi2';
 
 export interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -54,7 +55,11 @@ const Progress: React.FC<ProgressProps> = ({
       )}
 
       <div
-        className={cn('w-full overflow-hidden rounded-full bg-stone-200', sizes[size], className)}
+        className={cn(
+          'w-full px-4 py-2 overflow-hidden rounded bg-muted shadow-sm',
+          sizes[size],
+          className,
+        )}
         {...props}
       >
         <div
@@ -103,9 +108,9 @@ const Spinner: React.FC<SpinnerProps> = ({
 
 const Loader: React.FC<{ className?: string }> = ({ className }) => {
   return (
-    <div className={cn('flex items-center justify-center p-4', className)}>
+    <Card padding="md" className={cn('flex items-center justify-center', className)}>
       <Spinner size="lg" />
-    </div>
+    </Card>
   );
 };
 

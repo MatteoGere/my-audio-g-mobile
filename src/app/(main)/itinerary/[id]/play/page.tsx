@@ -282,17 +282,17 @@ export default function AudioPlayerPage() {
   // Loading state
   if (itineraryLoading || tracksLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-sea-50 dark:from-stone-900 dark:to-stone-800">
-        <div className="container mx-auto px-4 py-6 max-w-md">
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto  py-6 max-w-md">
           <div className="animate-pulse space-y-6">
-            <div className="h-6 bg-stone-200 dark:bg-stone-700 rounded w-1/3"></div>
-            <div className="aspect-square bg-stone-200 dark:bg-stone-700 rounded-lg"></div>
-            <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-2/3 mx-auto"></div>
-            <div className="h-2 bg-stone-200 dark:bg-stone-700 rounded"></div>
+            <div className="h-6 bg-background rounded w-1/3"></div>
+            <div className="aspect-square bg-background rounded-lg"></div>
+            <div className="h-4 bg-background rounded w-2/3 mx-auto"></div>
+            <div className="h-2 bg-background rounded"></div>
             <div className="flex justify-center space-x-4">
-              <div className="w-12 h-12 bg-stone-200 dark:bg-stone-700 rounded-full"></div>
-              <div className="w-16 h-16 bg-stone-200 dark:bg-stone-700 rounded-full"></div>
-              <div className="w-12 h-12 bg-stone-200 dark:bg-stone-700 rounded-full"></div>
+              <div className="w-12 h-12 bg-surface rounded-full"></div>
+              <div className="w-16 h-16 bg-surface rounded-full"></div>
+              <div className="w-12 h-12 bg-surface rounded-full"></div>
             </div>
           </div>
         </div>
@@ -303,15 +303,11 @@ export default function AudioPlayerPage() {
   // Error state
   if (itineraryError || tracksError || !currentTrack) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-sea-50 dark:from-stone-900 dark:to-stone-800">
-        <div className="container mx-auto px-4 py-6 max-w-md">
-          <Card className="p-8 text-center">
-            <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-2">
-              Audio Not Available
-            </h2>
-            <p className="text-stone-600 dark:text-stone-400 mb-4">
-              Unable to load the audio tracks for this itinerary.
-            </p>
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto  py-6 max-w-md">
+          <Card padding="lg" className="text-center">
+            <h2 className="text-xl font-semibold text-foreground mb-2">Audio Not Available</h2>
+            <p className="text-muted mb-4">Unable to load the audio tracks for this itinerary.</p>
             <Button onClick={() => router.back()}>Go Back</Button>
           </Card>
         </div>
@@ -320,22 +316,24 @@ export default function AudioPlayerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-sea-50 dark:from-stone-900 dark:to-stone-800">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-sm dark:bg-stone-900/80">
-        <Button variant="ghost" size="sm" onClick={() => router.back()}>
-          <HiChevronLeft className="w-5 h-5" />
-        </Button>
-        <h1 className="font-semibold text-stone-900 dark:text-stone-100">Now Playing</h1>
-        <Button variant="ghost" size="sm" onClick={() => setShowQueue(!showQueue)}>
-          <HiOutlineQueueList className="w-5 h-5" />
-        </Button>
-      </div>
+      <Card padding="md" className="bg-surface/80 backdrop-blur-sm rounded-none">
+        <div className="flex items-center justify-between">
+          <Button variant="ghost" size="sm" onClick={() => router.back()}>
+            <HiChevronLeft className="w-5 h-5" />
+          </Button>
+          <h1 className="font-semibold text-foreground">Now Playing</h1>
+          <Button variant="ghost" size="sm" onClick={() => setShowQueue(!showQueue)}>
+            <HiOutlineQueueList className="w-5 h-5" />
+          </Button>
+        </div>
+      </Card>
 
-      <div className="container mx-auto px-4 py-6 max-w-md space-y-6">
+      <div className="container mx-auto  py-6 max-w-md space-y-6">
         {/* Track Image/Visual */}
-        <Card className="overflow-hidden">
-          <div className="aspect-square bg-gradient-to-br from-primary-200 to-sea-200 dark:from-primary-800 dark:to-sea-800 flex items-center justify-center relative">
+        <Card padding="none" className="overflow-hidden">
+          <div className="aspect-square bg-surface flex items-center justify-center relative">
             {isBuffering && (
               <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
@@ -356,13 +354,11 @@ export default function AudioPlayerPage() {
 
         {/* Track Info */}
         <div className="text-center space-y-2">
-          <h1 className="text-xl font-bold text-stone-900 dark:text-stone-100">
+          <h1 className="text-xl font-bold text-foreground">
             {currentTrack?.name || 'Loading...'}
           </h1>
-          <p className="text-stone-600 dark:text-stone-400 text-sm">
-            {itinerary?.name || 'Audio Tour'}
-          </p>
-          <p className="text-stone-500 dark:text-stone-500 text-xs">
+          <p className="text-muted text-sm">{itinerary?.name || 'Audio Tour'}</p>
+          <p className="text-muted text-xs">
             Track {currentTrackIndex + 1} of {tracks?.length || 0}
           </p>
         </div>
@@ -380,7 +376,7 @@ export default function AudioPlayerPage() {
               handleSeek(percentage);
             }}
           />
-          <div className="flex justify-between text-xs text-stone-500 dark:text-stone-400">
+          <div className="flex justify-between text-xs text-muted">
             <span>{formatTime(audioState.playbackState.currentTime)}</span>
             <span>{formatTime(currentTrack?.duration || 0)}</span>
           </div>
@@ -388,14 +384,14 @@ export default function AudioPlayerPage() {
 
         {/* Main Controls */}
         <div className="flex items-center justify-center space-x-6">
-          <Button variant="ghost" size="lg" className="p-3" onClick={handlePreviousTrack}>
+          <Button variant="ghost" size="lg" onClick={handlePreviousTrack}>
             <HiBackward className="w-6 h-6" />
           </Button>
 
           <Button
             variant="primary"
             size="lg"
-            className="w-16 h-16 rounded-full p-0"
+            className="w-16 h-16 rounded-full"
             onClick={handlePlayPause}
             disabled={isBuffering || urlsLoading}
           >
@@ -408,7 +404,7 @@ export default function AudioPlayerPage() {
             )}
           </Button>
 
-          <Button variant="ghost" size="lg" className="p-3" onClick={handleNextTrack}>
+          <Button variant="ghost" size="lg" onClick={handleNextTrack}>
             <HiForward className="w-6 h-6" />
           </Button>
         </div>
@@ -434,26 +430,29 @@ export default function AudioPlayerPage() {
 
             <div className="relative">
               <button
-                className="bg-stone-100 dark:bg-stone-800 rounded-lg px-3 py-1"
+                className="bg-surface rounded-lg px-3 py-1"
                 onClick={() => setShowSpeedMenu(!showSpeedMenu)}
               >
-                <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
+                <span className="text-sm font-medium text-foreground">
                   {audioState.playbackState.playbackSpeed}x
                 </span>
               </button>
 
               {showSpeedMenu && (
-                <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 p-2 z-10">
+                <Card
+                  padding="sm"
+                  className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 rounded-lg shadow-lg border-muted z-10"
+                >
                   {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
                     <button
                       key={speed}
-                      className="block w-full text-left px-3 py-1 text-sm hover:bg-stone-100 dark:hover:bg-stone-700 rounded"
+                      className="block w-full text-left px-3 py-1 text-sm hover:bg-background rounded"
                       onClick={() => handleSpeedChange(speed)}
                     >
                       {speed}x
                     </button>
                   ))}
-                </div>
+                </Card>
               )}
             </div>
 
@@ -476,26 +475,27 @@ export default function AudioPlayerPage() {
             </Button>
 
             {showVolumeSlider && (
-              <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 p-3 z-10">
+              <Card
+                padding="sm"
+                className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 rounded-lg shadow-lg border-muted z-10"
+              >
                 <input
                   type="range"
                   min="0"
                   max="100"
                   value={audioState.playbackState.volume * 100}
                   onChange={(e) => handleVolumeChange(parseInt(e.target.value))}
-                  className="w-20 h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer"
+                  className="w-20 h-2 bg-background rounded-lg appearance-none cursor-pointer"
                 />
-              </div>
+              </Card>
             )}
           </div>
         </div>
 
         {/* Track Description */}
-        <Card className="p-4">
-          <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">
-            About this track
-          </h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
+        <Card padding="md">
+          <h3 className="font-semibold text-foreground mb-2">About this track</h3>
+          <p className="text-sm text-muted leading-relaxed">
             {currentTrack?.description || 'No description available for this track.'}
           </p>
         </Card>
@@ -581,8 +581,8 @@ export default function AudioPlayerPage() {
 
         {/* Error Display */}
         {audioState.audioError && (
-          <Card className="p-4 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
-            <p className="text-red-600 dark:text-red-400 text-sm">{audioState.audioError}</p>
+          <Card padding="md" className="bg-surface border border-error">
+            <p className="text-error text-sm">{audioState.audioError}</p>
             <Button
               variant="outline"
               size="sm"

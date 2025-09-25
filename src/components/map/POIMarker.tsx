@@ -33,18 +33,20 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
       <div className="relative flex items-center justify-center">
         {/* Selection ring */}
         {isSelected && (
-          <div className="absolute w-12 h-12 border-2 border-white rounded-full animate-pulse"
-               style={{ backgroundColor: `${color}40` }} />
+          <div
+            className="absolute w-12 h-12 border-2 border-muted rounded-full animate-pulse"
+            style={{ backgroundColor: `${color}40` }}
+          />
         )}
-        
+
         {/* Main marker */}
         <div
-          className="relative w-8 h-8 rounded-full border-2 border-white shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
+          className="relative w-8 h-8 rounded-full border-2 border-muted shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
           style={{ backgroundColor: color }}
         >
-          <FaMusic className="text-white text-sm" />
+          <FaMusic className="text-primary-foreground text-sm" />
         </div>
-        
+
         {/* Pointer */}
         <div
           className="absolute bottom-0 w-0 h-0 transform translate-y-full"
@@ -54,7 +56,7 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
             borderTop: `6px solid ${color}`,
           }}
         />
-      </div>
+      </div>,
     );
 
     return new DivIcon({
@@ -95,25 +97,17 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
           className="poi-tooltip"
         >
           <div className="text-sm">
-            <div className="font-semibold text-gray-900">{poi.trackName}</div>
-            <div className="text-gray-600 text-xs">
+            <div className="font-semibold text-foreground">{poi.trackName}</div>
+            <div className="text-muted text-xs">
               {poi.itineraryName} • {formatDuration(poi.duration)}
             </div>
-            <div className="text-gray-500 text-xs mt-1">
-              {poi.companyName}
-            </div>
+            <div className="text-muted text-xs mt-1">{poi.companyName}</div>
           </div>
         </Tooltip>
       )}
 
       {/* Interactive popup */}
-      {showPopup && (
-        <POIPopup
-          poi={poi}
-          color={color}
-          onPlayClick={onPlayClick}
-        />
-      )}
+      {showPopup && <POIPopup poi={poi} color={color} onPlayClick={onPlayClick} />}
     </Marker>
   );
 };

@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { cn } from '@/lib/utils';
+import { Card } from '@/components/ui';
 import {
   HiOutlineInformationCircle,
   HiOutlineCheckCircle,
@@ -129,7 +130,7 @@ const ToastComponent: React.FC<Toast> = ({
 
   const variants = {
     default: {
-      container: 'bg-surface border-stone-200',
+      container: 'bg-surface border-muted',
       icon: 'text-info',
       IconComp: HiOutlineInformationCircle,
     },
@@ -159,9 +160,10 @@ const ToastComponent: React.FC<Toast> = ({
   const Icon = variantConfig.IconComp;
 
   return (
-    <div
+    <Card
+      padding="md"
       className={cn(
-        'relative w-full pointer-events-auto overflow-hidden rounded-md border p-4 shadow-medium transition-all duration-300 ease-in-out',
+        'relative w-full pointer-events-auto overflow-hidden min-w-[44px] min-h-[44px] border shadow-lg transition-all duration-300 ease-in-out',
         variantConfig.container,
         isVisible && !isLeaving
           ? 'transform translate-x-0 opacity-100'
@@ -169,7 +171,7 @@ const ToastComponent: React.FC<Toast> = ({
       )}
       role="alert"
     >
-      <div className="flex gap-3">
+      <div className="flex gap-4 items-center">
         {/* Icon */}
         <div className="flex-shrink-0">
           <Icon className={cn('h-5 w-5', variantConfig.icon)} aria-hidden="true" />
@@ -177,7 +179,7 @@ const ToastComponent: React.FC<Toast> = ({
 
         {/* Content */}
         <div className="flex-1 space-y-1">
-          {title && <div className="text-sm font-medium text-foreground">{title}</div>}
+          {title && <div className="text-base font-bold text-foreground">{title}</div>}
           {description && <div className="text-sm text-muted">{description}</div>}
 
           {/* Action */}
@@ -196,13 +198,13 @@ const ToastComponent: React.FC<Toast> = ({
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="flex-shrink-0 p-1 rounded-md hover:bg-stone-100 transition-colors"
+          className="flex-shrink-0 p-1 rounded-md hover:bg-surface/80 transition-colors"
           aria-label="Close notification"
         >
           <HiOutlineXMark className="h-4 w-4 text-muted" aria-hidden="true" />
         </button>
       </div>
-    </div>
+    </Card>
   );
 };
 

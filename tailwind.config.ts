@@ -6,7 +6,7 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  darkMode: 'class', // allow toggling with the .dark class; prefers-color-scheme still works via CSS
+  darkMode: 'class', // allow toggling with the .dark class; controlled via UI only
   theme: {
     extend: {
       colors: {
@@ -34,24 +34,24 @@ const config: Config = {
         error: 'var(--color-error)',
 
         sand: {
-          50: 'var(--color-sand-50)',
-          100: 'var(--color-sand-100)',
-          200: 'var(--color-sand-200)',
+          50: 'var(--color-marble-50)',
+          100: 'var(--color-marble-200)',
+          200: 'var(--color-marble-200)',
         },
         sea: {
-          50: 'var(--color-sea-50)',
-          100: 'var(--color-sea-100)',
-          200: 'var(--color-sea-200)',
+          50: 'var(--color-amber-50)',
+          100: 'var(--color-amber-100)',
+          200: 'var(--color-amber-200)',
         },
         forest: {
-          50: 'var(--color-forest-50)',
-          100: 'var(--color-forest-100)',
-          200: 'var(--color-forest-200)',
+          50: 'var(--color-teal-50)',
+          100: 'var(--color-teal-100)',
+          200: 'var(--color-teal-200)',
         },
         stone: {
-          50: 'var(--color-stone-50)',
-          100: 'var(--color-stone-100)',
-          200: 'var(--color-stone-200)',
+          50: 'var(--color-carbon-50)',
+          100: 'var(--color-carbon-100)',
+          200: 'var(--color-carbon-200)',
         },
       },
       borderRadius: {

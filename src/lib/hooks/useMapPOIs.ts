@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import tokens from '@/design/tokens';
 import { useAppSelector } from '@/lib/redux';
 import { useGetPoisForMapQuery } from '@/lib/redux/api/apiSlice';
 import { POIMarkerData } from '@/types/app-types';
@@ -24,25 +25,25 @@ interface UseMapPOIsReturn {
 
 // Consistent color palette for itineraries
 const COLOR_PALETTE = [
-  '#3B82F6', // blue
-  '#EF4444', // red
-  '#10B981', // green
-  '#F59E0B', // amber
-  '#8B5CF6', // purple
-  '#EC4899', // pink
-  '#06B6D4', // cyan
-  '#84CC16', // lime
-  '#F97316', // orange
-  '#6366F1', // indigo
-  '#14B8A6', // teal
-  '#F43F5E', // rose
-  '#8B5A2B', // brown
-  '#6B7280', // gray
-  '#DC2626', // red-600
-  '#059669', // emerald-600
-  '#7C3AED', // violet-700
+  tokens.colors.primary,
+  tokens.colors.error,
+  tokens.colors.success,
+  tokens.colors.warning,
+  '#8B5CF6', // purple (fallback)
+  '#EC4899', // pink (fallback)
+  '#06B6D4', // cyan (fallback)
+  '#84CC16', // lime (fallback)
+  '#F97316', // orange (fallback)
+  '#6366F1', // indigo (fallback)
+  '#14B8A6', // teal (fallback)
+  '#F43F5E', // rose (fallback)
+  '#8B5A2B', // brown (fallback)
+  '#6B7280', // gray (fallback)
+  tokens.colors.error, // extra error
+  tokens.colors.success, // extra success
+  '#7C3AED', // violet
   '#BE185D', // pink-700
-  '#0891B2', // cyan-600
+  tokens.colors.primary, // extra primary
   '#65A30D', // lime-600
 ];
 
@@ -51,7 +52,7 @@ const hashString = (str: string): number => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32-bit integer
   }
   return Math.abs(hash);
@@ -82,7 +83,7 @@ export const useMapPOIs = ({
       refetchOnMountOrArgChange: !enableCaching,
       refetchOnFocus: false,
       refetchOnReconnect: true,
-    }
+    },
   );
 
   // Process POIs and generate colors

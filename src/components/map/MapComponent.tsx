@@ -11,6 +11,7 @@ import { POIMarker } from './POIMarker';
 import { UserLocationMarker } from './UserLocationMarker';
 import { MapEventHandler } from './MapEventHandler';
 import { RouteVisualization } from './RouteVisualization';
+import tokens from '@/design/tokens';
 import 'leaflet/dist/leaflet.css';
 import './map.css';
 
@@ -50,7 +51,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const mapRef = useRef<LeafletMap>(null);
-  
+
   // Redux state
   const center = useAppSelector((state) => state.map.center);
   const zoom = useAppSelector((state) => state.map.zoom);
@@ -58,25 +59,24 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   const followUserLocation = useAppSelector((state) => state.map.followUserLocation);
   const mapStyle = useAppSelector((state) => state.map.mapStyle);
   const showPOILabels = useAppSelector((state) => state.map.showPOILabels);
-  
+
   // Location hook
   const { userLocation, isLocationEnabled } = useLocation();
 
   // Filter POIs by itinerary if specified
   const filteredPois = useMemo(() => {
-    return itineraryFilter 
-      ? pois.filter(poi => poi.itineraryId === itineraryFilter)
-      : pois;
+    return itineraryFilter ? pois.filter((poi) => poi.itineraryId === itineraryFilter) : pois;
   }, [pois, itineraryFilter]);
 
   // Generate colors for itineraries
   const itineraryColors = useMemo(() => {
     const colors: Record<string, string> = {};
+    // Prefer semantic tokens for primary semantic colors and fall back to tuned hexes for variety
     const colorPalette = [
-      '#3B82F6', // blue
-      '#EF4444', // red
-      '#10B981', // green
-      '#F59E0B', // yellow
+      tokens.colors.primary,
+      tokens.colors.error,
+      tokens.colors.success,
+      tokens.colors.warning,
       '#8B5CF6', // purple
       '#EC4899', // pink
       '#06B6D4', // cyan
@@ -100,22 +100,26 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       case 'satellite':
         return {
           url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-          attribution: '&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+          attribution:
+            '&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
         };
       case 'terrain':
         return {
           url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-          attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+          attribution:
+            'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
         };
       case 'dark':
         return {
           url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         };
       default:
         return {
           url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         };
     }
   }, [mapStyle]);
@@ -134,7 +138,12 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     dispatch(setUserInteracting(false));
   };
 
-  const handleMapBoundsChange = (bounds: { north: number; south: number; east: number; west: number }) => {
+  const handleMapBoundsChange = (bounds: {
+    north: number;
+    south: number;
+    east: number;
+    west: number;
+  }) => {
     dispatch(setBounds(bounds));
   };
 
@@ -144,7 +153,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       // Try multiple invalidations with small delays — sometimes the DOM needs a
       // couple frames to finish layout (mobile browsers / Next.js hydration quirks).
       const doInvalidate = () => {
-        try { if (mapRef.current) mapRef.current.invalidateSize(); } catch (e) { /* ignore */ }
+        try {
+          if (mapRef.current) mapRef.current.invalidateSize();
+        } catch (e) {
+          /* ignore */
+        }
       };
 
       doInvalidate();
@@ -199,7 +212,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   }, [center.latitude, center.longitude, zoom, isUserInteracting]);
 
   // Map container classes
-  const mapClasses = `relative w-full h-full overflow-hidden rounded-lg ${className}`.trim();
+  const mapClasses = `relative w-full h-full overflow-hidden ${className}`.trim();
 
   return (
     <div className={mapClasses}>
@@ -208,7 +221,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         center={[center.latitude, center.longitude]}
         zoom={zoom}
         className="w-full h-full z-0"
-        zoomControl={true}
+        // disable Leaflet's default zoom controls because we render custom controls
+        zoomControl={false}
         attributionControl={true}
         scrollWheelZoom={interactive}
         dragging={interactive}
@@ -221,7 +235,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         markerZoomAnimation={true}
       >
         <TileLayer {...tileLayer} />
-        
+
         {/* Event Handler Component */}
         <MapEventHandler
           onMove={handleMapMove}

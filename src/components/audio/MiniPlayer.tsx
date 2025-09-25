@@ -4,7 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
 import { useSignedUrl } from '@/lib/hooks/useSignedUrls';
-import { Button } from '@/components/ui';
+import { Button, Card } from '@/components/ui';
 import {
   HiOutlinePlay,
   HiOutlinePause,
@@ -145,30 +145,30 @@ export function MiniPlayer() {
   }
 
   return (
-    <div className="fixed bottom-16 left-0 right-0 z-30 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border-t border-stone-200 dark:border-stone-700 shadow-[0_-2px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_-2px_20px_rgba(0,0,0,0.4)]">
+    <div className="fixed bottom-16 left-0 right-0 z-30 bg-surface/95 backdrop-blur-md border-t border-muted shadow-[0_-2px_20px_rgba(0,0,0,0.1)]">
       {/* Interactive Progress Bar */}
       <div
         ref={progressBarRef}
-        className="h-1 bg-stone-200 dark:bg-stone-700 cursor-pointer relative group hover:h-2 transition-all duration-200"
+        className="h-1 bg-background cursor-pointer relative group hover:h-2 transition-all duration-200"
         onClick={handleProgressClick}
         onMouseDown={handleProgressMouseDown}
       >
         <div
-          className="h-full bg-gradient-to-r from-primary-500 to-primary-600 transition-all duration-300 relative"
+          className="h-full bg-gradient-to-r from-primary to-primary transition-all duration-300 relative"
           style={{ width: `${progress}%` }}
         >
           {/* Progress thumb - visible on hover */}
           <div
-            className={`absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-primary-600 rounded-full shadow-md transition-opacity duration-200 ${
+            className={`absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-primary rounded-full shadow-md transition-opacity duration-200 ${
               isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
             }`}
           />
         </div>
       </div>
 
-      <div className="flex items-center px-4 py-3 space-x-3">
+      <Card padding="sm" className="flex items-center space-x-3">
         {/* Track Image/Icon */}
-        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary-100 to-sea-100 dark:from-primary-800 dark:to-sea-800 flex items-center justify-center flex-shrink-0">
+        <div className="w-12 h-12 rounded-lg bg-surface flex items-center justify-center flex-shrink-0">
           {currentTrack?.image_file_id && currentTrackImageUrl ? (
             <img
               key={currentTrackImageKey}
@@ -183,10 +183,10 @@ export function MiniPlayer() {
 
         {/* Track Info - Clickable to open full player */}
         <div className="flex-1 min-w-0 cursor-pointer" onClick={handleOpenFullPlayer}>
-          <p className="text-sm font-semibold text-stone-900 dark:text-stone-100 truncate">
+          <p className="text-sm font-semibold text-foreground truncate">
             {currentTrack.name || 'Audio Track'}
           </p>
-          <div className="flex items-center space-x-2 text-xs text-stone-600 dark:text-stone-400">
+          <div className="flex items-center space-x-2 text-xs text-muted">
             <span>{formatTime(playbackState.currentTime)}</span>
             <span>/</span>
             <span>{formatTime(currentTrack.duration || 0)}</span>
@@ -194,7 +194,7 @@ export function MiniPlayer() {
               <>
                 <span>•</span>
                 <span>
-                  Track {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1} of{' '}
+                  {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1}-
                   {queue.length}
                 </span>
               </>
@@ -282,7 +282,7 @@ export function MiniPlayer() {
             <HiOutlineXMark className="w-4 h-4" />
           </Button>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

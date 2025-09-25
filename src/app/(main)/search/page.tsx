@@ -2,19 +2,51 @@
 
 import { useState, useCallback, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams, type ReadonlyURLSearchParams } from 'next/navigation';
-import { Card, Button, Input, Badge } from '@/components/ui';
+import { Card, Button, Input, Badge, Select } from '@/components/ui';
 import { useGetAudioItinerariesQuery, useGetCompaniesQuery } from '@/lib/redux/api/apiSlice';
 import { useSignedUrls } from '@/lib/hooks/useSignedUrls';
 import {
   HiOutlineMagnifyingGlass,
   HiOutlineAdjustmentsHorizontal,
   HiOutlineClock,
-  HiOutlineMapPin,
-  HiOutlineHeart,
-  HiHeart,
   HiOutlineSquares2X2,
   HiOutlineBars3,
 } from 'react-icons/hi2';
+
+// Small collapsible text helper (copied from itinerary detail page)
+function CollapsibleText({ id, text }: { id: string; text: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const shouldCollapse = text.length > 150;
+
+  if (!shouldCollapse) {
+    return <p className="text-sm text-muted leading-relaxed mb-1">{text}</p>;
+  }
+
+  return (
+    <div className="mb-1">
+      <p id={id} className={'text-sm text-muted leading-relaxed ' + (expanded ? '' : 'line-clamp-2')}>
+        {text}
+      </p>
+      <button
+        type="button"
+        aria-expanded={expanded}
+        aria-controls={id}
+        onClick={(e) => {
+          // Prevent the click from bubbling to the parent article which navigates
+          e.stopPropagation();
+          setExpanded((s) => !s);
+        }}
+        onKeyDown={(e) => {
+          // Prevent keyboard events from triggering parent handlers
+          e.stopPropagation();
+        }}
+        className="mt-1 text-sm text-primary hover:underline"
+      >
+        {expanded ? 'Show less' : 'Show more'}
+      </button>
+    </div>
+  );
+}
 
 type ViewMode = 'grid' | 'list';
 type SortOption = 'newest' | 'popular' | 'nearest' | 'duration_asc' | 'duration_desc';
@@ -52,7 +84,8 @@ interface SearchPageContentProps {
 }
 
 function SearchPageContent({ searchParams }: SearchPageContentProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  // Mobile-first: default to list view
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -197,10 +230,10 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-stone-900">
+    <div className="min-h-screen bg-background">
       {/* Search Header */}
-      <div className="bg-white dark:bg-stone-800 border-b border-stone-200 dark:border-stone-700 sticky top-0 z-10">
-        <div className="px-4 py-4 space-y-4">
+      <Card padding="md" className="bg-surface border-b border-muted sticky top-0 z-10 mb-6">
+        <div className="space-y-4">
           {/* Search Input */}
           <div className="relative">
             <Input
@@ -226,7 +259,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
               <select
                 value={filters.sortBy}
                 onChange={(e) => updateFilter('sortBy', e.target.value)}
-                className="px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800"
+                className="px-3 py-2 border border-muted rounded-lg text-sm bg-surface"
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -262,96 +295,103 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
         {/* Advanced Filters Panel */}
         {showFilters && (
-          <div className="px-4 pb-4 border-t border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50">
-            <div className="space-y-4 pt-4">
-              {/* Company Filter */}
-              <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-                  Company
-                </label>
-                <select
-                  value={filters.company}
-                  onChange={(e) => updateFilter('company', e.target.value)}
-                  className="w-full px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800"
-                >
-                  {companyOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+          <div className="space-y-4 pt-4">
+            {/* Company Filter */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-3">Company</label>
+              <Select
+                options={companyOptions}
+                value={filters.company}
+                onValueChange={(val) => updateFilter('company', String(val || ''))}
+                placeholder="All Companies"
+              />
+            </div>
 
-              {/* Duration Range */}
-              <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-                  Duration (minutes)
-                </label>
-                <div className="flex items-center gap-3">
-                  <Input
-                    type="number"
-                    placeholder="Min"
-                    value={filters.minDuration || ''}
-                    onChange={(e) => updateFilter('minDuration', parseInt(e.target.value) || 0)}
-                    className="flex-1"
-                  />
-                  <span className="text-stone-500">to</span>
-                  <Input
-                    type="number"
-                    placeholder="Max"
-                    value={filters.maxDuration || ''}
-                    onChange={(e) => updateFilter('maxDuration', parseInt(e.target.value) || 300)}
-                    className="flex-1"
-                  />
-                </div>
-              </div>
-
-              {/* Distance Filter */}
-              <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-                  Max Distance (km)
-                </label>
+            {/* Duration Range */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-3">
+                Duration (minutes)
+              </label>
+              <div className="flex items-center gap-3">
                 <Input
                   type="number"
-                  placeholder="50"
-                  value={filters.maxDistance || ''}
-                  onChange={(e) => updateFilter('maxDistance', parseInt(e.target.value) || 50)}
+                  placeholder="Min"
+                  value={filters.minDuration || ''}
+                  onChange={(e) => updateFilter('minDuration', parseInt(e.target.value) || 0)}
+                  className="flex-1"
+                />
+                <span className="text-muted">to</span>
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  value={filters.maxDuration || ''}
+                  onChange={(e) => updateFilter('maxDuration', parseInt(e.target.value) || 300)}
+                  className="flex-1"
                 />
               </div>
+            </div>
 
-              {/* Clear Filters */}
-              <div className="flex justify-end">
-                <Button variant="outline" size="sm" onClick={clearAllFilters}>
-                  Clear All Filters
-                </Button>
-              </div>
+            {/* Distance Filter */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-3">
+                Max Distance (km)
+              </label>
+              <Input
+                type="number"
+                placeholder="50"
+                value={filters.maxDistance || ''}
+                onChange={(e) => updateFilter('maxDistance', parseInt(e.target.value) || 50)}
+              />
+            </div>
+
+            {/* Clear Filters */}
+            <div className="flex justify-end mt-2">
+              <Button variant="outline" size="sm" onClick={clearAllFilters}>
+                Clear All Filters
+              </Button>
             </div>
           </div>
         )}
-      </div>
+      </Card>
 
       {/* Results */}
-      <div className="px-4 py-6">
-        {/* Results Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-              {filters.query ? `Search: "${filters.query}"` : 'Discover Tours'}
-            </h1>
-            <p className="text-stone-600 dark:text-stone-400 mt-1">
-              {filteredResults.length} tour{filteredResults.length !== 1 ? 's' : ''} found
-            </p>
+      <div>
+        {/* Results Header (not contained in a Card — mobile-first list view) */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">
+                {filters.query ? `Search: "${filters.query}"` : 'Discover Tours'}
+              </h1>
+              <p className="text-muted mt-1">
+                {filteredResults.length} tour{filteredResults.length !== 1 ? 's' : ''} found
+              </p>
+            </div>
           </div>
         </div>
 
         {isLoading && (
-          <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-4'}>
+          <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-3'}>
             {Array.from({ length: 6 }, (_, i) => (
-              <Card key={i} className="p-0 overflow-hidden animate-pulse">
-                <div className="h-32 bg-stone-200 dark:bg-stone-700" />
-                <div className="p-3 space-y-2">
-                  <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4" />
-                  <div className="h-3 bg-stone-200 dark:bg-stone-700 rounded w-1/2" />
+              <Card
+                key={i}
+                padding="md"
+                className={`overflow-hidden animate-pulse bg-surface rounded-xl shadow-md transition-shadow ${
+                  viewMode === 'list' ? 'flex items-start' : ''
+                }`}
+              >
+                <div
+                  className={
+                    viewMode === 'grid'
+                      ? 'h-48 bg-background rounded-md mb-3 w-full'
+                      : 'h-48 w-48 bg-background rounded-md flex-shrink-0 mr-4'
+                  }
+                />
+                <div className="flex-1">
+                  <div className="space-y-2">
+                    <div className="h-4 bg-background rounded w-3/4" />
+                    <div className="h-3 bg-background rounded w-1/2" />
+                  </div>
                 </div>
               </Card>
             ))}
@@ -361,7 +401,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         {/* Error State */}
         {error && !isLoading && (
           <div className="text-center py-12">
-            <p className="text-stone-500 dark:text-stone-400 mb-4">Failed to load results</p>
+            <p className="text-muted mb-4">Failed to load results</p>
             <Button onClick={() => refetch()}>Try Again</Button>
           </div>
         )}
@@ -369,11 +409,9 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         {/* Empty State */}
         {!isLoading && !error && filteredResults.length === 0 && (
           <div className="text-center py-12">
-            <HiOutlineMagnifyingGlass className="h-12 w-12 text-stone-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">
-              No tours found
-            </h3>
-            <p className="text-stone-500 dark:text-stone-400 mb-4">
+            <HiOutlineMagnifyingGlass className="h-12 w-12 text-muted mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">No tours found</h3>
+            <p className="text-muted mb-4">
               Try adjusting your search criteria or clear the filters
             </p>
             <Button variant="outline" onClick={clearAllFilters}>
@@ -382,87 +420,80 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
           </div>
         )}
 
-        {/* Results Grid/List */}
+        {/* Results List (mobile-first) */}
         {!isLoading && filteredResults.length > 0 && (
-          <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-4'}>
+          <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-3'}>
             {filteredResults.map((itinerary) => {
               const imagePath = itinerary.image_file?.image_storage_key;
               const imageUrl = imagePath ? signedUrls[imagePath] : undefined;
-              const isFavorite = favorites.has(itinerary.id);
 
               return (
-                <Card
+                <article
                   key={itinerary.id}
-                  className={`p-0 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer ${
-                    viewMode === 'list' ? 'flex' : ''
-                  }`}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Open itinerary ${itinerary.name}`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      window.location.href = `/itinerary/${itinerary.id}`;
+                    }
+                  }}
                   onClick={() => (window.location.href = `/itinerary/${itinerary.id}`)}
+                  className={`w-full`}
                 >
-                  {/* Image */}
-                  <div
-                    className={`relative bg-stone-100 dark:bg-stone-800 ${
-                      viewMode === 'grid' ? 'h-32' : 'h-24 w-24 flex-shrink-0'
+                  <Card
+                    padding="md"
+                    className={`bg-surface rounded-xl shadow-md overflow-hidden transition-shadow hover:shadow-lg cursor-pointer ${
+                      viewMode === 'list' ? 'flex items-start' : ''
                     }`}
                   >
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt={itinerary.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full grid place-items-center text-stone-400 text-xs">
-                        No Image
-                      </div>
-                    )}
-
-                    {/* Favorite Button */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFavorite(itinerary.id);
-                      }}
-                      className="absolute top-2 right-2 p-1 bg-white/80 dark:bg-stone-800/80 hover:bg-white dark:hover:bg-stone-800"
+                    {/* Image */}
+                    <div
+                      className={`relative ${
+                        viewMode === 'grid' ? 'h-32 w-full' : 'h-24 w-24 flex-shrink-0 mr-4'
+                      } bg-surface`}
                     >
-                      {isFavorite ? (
-                        <HiHeart className="h-4 w-4 text-red-500" />
+                      {imageUrl ? (
+                        <img
+                          src={imageUrl}
+                          alt={itinerary.name}
+                          className="w-full h-full object-cover rounded-md"
+                        />
                       ) : (
-                        <HiOutlineHeart className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-3 flex-1">
-                    <div className="space-y-1">
-                      <h3 className="font-medium text-stone-900 dark:text-stone-100 line-clamp-2">
-                        {itinerary.name}
-                      </h3>
-
-                      {viewMode === 'list' && itinerary.description && (
-                        <p className="text-xs text-stone-600 dark:text-stone-400 line-clamp-2">
-                          {itinerary.description}
-                        </p>
-                      )}
-
-                      <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400">
-                        <div className="flex items-center gap-1">
-                          <HiOutlineClock className="h-3 w-3" />
-                          {formatDuration(itinerary.total_duration)}
+                        <div className="w-full h-full grid place-items-center text-muted text-xs">
+                          No Image
                         </div>
+                      )}
+                    </div>
 
-                        {itinerary.company?.name && (
-                          <>
-                            <span>•</span>
-                            <span>{itinerary.company.name}</span>
-                          </>
+                    {/* Content */}
+                    <div className="flex-1">
+                      <div className="space-y-1">
+                        <h3 className="font-medium text-foreground line-clamp-2">
+                          {itinerary.name}
+                        </h3>
+
+                        {viewMode === 'list' && itinerary.description && (
+                          <CollapsibleText id={`search-desc-${itinerary.id}`} text={itinerary.description} />
                         )}
+
+                        <div className="flex items-center gap-2 text-xs text-muted">
+                          <div className="flex items-center gap-1">
+                            <HiOutlineClock className="h-3 w-3" />
+                            {formatDuration(itinerary.total_duration)}
+                          </div>
+
+                          {itinerary.company?.name && (
+                            <>
+                              <span>•</span>
+                              <span>{itinerary.company.name}</span>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </article>
               );
             })}
           </div>
@@ -489,7 +520,7 @@ export default function SearchPage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin h-8 w-8 border-2 border-primary-600 border-t-transparent rounded-full"></div>
+          <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full"></div>
         </div>
       }
     >

@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { HiCheck } from 'react-icons/hi2';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button, Input, Checkbox, Textarea } from '@/components/ui';
+import { Button, Input, Checkbox, Textarea, Card } from '@/components/ui';
 import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function RegisterPage() {
@@ -114,32 +115,18 @@ export default function RegisterPage() {
       <div className="space-y-6">
         {/* Success Message */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-success-100 dark:bg-success-900/20 rounded-full flex items-center justify-center mb-4">
-            <svg
-              className="w-8 h-8 text-success-600 dark:text-success-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+          <div className="mx-auto w-16 h-16 bg-surface rounded-full flex items-center justify-center mb-4">
+            <HiCheck className="w-8 h-8 text-success" aria-hidden="true" />
           </div>
-          <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-            Account Created!
-          </h2>
-          <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
+          <h2 className="text-2xl font-bold text-foreground">Account Created!</h2>
+          <p className="text-sm text-muted mt-2">
             We've sent a verification email to <strong>{formData.email}</strong>
           </p>
         </div>
 
         {/* Instructions */}
-        <div className="p-4 rounded-lg bg-sea-50 dark:bg-sea-900/20 border border-sea-200 dark:border-sea-800">
-          <div className="space-y-2 text-sm text-sea-700 dark:text-sea-300">
+        <Card padding="md" className="rounded-lg bg-surface border border-muted">
+          <div className="space-y-2 text-sm text-muted">
             <p>
               <strong>What's next?</strong>
             </p>
@@ -149,7 +136,7 @@ export default function RegisterPage() {
               <li>Sign in to start exploring audio guides</li>
             </ul>
           </div>
-        </div>
+        </Card>
 
         {/* Actions */}
         <div className="space-y-4">
@@ -177,7 +164,7 @@ export default function RegisterPage() {
                 });
                 setAcceptTerms(false);
               }}
-              className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+              className="text-sm text-primary hover:text-primary transition-colors"
             >
               Register a different account
             </button>
@@ -191,8 +178,8 @@ export default function RegisterPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Create Account</h2>
-        <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
+        <h2 className="text-2xl font-bold text-foreground">Create Account</h2>
+        <p className="text-sm text-muted mt-2">
           Join MyAudioG and discover amazing audio experiences
         </p>
       </div>
@@ -254,7 +241,7 @@ export default function RegisterPage() {
             autoComplete="new-password"
             error={validationErrors.password}
           />
-          <p className="text-xs text-stone-500 dark:text-stone-400">
+          <p className="text-xs text-muted">
             Must contain uppercase, lowercase, and numbers (minimum 6 characters)
           </p>
         </div>
@@ -273,7 +260,7 @@ export default function RegisterPage() {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+            className="text-xs text-primary transition-colors"
           >
             {showPassword ? 'Hide passwords' : 'Show passwords'}
           </button>
@@ -286,36 +273,25 @@ export default function RegisterPage() {
               onChange={(e) => setAcceptTerms(e.target.checked)}
               id="accept-terms"
             />
-            <label
-              htmlFor="accept-terms"
-              className="text-sm text-stone-600 dark:text-stone-400 leading-5"
-            >
+            <label htmlFor="accept-terms" className="text-sm text-muted leading-5">
               I agree to the{' '}
-              <Link
-                href="/terms"
-                className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
-              >
+              <Link href="/terms" className="text-primary transition-colors">
                 Terms and Conditions
               </Link>{' '}
               and{' '}
-              <Link
-                href="/privacy"
-                className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
-              >
+              <Link href="/privacy" className="text-primary transition-colors">
                 Privacy Policy
               </Link>
             </label>
           </div>
           {validationErrors.terms && (
-            <p className="text-sm text-error-600 dark:text-error-400 ml-6">
-              {validationErrors.terms}
-            </p>
+            <p className="text-sm text-error-600 ml-6">{validationErrors.terms}</p>
           )}
         </div>
 
         {error && (
-          <div className="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800">
-            <p className="text-sm text-error-700 dark:text-error-300">{error}</p>
+          <div className="p-3 rounded-lg bg-surface border border-carbon-200">
+            <p className="text-sm text-error">{error}</p>
           </div>
         )}
 
@@ -333,12 +309,9 @@ export default function RegisterPage() {
 
       {/* Sign In Link */}
       <div className="text-center">
-        <p className="text-sm text-stone-600 dark:text-stone-400">
+        <p className="text-sm text-muted">
           Already have an account?{' '}
-          <Link
-            href="/login"
-            className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors font-medium"
-          >
+          <Link href="/login" className="text-primary transition-colors font-medium">
             Sign in
           </Link>
         </p>

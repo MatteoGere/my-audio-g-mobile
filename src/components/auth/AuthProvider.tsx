@@ -39,10 +39,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Show loading state during initial auth check
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-sand-50 dark:bg-stone-900">
+      <div className="min-h-screen flex items-center justify-center bg-surface">
         <div className="text-center">
-          <div className="w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-stone-600 dark:text-stone-400">Loading...</p>
+          <div className="w-8 h-8 border-4 border-primary/40 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted">Loading...</p>
         </div>
       </div>
     );

@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { HiCheck } from 'react-icons/hi2';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button, Input } from '@/components/ui';
+import { Button, Input, Card } from '@/components/ui';
 import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function ForgotPasswordPage() {
@@ -61,32 +62,18 @@ export default function ForgotPasswordPage() {
       <div className="space-y-6">
         {/* Success Message */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-success-100 dark:bg-success-900/20 rounded-full flex items-center justify-center mb-4">
-            <svg
-              className="w-8 h-8 text-success-600 dark:text-success-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+          <div className="mx-auto w-16 h-16 bg-success/20 rounded-full flex items-center justify-center mb-4">
+            <HiCheck className="w-8 h-8 text-success" aria-hidden="true" />
           </div>
-          <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-            Check Your Email
-          </h2>
-          <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
+          <h2 className="text-2xl font-bold text-foreground">Check Your Email</h2>
+          <p className="text-sm text-muted mt-2">
             We've sent a password reset link to <strong>{email}</strong>
           </p>
         </div>
 
         {/* Instructions */}
-        <div className="p-4 rounded-lg bg-sea-50 dark:bg-sea-900/20 border border-sea-200 dark:border-sea-800">
-          <div className="space-y-2 text-sm text-sea-700 dark:text-sea-300">
+        <Card padding="md" className="rounded-lg bg-surface border border-muted">
+          <div className="space-y-2 text-sm text-muted">
             <p>
               <strong>What's next?</strong>
             </p>
@@ -96,7 +83,7 @@ export default function ForgotPasswordPage() {
               <li>Follow the instructions to create a new password</li>
             </ul>
           </div>
-        </div>
+        </Card>
 
         {/* Actions */}
         <div className="space-y-4">
@@ -116,7 +103,7 @@ export default function ForgotPasswordPage() {
                 setIsSubmitted(false);
                 setEmail('');
               }}
-              className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+              className="text-sm text-primary hover:text-primary-700 transition-colors"
             >
               Try a different email address
             </button>
@@ -130,8 +117,8 @@ export default function ForgotPasswordPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Forgot Password?</h2>
-        <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
+        <h2 className="text-2xl font-bold text-foreground">Forgot Password?</h2>
+        <p className="text-sm text-muted mt-2">
           No worries! Enter your email and we'll send you reset instructions.
         </p>
       </div>
@@ -150,8 +137,8 @@ export default function ForgotPasswordPage() {
         />
 
         {error && (
-          <div className="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800">
-            <p className="text-sm text-error-700 dark:text-error-300">{error}</p>
+          <div className="p-3 rounded-lg bg-error/10 border border-error/30">
+            <p className="text-sm text-error">{error}</p>
           </div>
         )}
 
@@ -171,7 +158,7 @@ export default function ForgotPasswordPage() {
       <div className="text-center">
         <Link
           href="/login"
-          className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+          className="text-sm text-primary hover:text-primary-700 transition-colors"
         >
           ← Back to Sign In
         </Link>

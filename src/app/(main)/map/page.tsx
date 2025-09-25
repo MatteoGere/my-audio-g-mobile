@@ -7,13 +7,16 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux';
 import { selectPoi, setHighlightedTrackId, setMapView } from '@/lib/redux/slices/mapSlice';
 import { POIMarkerData } from '@/types/app-types';
 import { FaExpand, FaCompress, FaLocationArrow, FaFilter, FaSearch } from 'react-icons/fa';
+import { HiOutlinePlus, HiOutlineMinus } from 'react-icons/hi2';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import { Card } from '@/components/ui';
 
 export default function MapPage() {
   const dispatch = useAppDispatch();
-  const { userLocation, requestLocation, startTracking, stopTracking, getCurrentPosition } = useLocation();
-  
+  const { userLocation, requestLocation, startTracking, stopTracking, getCurrentPosition } =
+    useLocation();
+
   // State
   // fullscreen removed: map is always shown in standard mode
   const [selectedPoiId, setSelectedPoiId] = useState<string | null>(null);
@@ -33,30 +36,36 @@ export default function MapPage() {
   // Filter POIs based on search
   const filteredPois = React.useMemo(() => {
     if (!searchTerm) return pois;
-    
+
     const lowercaseSearch = searchTerm.toLowerCase();
-    return pois.filter(poi => 
-      poi.trackName.toLowerCase().includes(lowercaseSearch) ||
-      poi.itineraryName.toLowerCase().includes(lowercaseSearch) ||
-      poi.companyName.toLowerCase().includes(lowercaseSearch)
+    return pois.filter(
+      (poi) =>
+        poi.trackName.toLowerCase().includes(lowercaseSearch) ||
+        poi.itineraryName.toLowerCase().includes(lowercaseSearch) ||
+        poi.companyName.toLowerCase().includes(lowercaseSearch),
     );
   }, [pois, searchTerm]);
 
   // Handle marker click
-  const handleMarkerClick = useCallback((poi: POIMarkerData) => {
-    setSelectedPoiId(poi.trackId);
-    dispatch(selectPoi({
-      id: poi.trackId,
-      type: 'track',
-      latitude: poi.latitude,
-      longitude: poi.longitude,
-      title: poi.trackName,
-      description: poi.itineraryName,
-      trackId: poi.trackId,
-      itineraryId: poi.itineraryId,
-    }));
-    dispatch(setHighlightedTrackId(poi.trackId));
-  }, [dispatch]);
+  const handleMarkerClick = useCallback(
+    (poi: POIMarkerData) => {
+      setSelectedPoiId(poi.trackId);
+      dispatch(
+        selectPoi({
+          id: poi.trackId,
+          type: 'track',
+          latitude: poi.latitude,
+          longitude: poi.longitude,
+          title: poi.trackName,
+          description: poi.itineraryName,
+          trackId: poi.trackId,
+          itineraryId: poi.itineraryId,
+        }),
+      );
+      dispatch(setHighlightedTrackId(poi.trackId));
+    },
+    [dispatch],
+  );
 
   // Handle play button click
   const handlePlayClick = useCallback((poi: POIMarkerData) => {
@@ -66,12 +75,15 @@ export default function MapPage() {
   }, []);
 
   // Handle map click
-  const handleMapClick = useCallback((lat: number, lng: number) => {
-    // Clear selection when clicking empty map area
-    setSelectedPoiId(null);
-    dispatch(selectPoi(null));
-    dispatch(setHighlightedTrackId(null));
-  }, [dispatch]);
+  const handleMapClick = useCallback(
+    (lat: number, lng: number) => {
+      // Clear selection when clicking empty map area
+      setSelectedPoiId(null);
+      dispatch(selectPoi(null));
+      dispatch(setHighlightedTrackId(null));
+    },
+    [dispatch],
+  );
 
   // Center on user location
   const centerOnUser = useCallback(async () => {
@@ -79,7 +91,12 @@ export default function MapPage() {
       // Use getCurrentPosition which returns the resolved coordinates immediately.
       const loc = await getCurrentPosition();
       if (loc) {
-        dispatch(setMapView({ center: { latitude: loc.latitude, longitude: loc.longitude }, zoom: mapZoom }));
+        dispatch(
+          setMapView({
+            center: { latitude: loc.latitude, longitude: loc.longitude },
+            zoom: mapZoom,
+          }),
+        );
       }
     } catch (e) {
       // If getCurrentPosition fails, fall back to requesting permission which will update store
@@ -103,19 +120,21 @@ export default function MapPage() {
         const bottomNav = document.querySelector('nav[role="navigation"], nav.fixed, .fixed');
 
         const headerHeight = header ? (header as HTMLElement).getBoundingClientRect().height : 0;
-        const bottomHeight = bottomNav ? (bottomNav as HTMLElement).getBoundingClientRect().height : 0;
+        const bottomHeight = bottomNav
+          ? (bottomNav as HTMLElement).getBoundingClientRect().height
+          : 0;
 
         const viewportHeight = window.innerHeight;
 
         // Use container top offset so we account for any page padding/margins above the map
-  // Small extra gap so map doesn't touch bottom nav and a little breathing room
-  const extraGap = 8; // pixels (reduced per request)
+        // Small extra gap so map doesn't touch bottom nav and a little breathing room
+        const extraGap = 32; // pixels (reduced per request)
 
-    // Compute available viewport space between header and bottom navigation.
-    // Note: do NOT subtract the container's top offset here — that often double-counts
-    // spacing and produces a smaller height than available. Using header/bottom heights
-    // is more reliable across layouts.
-    const available = Math.max(0, viewportHeight - headerHeight - bottomHeight - extraGap);
+        // Compute available viewport space between header and bottom navigation.
+        // Note: do NOT subtract the container's top offset here — that often double-counts
+        // spacing and produces a smaller height than available. Using header/bottom heights
+        // is more reliable across layouts.
+        const available = Math.max(0, viewportHeight - headerHeight - bottomHeight - extraGap);
 
         // Ensure a sensible minimum height
         const minH = 200;
@@ -127,7 +146,11 @@ export default function MapPage() {
         try {
           requestAnimationFrame(() => {
             window.setTimeout(() => {
-              try { window.dispatchEvent(new Event('map-resize')); } catch (e) { /* ignore */ }
+              try {
+                window.dispatchEvent(new Event('map-resize'));
+              } catch (e) {
+                /* ignore */
+              }
             }, 50);
           });
         } catch (e) {
@@ -144,21 +167,41 @@ export default function MapPage() {
   }, []);
 
   return (
-    <div className="relative w-full h-full bg-gray-50">
+    <div className="relative w-full h-full bg-background scale-105">
       {/* Search bar moved to bottom (replaces stats banner) - top search removed */}
 
-  {/* Map Controls */}
-  <div className={`absolute top-4 right-4 z-10 flex flex-col gap-3 pointer-events-auto`}>
+      {/* Map Controls */}
+      <div className={`absolute top-4 right-4 z-10 flex flex-col gap-3 pointer-events-auto`}>
         {/* Center on User */}
-        <Button
-          onClick={centerOnUser}
-          className="bg-white text-gray-700 hover:bg-gray-50 shadow-lg p-3 min-w-[44px] min-h-[44px]"
-          variant="outline"
-          disabled={!isLocationEnabled && !userLocation}
-          aria-label="Center on user"
-        >
-          <FaLocationArrow />
-        </Button>
+        <div className="">
+          <Button
+            onClick={centerOnUser}
+            className="min-w-[44px] min-h-[44px] p-0"
+        
+            disabled={!isLocationEnabled && !userLocation}
+            aria-label="Center on user"
+          >
+            <FaLocationArrow className="h-5 w-5" />
+          </Button>
+        </div>
+
+        {/* Custom Zoom Controls (icon-only, no background) */}
+        <div className="flex flex-col items-center gap-2">
+          <Button
+            onClick={() => dispatch(setMapView({ center: mapCenter, zoom: mapZoom + 1 }))}
+            className="min-w-[44px] min-h-[44px] p-0"
+            aria-label="Zoom in"
+          >
+            <HiOutlinePlus className="h-5 w-5" />
+          </Button>
+          <Button
+            onClick={() => dispatch(setMapView({ center: mapCenter, zoom: Math.max(1, mapZoom - 1) }))}
+            className="min-w-[44px] min-h-[44px] p-0"
+            aria-label="Zoom out"
+          >
+            <HiOutlineMinus className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
 
       {/* Map Container */}
@@ -180,47 +223,47 @@ export default function MapPage() {
 
       {/* Loading Overlay */}
       {isLoading && (
-        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-20">
-          <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-            <span className="text-gray-700">Loading map data...</span>
-          </div>
+        <div className="absolute inset-0 bg-surface/75 flex items-center justify-center z-20">
+          <Card padding="lg" className="bg-surface rounded-lg shadow-lg flex items-center gap-3">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            <span className="text-muted">Loading map data...</span>
+          </Card>
         </div>
       )}
 
-  {/* Search and Filter Bar (moved to bottom) */}
-  <div className={`absolute bottom-4 left-4 right-4 z-10 bg-white rounded-lg shadow-lg p-3`}>
-          <div className="flex gap-2 items-center">
-            <div className="flex-1 relative">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
-              <Input
-                type="text"
-                placeholder="Search tracks, itineraries, or companies..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full"
-              />
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-              className="px-3"
-            >
-              <FaFilter />
-            </Button>
+      {/* Search and Filter Bar (moved to bottom) */}
+      <div  className={`absolute bottom-4 left-4 right-4 z-10 rounded-lg shadow-lg`}>
+        <div className="flex gap-2 items-center">
+          <div className="flex-1 relative">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted text-sm" />
+            <Input
+              type="text"
+              placeholder="Search tracks, itineraries, or companies..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pr-4 py-2 w-full bg-surface"
+            />
           </div>
-
-          {/* Filter Options */}
-          {showFilters && (
-            <div className="mt-3 pt-3 border-t border-gray-200">
-              <div className="text-sm text-gray-600">
-                Showing {filteredPois.length} of {pois.length} locations
-              </div>
-              {/* TODO: Add more filter options */}
-            </div>
-          )}
+          <Button
+            size="sm"
+            onClick={() => setShowFilters(!showFilters)}
+            className="px-3"
+          >
+            <FaFilter />
+          </Button>
         </div>
+
+        {/* Filter Options */}
+        {showFilters && (
+          <Card padding="sm" className="mt-3 bg-surface">
+            <div className="text-sm text-muted">
+              Showing {filteredPois.length} of {pois.length} locations
+            </div>
+            {/* TODO: Add more filter options */}
+          </Card>
+        )}
+      </div>
+
     </div>
   );
 }

@@ -31,14 +31,17 @@ const Card: React.FC<CardProps> = ({
   children,
   ...props
 }) => {
-  const baseStyles = 'bg-surface rounded-lg transition-all duration-200';
+  // Regole: rounded-xl, p-4 default, shadow-md, border, max-w-full, accessibilità
+  const baseStyles = 'bg-surface rounded-xl transition-all duration-200 shadow-md max-w-full';
 
   const variants = {
-    default: 'border border-stone-200',
-    elevated: 'shadow-soft hover:shadow-medium',
-    outlined: 'border-2 border-stone-200 hover:border-stone-300',
+    default: '',
+    elevated: 'shadow-lg hover:shadow-xl',
+    // Use semantic border color that adapts via CSS variables
+    outlined: 'border border-muted',
   };
 
+  // p-4 default, gap tra card gestito dal container
   const paddings = {
     none: '',
     sm: 'p-3',
@@ -47,7 +50,13 @@ const Card: React.FC<CardProps> = ({
   };
 
   return (
-    <div className={cn(baseStyles, variants[variant], paddings[padding], className)} {...props}>
+    <div
+      className={cn(baseStyles, variants[variant], paddings[padding], className)}
+      tabIndex={0}
+      role="region"
+      aria-label="Card"
+      {...props}
+    >
       {children}
     </div>
   );
@@ -55,7 +64,7 @@ const Card: React.FC<CardProps> = ({
 
 const CardHeader: React.FC<CardHeaderProps> = ({ className, children, ...props }) => {
   return (
-    <div className={cn('flex flex-col space-y-1.5', className)} {...props}>
+    <div className={cn('flex flex-col gap-2', className)} {...props}>
       {children}
     </div>
   );
@@ -63,7 +72,7 @@ const CardHeader: React.FC<CardHeaderProps> = ({ className, children, ...props }
 
 const CardBody: React.FC<CardBodyProps> = ({ className, children, ...props }) => {
   return (
-    <div className={cn('pt-0', className)} {...props}>
+    <div className={cn('flex flex-col gap-2', className)} {...props}>
       {children}
     </div>
   );
@@ -71,7 +80,7 @@ const CardBody: React.FC<CardBodyProps> = ({ className, children, ...props }) =>
 
 const CardFooter: React.FC<CardFooterProps> = ({ className, children, ...props }) => {
   return (
-    <div className={cn('flex items-center pt-0', className)} {...props}>
+    <div className={cn('flex items-center gap-2', className)} {...props}>
       {children}
     </div>
   );
@@ -79,8 +88,8 @@ const CardFooter: React.FC<CardFooterProps> = ({ className, children, ...props }
 
 const CardImage: React.FC<CardImageProps> = ({ className, position = 'top', alt, ...props }) => {
   const positionStyles = {
-    top: 'rounded-t-lg',
-    bottom: 'rounded-b-lg',
+    top: 'rounded-t-xl',
+    bottom: 'rounded-b-xl',
   };
 
   return (
@@ -99,7 +108,7 @@ const CardTitle: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({
 }) => {
   return (
     <h3
-      className={cn('text-lg font-semibold leading-none tracking-tight text-foreground', className)}
+      className={cn('text-base font-bold leading-tight tracking-tight text-foreground', className)}
       {...props}
     >
       {children}
@@ -113,7 +122,7 @@ const CardDescription: React.FC<React.HTMLAttributes<HTMLParagraphElement>> = ({
   ...props
 }) => {
   return (
-    <p className={cn('text-sm text-muted', className)} {...props}>
+    <p className={cn('text-xs text-muted', className)} {...props}>
       {children}
     </p>
   );

@@ -86,16 +86,17 @@ const TabsList: React.FC<{ items: TabItem[] }> = ({ items }) => {
   const containerStyles = cn(
     'flex',
     orientation === 'horizontal'
-      ? 'border-b border-stone-200'
-      : 'flex-col border-r border-stone-200 min-w-[200px]',
-    variant === 'pills' && 'bg-stone-100 p-1 rounded-md border-0',
-    variant === 'underline' && 'border-b-2 border-stone-200',
+      ? 'border-b border-muted'
+      : 'flex-col border-r border-muted min-w-[200px]',
+    variant === 'pills' && 'bg-surface p-1 rounded-md border-0',
+    variant === 'underline' && 'border-b-2 border-muted',
   );
 
+  // Regole: touch target min-w-[44px] min-h-[44px], font-bold, rounded, gap
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base',
+    sm: 'px-3 py-1.5 min-w-[44px] min-h-[44px] text-sm font-bold rounded',
+    md: 'px-4 py-2 min-w-[44px] min-h-[44px] text-base font-bold rounded-md',
+    lg: 'px-6 py-3 min-w-[48px] min-h-[48px] text-lg font-bold rounded-lg',
   };
 
   const getTabStyles = (item: TabItem) => {
@@ -110,7 +111,7 @@ const TabsList: React.FC<{ items: TabItem[] }> = ({ items }) => {
         'rounded-md',
         activeTab === item.id
           ? 'bg-surface text-foreground shadow-sm'
-          : 'text-muted hover:text-foreground hover:bg-stone-200',
+          : 'text-muted hover:text-foreground hover:bg-surface/60',
       );
     }
 
@@ -120,7 +121,7 @@ const TabsList: React.FC<{ items: TabItem[] }> = ({ items }) => {
         'border-b-2 -mb-0.5',
         activeTab === item.id
           ? 'border-primary text-primary'
-          : 'border-transparent text-muted hover:text-foreground hover:border-stone-300',
+          : 'border-transparent text-muted hover:text-foreground hover:border-muted',
       );
     }
 
@@ -130,7 +131,7 @@ const TabsList: React.FC<{ items: TabItem[] }> = ({ items }) => {
       'border-b-2 -mb-px',
       activeTab === item.id
         ? 'border-primary text-primary bg-surface'
-        : 'border-transparent text-muted hover:text-foreground hover:border-stone-300',
+        : 'border-transparent text-muted hover:text-foreground hover:border-muted',
     );
   };
 
@@ -182,7 +183,7 @@ const TabList: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   ...props
 }) => {
   return (
-    <div className={cn('flex border-b border-stone-200', className)} role="tablist" {...props}>
+    <div className={cn('flex border-b border-muted', className)} role="tablist" {...props}>
       {children}
     </div>
   );
@@ -198,7 +199,7 @@ const Tab: React.FC<{
     <button
       className={cn(
         'px-4 py-2 text-sm font-medium transition-all duration-200 border-b-2 -mb-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-        'border-transparent text-muted hover:text-foreground hover:border-stone-300',
+        'border-transparent text-muted hover:text-foreground hover:border-muted',
         'data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-surface',
         disabled && 'opacity-50 cursor-not-allowed',
         className,

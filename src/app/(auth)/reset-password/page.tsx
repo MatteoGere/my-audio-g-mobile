@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
+import { HiCheck } from 'react-icons/hi2';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button, Input } from '@/components/ui';
@@ -91,25 +92,11 @@ function ResetPasswordInner() {
       <div className="space-y-6">
         {/* Success Message */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-success-100 dark:bg-success-900/20 rounded-full flex items-center justify-center mb-4">
-            <svg
-              className="w-8 h-8 text-success-600 dark:text-success-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-            Password Reset Successful
-          </h2>
-          <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
+          <div className="mx-auto w-16 h-16 bg-surface rounded-full flex items-center justify-center mb-4">
+              <HiCheck className="w-8 h-8 text-success" aria-hidden="true" />
+            </div>
+          <h2 className="text-2xl font-bold text-foreground">Password Reset Successful</h2>
+          <p className="text-sm text-muted mt-2">
             Your password has been successfully updated. You can now sign in with your new password.
           </p>
         </div>
@@ -131,12 +118,8 @@ function ResetPasswordInner() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-          Reset Your Password
-        </h2>
-        <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
-          Choose a strong new password for your account
-        </p>
+        <h2 className="text-2xl font-bold text-foreground">Reset Your Password</h2>
+        <p className="text-sm text-muted mt-2">Choose a strong new password for your account</p>
       </div>
 
       {/* Reset Form */}
@@ -151,7 +134,7 @@ function ResetPasswordInner() {
             required
             error={validationErrors.newPassword}
           />
-          <div className="text-xs text-stone-500 dark:text-stone-400">
+          <div className="text-xs text-muted">
             Must contain at least 6 characters with uppercase, lowercase, and numbers
           </div>
         </div>
@@ -172,16 +155,16 @@ function ResetPasswordInner() {
             id="showPassword"
             checked={showPassword}
             onChange={(e) => setShowPassword(e.target.checked)}
-            className="rounded text-primary-600 focus:ring-primary-500"
+            className="rounded text-primary focus:ring-primary"
           />
-          <label htmlFor="showPassword" className="text-sm text-stone-600 dark:text-stone-400">
+          <label htmlFor="showPassword" className="text-sm text-muted">
             Show passwords
           </label>
         </div>
 
         {error && (
-          <div className="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800">
-            <p className="text-sm text-error-700 dark:text-error-300">{error}</p>
+          <div className="p-3 rounded-lg bg-surface border border-carbon-200">
+            <p className="text-sm text-error-700">{error}</p>
           </div>
         )}
 
@@ -199,10 +182,7 @@ function ResetPasswordInner() {
 
       {/* Back to Login */}
       <div className="text-center">
-        <Link
-          href="/login"
-          className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
-        >
+        <Link href="/login" className="text-sm text-primary transition-colors">
           ← Back to Sign In
         </Link>
       </div>

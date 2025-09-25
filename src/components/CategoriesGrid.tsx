@@ -57,25 +57,26 @@ export default function CategoriesGrid() {
   const topCompanies = companies.slice(0, 2);
 
   return (
-    <div className="space-y-3">
-      <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
-        Browse Categories
-      </h2>
+    <div className="space-y-4">
+      <h2 className="text-xl font-bold text-foreground mb-1">Browse Categories</h2>
 
       {/* Static Categories Grid */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4">
         {STATIC_CATEGORIES.map((category) => (
-          <Link key={category.id} href={`/search${category.searchParams}`}>
-            <Card className="p-4 text-center hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors border-stone-200 dark:border-stone-700">
-              <div className="w-12 h-12 bg-forest-100 dark:bg-forest-900 rounded-lg mx-auto mb-3 flex items-center justify-center">
+          <Link key={category.id} href={`/search${category.searchParams}`} tabIndex={0}>
+            <Card
+              padding="md"
+              className="flex flex-col items-center justify-center gap-2 rounded-xl shadow-md min-h-[120px] transition-colors hover:bg-background"
+            >
+              <div className="w-14 h-14 bg-surface rounded-lg flex items-center justify-center mb-2">
                 <span className="text-2xl" role="img" aria-label={category.name}>
                   {category.icon}
                 </span>
               </div>
-              <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-1">
-                {category.name}
-              </h3>
-              <p className="text-xs text-stone-500 dark:text-stone-400">{category.description}</p>
+              <h3 className="font-bold text-foreground text-base mb-1">{category.name}</h3>
+              <p className="text-xs text-muted leading-normal text-center">
+                {category.description}
+              </p>
             </Card>
           </Link>
         ))}
@@ -83,24 +84,27 @@ export default function CategoriesGrid() {
 
       {/* Company Categories */}
       {!companiesLoading && topCompanies.length > 0 && (
-        <div className="space-y-2">
-          <h3 className="text-sm font-medium text-stone-700 dark:text-stone-300">
-            Browse by Company
-          </h3>
-          <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-3">
+          <h3 className="text-sm font-bold text-foreground mb-1">Browse by Company</h3>
+          <div className="grid grid-cols-2 gap-4">
             {topCompanies.map((company) => (
-              <Link key={company.id} href={`/search?company=${encodeURIComponent(company.name)}`}>
-                <Card className="p-3 text-center hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors border-stone-200 dark:border-stone-700">
-                  <div className="w-8 h-8 bg-sand-100 dark:bg-sand-900 rounded-lg mx-auto mb-2 flex items-center justify-center">
-                    <span className="text-sand-600 dark:text-sand-400 text-xs font-bold">
+              <Link
+                key={company.id}
+                href={`/search?company=${encodeURIComponent(company.name)}`}
+                tabIndex={0}
+              >
+                <Card
+                  padding="md"
+                  className="flex flex-col items-center justify-center gap-2 rounded-xl shadow-md min-h-[100px] transition-colors hover:bg-background"
+                >
+                  <div className="w-10 h-10 bg-surface rounded-lg flex items-center justify-center mb-2">
+                    <span className="text-primary text-base font-bold">
                       {company.name.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <h4 className="font-medium text-stone-900 dark:text-stone-100 text-sm truncate">
-                    {company.name}
-                  </h4>
+                  <h4 className="font-bold text-foreground text-sm truncate">{company.name}</h4>
                   {company.description && (
-                    <p className="text-xs text-stone-500 dark:text-stone-400 line-clamp-1 mt-1">
+                    <p className="text-xs text-muted line-clamp-1 mt-1 text-center">
                       {company.description}
                     </p>
                   )}
@@ -113,14 +117,15 @@ export default function CategoriesGrid() {
 
       {/* Loading state for companies */}
       {companiesLoading && (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-4">
           {[...Array(2)].map((_, i) => (
             <Card
               key={i}
-              className="p-3 text-center animate-pulse border-stone-200 dark:border-stone-700"
+              padding="md"
+              className="flex flex-col items-center justify-center gap-2 rounded-xl animate-pulse shadow-md"
             >
-              <div className="w-8 h-8 bg-stone-200 dark:bg-stone-700 rounded-lg mx-auto mb-2" />
-              <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4 mx-auto" />
+              <div className="w-10 h-10 bg-background rounded-lg mb-2" />
+              <div className="h-4 bg-background rounded w-3/4" />
             </Card>
           ))}
         </div>

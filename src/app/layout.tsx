@@ -3,6 +3,7 @@ import './globals.css';
 import { ReduxProvider } from '@/lib/redux';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { AuthProvider } from '@/components/auth/AuthProvider';
+import NextThemeProvider from '@/components/theme/NextThemeProvider';
 
 export const metadata: Metadata = {
   title: 'MyAudioG - Audio Guide Experience',
@@ -33,10 +34,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   minimumScale: 1,
   viewportFit: 'cover',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#2b8a9e' },
-    { media: '(prefers-color-scheme: dark)', color: '#66c0a3' },
-  ],
+  // Use a single theme color; theming is controlled via the UI (class-based)
+  themeColor: '#2b8a9e',
 };
 
 export default function RootLayout({
@@ -46,12 +45,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="antialiased bg-sand-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 min-h-screen">
-        <ReduxProvider>
-          <AuthProvider>
-            <I18nProvider>{children}</I18nProvider>
-          </AuthProvider>
-        </ReduxProvider>
+      <body className="antialiased bg-marble-50 text-carbon-900 min-h-screen">
+        <NextThemeProvider>
+          <ReduxProvider>
+            <AuthProvider>
+              <I18nProvider>{children}</I18nProvider>
+            </AuthProvider>
+          </ReduxProvider>
+        </NextThemeProvider>
       </body>
     </html>
   );

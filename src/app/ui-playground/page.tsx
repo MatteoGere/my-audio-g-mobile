@@ -45,17 +45,17 @@ const tabItems = [
   {
     id: 'tab1',
     label: 'Overview',
-    content: <div className="p-4">This is the overview tab content with some example text.</div>,
+    content: <Card padding="md">This is the overview tab content with some example text.</Card>,
   },
   {
     id: 'tab2',
     label: 'Details',
-    content: <div className="p-4">Here are the detailed information and specifications.</div>,
+    content: <Card padding="md">Here are the detailed information and specifications.</Card>,
   },
   {
     id: 'tab3',
     label: 'Reviews',
-    content: <div className="p-4">Customer reviews and feedback would be displayed here.</div>,
+    content: <Card padding="md">Customer reviews and feedback would be displayed here.</Card>,
   },
 ];
 
@@ -141,12 +141,12 @@ export default function UIPlayground() {
           </div>
 
           {/* Breadcrumb */}
-          <Card className="p-4 mb-8">
+          <Card padding="md" className="mb-8">
             <Breadcrumb items={breadcrumbItems} />
           </Card>
 
           {/* Base Components */}
-          <Card className="p-6 mb-8">
+          <Card padding="lg" className="mb-8">
             <h2 className="text-2xl font-semibold mb-6">Base Components</h2>
 
             {/* Buttons */}
@@ -204,7 +204,7 @@ export default function UIPlayground() {
           </Card>
 
           {/* Form Components */}
-          <Card className="p-6 mb-8">
+          <Card padding="lg" className="mb-8">
             <h2 className="text-2xl font-semibold mb-6">Form Components</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -248,7 +248,7 @@ export default function UIPlayground() {
           </Card>
 
           {/* Data Display Components */}
-          <Card className="p-6 mb-8">
+          <Card padding="lg" className="mb-8">
             <h2 className="text-2xl font-semibold mb-6">Data Display</h2>
 
             {/* Badges */}
@@ -326,7 +326,7 @@ export default function UIPlayground() {
           </Card>
 
           {/* Interactive Components */}
-          <Card className="p-6 mb-8">
+          <Card padding="lg" className="mb-8">
             <h2 className="text-2xl font-semibold mb-6">Interactive Components</h2>
 
             <div className="space-y-8">
@@ -366,12 +366,12 @@ export default function UIPlayground() {
                   <Popover
                     trigger={<Button variant="outline">Click for popover</Button>}
                     content={
-                      <div className="p-4 w-64">
+                      <Card padding="md" className="w-64">
                         <h4 className="font-semibold mb-2">Popover Content</h4>
                         <p className="text-sm text-muted">
                           This is a popover with more detailed information.
                         </p>
-                      </div>
+                      </Card>
                     }
                     position="bottom"
                   />
@@ -390,7 +390,7 @@ export default function UIPlayground() {
           </Card>
 
           {/* Navigation Components */}
-          <Card className="p-6 mb-8">
+          <Card padding="lg" className="mb-8">
             <h2 className="text-2xl font-semibold mb-6">Navigation Components</h2>
 
             {/* Accordion */}
