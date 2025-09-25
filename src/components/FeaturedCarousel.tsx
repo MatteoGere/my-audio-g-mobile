@@ -82,7 +82,7 @@ export default function FeaturedCarousel() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-  <h2 className="text-xl font-bold text-foreground">Featured Tours</h2>
+        <h2 className="text-xl font-bold text-foreground">Featured Tours</h2>
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" onClick={onPrev} aria-label="Previous">
             <HiOutlineChevronLeft className="h-5 w-5" />
@@ -128,7 +128,10 @@ export default function FeaturedCarousel() {
             const imgUrl = path ? urlMap.get(path) : undefined;
             return (
               <Link key={it.id} href={`/itinerary/${it.id}`} className="block" tabIndex={0}>
-                <Card padding="md" className="min-w-[260px] w-[260px] flex flex-col overflow-hidden rounded-xl shadow-md snap-start transition-colors hover:bg-background">
+                <Card
+                  padding="md"
+                  className="min-w-[260px] w-[260px] flex flex-col overflow-hidden rounded-xl shadow-md snap-start transition-colors hover:bg-background"
+                >
                   <div className="relative h-40 bg-surface rounded-t-xl">
                     {imgUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -145,18 +148,14 @@ export default function FeaturedCarousel() {
                   </div>
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center justify-between gap-2">
-                      <h3 className="font-bold text-foreground truncate">
-                        {it.name}
-                      </h3>
+                      <h3 className="font-bold text-foreground truncate">{it.name}</h3>
                       <Badge variant="secondary" className="shrink-0">
                         <HiOutlineClock className="h-3 w-3 mr-1" />{' '}
                         {formatDuration(it.total_duration)}
                       </Badge>
                     </div>
                     {it.description && (
-                      <p className="text-xs text-muted line-clamp-2">
-                        {it.description}
-                      </p>
+                      <p className="text-xs text-muted line-clamp-2">{it.description}</p>
                     )}
                   </div>
                 </Card>

@@ -306,12 +306,8 @@ export default function AudioPlayerPage() {
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-6 max-w-md">
           <Card padding="lg" className="text-center">
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              Audio Not Available
-            </h2>
-            <p className="text-muted mb-4">
-              Unable to load the audio tracks for this itinerary.
-            </p>
+            <h2 className="text-xl font-semibold text-foreground mb-2">Audio Not Available</h2>
+            <p className="text-muted mb-4">Unable to load the audio tracks for this itinerary.</p>
             <Button onClick={() => router.back()}>Go Back</Button>
           </Card>
         </div>
@@ -361,15 +357,13 @@ export default function AudioPlayerPage() {
           <h1 className="text-xl font-bold text-foreground">
             {currentTrack?.name || 'Loading...'}
           </h1>
-          <p className="text-muted text-sm">
-            {itinerary?.name || 'Audio Tour'}
-          </p>
+          <p className="text-muted text-sm">{itinerary?.name || 'Audio Tour'}</p>
           <p className="text-muted text-xs">
             Track {currentTrackIndex + 1} of {tracks?.length || 0}
           </p>
         </div>
 
-  {/* Progress Bar */}
+        {/* Progress Bar */}
         <div className="space-y-2">
           <Progress
             value={progress}
@@ -435,19 +429,31 @@ export default function AudioPlayerPage() {
             </Button>
 
             <div className="relative">
-              <button className="bg-surface rounded-lg px-3 py-1" onClick={() => setShowSpeedMenu(!showSpeedMenu)}>
-                <span className="text-sm font-medium text-foreground">{audioState.playbackState.playbackSpeed}x</span>
+              <button
+                className="bg-surface rounded-lg px-3 py-1"
+                onClick={() => setShowSpeedMenu(!showSpeedMenu)}
+              >
+                <span className="text-sm font-medium text-foreground">
+                  {audioState.playbackState.playbackSpeed}x
+                </span>
               </button>
 
-                {showSpeedMenu && (
-                  <Card padding="sm" className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 rounded-lg shadow-lg border-muted z-10">
-                    {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
-                      <button key={speed} className="block w-full text-left px-3 py-1 text-sm hover:bg-background rounded" onClick={() => handleSpeedChange(speed)}>
-                        {speed}x
-                      </button>
-                    ))}
-                  </Card>
-                )}
+              {showSpeedMenu && (
+                <Card
+                  padding="sm"
+                  className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 rounded-lg shadow-lg border-muted z-10"
+                >
+                  {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
+                    <button
+                      key={speed}
+                      className="block w-full text-left px-3 py-1 text-sm hover:bg-background rounded"
+                      onClick={() => handleSpeedChange(speed)}
+                    >
+                      {speed}x
+                    </button>
+                  ))}
+                </Card>
+              )}
             </div>
 
             <Button
@@ -469,8 +475,18 @@ export default function AudioPlayerPage() {
             </Button>
 
             {showVolumeSlider && (
-              <Card padding="sm" className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 rounded-lg shadow-lg border-muted z-10">
-                <input type="range" min="0" max="100" value={audioState.playbackState.volume * 100} onChange={(e) => handleVolumeChange(parseInt(e.target.value))} className="w-20 h-2 bg-background rounded-lg appearance-none cursor-pointer" />
+              <Card
+                padding="sm"
+                className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 rounded-lg shadow-lg border-muted z-10"
+              >
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={audioState.playbackState.volume * 100}
+                  onChange={(e) => handleVolumeChange(parseInt(e.target.value))}
+                  className="w-20 h-2 bg-background rounded-lg appearance-none cursor-pointer"
+                />
               </Card>
             )}
           </div>
@@ -485,10 +501,10 @@ export default function AudioPlayerPage() {
         </Card>
 
         {/* Enhanced Queue Manager */}
-    {showQueue && <QueueManager isVisible={showQueue} onClose={() => setShowQueue(false)} />}
+        {showQueue && <QueueManager isVisible={showQueue} onClose={() => setShowQueue(false)} />}
 
         {/* Playlist Management Controls */}
-  <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           {/* Queue Toggle */}
           <Button
             variant={showQueue ? 'primary' : 'outline'}
@@ -507,7 +523,7 @@ export default function AudioPlayerPage() {
         </div>
 
         {/* Playback Mode Controls */}
-  <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4 gap-2">
           <Button
             variant={audioState.shuffleMode ? 'primary' : 'outline'}
             size="sm"

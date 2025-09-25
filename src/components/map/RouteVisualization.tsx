@@ -47,9 +47,17 @@ export const RouteVisualization: React.FC<RouteVisualizationProps> = ({
           a = (a << 5) - a + b.charCodeAt(0);
           return a & a;
         }, 0);
-  // Use a small palette for visual distinction but fall back to semantic tokens when reasonable
-  const colors = [tokens.colors.primary, tokens.colors.error, tokens.colors.success, tokens.colors.warning, '#8B5CF6', '#EC4899'];
-  const itineraryColor = (colors[Math.abs(hash) % colors.length] as string) || tokens.colors.primary;
+        // Use a small palette for visual distinction but fall back to semantic tokens when reasonable
+        const colors = [
+          tokens.colors.primary,
+          tokens.colors.error,
+          tokens.colors.success,
+          tokens.colors.warning,
+          '#8B5CF6',
+          '#EC4899',
+        ];
+        const itineraryColor =
+          (colors[Math.abs(hash) % colors.length] as string) || tokens.colors.primary;
 
         grouped[poi.itineraryId] = {
           pois: [],

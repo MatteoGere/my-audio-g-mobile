@@ -115,7 +115,8 @@ export default function RegisterPage() {
         {/* Success Message */}
         <div className="text-center">
           <div className="mx-auto w-16 h-16 bg-surface rounded-full flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-success"
+            <svg
+              className="w-8 h-8 text-success"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -128,9 +129,7 @@ export default function RegisterPage() {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-foreground">
-            Account Created!
-          </h2>
+          <h2 className="text-2xl font-bold text-foreground">Account Created!</h2>
           <p className="text-sm text-muted mt-2">
             We've sent a verification email to <strong>{formData.email}</strong>
           </p>
@@ -269,7 +268,11 @@ export default function RegisterPage() {
             autoComplete="new-password"
             error={validationErrors.confirmPassword}
           />
-          <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-xs text-primary transition-colors">
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="text-xs text-primary transition-colors"
+          >
             {showPassword ? 'Hide passwords' : 'Show passwords'}
           </button>
         </div>
@@ -293,9 +296,7 @@ export default function RegisterPage() {
             </label>
           </div>
           {validationErrors.terms && (
-            <p className="text-sm text-error-600 ml-6">
-              {validationErrors.terms}
-            </p>
+            <p className="text-sm text-error-600 ml-6">{validationErrors.terms}</p>
           )}
         </div>
 

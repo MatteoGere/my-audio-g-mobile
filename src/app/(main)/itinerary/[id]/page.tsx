@@ -69,9 +69,7 @@ export default function ItineraryDetailPage() {
       <div className="space-y-6">
         <Card padding="lg" className="text-center">
           <h2 className="text-lg font-semibold mb-2">Itinerary not found</h2>
-          <p className="text-muted mb-4">
-            The itinerary may have been removed or is unavailable.
-          </p>
+          <p className="text-muted mb-4">The itinerary may have been removed or is unavailable.</p>
           <Button onClick={() => router.back()}>Go Back</Button>
         </Card>
       </div>
@@ -81,7 +79,7 @@ export default function ItineraryDetailPage() {
   return (
     <div className="space-y-6">
       {/* Hero Section */}
-  <Card padding="lg" className="overflow-hidden">
+      <Card padding="lg" className="overflow-hidden">
         {heroImageUrl ? (
           <img src={heroImageUrl} alt={itinerary.name} className="h-48 w-full object-cover" />
         ) : (
@@ -89,16 +87,12 @@ export default function ItineraryDetailPage() {
             <span className="text-primary text-4xl">🏛️</span>
           </div>
         )}
-  <div>
+        <div>
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
-              <h1 className="text-xl font-bold text-foreground mb-2">
-                {itinerary.name}
-              </h1>
+              <h1 className="text-xl font-bold text-foreground mb-2">{itinerary.name}</h1>
               {(itinerary as any)?.company?.name && (
-                <p className="text-sm text-muted">
-                  by {(itinerary as any).company.name}
-                </p>
+                <p className="text-sm text-muted">by {(itinerary as any).company.name}</p>
               )}
             </div>
             <Button variant="ghost" size="sm" aria-label="Add to favorites">
@@ -106,16 +100,14 @@ export default function ItineraryDetailPage() {
             </Button>
           </div>
 
-              <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-4 mb-4">
             <Badge variant="outline">{formatDuration(itinerary.total_duration)}</Badge>
             <Badge variant="outline">{tracks?.length || 0} stops</Badge>
             <Badge variant="secondary">Walking Tour</Badge>
           </div>
 
           {itinerary.description && (
-            <p className="text-muted text-sm leading-relaxed mb-4">
-              {itinerary.description}
-            </p>
+            <p className="text-muted text-sm leading-relaxed mb-4">{itinerary.description}</p>
           )}
 
           <div className="flex space-x-3">
@@ -135,7 +127,9 @@ export default function ItineraryDetailPage() {
 
       {/* Audio Tracks */}
       <div>
-        <h2 className="text-lg font-semibold text-foreground mb-4">Audio Tracks ({tracks?.length || 0})</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-4">
+          Audio Tracks ({tracks?.length || 0})
+        </h2>
         <div className="space-y-3">
           {tracksLoading && (
             <div className="space-y-3">
@@ -151,14 +145,26 @@ export default function ItineraryDetailPage() {
             <Card key={track.id} padding="md">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-primary-foreground text-sm font-semibold">{track.audio_itinerary_order}</span>
+                  <span className="text-primary-foreground text-sm font-semibold">
+                    {track.audio_itinerary_order}
+                  </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-foreground mb-1">{track.name || 'Untitled track'}</h3>
-                  {track.description && <p className="text-sm text-muted mb-1">{track.description}</p>}
+                  <h3 className="font-medium text-foreground mb-1">
+                    {track.name || 'Untitled track'}
+                  </h3>
+                  {track.description && (
+                    <p className="text-sm text-muted mb-1">{track.description}</p>
+                  )}
                   <span className="text-xs text-muted">{formatDuration(track.duration)}</span>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => router.push(`/itinerary/${id}/play`)}>▶</Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => router.push(`/itinerary/${id}/play`)}
+                >
+                  ▶
+                </Button>
               </div>
             </Card>
           ))}
@@ -182,10 +188,12 @@ export default function ItineraryDetailPage() {
       {/* Company Info */}
       {(itinerary as any)?.company?.name && (
         <Card padding="md">
-            <h3 className="font-medium text-foreground mb-2">About {(itinerary as any).company.name}</h3>
-            {(itinerary as any).company?.description && (
-              <p className="text-sm text-muted mb-3">{(itinerary as any).company.description}</p>
-            )}
+          <h3 className="font-medium text-foreground mb-2">
+            About {(itinerary as any).company.name}
+          </h3>
+          {(itinerary as any).company?.description && (
+            <p className="text-sm text-muted mb-3">{(itinerary as any).company.description}</p>
+          )}
           <Button variant="ghost" size="sm">
             View All Tours by {(itinerary as any).company.name}
           </Button>

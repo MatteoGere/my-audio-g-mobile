@@ -107,7 +107,10 @@ const CardTitle: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({
   ...props
 }) => {
   return (
-    <h3 className={cn('text-base font-bold leading-tight tracking-tight text-foreground', className)} {...props}>
+    <h3
+      className={cn('text-base font-bold leading-tight tracking-tight text-foreground', className)}
+      {...props}
+    >
       {children}
     </h3>
   );

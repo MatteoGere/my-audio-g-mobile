@@ -20,7 +20,7 @@ export default function ProfilePage() {
 
   return (
     <NavigationGuard requireAuth={true}>
-  <div className="space-y-6">
+      <div className="space-y-6">
         {/* Profile Header */}
         <Card padding="lg">
           <div className="flex items-center gap-4">
@@ -43,12 +43,8 @@ export default function ProfilePage() {
             <Card padding="md">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-foreground">
-                    Push Notifications
-                  </h4>
-                  <p className="text-sm text-muted">
-                    Get notified about new tours
-                  </p>
+                  <h4 className="font-medium text-foreground">Push Notifications</h4>
+                  <p className="text-sm text-muted">Get notified about new tours</p>
                 </div>
                 <Switch />
               </div>
@@ -57,12 +53,8 @@ export default function ProfilePage() {
             <Card padding="md">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-foreground">
-                    Auto-play Next Track
-                  </h4>
-                  <p className="text-sm text-muted">
-                    Automatically play the next audio track
-                  </p>
+                  <h4 className="font-medium text-foreground">Auto-play Next Track</h4>
+                  <p className="text-sm text-muted">Automatically play the next audio track</p>
                 </div>
                 <Switch />
               </div>
@@ -71,12 +63,8 @@ export default function ProfilePage() {
             <Card padding="md">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-foreground">
-                    Download over WiFi only
-                  </h4>
-                  <p className="text-sm text-muted">
-                    Save mobile data usage
-                  </p>
+                  <h4 className="font-medium text-foreground">Download over WiFi only</h4>
+                  <p className="text-sm text-muted">Save mobile data usage</p>
                 </div>
                 <Switch />
               </div>

@@ -6,7 +6,7 @@ import { NavigationGuard } from '@/components/navigation/NavigationGuard';
 export default function FavoritesPage() {
   return (
     <NavigationGuard requireAuth={true}>
-  <div className="space-y-6">
+      <div className="space-y-6">
         {/* Header */}
         <div>
           <h1 className="text-2xl font-bold text-foreground mb-2">Your Favorites</h1>
@@ -35,8 +35,12 @@ export default function FavoritesPage() {
                   <span className="text-muted text-sm font-medium">❤️</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-foreground mb-1">Cathedral Architecture Tour</h3>
-                  <p className="text-sm text-muted mb-2">Discover the stunning architectural details of this historic cathedral.</p>
+                  <h3 className="font-semibold text-foreground mb-1">
+                    Cathedral Architecture Tour
+                  </h3>
+                  <p className="text-sm text-muted mb-2">
+                    Discover the stunning architectural details of this historic cathedral.
+                  </p>
                   <div className="flex items-center text-xs text-muted gap-4">
                     <span>30 minutes</span>
                     <span>5 stops</span>
@@ -44,8 +48,12 @@ export default function FavoritesPage() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Button variant="ghost" size="sm">Play</Button>
-                  <Button variant="ghost" size="sm" className="text-error">Remove</Button>
+                  <Button variant="ghost" size="sm">
+                    Play
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-error">
+                    Remove
+                  </Button>
                 </div>
               </div>
             </Card>
@@ -53,15 +61,15 @@ export default function FavoritesPage() {
         </div>
 
         {/* Empty State (when no favorites) */}
-          {false && (
+        {false && (
           <Card padding="lg" className="text-center">
-                <div className="w-16 h-16 bg-surface rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-muted text-2xl">💝</span>
-                </div>
-                <h3 className="font-semibold text-foreground mb-2">No favorites yet</h3>
-                <p className="text-sm text-muted mb-4">
-                  Start exploring tours and save your favorites here
-                </p>
+            <div className="w-16 h-16 bg-surface rounded-full mx-auto mb-4 flex items-center justify-center">
+              <span className="text-muted text-2xl">💝</span>
+            </div>
+            <h3 className="font-semibold text-foreground mb-2">No favorites yet</h3>
+            <p className="text-sm text-muted mb-4">
+              Start exploring tours and save your favorites here
+            </p>
             <Button variant="primary">Explore Tours</Button>
           </Card>
         )}

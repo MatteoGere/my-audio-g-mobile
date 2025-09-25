@@ -139,7 +139,7 @@ export default function NearbyItineraries() {
   }
 
   return (
-  <div className="space-y-4">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-foreground">Nearby Recommendations</h2>
         {coords && (
@@ -170,21 +170,22 @@ export default function NearbyItineraries() {
       )}
 
       {/* Error state */}
-      {!!error && !isLoading && (
-  <p className="text-sm text-muted">Failed to load nearby tours.</p>
-      )}
+      {!!error && !isLoading && <p className="text-sm text-muted">Failed to load nearby tours.</p>}
 
       {/* Results */}
       {items.length > 0 && (
         <div className="grid grid-cols-2 gap-4">
-            {items.map((it) => {
+          {items.map((it) => {
             const path =
               it.image_file?.image_storage_key ??
               (it.image_file_id ? imageFileMap[it.image_file_id] : '');
             const imgUrl = path ? signedUrls[path] : undefined;
             return (
               <Link key={it.id} href={`/itinerary/${it.id}`} className="block" tabIndex={0}>
-                <Card padding="md" className="flex flex-col overflow-hidden rounded-xl shadow-md hover:bg-surface">
+                <Card
+                  padding="md"
+                  className="flex flex-col overflow-hidden rounded-xl shadow-md hover:bg-surface"
+                >
                   <div className="relative h-24 bg-surface rounded-t-xl">
                     {imgUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -201,15 +202,15 @@ export default function NearbyItineraries() {
                   </div>
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center justify-between gap-2">
-                      <h3 className="font-bold text-foreground truncate">
-                        {it.name}
-                      </h3>
+                      <h3 className="font-bold text-foreground truncate">{it.name}</h3>
                       <Badge variant="secondary" className="shrink-0">
                         <HiOutlineClock className="h-3 w-3 mr-1" />{' '}
                         {formatDuration(it.total_duration)}
                       </Badge>
                     </div>
-                    <div className="text-xs text-muted">{formatDistance(it.distance_meters)} away</div>
+                    <div className="text-xs text-muted">
+                      {formatDistance(it.distance_meters)} away
+                    </div>
                   </div>
                 </Card>
               </Link>

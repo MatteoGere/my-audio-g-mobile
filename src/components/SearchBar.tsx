@@ -239,7 +239,7 @@ export default function SearchBar({
               setIsExpanded(false);
               searchInputRef.current?.focus();
             }}
-      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground"
             tabIndex={0}
             aria-label="Clear search"
           >
@@ -287,105 +287,114 @@ export default function SearchBar({
 
       {/* Dropdown */}
       {isExpanded && (
-  <div className="absolute top-full left-0 right-0 mt-2 z-50">
-    <Card padding="md" className="bg-surface border border-muted rounded-xl shadow-lg max-h-80 overflow-y-auto">
-          {/* Loading */}
-          {isLoading && query.length >= 2 && (
-            <div className="text-center text-muted">
-              <div className="inline-flex items-center">
-                <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full mr-2"></div>
-                Searching...
+        <div className="absolute top-full left-0 right-0 mt-2 z-50">
+          <Card
+            padding="md"
+            className="bg-surface border border-muted rounded-xl shadow-lg max-h-80 overflow-y-auto"
+          >
+            {/* Loading */}
+            {isLoading && query.length >= 2 && (
+              <div className="text-center text-muted">
+                <div className="inline-flex items-center">
+                  <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full mr-2"></div>
+                  Searching...
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Suggestions */}
-          {suggestions.length > 0 && (
-            <div className="py-2">
-              <div className="px-3 py-1 text-xs font-bold text-muted uppercase tracking-wide">
-                Audio Guides
-              </div>
-              {suggestions.map((suggestion, index) => (
-                <button
-                  key={suggestion.id}
-                  onClick={() => handleSuggestionClick(suggestion)}
-                  className={cn(
-                    'w-full px-3 py-2 text-left rounded-lg transition-colors',
-                    'hover:bg-background',
-                      selectedSuggestionIndex === index && 'bg-primary/20',
-                  )}
-                  tabIndex={0}
-                >
-                  <div className="font-bold text-foreground">
-                    {suggestion.title}
-                  </div>
-                  <div className="text-xs text-muted flex items-center gap-2 mt-1">
-                    {suggestion.company && <span>{suggestion.company}</span>}
-                    {suggestion.duration && (
-                      <span className="flex items-center">
-                        <HiOutlineClock className="h-3 w-3 mr-1" />
-                        {Math.round(suggestion.duration / 60)}min
-                      </span>
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Search History */}
-          {showHistory && searchHistory.length > 0 && query.length === 0 && (
-            <div className="py-2 border-t border-muted">
-              <div className="px-3 py-1 flex items-center justify-between">
-                <span className="text-xs font-bold text-muted uppercase tracking-wide">
-                  Recent Searches
-                </span>
-                <button onClick={clearHistory} className="text-xs text-primary hover:text-primary/80" tabIndex={0}>
-                  Clear
-                </button>
-              </div>
-              {searchHistory.map((item, index) => (
-                <div
-                  key={index}
+            {/* Suggestions */}
+            {suggestions.length > 0 && (
+              <div className="py-2">
+                <div className="px-3 py-1 text-xs font-bold text-muted uppercase tracking-wide">
+                  Audio Guides
+                </div>
+                {suggestions.map((suggestion, index) => (
+                  <button
+                    key={suggestion.id}
+                    onClick={() => handleSuggestionClick(suggestion)}
                     className={cn(
-                    'flex items-center px-3 py-2 rounded-lg transition-colors',
-                    'hover:bg-background',
-                    selectedSuggestionIndex === suggestions.length + index && 'bg-primary/20',
-                  )}
-                >
-                  <button
-                    onClick={() => handleSuggestionClick(item)}
-                    className="flex-1 text-left text-foreground"
+                      'w-full px-3 py-2 text-left rounded-lg transition-colors',
+                      'hover:bg-background',
+                      selectedSuggestionIndex === index && 'bg-primary/20',
+                    )}
                     tabIndex={0}
                   >
-                    {item}
+                    <div className="font-bold text-foreground">{suggestion.title}</div>
+                    <div className="text-xs text-muted flex items-center gap-2 mt-1">
+                      {suggestion.company && <span>{suggestion.company}</span>}
+                      {suggestion.duration && (
+                        <span className="flex items-center">
+                          <HiOutlineClock className="h-3 w-3 mr-1" />
+                          {Math.round(suggestion.duration / 60)}min
+                        </span>
+                      )}
+                    </div>
                   </button>
+                ))}
+              </div>
+            )}
+
+            {/* Search History */}
+            {showHistory && searchHistory.length > 0 && query.length === 0 && (
+              <div className="py-2 border-t border-muted">
+                <div className="px-3 py-1 flex items-center justify-between">
+                  <span className="text-xs font-bold text-muted uppercase tracking-wide">
+                    Recent Searches
+                  </span>
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeHistoryItem(item);
-                    }}
-                    className="ml-2 text-muted hover:text-foreground"
+                    onClick={clearHistory}
+                    className="text-xs text-primary hover:text-primary/80"
                     tabIndex={0}
-                    aria-label={`Remove ${item} from history`}
                   >
-                    <HiOutlineXMark className="h-3 w-3" />
+                    Clear
                   </button>
                 </div>
-              ))}
-            </div>
-          )}
+                {searchHistory.map((item, index) => (
+                  <div
+                    key={index}
+                    className={cn(
+                      'flex items-center px-3 py-2 rounded-lg transition-colors',
+                      'hover:bg-background',
+                      selectedSuggestionIndex === suggestions.length + index && 'bg-primary/20',
+                    )}
+                  >
+                    <button
+                      onClick={() => handleSuggestionClick(item)}
+                      className="flex-1 text-left text-foreground"
+                      tabIndex={0}
+                    >
+                      {item}
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeHistoryItem(item);
+                      }}
+                      className="ml-2 text-muted hover:text-foreground"
+                      tabIndex={0}
+                      aria-label={`Remove ${item} from history`}
+                    >
+                      <HiOutlineXMark className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
 
-          {/* No results */}
-          {query.length >= 2 && !isLoading && suggestions.length === 0 && (
-            <div className="text-center text-muted">
-              <p>No audio guides found for "{query}"</p>
-              <button onClick={() => handleSearch()} className="mt-2 text-primary font-bold" tabIndex={0}>
-                Search anyway
-              </button>
-            </div>
-          )}
-        </Card>
+            {/* No results */}
+            {query.length >= 2 && !isLoading && suggestions.length === 0 && (
+              <div className="text-center text-muted">
+                <p>No audio guides found for "{query}"</p>
+                <button
+                  onClick={() => handleSearch()}
+                  className="mt-2 text-primary font-bold"
+                  tabIndex={0}
+                >
+                  Search anyway
+                </button>
+              </div>
+            )}
+          </Card>
         </div>
       )}
 

@@ -64,15 +64,16 @@ export default function CategoriesGrid() {
       <div className="grid grid-cols-2 gap-4">
         {STATIC_CATEGORIES.map((category) => (
           <Link key={category.id} href={`/search${category.searchParams}`} tabIndex={0}>
-            <Card padding="md" className="flex flex-col items-center justify-center gap-2 rounded-xl shadow-md min-h-[120px] transition-colors hover:bg-background">
+            <Card
+              padding="md"
+              className="flex flex-col items-center justify-center gap-2 rounded-xl shadow-md min-h-[120px] transition-colors hover:bg-background"
+            >
               <div className="w-14 h-14 bg-surface rounded-lg flex items-center justify-center mb-2">
                 <span className="text-2xl" role="img" aria-label={category.name}>
                   {category.icon}
                 </span>
               </div>
-              <h3 className="font-bold text-foreground text-base mb-1">
-                {category.name}
-              </h3>
+              <h3 className="font-bold text-foreground text-base mb-1">{category.name}</h3>
               <p className="text-xs text-muted leading-normal text-center">
                 {category.description}
               </p>
@@ -92,15 +93,16 @@ export default function CategoriesGrid() {
                 href={`/search?company=${encodeURIComponent(company.name)}`}
                 tabIndex={0}
               >
-                <Card padding="md" className="flex flex-col items-center justify-center gap-2 rounded-xl shadow-md min-h-[100px] transition-colors hover:bg-background">
+                <Card
+                  padding="md"
+                  className="flex flex-col items-center justify-center gap-2 rounded-xl shadow-md min-h-[100px] transition-colors hover:bg-background"
+                >
                   <div className="w-10 h-10 bg-surface rounded-lg flex items-center justify-center mb-2">
                     <span className="text-primary text-base font-bold">
                       {company.name.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <h4 className="font-bold text-foreground text-sm truncate">
-                    {company.name}
-                  </h4>
+                  <h4 className="font-bold text-foreground text-sm truncate">{company.name}</h4>
                   {company.description && (
                     <p className="text-xs text-muted line-clamp-1 mt-1 text-center">
                       {company.description}

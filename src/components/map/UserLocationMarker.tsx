@@ -25,9 +25,9 @@ export const UserLocationMarker: React.FC<UserLocationMarkerProps> = ({
     const iconHtml = renderToString(
       <div className="relative flex items-center justify-center">
         {/* Outer ring */}
-  <div className="absolute w-8 h-8 bg-primary/20 rounded-full animate-ping" />
+        <div className="absolute w-8 h-8 bg-primary/20 rounded-full animate-ping" />
         {/* Main marker */}
-  <div className="relative w-4 h-4 bg-primary border-2 border-surface rounded-full shadow-lg">
+        <div className="relative w-4 h-4 bg-primary border-2 border-surface rounded-full shadow-lg">
           {/* Direction arrow if heading is available */}
           {heading !== undefined && (
             <div

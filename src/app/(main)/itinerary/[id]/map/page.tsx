@@ -108,8 +108,8 @@ export default function ItineraryMapPage() {
 
   return (
     <div className="relative w-full h-full bg-background">
-    {/* Header */}
-  <Card padding="md" className="absolute top-4 left-4 right-4 z-10 border border-muted">
+      {/* Header */}
+      <Card padding="md" className="absolute top-4 left-4 right-4 z-10 border border-muted">
         <div className="flex items-center gap-3 mb-3">
           <Button variant="outline" size="sm" onClick={() => router.back()} className="px-3">
             <FaArrowLeft />
@@ -126,7 +126,9 @@ export default function ItineraryMapPage() {
           <Button
             onClick={handlePlayItinerary}
             className="flex-1 flex items-center gap-2"
-            style={{ backgroundColor: itineraryColors[itineraryId] || (tokens.colors.primary as string) }}
+            style={{
+              backgroundColor: itineraryColors[itineraryId] || (tokens.colors.primary as string),
+            }}
           >
             <FaPlay />
             <span>Play Itinerary</span>
@@ -159,7 +161,7 @@ export default function ItineraryMapPage() {
               <h3 className="font-semibold text-foreground mb-2">Tracks in this itinerary</h3>
               <div className="space-y-1">
                 {pois.map((poi, index) => (
-                    <div
+                  <div
                     key={poi.trackId}
                     className={`flex items-center gap-3 p-2 rounded cursor-pointer transition-colors ${
                       selectedPoiId === poi.trackId
@@ -170,7 +172,10 @@ export default function ItineraryMapPage() {
                   >
                     <div
                       className="w-3 h-3 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: itineraryColors[poi.itineraryId] || (tokens.colors.primary as string) }}
+                      style={{
+                        backgroundColor:
+                          itineraryColors[poi.itineraryId] || (tokens.colors.primary as string),
+                      }}
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">

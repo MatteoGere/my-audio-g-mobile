@@ -99,19 +99,22 @@ export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onC
           </div>
         )}
 
-    {/* Content */}
-    <Card padding="md">
+        {/* Content */}
+        <Card padding="md">
           {/* Track Title */}
           <h3 className="font-bold text-lg text-foreground mb-2 line-clamp-2">{poi.trackName}</h3>
 
           {/* Itinerary Info */}
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
+            <div
+              className="w-3 h-3 rounded-full flex-shrink-0"
+              style={{ backgroundColor: color }}
+            />
             <span className="text-sm text-muted font-medium truncate">{poi.itineraryName}</span>
           </div>
 
           {/* Metadata */}
-            <div className="space-y-2 mb-4">
+          <div className="space-y-2 mb-4">
             <div className="flex items-center gap-2 text-sm text-muted">
               <FaClock className="text-xs" />
               <span>{formatDuration(poi.duration)}</span>
@@ -131,8 +134,13 @@ export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onC
           </div>
 
           {/* Action Buttons */}
-            <div className="flex gap-2">
-            <Button onClick={handlePlayClick} className="flex-1 flex items-center gap-2" variant="primary" style={{ '--tw-bg-opacity': 1 } as any}>
+          <div className="flex gap-2">
+            <Button
+              onClick={handlePlayClick}
+              className="flex-1 flex items-center gap-2"
+              variant="primary"
+              style={{ '--tw-bg-opacity': 1 } as any}
+            >
               {isCurrentTrack && isPlaying ? (
                 <>
                   <FaPause />

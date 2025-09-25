@@ -114,7 +114,9 @@ const Modal: React.FC<ModalProps> = ({
         )}
 
         {/* Content */}
-        <Card padding="lg" className={cn(size === 'full' && 'flex-1 overflow-auto', 'border-none')}>{children}</Card>
+        <Card padding="lg" className={cn(size === 'full' && 'flex-1 overflow-auto', 'border-none')}>
+          {children}
+        </Card>
       </div>
     </div>
   );

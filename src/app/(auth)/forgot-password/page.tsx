@@ -62,7 +62,12 @@ export default function ForgotPasswordPage() {
         {/* Success Message */}
         <div className="text-center">
           <div className="mx-auto w-16 h-16 bg-success/20 rounded-full flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-8 h-8 text-success"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -72,7 +77,9 @@ export default function ForgotPasswordPage() {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-foreground">Check Your Email</h2>
-          <p className="text-sm text-muted mt-2">We've sent a password reset link to <strong>{email}</strong></p>
+          <p className="text-sm text-muted mt-2">
+            We've sent a password reset link to <strong>{email}</strong>
+          </p>
         </div>
 
         {/* Instructions */}
@@ -120,9 +127,11 @@ export default function ForgotPasswordPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-        <div className="text-center">
+      <div className="text-center">
         <h2 className="text-2xl font-bold text-foreground">Forgot Password?</h2>
-        <p className="text-sm text-muted mt-2">No worries! Enter your email and we'll send you reset instructions.</p>
+        <p className="text-sm text-muted mt-2">
+          No worries! Enter your email and we'll send you reset instructions.
+        </p>
       </div>
 
       {/* Reset Form */}
@@ -139,9 +148,9 @@ export default function ForgotPasswordPage() {
         />
 
         {error && (
-      <div className="p-3 rounded-lg bg-error/10 border border-error/30">
-        <p className="text-sm text-error">{error}</p>
-            </div>
+          <div className="p-3 rounded-lg bg-error/10 border border-error/30">
+            <p className="text-sm text-error">{error}</p>
+          </div>
         )}
 
         <Button
@@ -160,7 +169,7 @@ export default function ForgotPasswordPage() {
       <div className="text-center">
         <Link
           href="/login"
-              className="text-sm text-primary hover:text-primary-700 transition-colors"
+          className="text-sm text-primary hover:text-primary-700 transition-colors"
         >
           ← Back to Sign In
         </Link>

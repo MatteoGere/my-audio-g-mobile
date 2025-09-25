@@ -48,7 +48,7 @@ const Avatar: React.FC<AvatarProps> = ({
 
   const statusColors = {
     online: 'bg-success',
-  offline: 'bg-surface',
+    offline: 'bg-surface',
     away: 'bg-warning',
     busy: 'bg-error',
   };

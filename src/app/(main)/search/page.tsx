@@ -200,7 +200,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Search Header */}
-  <Card padding="md" className="bg-surface border-b border-muted sticky top-0 z-10 mb-6">
+      <Card padding="md" className="bg-surface border-b border-muted sticky top-0 z-10 mb-6">
         <div className="space-y-4">
           {/* Search Input */}
           <div className="relative">
@@ -267,9 +267,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
             <div className="space-y-4 pt-4">
               {/* Company Filter */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Company
-                </label>
+                <label className="block text-sm font-medium text-foreground mb-2">Company</label>
                 <select
                   value={filters.company}
                   onChange={(e) => updateFilter('company', e.target.value)}
@@ -332,7 +330,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
       </Card>
 
       {/* Results */}
-  <div className="px-5">
+      <div className="px-5">
         {/* Results Header (not contained in a Card — mobile-first list view) */}
         <div className="mb-4">
           <div className="flex items-center justify-between">
@@ -356,7 +354,13 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                   viewMode === 'list' ? 'flex items-start' : ''
                 } p-4`}
               >
-                <div className={viewMode === 'grid' ? 'h-32 bg-background rounded-md mb-3 w-full' : 'h-24 w-24 bg-background rounded-md flex-shrink-0 mr-4'} />
+                <div
+                  className={
+                    viewMode === 'grid'
+                      ? 'h-32 bg-background rounded-md mb-3 w-full'
+                      : 'h-24 w-24 bg-background rounded-md flex-shrink-0 mr-4'
+                  }
+                />
                 <div className="flex-1">
                   <div className="space-y-2">
                     <div className="h-4 bg-background rounded w-3/4" />
@@ -380,9 +384,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         {!isLoading && !error && filteredResults.length === 0 && (
           <div className="text-center py-12">
             <HiOutlineMagnifyingGlass className="h-12 w-12 text-muted mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-foreground mb-2">
-              No tours found
-            </h3>
+            <h3 className="text-lg font-medium text-foreground mb-2">No tours found</h3>
             <p className="text-muted mb-4">
               Try adjusting your search criteria or clear the filters
             </p>
@@ -455,14 +457,10 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                   {/* Content */}
                   <div className="flex-1">
                     <div className="space-y-1">
-                      <h3 className="font-medium text-foreground line-clamp-2">
-                        {itinerary.name}
-                      </h3>
+                      <h3 className="font-medium text-foreground line-clamp-2">{itinerary.name}</h3>
 
                       {viewMode === 'list' && itinerary.description && (
-                        <p className="text-xs text-muted line-clamp-2">
-                          {itinerary.description}
-                        </p>
+                        <p className="text-xs text-muted line-clamp-2">{itinerary.description}</p>
                       )}
 
                       <div className="flex items-center gap-2 text-xs text-muted">

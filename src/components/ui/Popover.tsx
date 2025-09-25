@@ -207,9 +207,7 @@ const Popover: React.FC<PopoverProps> = ({
             marginRight: actualPosition === 'left' ? offset : undefined,
           }}
         >
-          <div ref={contentRef}>
-            {content}
-          </div>
+          <div ref={contentRef}>{content}</div>
         </Card>
       )}
     </div>

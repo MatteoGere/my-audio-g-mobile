@@ -73,9 +73,7 @@ export default function LoginPage() {
       {/* Header */}
       <div className="text-center">
         <h2 className="text-2xl font-bold text-foreground">Welcome Back</h2>
-        <p className="text-sm text-muted mt-2">
-          Sign in to continue your audio journey
-        </p>
+        <p className="text-sm text-muted mt-2">Sign in to continue your audio journey</p>
       </div>
 
       {/* Login Form */}
@@ -131,7 +129,7 @@ export default function LoginPage() {
 
       {/* Forgot Password */}
       <div className="text-center">
-          <Link href="/forgot-password" className="text-sm text-primary transition-colors">
+        <Link href="/forgot-password" className="text-sm text-primary transition-colors">
           Forgot your password?
         </Link>
       </div>
@@ -152,12 +150,9 @@ export default function LoginPage() {
 
       {/* Sign Up Link */}
       <div className="text-center">
-          <p className="text-sm text-muted">
+        <p className="text-sm text-muted">
           Don't have an account?{' '}
-          <Link
-            href="/register"
-            className="text-primary transition-colors font-medium"
-          >
+          <Link href="/register" className="text-primary transition-colors font-medium">
             Sign up
           </Link>
         </p>

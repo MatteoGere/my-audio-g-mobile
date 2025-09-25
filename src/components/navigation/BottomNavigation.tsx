@@ -58,7 +58,7 @@ export function BottomNavigation() {
   };
 
   return (
-  <nav className="fixed bottom-0 left-0 right-0 z-40 bg-surface border-t border-muted shadow-lg">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-surface border-t border-muted shadow-lg">
       <div className="flex items-center justify-around h-16 px-5 gap-4">
         {navigationItems.map((item) => {
           const Icon = item.icon;

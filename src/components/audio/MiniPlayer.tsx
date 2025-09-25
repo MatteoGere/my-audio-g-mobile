@@ -145,7 +145,7 @@ export function MiniPlayer() {
   }
 
   return (
-  <div className="fixed bottom-16 left-0 right-0 z-30 bg-surface/95 backdrop-blur-md border-t border-muted shadow-[0_-2px_20px_rgba(0,0,0,0.1)]">
+    <div className="fixed bottom-16 left-0 right-0 z-30 bg-surface/95 backdrop-blur-md border-t border-muted shadow-[0_-2px_20px_rgba(0,0,0,0.1)]">
       {/* Interactive Progress Bar */}
       <div
         ref={progressBarRef}
@@ -168,7 +168,7 @@ export function MiniPlayer() {
 
       <Card padding="sm" className="flex items-center space-x-3">
         {/* Track Image/Icon */}
-  <div className="w-12 h-12 rounded-lg bg-surface flex items-center justify-center flex-shrink-0">
+        <div className="w-12 h-12 rounded-lg bg-surface flex items-center justify-center flex-shrink-0">
           {currentTrack?.image_file_id && currentTrackImageUrl ? (
             <img
               key={currentTrackImageKey}

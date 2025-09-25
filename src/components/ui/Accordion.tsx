@@ -126,11 +126,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
 
   return (
     <div
-      className={cn(
-  'border-b border-muted last:border-b-0',
-        disabled && 'opacity-50',
-        className,
-      )}
+      className={cn('border-b border-muted last:border-b-0', disabled && 'opacity-50', className)}
       data-state={isOpen ? 'open' : 'closed'}
       data-disabled={disabled}
     >

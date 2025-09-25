@@ -199,7 +199,7 @@ const Tab: React.FC<{
     <button
       className={cn(
         'px-4 py-2 text-sm font-medium transition-all duration-200 border-b-2 -mb-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-  'border-transparent text-muted hover:text-foreground hover:border-muted',
+        'border-transparent text-muted hover:text-foreground hover:border-muted',
         'data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-surface',
         disabled && 'opacity-50 cursor-not-allowed',
         className,

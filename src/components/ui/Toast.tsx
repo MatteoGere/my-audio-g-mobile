@@ -130,7 +130,7 @@ const ToastComponent: React.FC<Toast> = ({
 
   const variants = {
     default: {
-  container: 'bg-surface border-muted',
+      container: 'bg-surface border-muted',
       icon: 'text-info',
       IconComp: HiOutlineInformationCircle,
     },

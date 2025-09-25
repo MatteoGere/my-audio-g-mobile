@@ -122,15 +122,16 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-surface/95 backdrop-blur-md border border-muted" padding="md">
+    <Card
+      className="w-full max-w-md mx-auto bg-surface/95 backdrop-blur-md border border-muted"
+      padding="md"
+    >
       {/* Header */}
-  <div className="flex items-center justify-between border-b border-muted">
+      <div className="flex items-center justify-between border-b border-muted">
         <div className="flex items-center space-x-3">
           <HiOutlineMusicalNote className="w-5 h-5 text-primary" />
           <div>
-            <h3 className="font-semibold text-foreground">
-              Queue ({queue.length} tracks)
-            </h3>
+            <h3 className="font-semibold text-foreground">Queue ({queue.length} tracks)</h3>
             <p className="text-xs text-muted">
               {formatTime(totalDuration)} total • {formatTime(remainingDuration)} remaining
             </p>
@@ -140,11 +141,11 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
         <div className="flex items-center space-x-2">
           {queue.length > 1 && (
             <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleClearQueue}
-                className="text-error hover:text-error hover:bg-error/10"
-              >
+              variant="ghost"
+              size="sm"
+              onClick={handleClearQueue}
+              className="text-error hover:text-error hover:bg-error/10"
+            >
               <HiOutlineTrash className="w-4 h-4" />
             </Button>
           )}
@@ -156,8 +157,8 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
         </div>
       </div>
 
-    {/* Queue List */}
-  <div className="max-h-96 overflow-y-auto">
+      {/* Queue List */}
+      <div className="max-h-96 overflow-y-auto">
         {queue.map((queueItem, index) => {
           const isCurrentTrack = index === currentQueueIndex;
           const isPastTrack = index < currentQueueIndex;
@@ -171,8 +172,8 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                 isCurrentTrack
                   ? 'bg-primary/20 border-l-4 border-l-primary'
                   : isPastTrack
-                  ? 'opacity-60'
-                  : 'hover:bg-background',
+                    ? 'opacity-60'
+                    : 'hover:bg-background',
                 isDragOver && 'bg-primary/20',
                 draggedIndex === index && 'opacity-50',
               )}
@@ -205,26 +206,34 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                     ></div>
                   </div>
                 ) : (
-                  <span className={cn('text-xs font-medium', isCurrentTrack ? 'text-primary' : 'text-muted')}>{index + 1}</span>
+                  <span
+                    className={cn(
+                      'text-xs font-medium',
+                      isCurrentTrack ? 'text-primary' : 'text-muted',
+                    )}
+                  >
+                    {index + 1}
+                  </span>
                 )}
               </div>
 
               {/* Track Info */}
               <div className="flex-1 min-w-0 cursor-pointer" onClick={() => handlePlayTrack(index)}>
-                <p className={cn('text-sm font-medium truncate', isCurrentTrack ? 'text-primary' : 'text-foreground')}>
+                <p
+                  className={cn(
+                    'text-sm font-medium truncate',
+                    isCurrentTrack ? 'text-primary' : 'text-foreground',
+                  )}
+                >
                   {queueItem.track.name || `Track ${index + 1}`}
                 </p>
                 <div className="flex items-center space-x-2 text-xs text-muted">
                   <HiOutlineClock className="w-3 h-3" />
                   <span>{formatTime(queueItem.track.duration || 0)}</span>
                   {isCurrentTrack && (
-                    <span className="text-primary font-medium">
-                      • Now Playing
-                    </span>
+                    <span className="text-primary font-medium">• Now Playing</span>
                   )}
-                  {isPastTrack && (
-                    <span className="text-muted">• Played</span>
-                  )}
+                  {isPastTrack && <span className="text-muted">• Played</span>}
                 </div>
               </div>
 
