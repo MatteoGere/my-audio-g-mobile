@@ -3,8 +3,7 @@
 /*
   Global design tokens and theme variables
   - Keep :root for the light-mode defaults
-  - Provide a prefers-color-scheme: dark block for automatic device preference
-  - Provide a .dark class mapping so class-based dark mode works too
+  - Provide a .dark class mapping so dark mode is controlled by the UI (class-only)
   - Keep the @theme mapping (Tailwind v4 helper) for compatibility with generated utilities
 */
 
@@ -127,81 +126,7 @@
   --font-mono: var(--font-family-mono);
 }
 
-/* -----------------------------
-   Dark mode: prefer device setting
-   - prefers-color-scheme: dark for automatic device preference
-   - .dark class mapping so class-based dark mode is also supported
-   ----------------------------- */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-marble-50: #0c0d0e;
-    --color-marble-100: #1c1f23;
-    --color-marble-200: #2e3236;
-
-    --color-amber-50: #1a1408;
-    --color-amber-100: #2d220f;
-    --color-amber-200: #453419;
-
-    --color-teal-50: #041716;
-    --color-teal-100: #0f2a26;
-    --color-teal-200: #1a443d;
-
-    --color-carbon-50: #0f1419;
-    --color-carbon-100: #1e2328;
-    --color-carbon-200: #2d353b;
-
-    /* Semantic surface/background */
-    --background: var(--color-marble-50);
-    --foreground: #f8fafc; /* light text for dark backgrounds */
-    --color-background: var(--background);
-    --color-surface: #1c1f23; /* cards, sheets */
-
-    /* Semantic colors (dark)      
-   naming: --color-{role} and {role}-foreground for text on that color   */
-    --color-primary: #22d3ee;
-    --color-primary-foreground: #083344;
-
-    --color-secondary: #fbbf24;
-    --color-secondary-foreground: #451a03;
-
-    --color-accent: #34d399;
-    --color-accent-foreground: #064e3b;
-
-    --color-muted: #94a3b8;
-
-    /* State colors */
-    --color-info: #38bdf8;
-    --color-success: #4ade80;
-    --color-warning: #facc15;
-    --color-error: #f87171;
-
-    /* Typography */
-    --font-family-sans:
-      'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-    --font-family-mono:
-      ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
-    --font-size-base: 16px;
-    --line-height-base: 1.5;
-
-    /* Border radius scale */
-    --radius-sm: 6px;
-    --radius-md: 12px;
-    --radius-lg: 18px;
-    --radius-full: 9999px;
-
-    /* Shadows */
-    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.4);
-    --shadow-strong: 0 16px 48px rgba(0, 0, 0, 0.5);
-
-    /* Compatibility fallbacks */
-    --color-foreground: var(--foreground);
-    --font-sans: var(--font-family-sans);
-    --font-mono: var(--font-family-mono);
-  }
-}
-
-/* Class-based dark mode support (keeps parity with prefers-color-scheme) */
+/* Class-based dark mode support (applies when .dark is present) */
 .dark {
   --color-marble-50: #0c0d0e;
   --color-marble-100: #1c1f23;

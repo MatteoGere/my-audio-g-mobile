@@ -6,7 +6,7 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  darkMode: 'class', // allow toggling with the .dark class; prefers-color-scheme still works via CSS
+  darkMode: 'class', // allow toggling with the .dark class; controlled via UI only
   theme: {
     extend: {
       colors: {

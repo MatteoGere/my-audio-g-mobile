@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
@@ -8,6 +8,7 @@ import {
   setupPeriodicCleanup,
 } from './middleware/signedUrlPersistenceMiddleware';
 import { useAppSelector } from './store';
+import { useTheme } from 'next-themes';
 
 interface ReduxProviderProps {
   children: React.ReactNode;
@@ -33,17 +34,21 @@ export function ReduxProvider({ children }: ReduxProviderProps) {
   const ThemeSync = () => {
     const theme = useAppSelector((s) => s.userPreferences.theme);
 
+    const { setTheme } = useTheme();
+
     useEffect(() => {
       try {
-        const el = document.documentElement;
-        el.classList.remove('light', 'dark');
-        if (theme === 'dark') el.classList.add('dark');
-        else if (theme === 'light') el.classList.add('light');
-        // system: let CSS handle it (or user agent)
+        // Delegate theme switching to next-themes so it handles the class on <html>
+        if (typeof setTheme === 'function') {
+          // setTheme accepts 'light' | 'dark' | 'system'
+          // Map any 'system' value to a concrete 'light' (class-only policy)
+          const mapped = theme === 'system' || theme == null ? 'light' : theme;
+          setTheme(mapped as 'light' | 'dark');
+        }
       } catch (e) {
-        // ignore during SSR or if document unavailable
+        // ignore during SSR or if theme API not available yet
       }
-    }, [theme]);
+    }, [theme, setTheme]);
 
     return null;
   };

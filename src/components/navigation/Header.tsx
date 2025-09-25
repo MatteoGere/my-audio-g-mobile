@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
 import { Avatar } from '@/components/ui';
 import { useAuth, useUserProfile } from '@/lib/hooks';
 import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
+import { setTheme as setThemeAction } from '@/lib/redux/slices/userPreferencesSlice';
 import { setPlayerView } from '@/lib/redux/slices/audioSlice';
 import {
   HiOutlineChevronLeft,
@@ -16,7 +17,10 @@ import {
   HiOutlineArrowRightOnRectangle,
   HiOutlineChevronDown,
   HiOutlineMusicalNote,
+  HiOutlineSun,
+  HiOutlineMoon,
 } from 'react-icons/hi2';
+import { useTheme } from 'next-themes';
 
 interface HeaderProps {
   title?: string;
@@ -37,6 +41,13 @@ export function Header({
   const { isAuthenticated, user, signOut } = useAuth();
   const { profile } = useUserProfile();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch — only render theme-dependent UI after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Audio player state for reopen button
   const { currentTrack, playerView } = useAppSelector((state) => state.audio);
@@ -140,6 +151,33 @@ export function Header({
               <HiOutlineMagnifyingGlass className="h-5 w-5" />
             </Button>
           )}
+
+          {/* Theme toggler */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              // Toggle theme and persist choice to Redux so ThemeSync doesn't override it
+              const newTheme = theme === 'dark' ? 'light' : 'dark';
+              try {
+                setTheme(newTheme);
+              } catch (e) {
+                // ignore if setTheme not available yet
+              }
+              dispatch(setThemeAction(newTheme));
+            }}
+            title="Toggle theme"
+          >
+            {mounted ? (
+              theme === 'dark' ? (
+                <HiOutlineSun className="h-5 w-5" />
+              ) : (
+                <HiOutlineMoon className="h-5 w-5" />
+              )
+            ) : (
+              <HiOutlineSun className="h-5 w-5 opacity-0" />
+            )}
+          </Button>
 
           {/* User Avatar / Login Button */}
           {isAuthenticated ? (
