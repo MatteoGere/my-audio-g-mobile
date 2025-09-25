@@ -145,11 +145,11 @@ export function MiniPlayer() {
   }
 
   return (
-    <div className="fixed bottom-16 left-0 right-0 z-30 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border-t border-stone-200 dark:border-stone-700 shadow-[0_-2px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_-2px_20px_rgba(0,0,0,0.4)]">
+    <div className="fixed bottom-16 left-0 right-0 z-30 bg-white/95 dark:bg-carbon-900/95 backdrop-blur-md border-t border-carbon-200 dark:border-carbon-700 shadow-[0_-2px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_-2px_20px_rgba(0,0,0,0.4)]">
       {/* Interactive Progress Bar */}
       <div
         ref={progressBarRef}
-        className="h-1 bg-stone-200 dark:bg-stone-700 cursor-pointer relative group hover:h-2 transition-all duration-200"
+        className="h-1 bg-carbon-200 dark:bg-carbon-700 cursor-pointer relative group hover:h-2 transition-all duration-200"
         onClick={handleProgressClick}
         onMouseDown={handleProgressMouseDown}
       >
@@ -168,7 +168,7 @@ export function MiniPlayer() {
 
       <div className="flex items-center px-4 py-3 space-x-3">
         {/* Track Image/Icon */}
-        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary-100 to-sea-100 dark:from-primary-800 dark:to-sea-800 flex items-center justify-center flex-shrink-0">
+        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary-100 to-amber-100 dark:from-primary-800 dark:to-amber-800 flex items-center justify-center flex-shrink-0">
           {currentTrack?.image_file_id && currentTrackImageUrl ? (
             <img
               key={currentTrackImageKey}
@@ -183,10 +183,10 @@ export function MiniPlayer() {
 
         {/* Track Info - Clickable to open full player */}
         <div className="flex-1 min-w-0 cursor-pointer" onClick={handleOpenFullPlayer}>
-          <p className="text-sm font-semibold text-stone-900 dark:text-stone-100 truncate">
+          <p className="text-sm font-semibold text-carbon-900 dark:text-carbon-100 truncate">
             {currentTrack.name || 'Audio Track'}
           </p>
-          <div className="flex items-center space-x-2 text-xs text-stone-600 dark:text-stone-400">
+          <div className="flex items-center space-x-2 text-xs text-carbon-600 dark:text-carbon-400">
             <span>{formatTime(playbackState.currentTime)}</span>
             <span>/</span>
             <span>{formatTime(currentTrack.duration || 0)}</span>

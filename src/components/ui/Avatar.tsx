@@ -48,7 +48,7 @@ const Avatar: React.FC<AvatarProps> = ({
 
   const statusColors = {
     online: 'bg-success',
-    offline: 'bg-stone-400',
+    offline: 'bg-carbon-400',
     away: 'bg-warning',
     busy: 'bg-error',
   };
@@ -81,7 +81,7 @@ const Avatar: React.FC<AvatarProps> = ({
     <div className="relative inline-block">
       <div
         className={cn(
-          'relative flex items-center justify-center rounded-full bg-stone-100 font-bold text-stone-700 overflow-hidden shadow-sm',
+          'relative flex items-center justify-center rounded-full bg-carbon-100 font-bold text-carbon-700 overflow-hidden shadow-sm',
           sizes[size],
           className,
         )}
@@ -98,7 +98,7 @@ const Avatar: React.FC<AvatarProps> = ({
         )}
 
         {!shouldShowImage && !shouldShowFallback && !children && (
-          <HiOutlineUser className="h-1/2 w-1/2 text-stone-400" aria-hidden="true" />
+          <HiOutlineUser className="h-1/2 w-1/2 text-carbon-400" aria-hidden="true" />
         )}
       </div>
 

@@ -17,19 +17,14 @@ interface POIPopupProps {
   onClose?: () => void;
 }
 
-export const POIPopup: React.FC<POIPopupProps> = ({
-  poi,
-  color,
-  onPlayClick,
-  onClose,
-}) => {
+export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onClose }) => {
   const dispatch = useAppDispatch();
-  
+
   // Get signed URL for track image if available
   const { signedUrl: imageUrl, isLoading: imageLoading } = useSignedUrl(
     poi.imageStorageKey || '',
     'image-files',
-    3600
+    3600,
   );
 
   // Check if this track is currently playing
@@ -54,12 +49,7 @@ export const POIPopup: React.FC<POIPopupProps> = ({
   };
 
   return (
-    <Popup
-      closeButton={true}
-      minWidth={280}
-      maxWidth={320}
-      className="poi-popup"
-    >
+    <Popup closeButton={true} minWidth={280} maxWidth={320} className="poi-popup">
       <div className="bg-white rounded-lg overflow-hidden shadow-lg">
         {/* Header Image */}
         {poi.imageStorageKey && (
@@ -81,7 +71,7 @@ export const POIPopup: React.FC<POIPopupProps> = ({
                 <FaMusic className="text-gray-400 text-2xl" />
               </div>
             )}
-            
+
             {/* Play button overlay */}
             <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
               <Button
@@ -100,10 +90,7 @@ export const POIPopup: React.FC<POIPopupProps> = ({
             {/* Currently playing indicator */}
             {isCurrentTrack && (
               <div className="absolute top-2 right-2">
-                <Badge 
-                  variant="default" 
-                  className="bg-green-500 text-white animate-pulse"
-                >
+                <Badge variant="default" className="bg-green-500 text-white animate-pulse">
                   {isPlaying ? 'Playing' : 'Paused'}
                 </Badge>
               </div>
@@ -114,19 +101,15 @@ export const POIPopup: React.FC<POIPopupProps> = ({
         {/* Content */}
         <div className="p-4">
           {/* Track Title */}
-          <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
-            {poi.trackName}
-          </h3>
+          <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">{poi.trackName}</h3>
 
           {/* Itinerary Info */}
           <div className="flex items-center gap-2 mb-3">
-            <div 
+            <div
               className="w-3 h-3 rounded-full flex-shrink-0"
               style={{ backgroundColor: color }}
             />
-            <span className="text-sm text-gray-700 font-medium truncate">
-              {poi.itineraryName}
-            </span>
+            <span className="text-sm text-gray-700 font-medium truncate">{poi.itineraryName}</span>
           </div>
 
           {/* Metadata */}
@@ -135,12 +118,12 @@ export const POIPopup: React.FC<POIPopupProps> = ({
               <FaClock className="text-xs" />
               <span>{formatDuration(poi.duration)}</span>
             </div>
-            
+
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <FaBuilding className="text-xs" />
               <span className="truncate">{poi.companyName}</span>
             </div>
-            
+
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <FaMapMarkerAlt className="text-xs" />
               <span className="text-xs">
@@ -168,7 +151,7 @@ export const POIPopup: React.FC<POIPopupProps> = ({
                 </>
               )}
             </Button>
-            
+
             <Button
               variant="outline"
               className="px-3"

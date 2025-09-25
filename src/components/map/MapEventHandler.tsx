@@ -47,7 +47,12 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
     return () => clearTimeout(id);
   }, [initialEventDelayMs]);
 
-  const scheduleBoundsUpdate = (payload: { north: number; south: number; east: number; west: number }) => {
+  const scheduleBoundsUpdate = (payload: {
+    north: number;
+    south: number;
+    east: number;
+    west: number;
+  }) => {
     if (!onBoundsChange) return;
     if (boundsDebounceRef.current) {
       clearTimeout(boundsDebounceRef.current);
@@ -64,14 +69,14 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
       if (skipInitialRef.current) return;
       onMoveStart?.();
     },
-    
+
     move: () => {
       if (skipInitialRef.current) return;
       const center = map.getCenter();
       const zoom = map.getZoom();
       onMove?.(center, zoom);
     },
-    
+
     moveend: () => {
       if (skipInitialRef.current) return;
       onMoveEnd?.();
@@ -85,7 +90,7 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
         west: bounds.getWest(),
       });
     },
-    
+
     zoomend: () => {
       if (skipInitialRef.current) return;
       const center = map.getCenter();
@@ -101,7 +106,7 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
         west: bounds.getWest(),
       });
     },
-    
+
     click: (e: LeafletMouseEvent) => {
       if (skipInitialRef.current) return;
       onClick?.(e.latlng.lat, e.latlng.lng);

@@ -310,7 +310,10 @@ export const apiSlice = createApi({
         companyId: string;
         companyName: string;
       }>,
-      { bounds?: { north: number; south: number; east: number; west: number }; itineraryId?: string }
+      {
+        bounds?: { north: number; south: number; east: number; west: number };
+        itineraryId?: string;
+      }
     >({
       queryFn: async ({ bounds, itineraryId }) => {
         try {
@@ -360,19 +363,20 @@ export const apiSlice = createApi({
           if (error) throw error;
 
           // Transform the data to match our POIMarkerData interface
-          const transformedData = data?.map((track: any) => ({
-            trackId: track.id,
-            trackName: track.name,
-            itineraryId: track.audio_itinerary.id,
-            itineraryName: track.audio_itinerary.name,
-            latitude: track.audio_track_poi.latitude,
-            longitude: track.audio_track_poi.longitude,
-            duration: track.duration,
-            imageStorageKey: track.image_file?.image_storage_key || null,
-            audioStorageKey: track.audio_storage_key,
-            companyId: track.audio_itinerary.company.id,
-            companyName: track.audio_itinerary.company.name,
-          })) || [];
+          const transformedData =
+            data?.map((track: any) => ({
+              trackId: track.id,
+              trackName: track.name,
+              itineraryId: track.audio_itinerary.id,
+              itineraryName: track.audio_itinerary.name,
+              latitude: track.audio_track_poi.latitude,
+              longitude: track.audio_track_poi.longitude,
+              duration: track.duration,
+              imageStorageKey: track.image_file?.image_storage_key || null,
+              audioStorageKey: track.audio_storage_key,
+              companyId: track.audio_itinerary.company.id,
+              companyName: track.audio_itinerary.company.name,
+            })) || [];
 
           return { data: transformedData };
         } catch (error: any) {

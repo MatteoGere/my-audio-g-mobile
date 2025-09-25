@@ -58,7 +58,7 @@ export function BottomNavigation() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-stone-800 border-t border-stone-200 dark:border-stone-700 shadow-lg">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-carbon-800 border-t border-carbon-200 dark:border-carbon-700 shadow-lg">
       <div className="flex items-center justify-around h-16 px-5 gap-4">
         {navigationItems.map((item) => {
           const Icon = item.icon;
@@ -72,7 +72,7 @@ export function BottomNavigation() {
                 'flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-xl min-w-[44px] min-h-[44px] flex-1 transition-all duration-200',
                 active
                   ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 shadow-md'
-                  : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-100 dark:hover:bg-stone-700',
+                  : 'text-carbon-600 dark:text-carbon-400 hover:text-carbon-900 dark:hover:text-carbon-100 hover:bg-carbon-100 dark:hover:bg-carbon-700',
               )}
               tabIndex={0}
             >
@@ -81,11 +81,7 @@ export function BottomNavigation() {
                   className={cn('h-6 w-6 transition-transform duration-200', active && 'scale-110')}
                 />
                 {item.badge && (
-                  <Badge
-                    variant="error"
-                    size="sm"
-                    className="absolute -top-2 -right-2"
-                  >
+                  <Badge variant="error" size="sm" className="absolute -top-2 -right-2">
                     {item.badge > 99 ? '99+' : item.badge}
                   </Badge>
                 )}

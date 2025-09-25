@@ -9,10 +9,10 @@ export default function HomePage() {
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="text-center py-6">
-        <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-100 mb-2">
+        <h1 className="text-3xl font-bold text-carbon-900 dark:text-carbon-100 mb-2">
           Welcome to MyAudioG
         </h1>
-        <p className="text-stone-600 dark:text-stone-400">
+        <p className="text-carbon-600 dark:text-carbon-400">
           Discover immersive audio tours and travel experiences
         </p>
       </div>
@@ -20,8 +20,8 @@ export default function HomePage() {
       {/* Quick Actions */}
       <div className="grid grid-cols-2 gap-4">
         <Card className="p-4 text-center">
-          <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">Explore Tours</h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
+          <h3 className="font-semibold text-carbon-900 dark:text-carbon-100 mb-2">Explore Tours</h3>
+          <p className="text-sm text-carbon-600 dark:text-carbon-400 mb-3">
             Find amazing audio guides
           </p>
           <Link href="/search" className="block">
@@ -32,8 +32,8 @@ export default function HomePage() {
         </Card>
 
         <Card className="p-4 text-center">
-          <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">Nearby</h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
+          <h3 className="font-semibold text-carbon-900 dark:text-carbon-100 mb-2">Nearby</h3>
+          <p className="text-sm text-carbon-600 dark:text-carbon-400 mb-3">
             Tours near your location
           </p>
           <Link href="/map" className="block">

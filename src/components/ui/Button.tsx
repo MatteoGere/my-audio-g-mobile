@@ -15,11 +15,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     { className, variant = 'primary', size = 'md', loading = false, disabled, children, ...props },
     ref,
   ) => {
-
     // Regole: min-w-[44px] min-h-[44px], rounded-lg/rounded-xl, shadow-md, padding px-4 py-3 (standard), gap-3+, font-bold, text-base+, focus ring, responsive spacing
     const baseStyles =
       'inline-flex items-center justify-center whitespace-nowrap min-w-[44px] min-h-[44px] rounded-xl font-bold text-base transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
-
 
     const variants = {
       primary:
@@ -31,7 +29,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         'border border-primary text-primary bg-transparent hover:bg-primary hover:text-primary-foreground active:bg-primary/95 shadow-md',
       ghost: 'text-foreground hover:bg-surface active:bg-surface/80',
     };
-
 
     // Regole: padding px-4 py-3 (standard), gap-3+, responsive
     const sizes = {

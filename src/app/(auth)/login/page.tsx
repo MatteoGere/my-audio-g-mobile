@@ -72,8 +72,8 @@ export default function LoginPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Welcome Back</h2>
-        <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
+        <h2 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100">Welcome Back</h2>
+        <p className="text-sm text-carbon-600 dark:text-carbon-400 mt-2">
           Sign in to continue your audio journey
         </p>
       </div>
@@ -142,10 +142,10 @@ export default function LoginPage() {
       {/* Guest Mode */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-stone-300 dark:border-stone-600" />
+          <div className="w-full border-t border-carbon-300 dark:border-carbon-600" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-white dark:bg-stone-800 text-stone-500 dark:text-stone-400">
+          <span className="px-2 bg-white dark:bg-carbon-800 text-carbon-500 dark:text-carbon-400">
             Or
           </span>
         </div>
@@ -157,7 +157,7 @@ export default function LoginPage() {
 
       {/* Sign Up Link */}
       <div className="text-center">
-        <p className="text-sm text-stone-600 dark:text-stone-400">
+        <p className="text-sm text-carbon-600 dark:text-carbon-400">
           Don't have an account?{' '}
           <Link
             href="/register"

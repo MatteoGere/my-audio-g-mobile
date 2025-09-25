@@ -128,7 +128,7 @@ export default function NearbyItineraries() {
   if (geoError) {
     return (
       <div className="space-y-2">
-        <div className="text-sm text-stone-600 dark:text-stone-400">
+        <div className="text-sm text-carbon-600 dark:text-carbon-400">
           Location access is disabled. Enable it to see tours near you.
         </div>
         <Button size="sm" variant="outline" onClick={() => refetch()}>
@@ -141,11 +141,11 @@ export default function NearbyItineraries() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">
+        <h2 className="text-xl font-bold text-carbon-900 dark:text-carbon-100">
           Nearby Recommendations
         </h2>
         {coords && (
-          <div className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-2">
+          <div className="text-xs text-carbon-500 dark:text-carbon-400 flex items-center gap-2">
             <HiOutlineMapPin className="h-4 w-4" />
             {coords.lat.toFixed(3)}, {coords.lng.toFixed(3)}
           </div>
@@ -160,10 +160,10 @@ export default function NearbyItineraries() {
               key={i}
               className="p-0 flex flex-col overflow-hidden rounded-xl animate-pulse shadow-md"
             >
-              <div className="h-24 bg-stone-200 dark:bg-stone-700 rounded-t-xl" />
+              <div className="h-24 bg-carbon-200 dark:bg-carbon-700 rounded-t-xl" />
               <div className="p-4 flex flex-col gap-2">
-                <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4" />
-                <div className="h-3 bg-stone-200 dark:bg-stone-700 rounded w-1/2" />
+                <div className="h-4 bg-carbon-200 dark:bg-carbon-700 rounded w-3/4" />
+                <div className="h-3 bg-carbon-200 dark:bg-carbon-700 rounded w-1/2" />
               </div>
             </Card>
           ))}
@@ -172,7 +172,7 @@ export default function NearbyItineraries() {
 
       {/* Error state */}
       {!!error && !isLoading && (
-        <p className="text-sm text-stone-500 dark:text-stone-400">Failed to load nearby tours.</p>
+        <p className="text-sm text-carbon-500 dark:text-carbon-400">Failed to load nearby tours.</p>
       )}
 
       {/* Results */}
@@ -185,20 +185,24 @@ export default function NearbyItineraries() {
             const imgUrl = path ? signedUrls[path] : undefined;
             return (
               <Link key={it.id} href={`/itinerary/${it.id}`} className="block" tabIndex={0}>
-                <Card className="p-0 flex flex-col overflow-hidden rounded-xl shadow-md hover:bg-stone-100 dark:hover:bg-stone-800">
-                  <div className="relative h-24 bg-stone-100 dark:bg-stone-800 rounded-t-xl">
+                <Card className="p-0 flex flex-col overflow-hidden rounded-xl shadow-md hover:bg-carbon-100 dark:hover:bg-carbon-800">
+                  <div className="relative h-24 bg-carbon-100 dark:bg-carbon-800 rounded-t-xl">
                     {imgUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={imgUrl} alt={it.name} className="w-full h-full object-cover rounded-t-xl" />
+                      <img
+                        src={imgUrl}
+                        alt={it.name}
+                        className="w-full h-full object-cover rounded-t-xl"
+                      />
                     ) : (
-                      <div className="w-full h-full grid place-items-center text-stone-400 text-xs">
+                      <div className="w-full h-full grid place-items-center text-carbon-400 text-xs">
                         No Image
                       </div>
                     )}
                   </div>
                   <div className="p-4 flex flex-col gap-2">
                     <div className="flex items-center justify-between gap-2">
-                      <h3 className="font-bold text-stone-900 dark:text-stone-100 truncate">
+                      <h3 className="font-bold text-carbon-900 dark:text-carbon-100 truncate">
                         {it.name}
                       </h3>
                       <Badge variant="secondary" className="shrink-0">
@@ -206,7 +210,7 @@ export default function NearbyItineraries() {
                         {formatDuration(it.total_duration)}
                       </Badge>
                     </div>
-                    <div className="text-xs text-stone-500 dark:text-stone-400">
+                    <div className="text-xs text-carbon-500 dark:text-carbon-400">
                       {formatDistance(it.distance_meters)} away
                     </div>
                   </div>

@@ -37,7 +37,7 @@ export const UserLocationMarker: React.FC<UserLocationMarkerProps> = ({
             </div>
           )}
         </div>
-      </div>
+      </div>,
     );
 
     return new DivIcon({
@@ -64,7 +64,7 @@ export const UserLocationMarker: React.FC<UserLocationMarkerProps> = ({
           }}
         />
       )}
-      
+
       {/* User location marker */}
       <Marker
         position={position}

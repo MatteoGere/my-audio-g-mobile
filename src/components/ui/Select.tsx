@@ -86,7 +86,7 @@ const Select: React.FC<SelectProps> = ({
   // Regole: rounded-lg, min-h-[44px], px-4 py-3, shadow-sm, border, focus ring, font-bold, text-base
   const buttonStyles = cn(
     'flex min-h-[44px] w-full items-center justify-between rounded-lg border bg-surface px-4 py-3 text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 shadow-sm',
-    error ? 'border-error' : 'border-stone-200 hover:border-stone-300',
+    error ? 'border-error' : 'border-carbon-200 hover:border-carbon-300',
     isOpen && 'ring-2 ring-primary ring-offset-2',
     className,
   );
@@ -119,7 +119,7 @@ const Select: React.FC<SelectProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full z-50 mt-1 w-full rounded-md border border-stone-200 bg-surface shadow-medium">
+        <div className="absolute top-full z-50 mt-1 w-full rounded-md border border-carbon-200 bg-surface shadow-medium">
           <ul className="max-h-60 overflow-auto py-1" role="listbox">
             {options.map((option) => (
               <li
@@ -128,7 +128,7 @@ const Select: React.FC<SelectProps> = ({
                 className={cn(
                   'relative cursor-pointer select-none py-2 px-3 text-sm transition-colors',
                   option.disabled && 'cursor-not-allowed opacity-50',
-                  !option.disabled && 'hover:bg-stone-100',
+                  !option.disabled && 'hover:bg-carbon-100',
                   isSelected(option.value) && 'bg-primary text-primary-foreground',
                 )}
                 role="option"

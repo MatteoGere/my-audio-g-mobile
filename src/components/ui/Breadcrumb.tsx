@@ -49,7 +49,10 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items, separator, maxItems, cla
           const isEllipsis = item.label === '...';
 
           return (
-            <li key={`${item.label}-${index}`} className="flex items-center min-w-[44px] min-h-[44px]">
+            <li
+              key={`${item.label}-${index}`}
+              className="flex items-center min-w-[44px] min-h-[44px]"
+            >
               {/* Breadcrumb item */}
               {item.href ? (
                 <a

@@ -45,18 +45,18 @@ export default function ItineraryDetailPage() {
     return (
       <div className="space-y-6">
         <Card className="overflow-hidden animate-pulse">
-          <div className="h-48 bg-stone-200" />
+          <div className="h-48 bg-carbon-200" />
           <div className="p-6 space-y-3">
-            <div className="h-6 bg-stone-200 rounded w-2/3" />
-            <div className="h-4 bg-stone-200 rounded w-1/3" />
-            <div className="h-4 bg-stone-200 rounded w-full" />
-            <div className="h-9 bg-stone-200 rounded w-full" />
+            <div className="h-6 bg-carbon-200 rounded w-2/3" />
+            <div className="h-4 bg-carbon-200 rounded w-1/3" />
+            <div className="h-4 bg-carbon-200 rounded w-full" />
+            <div className="h-9 bg-carbon-200 rounded w-full" />
           </div>
         </Card>
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
             <Card key={i} className="p-4 animate-pulse">
-              <div className="h-8 bg-stone-200 rounded" />
+              <div className="h-8 bg-carbon-200 rounded" />
             </Card>
           ))}
         </div>
@@ -69,7 +69,7 @@ export default function ItineraryDetailPage() {
       <div className="space-y-6">
         <Card className="p-6 text-center">
           <h2 className="text-lg font-semibold mb-2">Itinerary not found</h2>
-          <p className="text-stone-600 mb-4">
+          <p className="text-carbon-600 mb-4">
             The itinerary may have been removed or is unavailable.
           </p>
           <Button onClick={() => router.back()}>Go Back</Button>
@@ -85,18 +85,18 @@ export default function ItineraryDetailPage() {
         {heroImageUrl ? (
           <img src={heroImageUrl} alt={itinerary.name} className="h-48 w-full object-cover" />
         ) : (
-          <div className="h-48 bg-gradient-to-br from-primary-100 to-sea-100 dark:from-primary-900 dark:to-sea-900 flex items-center justify-center">
+          <div className="h-48 bg-gradient-to-br from-primary-100 to-amber-100 dark:from-primary-900 dark:to-amber-900 flex items-center justify-center">
             <span className="text-primary-600 dark:text-primary-400 text-4xl">🏛️</span>
           </div>
         )}
         <div className="p-6">
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
-              <h1 className="text-xl font-bold text-stone-900 dark:text-stone-100 mb-2">
+              <h1 className="text-xl font-bold text-carbon-900 dark:text-carbon-100 mb-2">
                 {itinerary.name}
               </h1>
               {(itinerary as any)?.company?.name && (
-                <p className="text-sm text-stone-600 dark:text-stone-400">
+                <p className="text-sm text-carbon-600 dark:text-carbon-400">
                   by {(itinerary as any).company.name}
                 </p>
               )}
@@ -113,7 +113,7 @@ export default function ItineraryDetailPage() {
           </div>
 
           {itinerary.description && (
-            <p className="text-stone-700 dark:text-stone-300 text-sm leading-relaxed mb-4">
+            <p className="text-carbon-700 dark:text-carbon-300 text-sm leading-relaxed mb-4">
               {itinerary.description}
             </p>
           )}
@@ -135,7 +135,7 @@ export default function ItineraryDetailPage() {
 
       {/* Audio Tracks */}
       <div>
-        <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
+        <h2 className="text-lg font-semibold text-carbon-900 dark:text-carbon-100 mb-4">
           Audio Tracks ({tracks?.length || 0})
         </h2>
         <div className="space-y-3">
@@ -143,7 +143,7 @@ export default function ItineraryDetailPage() {
             <div className="space-y-3">
               {[1, 2].map((i) => (
                 <Card key={i} className="p-4 animate-pulse">
-                  <div className="h-6 bg-stone-200 rounded" />
+                  <div className="h-6 bg-carbon-200 rounded" />
                 </Card>
               ))}
             </div>
@@ -158,15 +158,15 @@ export default function ItineraryDetailPage() {
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-1">
+                  <h3 className="font-medium text-carbon-900 dark:text-carbon-100 mb-1">
                     {track.name || 'Untitled track'}
                   </h3>
                   {track.description && (
-                    <p className="text-sm text-stone-600 dark:text-stone-400 mb-1">
+                    <p className="text-sm text-carbon-600 dark:text-carbon-400 mb-1">
                       {track.description}
                     </p>
                   )}
-                  <span className="text-xs text-stone-500 dark:text-stone-400">
+                  <span className="text-xs text-carbon-500 dark:text-carbon-400">
                     {formatDuration(track.duration)}
                   </span>
                 </div>
@@ -185,11 +185,11 @@ export default function ItineraryDetailPage() {
 
       {/* Interactive Map Preview */}
       <Card className="p-6">
-        <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">Tour Route</h3>
-        <div className="h-32 bg-sea-50 dark:bg-sea-900 rounded-lg flex items-center justify-center border-dashed border-2 border-sea-200 dark:border-sea-700">
+        <h3 className="font-semibold text-carbon-900 dark:text-carbon-100 mb-4">Tour Route</h3>
+        <div className="h-32 bg-amber-50 dark:bg-amber-900 rounded-lg flex items-center justify-center border-dashed border-2 border-amber-200 dark:border-amber-700">
           <div className="text-center">
-            <span className="text-sea-600 dark:text-sea-400 text-2xl block mb-2">🗺️</span>
-            <p className="text-sm text-stone-600 dark:text-stone-400">
+            <span className="text-amber-600 dark:text-amber-400 text-2xl block mb-2">🗺️</span>
+            <p className="text-sm text-carbon-600 dark:text-carbon-400">
               Interactive map with {tracks?.length || 0} stops
             </p>
           </div>
@@ -202,11 +202,11 @@ export default function ItineraryDetailPage() {
       {/* Company Info */}
       {(itinerary as any)?.company?.name && (
         <Card className="p-4">
-          <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-2">
+          <h3 className="font-medium text-carbon-900 dark:text-carbon-100 mb-2">
             About {(itinerary as any).company.name}
           </h3>
           {(itinerary as any).company?.description && (
-            <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
+            <p className="text-sm text-carbon-600 dark:text-carbon-400 mb-3">
               {(itinerary as any).company.description}
             </p>
           )}

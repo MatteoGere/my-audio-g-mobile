@@ -9,49 +9,48 @@
 */
 
 :root {
-  /* -----------------------------
-     Palette: travel-inspired (light mode)
-     ----------------------------- */
-  --color-sand-50: #faf7f2;
-  --color-sand-100: #f1eadf;
-  --color-sand-200: #e6dcc2;
+  /* -----------------------------      
+   Palette: explorer-tech (light mode)      
+   ----------------------------- */
+  --color-marble-50: #fafbfc;
+  --color-marble-100: #f4f6f8;
+  --color-marble-200: #e8ecf0;
 
-  --color-sea-50: #f2fbfc;
-  --color-sea-100: #e6f6f8;
-  --color-sea-200: #bfe9ee;
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
 
-  --color-forest-50: #f4fbf6;
-  --color-forest-100: #e6f5ea;
-  --color-forest-200: #cfe6d0;
+  --color-teal-50: #f0fdfa;
+  --color-teal-100: #ccfbf1;
+  --color-teal-200: #99f6e4;
 
-  --color-stone-50: #f6f6f6;
-  --color-stone-100: #ededed;
-  --color-stone-200: #d0d0d0;
+  --color-carbon-50: #f8fafc;
+  --color-carbon-100: #f1f5f9;
+  --color-carbon-200: #e2e8f0;
 
   /* Semantic surface/background */
-  --background: var(--color-sand-50);
-  --foreground: #0f1720; /* dark charcoal for high readability */
+  --background: var(--color-marble-50);
+  --foreground: #0f172a; /* deep charcoal for high readability */
   --color-background: var(--background);
   --color-surface: #ffffff; /* cards, sheets */
 
-  /* Semantic colors (light)
-     naming: --color-{role} and {role}-foreground for text on that color
-  */
-  --color-primary: #2b8a9e;
+  /* Semantic colors (light)      
+   naming: --color-{role} and {role}-foreground for text on that color   */
+  --color-primary: #0891b2;
   --color-primary-foreground: #ffffff;
 
-  --color-secondary: #b08b57;
+  --color-secondary: #f59e0b;
   --color-secondary-foreground: #ffffff;
 
-  --color-accent: #66c0a3;
-  --color-accent-foreground: #083324;
+  --color-accent: #059669;
+  --color-accent-foreground: #ffffff;
 
-  --color-muted: #9aa4a6;
+  --color-muted: #64748b;
 
   /* State colors */
-  --color-info: #3b82f6;
-  --color-success: #16a34a;
-  --color-warning: #f59e0b;
+  --color-info: #0ea5e9;
+  --color-success: #22c55e;
+  --color-warning: #eab308;
   --color-error: #ef4444;
 
   /* Typography */
@@ -65,13 +64,13 @@
   /* Border radius scale */
   --radius-sm: 6px;
   --radius-md: 12px;
-  --radius-lg: 20px;
+  --radius-lg: 18px;
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-soft: 0 6px 18px rgba(10, 10, 10, 0.06);
-  --shadow-medium: 0 12px 30px rgba(10, 10, 10, 0.1);
-  --shadow-strong: 0 20px 50px rgba(10, 10, 10, 0.16);
+  --shadow-soft: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --shadow-medium: 0 8px 24px rgba(15, 23, 42, 0.1);
+  --shadow-strong: 0 16px 48px rgba(15, 23, 42, 0.15);
 
   /* Compatibility fallbacks */
   --color-foreground: var(--foreground);
@@ -102,18 +101,18 @@
   --color-warning: var(--color-warning);
   --color-error: var(--color-error);
 
-  --color-sand-50: var(--color-sand-50);
-  --color-sand-100: var(--color-sand-100);
-  --color-sand-200: var(--color-sand-200);
-  --color-sea-50: var(--color-sea-50);
-  --color-sea-100: var(--color-sea-100);
-  --color-sea-200: var(--color-sea-200);
-  --color-forest-50: var(--color-forest-50);
-  --color-forest-100: var(--color-forest-100);
-  --color-forest-200: var(--color-forest-200);
-  --color-stone-50: var(--color-stone-50);
-  --color-stone-100: var(--color-stone-100);
-  --color-stone-200: var(--color-stone-200);
+  --color-marble-50: var(--color-marble-50);
+  --color-marble-200: var(--color-marble-200);
+  --color-marble-200: var(--color-marble-200);
+  --color-amber-50: var(--color-amber-50);
+  --color-amber-100: var(--color-amber-100);
+  --color-amber-200: var(--color-amber-200);
+  --color-teal-50: var(--color-teal-50);
+  --color-teal-100: var(--color-teal-100);
+  --color-teal-200: var(--color-teal-200);
+  --color-carbon-50: var(--color-carbon-50);
+  --color-carbon-100: var(--color-carbon-100);
+  --color-carbon-200: var(--color-carbon-200);
 
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
@@ -135,93 +134,139 @@
    ----------------------------- */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-sand-50: #0f1412;
-    --color-sand-100: #131916;
-    --color-sand-200: #1a201d;
+    --color-marble-50: #0c0d0e;
+    --color-marble-100: #1c1f23;
+    --color-marble-200: #2e3236;
 
-    --color-sea-50: #07181b;
-    --color-sea-100: #062025;
-    --color-sea-200: #0b3a43;
+    --color-amber-50: #1a1408;
+    --color-amber-100: #2d220f;
+    --color-amber-200: #453419;
 
-    --color-forest-50: #07170f;
-    --color-forest-100: #0b241a;
-    --color-forest-200: #15382b;
+    --color-teal-50: #041716;
+    --color-teal-100: #0f2a26;
+    --color-teal-200: #1a443d;
 
-    --color-stone-50: #0b0b0b;
-    --color-stone-100: #121212;
-    --color-stone-200: #1f1f1f;
+    --color-carbon-50: #0f1419;
+    --color-carbon-100: #1e2328;
+    --color-carbon-200: #2d353b;
 
-    --background: var(--color-stone-50);
-    --foreground: #e6eef0;
-
-    --color-primary: #59a6b6;
-    --color-primary-foreground: #042026;
-
-    --color-secondary: #c9a97f;
-    --color-secondary-foreground: #07120a;
-
-    --color-accent: #7fe0bf;
-    --color-accent-foreground: #02221a;
-
-    --color-muted: #7f8b8c;
-
+    /* Semantic surface/background */
+    --background: var(--color-marble-50);
+    --foreground: #f8fafc; /* light text for dark backgrounds */
     --color-background: var(--background);
-    --color-surface: #0f1416;
+    --color-surface: #1c1f23; /* cards, sheets */
 
-    --color-info: #60a5fa;
-    --color-success: #34d399;
-    --color-warning: #fbbf24;
-    --color-error: #fb7185;
+    /* Semantic colors (dark)      
+   naming: --color-{role} and {role}-foreground for text on that color   */
+    --color-primary: #22d3ee;
+    --color-primary-foreground: #083344;
 
-    --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.6);
-    --shadow-medium: 0 12px 30px rgba(0, 0, 0, 0.65);
-    --shadow-strong: 0 20px 50px rgba(0, 0, 0, 0.7);
+    --color-secondary: #fbbf24;
+    --color-secondary-foreground: #451a03;
+
+    --color-accent: #34d399;
+    --color-accent-foreground: #064e3b;
+
+    --color-muted: #94a3b8;
+
+    /* State colors */
+    --color-info: #38bdf8;
+    --color-success: #4ade80;
+    --color-warning: #facc15;
+    --color-error: #f87171;
+
+    /* Typography */
+    --font-family-sans:
+      'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    --font-family-mono:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+    --font-size-base: 16px;
+    --line-height-base: 1.5;
+
+    /* Border radius scale */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-full: 9999px;
+
+    /* Shadows */
+    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --shadow-strong: 0 16px 48px rgba(0, 0, 0, 0.5);
+
+    /* Compatibility fallbacks */
+    --color-foreground: var(--foreground);
+    --font-sans: var(--font-family-sans);
+    --font-mono: var(--font-family-mono);
   }
 }
 
 /* Class-based dark mode support (keeps parity with prefers-color-scheme) */
 .dark {
-  --color-sand-50: #0f1412;
-  --color-sand-100: #131916;
-  --color-sand-200: #1a201d;
+  --color-marble-50: #0c0d0e;
+  --color-marble-100: #1c1f23;
+  --color-marble-200: #2e3236;
 
-  --color-sea-50: #07181b;
-  --color-sea-100: #062025;
-  --color-sea-200: #0b3a43;
+  --color-amber-50: #1a1408;
+  --color-amber-100: #2d220f;
+  --color-amber-200: #453419;
 
-  --color-forest-50: #07170f;
-  --color-forest-100: #0b241a;
-  --color-forest-200: #15382b;
+  --color-teal-50: #041716;
+  --color-teal-100: #0f2a26;
+  --color-teal-200: #1a443d;
 
-  --color-stone-50: #0b0b0b;
-  --color-stone-100: #121212;
-  --color-stone-200: #1f1f1f;
+  --color-carbon-50: #0f1419;
+  --color-carbon-100: #1e2328;
+  --color-carbon-200: #2d353b;
 
-  --background: var(--color-stone-50);
-  --foreground: #e6eef0;
-
-  --color-primary: #59a6b6;
-  --color-primary-foreground: #042026;
-
-  --color-secondary: #c9a97f;
-  --color-secondary-foreground: #07120a;
-
-  --color-accent: #7fe0bf;
-  --color-accent-foreground: #02221a;
-
-  --color-muted: #7f8b8c;
-
+  /* Semantic surface/background */
+  --background: var(--color-marble-50);
+  --foreground: #f8fafc; /* light text for dark backgrounds */
   --color-background: var(--background);
-  --color-surface: #0f1416;
+  --color-surface: #1c1f23; /* cards, sheets */
 
-  --color-info: #60a5fa;
-  --color-success: #34d399;
-  --color-warning: #fbbf24;
-  --color-error: #fb7185;
+  /* Semantic colors (dark)      
+   naming: --color-{role} and {role}-foreground for text on that color   */
+  --color-primary: #22d3ee;
+  --color-primary-foreground: #083344;
 
-  --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.6);
-  --shadow-medium: 0 12px 30px rgba(0, 0, 0, 0.65);
-  --shadow-strong: 0 20px 50px rgba(0, 0, 0, 0.7);
+  --color-secondary: #fbbf24;
+  --color-secondary-foreground: #451a03;
+
+  --color-accent: #34d399;
+  --color-accent-foreground: #064e3b;
+
+  --color-muted: #94a3b8;
+
+  /* State colors */
+  --color-info: #38bdf8;
+  --color-success: #4ade80;
+  --color-warning: #facc15;
+  --color-error: #f87171;
+
+  /* Typography */
+  --font-family-sans:
+    'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  --font-family-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+  --font-size-base: 16px;
+  --line-height-base: 1.5;
+
+  /* Border radius scale */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-strong: 0 16px 48px rgba(0, 0, 0, 0.5);
+
+  /* Compatibility fallbacks */
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-family-sans);
+  --font-mono: var(--font-family-mono);
 }
 
 body {

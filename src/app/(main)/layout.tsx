@@ -16,7 +16,7 @@ interface MainLayoutProps {
 export default function MainLayout({ children }: MainLayoutProps) {
   return (
     <NavigationGuard>
-      <div className="flex flex-col min-h-screen bg-sand-50 dark:bg-stone-900">
+      <div className="flex flex-col min-h-screen bg-marble-50 dark:bg-carbon-900">
         {/* Main Navigation Header */}
         <MainNavigation />
 

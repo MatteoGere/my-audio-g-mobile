@@ -41,11 +41,11 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
 
     const variants = {
       default: {
-        track: 'data-[state=checked]:bg-primary data-[state=unchecked]:bg-stone-200',
+        track: 'data-[state=checked]:bg-primary data-[state=unchecked]:bg-carbon-200',
         thumb: 'bg-surface',
       },
       accent: {
-        track: 'data-[state=checked]:bg-accent data-[state=unchecked]:bg-stone-200',
+        track: 'data-[state=checked]:bg-accent data-[state=unchecked]:bg-carbon-200',
         thumb: 'bg-surface',
       },
     };

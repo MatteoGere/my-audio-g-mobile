@@ -12,8 +12,9 @@ import Input from '@/components/ui/Input';
 
 export default function MapPage() {
   const dispatch = useAppDispatch();
-  const { userLocation, requestLocation, startTracking, stopTracking, getCurrentPosition } = useLocation();
-  
+  const { userLocation, requestLocation, startTracking, stopTracking, getCurrentPosition } =
+    useLocation();
+
   // State
   // fullscreen removed: map is always shown in standard mode
   const [selectedPoiId, setSelectedPoiId] = useState<string | null>(null);
@@ -33,30 +34,36 @@ export default function MapPage() {
   // Filter POIs based on search
   const filteredPois = React.useMemo(() => {
     if (!searchTerm) return pois;
-    
+
     const lowercaseSearch = searchTerm.toLowerCase();
-    return pois.filter(poi => 
-      poi.trackName.toLowerCase().includes(lowercaseSearch) ||
-      poi.itineraryName.toLowerCase().includes(lowercaseSearch) ||
-      poi.companyName.toLowerCase().includes(lowercaseSearch)
+    return pois.filter(
+      (poi) =>
+        poi.trackName.toLowerCase().includes(lowercaseSearch) ||
+        poi.itineraryName.toLowerCase().includes(lowercaseSearch) ||
+        poi.companyName.toLowerCase().includes(lowercaseSearch),
     );
   }, [pois, searchTerm]);
 
   // Handle marker click
-  const handleMarkerClick = useCallback((poi: POIMarkerData) => {
-    setSelectedPoiId(poi.trackId);
-    dispatch(selectPoi({
-      id: poi.trackId,
-      type: 'track',
-      latitude: poi.latitude,
-      longitude: poi.longitude,
-      title: poi.trackName,
-      description: poi.itineraryName,
-      trackId: poi.trackId,
-      itineraryId: poi.itineraryId,
-    }));
-    dispatch(setHighlightedTrackId(poi.trackId));
-  }, [dispatch]);
+  const handleMarkerClick = useCallback(
+    (poi: POIMarkerData) => {
+      setSelectedPoiId(poi.trackId);
+      dispatch(
+        selectPoi({
+          id: poi.trackId,
+          type: 'track',
+          latitude: poi.latitude,
+          longitude: poi.longitude,
+          title: poi.trackName,
+          description: poi.itineraryName,
+          trackId: poi.trackId,
+          itineraryId: poi.itineraryId,
+        }),
+      );
+      dispatch(setHighlightedTrackId(poi.trackId));
+    },
+    [dispatch],
+  );
 
   // Handle play button click
   const handlePlayClick = useCallback((poi: POIMarkerData) => {
@@ -66,12 +73,15 @@ export default function MapPage() {
   }, []);
 
   // Handle map click
-  const handleMapClick = useCallback((lat: number, lng: number) => {
-    // Clear selection when clicking empty map area
-    setSelectedPoiId(null);
-    dispatch(selectPoi(null));
-    dispatch(setHighlightedTrackId(null));
-  }, [dispatch]);
+  const handleMapClick = useCallback(
+    (lat: number, lng: number) => {
+      // Clear selection when clicking empty map area
+      setSelectedPoiId(null);
+      dispatch(selectPoi(null));
+      dispatch(setHighlightedTrackId(null));
+    },
+    [dispatch],
+  );
 
   // Center on user location
   const centerOnUser = useCallback(async () => {
@@ -79,7 +89,12 @@ export default function MapPage() {
       // Use getCurrentPosition which returns the resolved coordinates immediately.
       const loc = await getCurrentPosition();
       if (loc) {
-        dispatch(setMapView({ center: { latitude: loc.latitude, longitude: loc.longitude }, zoom: mapZoom }));
+        dispatch(
+          setMapView({
+            center: { latitude: loc.latitude, longitude: loc.longitude },
+            zoom: mapZoom,
+          }),
+        );
       }
     } catch (e) {
       // If getCurrentPosition fails, fall back to requesting permission which will update store
@@ -103,19 +118,21 @@ export default function MapPage() {
         const bottomNav = document.querySelector('nav[role="navigation"], nav.fixed, .fixed');
 
         const headerHeight = header ? (header as HTMLElement).getBoundingClientRect().height : 0;
-        const bottomHeight = bottomNav ? (bottomNav as HTMLElement).getBoundingClientRect().height : 0;
+        const bottomHeight = bottomNav
+          ? (bottomNav as HTMLElement).getBoundingClientRect().height
+          : 0;
 
         const viewportHeight = window.innerHeight;
 
         // Use container top offset so we account for any page padding/margins above the map
-  // Small extra gap so map doesn't touch bottom nav and a little breathing room
-  const extraGap = 8; // pixels (reduced per request)
+        // Small extra gap so map doesn't touch bottom nav and a little breathing room
+        const extraGap = 8; // pixels (reduced per request)
 
-    // Compute available viewport space between header and bottom navigation.
-    // Note: do NOT subtract the container's top offset here — that often double-counts
-    // spacing and produces a smaller height than available. Using header/bottom heights
-    // is more reliable across layouts.
-    const available = Math.max(0, viewportHeight - headerHeight - bottomHeight - extraGap);
+        // Compute available viewport space between header and bottom navigation.
+        // Note: do NOT subtract the container's top offset here — that often double-counts
+        // spacing and produces a smaller height than available. Using header/bottom heights
+        // is more reliable across layouts.
+        const available = Math.max(0, viewportHeight - headerHeight - bottomHeight - extraGap);
 
         // Ensure a sensible minimum height
         const minH = 200;
@@ -127,7 +144,11 @@ export default function MapPage() {
         try {
           requestAnimationFrame(() => {
             window.setTimeout(() => {
-              try { window.dispatchEvent(new Event('map-resize')); } catch (e) { /* ignore */ }
+              try {
+                window.dispatchEvent(new Event('map-resize'));
+              } catch (e) {
+                /* ignore */
+              }
             }, 50);
           });
         } catch (e) {
@@ -147,8 +168,8 @@ export default function MapPage() {
     <div className="relative w-full h-full bg-gray-50">
       {/* Search bar moved to bottom (replaces stats banner) - top search removed */}
 
-  {/* Map Controls */}
-  <div className={`absolute top-4 right-4 z-10 flex flex-col gap-3 pointer-events-auto`}>
+      {/* Map Controls */}
+      <div className={`absolute top-4 right-4 z-10 flex flex-col gap-3 pointer-events-auto`}>
         {/* Center on User */}
         <Button
           onClick={centerOnUser}
@@ -188,39 +209,39 @@ export default function MapPage() {
         </div>
       )}
 
-  {/* Search and Filter Bar (moved to bottom) */}
-  <div className={`absolute bottom-4 left-4 right-4 z-10 bg-white rounded-lg shadow-lg p-3`}>
-          <div className="flex gap-2 items-center">
-            <div className="flex-1 relative">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
-              <Input
-                type="text"
-                placeholder="Search tracks, itineraries, or companies..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full"
-              />
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-              className="px-3"
-            >
-              <FaFilter />
-            </Button>
+      {/* Search and Filter Bar (moved to bottom) */}
+      <div className={`absolute bottom-4 left-4 right-4 z-10 bg-white rounded-lg shadow-lg p-3`}>
+        <div className="flex gap-2 items-center">
+          <div className="flex-1 relative">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+            <Input
+              type="text"
+              placeholder="Search tracks, itineraries, or companies..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 w-full"
+            />
           </div>
-
-          {/* Filter Options */}
-          {showFilters && (
-            <div className="mt-3 pt-3 border-t border-gray-200">
-              <div className="text-sm text-gray-600">
-                Showing {filteredPois.length} of {pois.length} locations
-              </div>
-              {/* TODO: Add more filter options */}
-            </div>
-          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowFilters(!showFilters)}
+            className="px-3"
+          >
+            <FaFilter />
+          </Button>
         </div>
+
+        {/* Filter Options */}
+        {showFilters && (
+          <div className="mt-3 pt-3 border-t border-gray-200">
+            <div className="text-sm text-gray-600">
+              Showing {filteredPois.length} of {pois.length} locations
+            </div>
+            {/* TODO: Add more filter options */}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

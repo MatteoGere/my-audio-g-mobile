@@ -76,17 +76,17 @@ export default function ForgotPasswordPage() {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+          <h2 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100">
             Check Your Email
           </h2>
-          <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
+          <p className="text-sm text-carbon-600 dark:text-carbon-400 mt-2">
             We've sent a password reset link to <strong>{email}</strong>
           </p>
         </div>
 
         {/* Instructions */}
-        <div className="p-4 rounded-lg bg-sea-50 dark:bg-sea-900/20 border border-sea-200 dark:border-sea-800">
-          <div className="space-y-2 text-sm text-sea-700 dark:text-sea-300">
+        <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+          <div className="space-y-2 text-sm text-amber-700 dark:text-amber-300">
             <p>
               <strong>What's next?</strong>
             </p>
@@ -130,8 +130,10 @@ export default function ForgotPasswordPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Forgot Password?</h2>
-        <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
+        <h2 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100">
+          Forgot Password?
+        </h2>
+        <p className="text-sm text-carbon-600 dark:text-carbon-400 mt-2">
           No worries! Enter your email and we'll send you reset instructions.
         </p>
       </div>

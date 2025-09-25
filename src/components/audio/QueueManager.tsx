@@ -121,16 +121,16 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border border-stone-200 dark:border-stone-700">
+    <Card className="w-full max-w-md mx-auto bg-white/95 dark:bg-carbon-900/95 backdrop-blur-md border border-carbon-200 dark:border-carbon-700">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
+      <div className="flex items-center justify-between p-4 border-b border-carbon-200 dark:border-carbon-700">
         <div className="flex items-center space-x-3">
           <HiOutlineMusicalNote className="w-5 h-5 text-primary-600 dark:text-primary-400" />
           <div>
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100">
+            <h3 className="font-semibold text-carbon-900 dark:text-carbon-100">
               Queue ({queue.length} tracks)
             </h3>
-            <p className="text-xs text-stone-600 dark:text-stone-400">
+            <p className="text-xs text-carbon-600 dark:text-carbon-400">
               {formatTime(totalDuration)} total • {formatTime(remainingDuration)} remaining
             </p>
           </div>
@@ -166,13 +166,13 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
             <div
               key={`${queueItem.track.id}-${index}`}
               className={`
-                relative flex items-center p-3 border-b border-stone-100 dark:border-stone-800 transition-all duration-200
+                relative flex items-center p-3 border-b border-carbon-100 dark:border-carbon-800 transition-all duration-200
                 ${
                   isCurrentTrack
                     ? 'bg-primary-50 dark:bg-primary-900/20 border-l-4 border-l-primary-500'
                     : isPastTrack
                       ? 'opacity-60'
-                      : 'hover:bg-stone-50 dark:hover:bg-stone-800/50'
+                      : 'hover:bg-carbon-50 dark:hover:bg-carbon-800/50'
                 }
                 ${isDragOver ? 'bg-primary-100 dark:bg-primary-900/30' : ''}
                 ${draggedIndex === index ? 'opacity-50' : ''}
@@ -186,13 +186,13 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
             >
               {/* Drag Handle */}
               {!isCurrentTrack && (
-                <div className="cursor-move mr-2 text-stone-400 dark:text-stone-600">
+                <div className="cursor-move mr-2 text-carbon-400 dark:text-carbon-600">
                   <HiOutlineBars3 className="w-4 h-4" />
                 </div>
               )}
 
               {/* Track Number/Status */}
-              <div className="w-8 h-8 rounded-full bg-stone-100 dark:bg-stone-800 flex items-center justify-center mr-3 flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-carbon-100 dark:bg-carbon-800 flex items-center justify-center mr-3 flex-shrink-0">
                 {isCurrentTrack && playbackState.isPlaying ? (
                   <div className="flex space-x-0.5">
                     <div className="w-0.5 h-3 bg-primary-600 animate-pulse"></div>
@@ -210,7 +210,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                     className={`text-xs font-medium ${
                       isCurrentTrack
                         ? 'text-primary-600 dark:text-primary-400'
-                        : 'text-stone-500 dark:text-stone-400'
+                        : 'text-carbon-500 dark:text-carbon-400'
                     }`}
                   >
                     {index + 1}
@@ -224,12 +224,12 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                   className={`text-sm font-medium truncate ${
                     isCurrentTrack
                       ? 'text-primary-900 dark:text-primary-100'
-                      : 'text-stone-900 dark:text-stone-100'
+                      : 'text-carbon-900 dark:text-carbon-100'
                   }`}
                 >
                   {queueItem.track.name || `Track ${index + 1}`}
                 </p>
-                <div className="flex items-center space-x-2 text-xs text-stone-600 dark:text-stone-400">
+                <div className="flex items-center space-x-2 text-xs text-carbon-600 dark:text-carbon-400">
                   <HiOutlineClock className="w-3 h-3" />
                   <span>{formatTime(queueItem.track.duration || 0)}</span>
                   {isCurrentTrack && (
@@ -238,7 +238,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                     </span>
                   )}
                   {isPastTrack && (
-                    <span className="text-stone-500 dark:text-stone-500">• Played</span>
+                    <span className="text-carbon-500 dark:text-carbon-500">• Played</span>
                   )}
                 </div>
               </div>
@@ -287,8 +287,8 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
 
       {/* Queue Actions */}
       {queue.length > 0 && (
-        <div className="p-4 border-t border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50">
-          <div className="flex items-center justify-between text-xs text-stone-600 dark:text-stone-400">
+        <div className="p-4 border-t border-carbon-200 dark:border-carbon-700 bg-carbon-50 dark:bg-carbon-800/50">
+          <div className="flex items-center justify-between text-xs text-carbon-600 dark:text-carbon-400">
             <span>Drag to reorder tracks</span>
             <span>{queue.length - currentQueueIndex - 1} tracks remaining</span>
           </div>

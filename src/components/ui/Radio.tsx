@@ -31,14 +31,14 @@ const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
   ({ className, label, description, error, disabled, ...props }, ref) => {
     // Regole: min-w-[44px] min-h-[44px] (container), rounded-full, gap-2+, focus ring, label font-bold
     const radioStyles = cn(
-      'peer h-5 w-5 min-w-[20px] min-h-[20px] rounded-full border border-stone-300 bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200',
+      'peer h-5 w-5 min-w-[20px] min-h-[20px] rounded-full border border-carbon-300 bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200',
       'checked:bg-primary checked:border-primary',
       error && 'border-error',
       className,
     );
 
     return (
-  <div className="flex items-start min-w-[44px] min-h-[44px] space-x-4">
+      <div className="flex items-start min-w-[44px] min-h-[44px] space-x-4">
         <div className="relative flex items-center">
           <input type="radio" className={radioStyles} disabled={disabled} ref={ref} {...props} />
           {/* Custom radio dot */}

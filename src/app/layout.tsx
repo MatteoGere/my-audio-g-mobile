@@ -45,8 +45,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="antialiased bg-sand-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 min-h-screen">
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className="antialiased bg-marble-50 text-carbon-900 min-h-screen">
         <ReduxProvider>
           <AuthProvider>
             <I18nProvider>{children}</I18nProvider>

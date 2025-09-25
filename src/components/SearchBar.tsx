@@ -229,7 +229,7 @@ export default function SearchBar({
           onFocus={() => setIsExpanded(true)}
           placeholder={placeholder}
           className="pl-10 pr-4"
-          icon={<HiOutlineMagnifyingGlass className="h-5 w-5 text-stone-400" />}
+          icon={<HiOutlineMagnifyingGlass className="h-5 w-5 text-carbon-400" />}
         />
 
         {query && (
@@ -239,7 +239,7 @@ export default function SearchBar({
               setIsExpanded(false);
               searchInputRef.current?.focus();
             }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-carbon-400 hover:text-carbon-600 dark:hover:text-carbon-300"
             tabIndex={0}
             aria-label="Clear search"
           >
@@ -287,10 +287,10 @@ export default function SearchBar({
 
       {/* Dropdown */}
       {isExpanded && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-carbon-800 border border-carbon-200 dark:border-carbon-700 rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto">
           {/* Loading */}
           {isLoading && query.length >= 2 && (
-            <div className="p-4 text-center text-stone-500 dark:text-stone-400">
+            <div className="p-4 text-center text-carbon-500 dark:text-carbon-400">
               <div className="inline-flex items-center">
                 <div className="animate-spin h-4 w-4 border-2 border-primary-600 border-t-transparent rounded-full mr-2"></div>
                 Searching...
@@ -301,7 +301,7 @@ export default function SearchBar({
           {/* Suggestions */}
           {suggestions.length > 0 && (
             <div className="py-2">
-              <div className="px-3 py-1 text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
+              <div className="px-3 py-1 text-xs font-bold text-carbon-500 dark:text-carbon-400 uppercase tracking-wide">
                 Audio Guides
               </div>
               {suggestions.map((suggestion, index) => (
@@ -310,15 +310,15 @@ export default function SearchBar({
                   onClick={() => handleSuggestionClick(suggestion)}
                   className={cn(
                     'w-full px-3 py-2 text-left rounded-lg transition-colors',
-                    'hover:bg-stone-100 dark:hover:bg-stone-700',
+                    'hover:bg-carbon-100 dark:hover:bg-carbon-700',
                     selectedSuggestionIndex === index && 'bg-primary-50 dark:bg-primary-900/20',
                   )}
                   tabIndex={0}
                 >
-                  <div className="font-bold text-stone-900 dark:text-stone-100">
+                  <div className="font-bold text-carbon-900 dark:text-carbon-100">
                     {suggestion.title}
                   </div>
-                  <div className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-2 mt-1">
+                  <div className="text-xs text-carbon-500 dark:text-carbon-400 flex items-center gap-2 mt-1">
                     {suggestion.company && <span>{suggestion.company}</span>}
                     {suggestion.duration && (
                       <span className="flex items-center">
@@ -334,9 +334,9 @@ export default function SearchBar({
 
           {/* Search History */}
           {showHistory && searchHistory.length > 0 && query.length === 0 && (
-            <div className="py-2 border-t border-stone-200 dark:border-stone-700">
+            <div className="py-2 border-t border-carbon-200 dark:border-carbon-700">
               <div className="px-3 py-1 flex items-center justify-between">
-                <span className="text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
+                <span className="text-xs font-bold text-carbon-500 dark:text-carbon-400 uppercase tracking-wide">
                   Recent Searches
                 </span>
                 <button
@@ -352,13 +352,14 @@ export default function SearchBar({
                   key={index}
                   className={cn(
                     'flex items-center px-3 py-2 rounded-lg transition-colors',
-                    'hover:bg-stone-100 dark:hover:bg-stone-700',
-                    selectedSuggestionIndex === suggestions.length + index && 'bg-primary-50 dark:bg-primary-900/20',
+                    'hover:bg-carbon-100 dark:hover:bg-carbon-700',
+                    selectedSuggestionIndex === suggestions.length + index &&
+                      'bg-primary-50 dark:bg-primary-900/20',
                   )}
                 >
                   <button
                     onClick={() => handleSuggestionClick(item)}
-                    className="flex-1 text-left text-stone-700 dark:text-stone-300"
+                    className="flex-1 text-left text-carbon-700 dark:text-carbon-300"
                     tabIndex={0}
                   >
                     {item}
@@ -368,7 +369,7 @@ export default function SearchBar({
                       e.stopPropagation();
                       removeHistoryItem(item);
                     }}
-                    className="ml-2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
+                    className="ml-2 text-carbon-400 hover:text-carbon-600 dark:hover:text-carbon-300"
                     tabIndex={0}
                     aria-label={`Remove ${item} from history`}
                   >
@@ -381,7 +382,7 @@ export default function SearchBar({
 
           {/* No results */}
           {query.length >= 2 && !isLoading && suggestions.length === 0 && (
-            <div className="p-4 text-center text-stone-500 dark:text-stone-400">
+            <div className="p-4 text-center text-carbon-500 dark:text-carbon-400">
               <p>No audio guides found for "{query}"</p>
               <button
                 onClick={() => handleSearch()}

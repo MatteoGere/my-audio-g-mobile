@@ -106,10 +106,10 @@ function ResetPasswordInner() {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+          <h2 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100">
             Password Reset Successful
           </h2>
-          <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
+          <p className="text-sm text-carbon-600 dark:text-carbon-400 mt-2">
             Your password has been successfully updated. You can now sign in with your new password.
           </p>
         </div>
@@ -131,10 +131,10 @@ function ResetPasswordInner() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+        <h2 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100">
           Reset Your Password
         </h2>
-        <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
+        <p className="text-sm text-carbon-600 dark:text-carbon-400 mt-2">
           Choose a strong new password for your account
         </p>
       </div>
@@ -151,7 +151,7 @@ function ResetPasswordInner() {
             required
             error={validationErrors.newPassword}
           />
-          <div className="text-xs text-stone-500 dark:text-stone-400">
+          <div className="text-xs text-carbon-500 dark:text-carbon-400">
             Must contain at least 6 characters with uppercase, lowercase, and numbers
           </div>
         </div>
@@ -174,7 +174,7 @@ function ResetPasswordInner() {
             onChange={(e) => setShowPassword(e.target.checked)}
             className="rounded text-primary-600 focus:ring-primary-500"
           />
-          <label htmlFor="showPassword" className="text-sm text-stone-600 dark:text-stone-400">
+          <label htmlFor="showPassword" className="text-sm text-carbon-600 dark:text-carbon-400">
             Show passwords
           </label>
         </div>

@@ -56,9 +56,13 @@ export const useLocation = (): UseLocationReturn => {
       // Check current permission status
       if ('permissions' in navigator) {
         const permission = await navigator.permissions.query({ name: 'geolocation' });
-        
+
         if (permission.state === 'denied') {
-          dispatch(setLocationError('Location access denied. Please enable location in your browser settings.'));
+          dispatch(
+            setLocationError(
+              'Location access denied. Please enable location in your browser settings.',
+            ),
+          );
           return;
         }
       }
@@ -73,7 +77,9 @@ export const useLocation = (): UseLocationReturn => {
 
   // Get current position once
   const getCurrentPosition = useCallback(
-    (options: LocationOptions = {}): Promise<{
+    (
+      options: LocationOptions = {},
+    ): Promise<{
       latitude: number;
       longitude: number;
       accuracy: number;
@@ -98,10 +104,12 @@ export const useLocation = (): UseLocationReturn => {
               accuracy: position.coords.accuracy,
             };
 
-            dispatch(setUserLocation({
-              latitude: location.latitude,
-              longitude: location.longitude,
-            }));
+            dispatch(
+              setUserLocation({
+                latitude: location.latitude,
+                longitude: location.longitude,
+              }),
+            );
             dispatch(setLocationAccuracy(location.accuracy));
             dispatch(setLocationEnabled(true));
             dispatch(setLocationError(null));
@@ -112,35 +120,38 @@ export const useLocation = (): UseLocationReturn => {
             handleLocationError(error);
             reject(error);
           },
-          defaultOptions
+          defaultOptions,
         );
       });
     },
-    [dispatch, isGeolocationSupported]
+    [dispatch, isGeolocationSupported],
   );
 
   // Handle location errors
-  const handleLocationError = useCallback((error: GeolocationPositionError) => {
-    let errorMessage: string;
+  const handleLocationError = useCallback(
+    (error: GeolocationPositionError) => {
+      let errorMessage: string;
 
-    switch (error.code) {
-      case error.PERMISSION_DENIED:
-        errorMessage = 'Location access denied. Please enable location permissions.';
-        break;
-      case error.POSITION_UNAVAILABLE:
-        errorMessage = 'Location information is unavailable.';
-        break;
-      case error.TIMEOUT:
-        errorMessage = 'Location request timed out. Please try again.';
-        break;
-      default:
-        errorMessage = 'An unknown error occurred while retrieving location.';
-        break;
-    }
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          errorMessage = 'Location access denied. Please enable location permissions.';
+          break;
+        case error.POSITION_UNAVAILABLE:
+          errorMessage = 'Location information is unavailable.';
+          break;
+        case error.TIMEOUT:
+          errorMessage = 'Location request timed out. Please try again.';
+          break;
+        default:
+          errorMessage = 'An unknown error occurred while retrieving location.';
+          break;
+      }
 
-    dispatch(setLocationError(errorMessage));
-    dispatch(setLocationEnabled(false));
-  }, [dispatch]);
+      dispatch(setLocationError(errorMessage));
+      dispatch(setLocationEnabled(false));
+    },
+    [dispatch],
+  );
 
   // Stop tracking
   const stopTracking = useCallback(() => {
@@ -190,10 +201,10 @@ export const useLocation = (): UseLocationReturn => {
           dispatch(setLocationError(null));
         },
         handleLocationError,
-        defaultOptions
+        defaultOptions,
       );
     },
-    [dispatch, isGeolocationSupported, handleLocationError, stopTracking]
+    [dispatch, isGeolocationSupported, handleLocationError, stopTracking],
   );
 
   // Cleanup on unmount

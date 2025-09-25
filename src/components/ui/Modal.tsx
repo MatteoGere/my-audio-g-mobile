@@ -72,7 +72,7 @@ const Modal: React.FC<ModalProps> = ({
       {/* Modal Content */}
       <div
         className={cn(
-          'relative w-full m-4 bg-surface rounded-xl shadow-xl border border-stone-200 overflow-hidden',
+          'relative w-full m-4 bg-surface rounded-xl shadow-xl border border-carbon-200 overflow-hidden',
           sizes[size],
           size === 'full' && 'h-full',
           className,
@@ -84,7 +84,7 @@ const Modal: React.FC<ModalProps> = ({
       >
         {/* Header */}
         {(title || showCloseButton) && (
-          <div className="flex items-center justify-between p-6 border-b border-stone-200">
+          <div className="flex items-center justify-between p-6 border-b border-carbon-200">
             <div className="space-y-1">
               {title && (
                 <h2 id="modal-title" className="text-lg font-semibold text-foreground">
@@ -101,7 +101,7 @@ const Modal: React.FC<ModalProps> = ({
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className="p-1 rounded-md hover:bg-stone-100 transition-colors"
+                className="p-1 rounded-md hover:bg-carbon-100 transition-colors"
                 aria-label="Close modal"
               >
                 <HiOutlineXMark className="h-5 w-5 text-muted" aria-hidden="true" />
@@ -111,7 +111,7 @@ const Modal: React.FC<ModalProps> = ({
         )}
 
         {/* Content */}
-  <div className={cn('p-6', size === 'full' && 'flex-1 overflow-auto')}>{children}</div>
+        <div className={cn('p-6', size === 'full' && 'flex-1 overflow-auto')}>{children}</div>
       </div>
     </div>
   );

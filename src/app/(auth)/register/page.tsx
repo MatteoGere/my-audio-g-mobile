@@ -129,17 +129,17 @@ export default function RegisterPage() {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+          <h2 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100">
             Account Created!
           </h2>
-          <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
+          <p className="text-sm text-carbon-600 dark:text-carbon-400 mt-2">
             We've sent a verification email to <strong>{formData.email}</strong>
           </p>
         </div>
 
         {/* Instructions */}
-        <div className="p-4 rounded-lg bg-sea-50 dark:bg-sea-900/20 border border-sea-200 dark:border-sea-800">
-          <div className="space-y-2 text-sm text-sea-700 dark:text-sea-300">
+        <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+          <div className="space-y-2 text-sm text-amber-700 dark:text-amber-300">
             <p>
               <strong>What's next?</strong>
             </p>
@@ -191,8 +191,8 @@ export default function RegisterPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Create Account</h2>
-        <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
+        <h2 className="text-2xl font-bold text-carbon-900 dark:text-carbon-100">Create Account</h2>
+        <p className="text-sm text-carbon-600 dark:text-carbon-400 mt-2">
           Join MyAudioG and discover amazing audio experiences
         </p>
       </div>
@@ -254,7 +254,7 @@ export default function RegisterPage() {
             autoComplete="new-password"
             error={validationErrors.password}
           />
-          <p className="text-xs text-stone-500 dark:text-stone-400">
+          <p className="text-xs text-carbon-500 dark:text-carbon-400">
             Must contain uppercase, lowercase, and numbers (minimum 6 characters)
           </p>
         </div>
@@ -288,7 +288,7 @@ export default function RegisterPage() {
             />
             <label
               htmlFor="accept-terms"
-              className="text-sm text-stone-600 dark:text-stone-400 leading-5"
+              className="text-sm text-carbon-600 dark:text-carbon-400 leading-5"
             >
               I agree to the{' '}
               <Link
@@ -333,7 +333,7 @@ export default function RegisterPage() {
 
       {/* Sign In Link */}
       <div className="text-center">
-        <p className="text-sm text-stone-600 dark:text-stone-400">
+        <p className="text-sm text-carbon-600 dark:text-carbon-400">
           Already have an account?{' '}
           <Link
             href="/login"

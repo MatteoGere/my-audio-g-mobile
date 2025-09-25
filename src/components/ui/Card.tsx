@@ -32,12 +32,13 @@ const Card: React.FC<CardProps> = ({
   ...props
 }) => {
   // Regole: rounded-xl, p-4 default, shadow-md, border, max-w-full, accessibilità
-  const baseStyles = 'bg-white dark:bg-stone-900 rounded-xl transition-all duration-200 shadow-md max-w-full';
+  const baseStyles =
+    'bg-white dark:bg-carbon-900 rounded-xl transition-all duration-200 shadow-md max-w-full';
 
   const variants = {
     default: '',
     elevated: 'shadow-lg hover:shadow-xl',
-    outlined: 'border border-stone-200 dark:border-stone-700',
+    outlined: 'border border-carbon-200 dark:border-carbon-700',
   };
 
   // p-4 default, gap tra card gestito dal container
@@ -107,7 +108,10 @@ const CardTitle: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({
 }) => {
   return (
     <h3
-      className={cn('text-base font-bold leading-tight tracking-tight text-stone-900 dark:text-stone-100', className)}
+      className={cn(
+        'text-base font-bold leading-tight tracking-tight text-carbon-900 dark:text-carbon-100',
+        className,
+      )}
       {...props}
     >
       {children}
@@ -121,7 +125,7 @@ const CardDescription: React.FC<React.HTMLAttributes<HTMLParagraphElement>> = ({
   ...props
 }) => {
   return (
-    <p className={cn('text-xs text-stone-500 dark:text-stone-400', className)} {...props}>
+    <p className={cn('text-xs text-carbon-500 dark:text-carbon-400', className)} {...props}>
       {children}
     </p>
   );
