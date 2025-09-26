@@ -15,6 +15,7 @@ import {
   HiOutlineHeart,
   HiHeart,
 } from 'react-icons/hi2';
+import tokens from '@/design/tokens';
 
 // Small collapsible text helper (copied from itinerary detail page)
 function CollapsibleText({ id, text }: { id: string; text: string }) {
@@ -451,28 +452,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                     className={`relative bg-surface rounded-xl shadow-md overflow-hidden transition-shadow hover:shadow-lg cursor-pointer ${
                       viewMode === 'list' ? 'flex items-start' : ''
                     }`}
-                  >
-                    <Button
-                      type="button"
-                      variant={isFavorite ? 'primary' : 'ghost'}
-                      size="sm"
-                      className="absolute top-3 right-3 rounded-full h-11 w-11 p-0 shadow-md"
-                      loading={favoritesBusy}
-                      aria-label={
-                        isFavorite ? 'Remove itinerary from favourites' : 'Add itinerary to favourites'
-                      }
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleToggleFavorite(itinerary.id);
-                      }}
-                    >
-                      {isFavorite ? (
-                        <HiHeart className="h-5 w-5" aria-hidden="true" />
-                      ) : (
-                        <HiOutlineHeart className="h-5 w-5" aria-hidden="true" />
-                      )}
-                    </Button>
+                  >                  
 
                     {/* Image */}
                     <div
@@ -516,6 +496,27 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                               <span>{itinerary.company.name}</span>
                             </>
                           )}
+                           <Button
+                      type="button"
+                      variant='ghost'
+                      size="sm"
+                      className=""
+                      loading={favoritesBusy}
+                      aria-label={
+                        isFavorite ? 'Remove itinerary from favourites' : 'Add itinerary to favourites'
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleToggleFavorite(itinerary.id);
+                      }}
+                    >
+                      {isFavorite ? (
+                        <HiHeart className="h-5 w-5" aria-hidden="true" style={{ color: tokens.colors.error, opacity: 0.95 }} />
+                      ) : (
+                        <HiOutlineHeart className="h-5 w-5" aria-hidden="true" style={{ opacity: 0.65 }} />
+                      )}
+                    </Button>
                         </div>
                       </div>
                     </div>

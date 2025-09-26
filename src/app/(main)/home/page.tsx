@@ -29,7 +29,7 @@ export default function HomePage() {
           <h3 className="font-semibold text-foreground mb-2">Nearby</h3>
           <p className="text-sm text-muted mb-3">Tours near your location</p>
           <Link href="/map" className="block">
-            <Button variant="outline" size="sm" className="w-full">
+            <Button variant="secondary" size="sm" className="w-full">
               View Map
             </Button>
           </Link>

@@ -18,6 +18,7 @@ import {
   HiOutlineHeart,
   HiHeart,
 } from 'react-icons/hi2';
+import tokens from '@/design/tokens';
 import { Card, Button, Progress } from '@/components/ui';
 import { QueueManager } from '@/components/audio/QueueManager';
 import { useGetAudioItineraryQuery, useGetItineraryTracksQuery } from '@/lib/redux/api/apiSlice';
@@ -527,7 +528,7 @@ export default function AudioPlayerPage() {
 
           {/* Add to Favorites */}
           <Button
-            variant={isCurrentTrackFavorite ? 'primary' : 'outline'}
+            variant='ghost'
             className="flex items-center justify-center space-x-2"
             disabled={!currentTrack}
             loading={favoritesBusy}
@@ -537,9 +538,9 @@ export default function AudioPlayerPage() {
             }
           >
             {isCurrentTrackFavorite ? (
-              <HiHeart className="w-4 h-4" />
+              <HiHeart className="w-4 h-4" style={{ color: tokens.colors.error, opacity: 0.95 }} />
             ) : (
-              <HiOutlineHeart className="w-4 h-4" />
+              <HiOutlineHeart className="w-4 h-4" style={{ opacity: 0.65 }} />
             )}
             <span>{isCurrentTrackFavorite ? 'Favourited' : 'Favorite'}</span>
           </Button>

@@ -6,7 +6,8 @@ import { Card, Button, Badge } from '@/components/ui';
 import { useGetAudioItineraryQuery, useGetItineraryTracksQuery } from '@/lib/redux/api/apiSlice';
 import { useSignedUrl, useSignedAudioUrls } from '@/lib/hooks/useSignedUrls';
 import { useFavorites } from '@/lib/hooks';
-import { HiMiniHeart, HiOutlineHeart } from 'react-icons/hi2';
+import { HiHeart, HiOutlineHeart } from 'react-icons/hi2';
+import tokens from '@/design/tokens';
 
 export default function ItineraryDetailPage() {
   const params = useParams();
@@ -143,7 +144,7 @@ export default function ItineraryDetailPage() {
               )}
             </div>
             <Button
-              variant={isItineraryFavorite ? 'primary' : 'ghost'}
+              variant='ghost'
               size="sm"
               aria-label={
                 isItineraryFavorite ? 'Remove itinerary from favourites' : 'Add itinerary to favourites'
@@ -154,9 +155,13 @@ export default function ItineraryDetailPage() {
               }
             >
               {isItineraryFavorite ? (
-                <HiMiniHeart className="h-5 w-5" aria-hidden="true" />
+                <HiHeart
+                  className="h-5 w-5"
+                  aria-hidden="true"
+                  style={{ color: tokens.colors.error, opacity: 0.95 }}
+                />
               ) : (
-                <HiOutlineHeart className="h-5 w-5" aria-hidden="true" />
+                <HiOutlineHeart className="h-5 w-5" aria-hidden="true" style={{ opacity: 0.65 }} />
               )}
             </Button>
           </div>
@@ -230,7 +235,7 @@ export default function ItineraryDetailPage() {
                     ▶
                   </Button>
                   <Button
-                    variant={favoriteTrackIds.includes(track.id) ? 'primary' : 'ghost'}
+                    variant='ghost'
                     size="sm"
                     aria-label={
                       favoriteTrackIds.includes(track.id)
@@ -243,9 +248,9 @@ export default function ItineraryDetailPage() {
                     }
                   >
                     {favoriteTrackIds.includes(track.id) ? (
-                      <HiMiniHeart className="h-4 w-4" aria-hidden="true" />
+                      <HiHeart className="h-4 w-4" aria-hidden="true" style={{ color: tokens.colors.error, opacity: 0.95 }} />
                     ) : (
-                      <HiOutlineHeart className="h-4 w-4" aria-hidden="true" />
+                      <HiOutlineHeart className="h-4 w-4" aria-hidden="true" style={{ opacity: 0.65 }} />
                     )}
                   </Button>
                 </div>
