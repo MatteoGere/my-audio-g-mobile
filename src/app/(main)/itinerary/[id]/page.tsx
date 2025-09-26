@@ -5,6 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { Card, Button, Badge } from '@/components/ui';
 import { useGetAudioItineraryQuery, useGetItineraryTracksQuery } from '@/lib/redux/api/apiSlice';
 import { useSignedUrl, useSignedAudioUrls } from '@/lib/hooks/useSignedUrls';
+import { useFavorites } from '@/lib/hooks';
+import { HiMiniHeart, HiOutlineHeart } from 'react-icons/hi2';
 
 export default function ItineraryDetailPage() {
   const params = useParams();
@@ -34,6 +36,14 @@ export default function ItineraryDetailPage() {
     [tracks],
   );
   useSignedAudioUrls(audioPaths, 3600);
+
+  const {
+    favoriteItineraryIds,
+    favoriteTrackIds,
+    toggleFavorite,
+    isAddingFavorite,
+    isRemovingFavorite,
+  } = useFavorites();
 
   const formatDuration = (seconds?: number | null) => {
     const total = Math.max(0, Math.floor(seconds || 0));
@@ -106,6 +116,9 @@ export default function ItineraryDetailPage() {
     );
   }
 
+  const isItineraryFavorite = favoriteItineraryIds.includes(itinerary.id);
+  const isFavoritesBusy = isAddingFavorite || isRemovingFavorite;
+
   return (
     <div className="space-y-6">
       {/* Hero Section */}
@@ -122,15 +135,29 @@ export default function ItineraryDetailPage() {
           </div>
         )}
         <div>
-          <div className="flex items-start justify-between mb-3">
+          <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex-1">
               <h1 className="text-xl font-bold text-foreground mb-2">{itinerary.name}</h1>
               {(itinerary as any)?.company?.name && (
                 <p className="text-sm text-muted">by {(itinerary as any).company.name}</p>
               )}
             </div>
-            <Button variant="ghost" size="sm" aria-label="Add to favorites">
-              ♡
+            <Button
+              variant={isItineraryFavorite ? 'primary' : 'ghost'}
+              size="sm"
+              aria-label={
+                isItineraryFavorite ? 'Remove itinerary from favourites' : 'Add itinerary to favourites'
+              }
+              loading={isFavoritesBusy}
+              onClick={() =>
+                toggleFavorite({ favouriteId: itinerary.id, type: 'FAVOURITE-ITINERARY' })
+              }
+            >
+              {isItineraryFavorite ? (
+                <HiMiniHeart className="h-5 w-5" aria-hidden="true" />
+              ) : (
+                <HiOutlineHeart className="h-5 w-5" aria-hidden="true" />
+              )}
             </Button>
           </div>
 
@@ -194,13 +221,32 @@ export default function ItineraryDetailPage() {
                     <CollapsibleText id={`track-desc-${track.id}`} text={track.description} />
                   )}
                 </div>
-                <div className="flex-shrink-0 self-start">
+                <div className="flex-shrink-0 self-start flex items-center gap-2">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => router.push(`/itinerary/${id}/play`)}
                   >
                     ▶
+                  </Button>
+                  <Button
+                    variant={favoriteTrackIds.includes(track.id) ? 'primary' : 'ghost'}
+                    size="sm"
+                    aria-label={
+                      favoriteTrackIds.includes(track.id)
+                        ? 'Remove track from favourites'
+                        : 'Add track to favourites'
+                    }
+                    loading={isFavoritesBusy}
+                    onClick={() =>
+                      toggleFavorite({ favouriteId: track.id, type: 'FAVOURITE-TRACK' })
+                    }
+                  >
+                    {favoriteTrackIds.includes(track.id) ? (
+                      <HiMiniHeart className="h-4 w-4" aria-hidden="true" />
+                    ) : (
+                      <HiOutlineHeart className="h-4 w-4" aria-hidden="true" />
+                    )}
                   </Button>
                 </div>
               </div>

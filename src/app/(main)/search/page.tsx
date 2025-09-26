@@ -5,12 +5,15 @@ import { useSearchParams, type ReadonlyURLSearchParams } from 'next/navigation';
 import { Card, Button, Input, Badge, Select } from '@/components/ui';
 import { useGetAudioItinerariesQuery, useGetCompaniesQuery } from '@/lib/redux/api/apiSlice';
 import { useSignedUrls } from '@/lib/hooks/useSignedUrls';
+import { useFavorites } from '@/lib/hooks';
 import {
   HiOutlineMagnifyingGlass,
   HiOutlineAdjustmentsHorizontal,
   HiOutlineClock,
   HiOutlineSquares2X2,
   HiOutlineBars3,
+  HiOutlineHeart,
+  HiHeart,
 } from 'react-icons/hi2';
 
 // Small collapsible text helper (copied from itinerary detail page)
@@ -88,7 +91,13 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const {
+    favoriteItineraryIds,
+    toggleFavorite: toggleFavoriteMutation,
+    isAddingFavorite,
+    isRemovingFavorite,
+  } = useFavorites();
+  const favoritesBusy = isAddingFavorite || isRemovingFavorite;
 
   const [filters, setFilters] = useState<SearchFilters>({
     query: searchParams.get('q') || '',
@@ -201,17 +210,12 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
     setPage(1);
   }, []);
 
-  const toggleFavorite = useCallback((itineraryId: string) => {
-    setFavorites((prev) => {
-      const newFavorites = new Set(prev);
-      if (newFavorites.has(itineraryId)) {
-        newFavorites.delete(itineraryId);
-      } else {
-        newFavorites.add(itineraryId);
-      }
-      return newFavorites;
-    });
-  }, []);
+  const handleToggleFavorite = useCallback(
+    (itineraryId: string) => {
+      void toggleFavoriteMutation({ favouriteId: itineraryId, type: 'FAVOURITE-ITINERARY' });
+    },
+    [toggleFavoriteMutation],
+  );
 
   const sortOptions = [
     { value: 'newest', label: 'Newest First' },
@@ -426,6 +430,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
             {filteredResults.map((itinerary) => {
               const imagePath = itinerary.image_file?.image_storage_key;
               const imageUrl = imagePath ? signedUrls[imagePath] : undefined;
+              const isFavorite = favoriteItineraryIds.includes(itinerary.id);
 
               return (
                 <article
@@ -443,10 +448,32 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                 >
                   <Card
                     padding="md"
-                    className={`bg-surface rounded-xl shadow-md overflow-hidden transition-shadow hover:shadow-lg cursor-pointer ${
+                    className={`relative bg-surface rounded-xl shadow-md overflow-hidden transition-shadow hover:shadow-lg cursor-pointer ${
                       viewMode === 'list' ? 'flex items-start' : ''
                     }`}
                   >
+                    <Button
+                      type="button"
+                      variant={isFavorite ? 'primary' : 'ghost'}
+                      size="sm"
+                      className="absolute top-3 right-3 rounded-full h-11 w-11 p-0 shadow-md"
+                      loading={favoritesBusy}
+                      aria-label={
+                        isFavorite ? 'Remove itinerary from favourites' : 'Add itinerary to favourites'
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleToggleFavorite(itinerary.id);
+                      }}
+                    >
+                      {isFavorite ? (
+                        <HiHeart className="h-5 w-5" aria-hidden="true" />
+                      ) : (
+                        <HiOutlineHeart className="h-5 w-5" aria-hidden="true" />
+                      )}
+                    </Button>
+
                     {/* Image */}
                     <div
                       className={`relative ${

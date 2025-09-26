@@ -23,6 +23,7 @@ import { QueueManager } from '@/components/audio/QueueManager';
 import { useGetAudioItineraryQuery, useGetItineraryTracksQuery } from '@/lib/redux/api/apiSlice';
 import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
 import { useSignedAudioUrls, useSignedUrl } from '@/lib/hooks/useSignedUrls';
+import { useFavorites } from '@/lib/hooks';
 import {
   setCurrentTrack,
   play,
@@ -98,6 +99,15 @@ export default function AudioPlayerPage() {
     if (!tracks || !currentTrack) return 0;
     return tracks.findIndex((track) => track.id === currentTrack.id);
   }, [tracks, currentTrack]);
+
+  const {
+    favoriteTrackIds,
+    toggleFavorite,
+    isAddingFavorite,
+    isRemovingFavorite,
+  } = useFavorites();
+  const isCurrentTrackFavorite = currentTrack ? favoriteTrackIds.includes(currentTrack.id) : false;
+  const favoritesBusy = isAddingFavorite || isRemovingFavorite;
 
   // Helper functions
   const formatTime = useCallback((seconds: number) => {
@@ -516,9 +526,22 @@ export default function AudioPlayerPage() {
           </Button>
 
           {/* Add to Favorites */}
-          <Button variant="outline" className="flex items-center justify-center space-x-2">
-            <HiOutlineHeart className="w-4 h-4" />
-            <span>Favorite</span>
+          <Button
+            variant={isCurrentTrackFavorite ? 'primary' : 'outline'}
+            className="flex items-center justify-center space-x-2"
+            disabled={!currentTrack}
+            loading={favoritesBusy}
+            onClick={() =>
+              currentTrack &&
+              toggleFavorite({ favouriteId: currentTrack.id, type: 'FAVOURITE-TRACK' })
+            }
+          >
+            {isCurrentTrackFavorite ? (
+              <HiHeart className="w-4 h-4" />
+            ) : (
+              <HiOutlineHeart className="w-4 h-4" />
+            )}
+            <span>{isCurrentTrackFavorite ? 'Favourited' : 'Favorite'}</span>
           </Button>
         </div>
 
