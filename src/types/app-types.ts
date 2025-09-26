@@ -77,6 +77,7 @@ export interface EnhancedUserProfile extends Tables<'user_profile'> {
       enable_background_play: boolean;
       auto_play: boolean;
       skip_silence: boolean;
+      quality?: 'standard' | 'high' | 'data-saver';
     };
     map_settings: {
       enable_location: boolean;
@@ -93,6 +94,11 @@ export interface EnhancedUserProfile extends Tables<'user_profile'> {
       reduce_motion: boolean;
       high_contrast: boolean;
       large_text: boolean;
+    };
+    privacy?: {
+      share_listening_history: boolean;
+      personalized_recommendations: boolean;
+      location_based_suggestions: boolean;
     };
   };
 

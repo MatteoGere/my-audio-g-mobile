@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import {
   supabase,
@@ -14,7 +14,15 @@ import {
   updateSession,
   clearError as clearAuthError,
   updateLastActivity,
+  updateProfile as updateProfileAction,
 } from '../redux/slices/authSlice';
+import { hydratePreferences } from '../redux/slices/userPreferencesSlice';
+import {
+  parseProfileSettings,
+  serializePreferences,
+  mergePreferencesState,
+  buildAddressPayload,
+} from '../utils/profile';
 import type { Session, User } from '@supabase/supabase-js';
 import type { Tables } from '@/types/supabase-types';
 
@@ -248,6 +256,37 @@ export const useAuth = () => {
     }
   }, []);
 
+  const changePassword = useCallback(
+    async (currentPassword: string, newPassword: string) => {
+      if (!user?.email) {
+        return { success: false, error: 'User email not available' };
+      }
+
+      try {
+        const { error: reauthError } = await supabase.auth.signInWithPassword({
+          email: user.email,
+          password: currentPassword,
+        });
+
+        if (reauthError) {
+          return { success: false, error: 'Current password is incorrect' };
+        }
+
+        const { error: updateError } = await supabase.auth.updateUser({
+          password: newPassword,
+        });
+
+        if (updateError) throw updateError;
+
+        return { success: true };
+      } catch (error: any) {
+        console.error('Error changing password:', error);
+        return { success: false, error: error?.message || 'Unable to update password' };
+      }
+    },
+    [user?.email],
+  );
+
   // Refresh session function (memoized)
   const refreshSession = useCallback(async () => {
     try {
@@ -276,6 +315,7 @@ export const useAuth = () => {
     refreshSession,
     forgotPassword,
     resetPassword,
+    changePassword,
     clearError: useCallback(() => {
       setError(null);
       dispatch(clearAuthError());
@@ -287,14 +327,18 @@ export const useAuth = () => {
 // Hook for getting current user profile
 export const useUserProfile = () => {
   const { user, isAuthenticated } = useAuth();
+  const dispatch = useAppDispatch();
+  const preferencesState = useAppSelector((state) => state.userPreferences);
   const [profile, setProfile] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const hasHydratedPreferencesRef = useRef(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
       if (!isAuthenticated || !user?.id) {
         setProfile(null);
+        hasHydratedPreferencesRef.current = false;
         return;
       }
 
@@ -316,7 +360,14 @@ export const useUserProfile = () => {
             throw error;
           }
         } else {
-          setProfile(data);
+          const parsed = parseProfileSettings(data.address);
+          if (parsed.preferences && !hasHydratedPreferencesRef.current) {
+            const merged = mergePreferencesState(preferencesState, parsed.preferences);
+            dispatch(hydratePreferences(merged));
+            hasHydratedPreferencesRef.current = true;
+          }
+          setProfile({ ...data, address_details: parsed.address, preferences_payload: parsed.preferences });
+          dispatch(updateProfileAction(data));
         }
       } catch (err: any) {
         console.error('Error fetching user profile:', err);
@@ -327,7 +378,7 @@ export const useUserProfile = () => {
     };
 
     fetchProfile();
-  }, [user?.id, isAuthenticated]);
+  }, [user?.id, isAuthenticated, dispatch, preferencesState]);
 
   // Create or update profile
   const updateProfile = async (updates: Partial<Tables<'user_profile'>>) => {
@@ -369,7 +420,15 @@ export const useUserProfile = () => {
         data = createData;
       }
 
-      setProfile(data);
+      const parsed = parseProfileSettings(data.address);
+      if (parsed.preferences) {
+        const merged = mergePreferencesState(preferencesState, parsed.preferences);
+        dispatch(hydratePreferences(merged));
+        hasHydratedPreferencesRef.current = true;
+      }
+
+      setProfile({ ...data, address_details: parsed.address, preferences_payload: parsed.preferences });
+      dispatch(updateProfileAction(data));
       return data;
     } catch (err: any) {
       console.error('Error updating profile:', err);

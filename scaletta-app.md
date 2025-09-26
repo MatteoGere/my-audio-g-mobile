@@ -324,18 +324,15 @@ MapLayout: Fullscreen layout for map interactions
 - [ ] **Profile Page**:
   - Display user information from user_profile table
   - Edit name, surname, address fields
-  - Profile picture upload (if supported)
   - Account settings and preferences
 - [ ] **User Preferences**:
   - Language selection
   - Audio quality preferences
-  - Notification settings
+  - Theme selection (light/dark mode)
   - Privacy controls
 - [ ] **Account Management**:
   - Password change functionality
-  - Email update with verification
   - Account deletion option
-  - Data export functionality
 
 ### 6.2 Favorites System
 
