@@ -414,10 +414,7 @@ export const apiSlice = createApi({
       providesTags: ['UserFavorite'],
     }),
 
-    getUserFavoritesDetailed: builder.query<
-      EnhancedUserFavorite[],
-      { userId: string }
-    >({
+    getUserFavoritesDetailed: builder.query<EnhancedUserFavorite[], { userId: string }>({
       queryFn: async ({ userId }) => {
         try {
           const { data: favoriteRows, error: favoritesError } = await supabase
@@ -509,17 +506,17 @@ export const apiSlice = createApi({
               : Promise.resolve({ data: [], error: null }),
           ]);
 
-          const {
-            data: itineraryDataRaw,
-            error: itineraryError,
-          } = itineraryResponse as { data: any[] | null; error: Error | null };
+          const { data: itineraryDataRaw, error: itineraryError } = itineraryResponse as {
+            data: any[] | null;
+            error: Error | null;
+          };
           if (itineraryError) throw itineraryError;
           const itineraryData = itineraryDataRaw ?? [];
 
-          const {
-            data: trackDataRaw,
-            error: trackError,
-          } = trackResponse as { data: any[] | null; error: Error | null };
+          const { data: trackDataRaw, error: trackError } = trackResponse as {
+            data: any[] | null;
+            error: Error | null;
+          };
           if (trackError) throw trackError;
           const trackData = trackDataRaw ?? [];
 

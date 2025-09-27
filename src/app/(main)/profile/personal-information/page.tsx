@@ -15,7 +15,12 @@ import { HiOutlineChevronLeft } from 'react-icons/hi';
 import { NavigationGuard } from '@/components/navigation/NavigationGuard';
 import { useAuth, useUserProfile } from '@/lib/hooks';
 import { useAppSelector } from '@/lib/redux/store';
-import { serializePreferences, parseProfileSettings, buildAddressPayload, type ProfileAddress } from '@/lib/utils/profile';
+import {
+  serializePreferences,
+  parseProfileSettings,
+  buildAddressPayload,
+  type ProfileAddress,
+} from '@/lib/utils/profile';
 import { HiOutlineExclamationTriangle, HiOutlineCheckCircle } from 'react-icons/hi2';
 
 interface AsyncStatus {
@@ -166,7 +171,8 @@ export default function PersonalInformationPage() {
             <div className="space-y-1">
               <CardTitle>Personal information</CardTitle>
               <CardDescription>
-                Update your public profile details. These help us personalize your audio itineraries.
+                Update your public profile details. These help us personalize your audio
+                itineraries.
               </CardDescription>
             </div>
             <div>
@@ -251,9 +257,7 @@ export default function PersonalInformationPage() {
               </div>
             </div>
 
-            {error && (
-              <StatusMessage status={{ loading: false, success: null, error }} />
-            )}
+            {error && <StatusMessage status={{ loading: false, success: null, error }} />}
             <StatusMessage status={status} />
 
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">

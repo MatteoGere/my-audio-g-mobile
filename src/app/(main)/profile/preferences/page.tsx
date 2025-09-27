@@ -23,7 +23,11 @@ import {
   setAudioQuality,
   setPrivacySettings,
 } from '@/lib/redux/slices/userPreferencesSlice';
-import { serializePreferences, parseProfileSettings, buildAddressPayload } from '@/lib/utils/profile';
+import {
+  serializePreferences,
+  parseProfileSettings,
+  buildAddressPayload,
+} from '@/lib/utils/profile';
 import { useUserProfile } from '@/lib/hooks';
 import { HiOutlineExclamationTriangle, HiOutlineCheckCircle } from 'react-icons/hi2';
 
@@ -87,9 +91,10 @@ export default function PreferencesPage() {
 
   const [status, setStatus] = useState<AsyncStatus>(initialStatus);
 
-  const addressSnapshot = useMemo(() => parseProfileSettings(profile?.address ?? null).address, [
-    profile?.address,
-  ]);
+  const addressSnapshot = useMemo(
+    () => parseProfileSettings(profile?.address ?? null).address,
+    [profile?.address],
+  );
 
   const handleSavePreferences = async () => {
     setStatus({ loading: true, success: null, error: null });
@@ -115,7 +120,9 @@ export default function PreferencesPage() {
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <CardTitle>Preferences</CardTitle>
-              <CardDescription>Control language, theme and audio quality preferences.</CardDescription>
+              <CardDescription>
+                Control language, theme and audio quality preferences.
+              </CardDescription>
             </div>
             <div>
               <Button variant="ghost" size="sm" onClick={() => router.push('/profile')}>
@@ -132,9 +139,7 @@ export default function PreferencesPage() {
                 label="Language"
                 options={preferenceOptions.languages}
                 defaultValue={preferences.language}
-                onValueChange={(value) =>
-                  dispatch(setLanguage((value as 'en' | 'it') || 'it'))
-                }
+                onValueChange={(value) => dispatch(setLanguage((value as 'en' | 'it') || 'it'))}
                 disabled={isLoading}
               />
 
@@ -158,7 +163,9 @@ export default function PreferencesPage() {
                 defaultValue={preferences.audioSettings.quality}
                 onValueChange={(value) =>
                   dispatch(
-                    setAudioQuality((value as typeof preferences.audioSettings.quality) || 'standard'),
+                    setAudioQuality(
+                      (value as typeof preferences.audioSettings.quality) || 'standard',
+                    ),
                   )
                 }
                 disabled={isLoading}
@@ -195,18 +202,14 @@ export default function PreferencesPage() {
                   description="Enable suggestions when you are near points of interest."
                   checked={preferences.privacy.locationBasedSuggestions}
                   onChange={(event) =>
-                    dispatch(
-                      setPrivacySettings({ locationBasedSuggestions: event.target.checked }),
-                    )
+                    dispatch(setPrivacySettings({ locationBasedSuggestions: event.target.checked }))
                   }
                   disabled={isLoading}
                 />
               </div>
             </div>
 
-            {error && (
-              <StatusMessage status={{ loading: false, success: null, error }} />
-            )}
+            {error && <StatusMessage status={{ loading: false, success: null, error }} />}
             <StatusMessage status={status} />
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

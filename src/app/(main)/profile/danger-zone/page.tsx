@@ -118,12 +118,17 @@ export default function DangerZonePage() {
                 <CardTitle className="text-error">Danger zone</CardTitle>
               </div>
               <CardDescription>
-                Deleting your account removes your profile, favorites, and listening history. This action
-                is irreversible.
+                Deleting your account removes your profile, favorites, and listening history. This
+                action is irreversible.
               </CardDescription>
             </div>
             <div>
-              <Button variant="ghost" size="sm" className="text-error" onClick={() => router.push('/profile')}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-error"
+                onClick={() => router.push('/profile')}
+              >
                 <HiOutlineChevronLeft className="mr-2 h-4 w-4" aria-hidden="true" />
                 Back
               </Button>
@@ -155,8 +160,8 @@ export default function DangerZonePage() {
         >
           <div className="space-y-4">
             <p className="text-sm text-muted">
-              This will remove your profile, favorites, listening history, and any personalized settings.
-              You will need to create a new account to use the app again.
+              This will remove your profile, favorites, listening history, and any personalized
+              settings. You will need to create a new account to use the app again.
             </p>
             <Input
               label="Confirmation"

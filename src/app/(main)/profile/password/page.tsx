@@ -1,4 +1,4 @@
- 'use client';
+'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -92,20 +92,20 @@ export default function PasswordPage() {
     <NavigationGuard requireAuth>
       <div className="space-y-6 pb-16">
         <div className="space-y-6 p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <CardTitle>Password & security</CardTitle>
-                <CardDescription>
-                  Keep your account secure by using a strong password you do not reuse elsewhere.
-                </CardDescription>
-              </div>
-              <div>
-                <Button variant="ghost" size="sm" onClick={() => router.push('/profile')}>
-                  <HiOutlineChevronLeft className="mr-2 h-4 w-4" aria-hidden="true" />
-                  Back
-                </Button>
-              </div>
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <CardTitle>Password & security</CardTitle>
+              <CardDescription>
+                Keep your account secure by using a strong password you do not reuse elsewhere.
+              </CardDescription>
             </div>
+            <div>
+              <Button variant="ghost" size="sm" onClick={() => router.push('/profile')}>
+                <HiOutlineChevronLeft className="mr-2 h-4 w-4" aria-hidden="true" />
+                Back
+              </Button>
+            </div>
+          </div>
 
           <div className="space-y-4">
             <Input

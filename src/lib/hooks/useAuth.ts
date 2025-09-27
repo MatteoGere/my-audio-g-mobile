@@ -366,7 +366,11 @@ export const useUserProfile = () => {
             dispatch(hydratePreferences(merged));
             hasHydratedPreferencesRef.current = true;
           }
-          setProfile({ ...data, address_details: parsed.address, preferences_payload: parsed.preferences });
+          setProfile({
+            ...data,
+            address_details: parsed.address,
+            preferences_payload: parsed.preferences,
+          });
           dispatch(updateProfileAction(data));
         }
       } catch (err: any) {
@@ -427,7 +431,11 @@ export const useUserProfile = () => {
         hasHydratedPreferencesRef.current = true;
       }
 
-      setProfile({ ...data, address_details: parsed.address, preferences_payload: parsed.preferences });
+      setProfile({
+        ...data,
+        address_details: parsed.address,
+        preferences_payload: parsed.preferences,
+      });
       dispatch(updateProfileAction(data));
       return data;
     } catch (err: any) {

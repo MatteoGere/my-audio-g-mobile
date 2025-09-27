@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useMemo } from 'react';
@@ -66,7 +65,9 @@ export default function ProfilePage() {
               >
                 <HiOutlineUser className="h-6 w-6 text-primary" aria-hidden="true" />
                 <div className="flex-1 text-left">
-                  <span className="block text-base font-medium text-foreground">Personal Information</span>
+                  <span className="block text-base font-medium text-foreground">
+                    Personal Information
+                  </span>
                   <span className="block text-xs text-muted">Name, surname, address, email</span>
                 </div>
                 <span className="ml-auto text-xs text-accent font-semibold">Edit</span>
@@ -81,7 +82,9 @@ export default function ProfilePage() {
                 <HiOutlineCog className="h-6 w-6 text-primary" aria-hidden="true" />
                 <div className="flex-1 text-left">
                   <span className="block text-base font-medium text-foreground">Preferences</span>
-                  <span className="block text-xs text-muted">Language, theme, audio quality, privacy</span>
+                  <span className="block text-xs text-muted">
+                    Language, theme, audio quality, privacy
+                  </span>
                 </div>
                 <span className="ml-auto text-xs text-accent font-semibold">Edit</span>
               </button>
@@ -94,8 +97,12 @@ export default function ProfilePage() {
               >
                 <HiOutlineLockClosed className="h-6 w-6 text-primary" aria-hidden="true" />
                 <div className="flex-1 text-left">
-                  <span className="block text-base font-medium text-foreground">Password & Security</span>
-                  <span className="block text-xs text-muted">Change password, security settings</span>
+                  <span className="block text-base font-medium text-foreground">
+                    Password & Security
+                  </span>
+                  <span className="block text-xs text-muted">
+                    Change password, security settings
+                  </span>
                 </div>
                 <span className="ml-auto text-xs text-accent font-semibold">Edit</span>
               </button>

@@ -144,10 +144,12 @@ export default function ItineraryDetailPage() {
               )}
             </div>
             <Button
-              variant='ghost'
+              variant="ghost"
               size="sm"
               aria-label={
-                isItineraryFavorite ? 'Remove itinerary from favourites' : 'Add itinerary to favourites'
+                isItineraryFavorite
+                  ? 'Remove itinerary from favourites'
+                  : 'Add itinerary to favourites'
               }
               loading={isFavoritesBusy}
               onClick={() =>
@@ -235,7 +237,7 @@ export default function ItineraryDetailPage() {
                     ▶
                   </Button>
                   <Button
-                    variant='ghost'
+                    variant="ghost"
                     size="sm"
                     aria-label={
                       favoriteTrackIds.includes(track.id)
@@ -248,9 +250,17 @@ export default function ItineraryDetailPage() {
                     }
                   >
                     {favoriteTrackIds.includes(track.id) ? (
-                      <HiHeart className="h-4 w-4" aria-hidden="true" style={{ color: tokens.colors.error, opacity: 0.95 }} />
+                      <HiHeart
+                        className="h-4 w-4"
+                        aria-hidden="true"
+                        style={{ color: tokens.colors.error, opacity: 0.95 }}
+                      />
                     ) : (
-                      <HiOutlineHeart className="h-4 w-4" aria-hidden="true" style={{ opacity: 0.65 }} />
+                      <HiOutlineHeart
+                        className="h-4 w-4"
+                        aria-hidden="true"
+                        style={{ opacity: 0.65 }}
+                      />
                     )}
                   </Button>
                 </div>

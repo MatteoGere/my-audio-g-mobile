@@ -177,7 +177,6 @@ export default function MapPage() {
           <Button
             onClick={centerOnUser}
             className="min-w-[44px] min-h-[44px] p-0"
-        
             disabled={!isLocationEnabled && !userLocation}
             aria-label="Center on user"
           >
@@ -195,7 +194,9 @@ export default function MapPage() {
             <HiOutlinePlus className="h-5 w-5" />
           </Button>
           <Button
-            onClick={() => dispatch(setMapView({ center: mapCenter, zoom: Math.max(1, mapZoom - 1) }))}
+            onClick={() =>
+              dispatch(setMapView({ center: mapCenter, zoom: Math.max(1, mapZoom - 1) }))
+            }
             className="min-w-[44px] min-h-[44px] p-0"
             aria-label="Zoom out"
           >
@@ -232,7 +233,7 @@ export default function MapPage() {
       )}
 
       {/* Search and Filter Bar (moved to bottom) */}
-      <div  className={`absolute bottom-4 left-4 right-4 z-10 rounded-lg shadow-lg`}>
+      <div className={`absolute bottom-4 left-4 right-4 z-10 rounded-lg shadow-lg`}>
         <div className="flex gap-2 items-center">
           <div className="flex-1 relative">
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted text-sm" />
@@ -244,11 +245,7 @@ export default function MapPage() {
               className="pr-4 py-2 w-full bg-surface"
             />
           </div>
-          <Button
-            size="sm"
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-3"
-          >
+          <Button size="sm" onClick={() => setShowFilters(!showFilters)} className="px-3">
             <FaFilter />
           </Button>
         </div>
@@ -263,7 +260,6 @@ export default function MapPage() {
           </Card>
         )}
       </div>
-
     </div>
   );
 }

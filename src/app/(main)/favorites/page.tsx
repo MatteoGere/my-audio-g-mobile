@@ -119,9 +119,7 @@ export default function FavoritesPage() {
               <span>{formatRelativeTime(favorite.created_at)}</span>
             </div>
             <div className="space-y-1">
-              <CardTitle className="text-lg">
-                {itinerary?.name || 'Untitled itinerary'}
-              </CardTitle>
+              <CardTitle className="text-lg">{itinerary?.name || 'Untitled itinerary'}</CardTitle>
               {itinerary?.description && (
                 <CardDescription className="text-sm leading-relaxed line-clamp-2">
                   {itinerary.description}
@@ -195,9 +193,7 @@ export default function FavoritesPage() {
               <span>{formatRelativeTime(favorite.created_at)}</span>
             </div>
             <div className="space-y-1">
-              <CardTitle className="text-lg">
-                {track?.name || 'Untitled track'}
-              </CardTitle>
+              <CardTitle className="text-lg">{track?.name || 'Untitled track'}</CardTitle>
               {track?.description && (
                 <CardDescription className="text-sm leading-relaxed line-clamp-2">
                   {track.description}
@@ -264,7 +260,10 @@ export default function FavoritesPage() {
         </section>
 
         <section className="grid gap-3 sm:grid-cols-2">
-          <Card padding="lg" className="flex items-center justify-between bg-surface/80 backdrop-blur">
+          <Card
+            padding="lg"
+            className="flex items-center justify-between bg-surface/80 backdrop-blur"
+          >
             <div className="space-y-1">
               <span className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">
                 Total favourites
@@ -289,11 +288,7 @@ export default function FavoritesPage() {
               <CardTitle className="text-lg">Jump back into the adventure</CardTitle>
             </CardHeader>
             <CardBody className="flex flex-wrap gap-2 px-0">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => router.push('/search')}
-              >
+              <Button variant="secondary" size="sm" onClick={() => router.push('/search')}>
                 <HiOutlineSparkles className="mr-2 h-4 w-4" aria-hidden="true" />
                 Discover new tours
               </Button>

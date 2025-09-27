@@ -47,7 +47,6 @@
   color: var(--color-foreground) !important;
 }
 
-
 .dark .leaflet-control-attribution {
   background: var(--color-surface) !important;
   color: var(--color-muted) !important;

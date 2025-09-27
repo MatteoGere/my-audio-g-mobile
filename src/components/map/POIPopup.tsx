@@ -35,12 +35,7 @@ export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onC
   const isPlaying = playbackState.isPlaying;
   const isCurrentTrack = currentTrackId === poi.trackId;
 
-  const {
-    favoriteTrackIds,
-    toggleFavorite,
-    isAddingFavorite,
-    isRemovingFavorite,
-  } = useFavorites();
+  const { favoriteTrackIds, toggleFavorite, isAddingFavorite, isRemovingFavorite } = useFavorites();
   const isFavorite = favoriteTrackIds.includes(poi.trackId);
   const favoritesBusy = isAddingFavorite || isRemovingFavorite;
 
@@ -168,9 +163,7 @@ export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onC
               variant={isFavorite ? 'primary' : 'outline'}
               className="px-3"
               loading={favoritesBusy}
-              aria-label={
-                isFavorite ? 'Remove track from favourites' : 'Add track to favourites'
-              }
+              aria-label={isFavorite ? 'Remove track from favourites' : 'Add track to favourites'}
               onClick={(event) => {
                 event.stopPropagation();
                 void toggleFavorite({ favouriteId: poi.trackId, type: 'FAVOURITE-TRACK' });

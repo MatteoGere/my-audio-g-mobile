@@ -101,12 +101,7 @@ export default function AudioPlayerPage() {
     return tracks.findIndex((track) => track.id === currentTrack.id);
   }, [tracks, currentTrack]);
 
-  const {
-    favoriteTrackIds,
-    toggleFavorite,
-    isAddingFavorite,
-    isRemovingFavorite,
-  } = useFavorites();
+  const { favoriteTrackIds, toggleFavorite, isAddingFavorite, isRemovingFavorite } = useFavorites();
   const isCurrentTrackFavorite = currentTrack ? favoriteTrackIds.includes(currentTrack.id) : false;
   const favoritesBusy = isAddingFavorite || isRemovingFavorite;
 
@@ -528,7 +523,7 @@ export default function AudioPlayerPage() {
 
           {/* Add to Favorites */}
           <Button
-            variant='ghost'
+            variant="ghost"
             className="flex items-center justify-center space-x-2"
             disabled={!currentTrack}
             loading={favoritesBusy}

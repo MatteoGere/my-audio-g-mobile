@@ -28,7 +28,10 @@ function CollapsibleText({ id, text }: { id: string; text: string }) {
 
   return (
     <div className="mb-1">
-      <p id={id} className={'text-sm text-muted leading-relaxed ' + (expanded ? '' : 'line-clamp-2')}>
+      <p
+        id={id}
+        className={'text-sm text-muted leading-relaxed ' + (expanded ? '' : 'line-clamp-2')}
+      >
         {text}
       </p>
       <button
@@ -452,8 +455,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                     className={`relative bg-surface rounded-xl shadow-md overflow-hidden transition-shadow hover:shadow-lg cursor-pointer ${
                       viewMode === 'list' ? 'flex items-start' : ''
                     }`}
-                  >                  
-
+                  >
                     {/* Image */}
                     <div
                       className={`relative ${
@@ -481,7 +483,10 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                         </h3>
 
                         {viewMode === 'list' && itinerary.description && (
-                          <CollapsibleText id={`search-desc-${itinerary.id}`} text={itinerary.description} />
+                          <CollapsibleText
+                            id={`search-desc-${itinerary.id}`}
+                            text={itinerary.description}
+                          />
                         )}
 
                         <div className="flex items-center gap-2 text-xs text-muted">
@@ -496,27 +501,37 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                               <span>{itinerary.company.name}</span>
                             </>
                           )}
-                           <Button
-                      type="button"
-                      variant='ghost'
-                      size="sm"
-                      className=""
-                      loading={favoritesBusy}
-                      aria-label={
-                        isFavorite ? 'Remove itinerary from favourites' : 'Add itinerary to favourites'
-                      }
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleToggleFavorite(itinerary.id);
-                      }}
-                    >
-                      {isFavorite ? (
-                        <HiHeart className="h-5 w-5" aria-hidden="true" style={{ color: tokens.colors.error, opacity: 0.95 }} />
-                      ) : (
-                        <HiOutlineHeart className="h-5 w-5" aria-hidden="true" style={{ opacity: 0.65 }} />
-                      )}
-                    </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className=""
+                            loading={favoritesBusy}
+                            aria-label={
+                              isFavorite
+                                ? 'Remove itinerary from favourites'
+                                : 'Add itinerary to favourites'
+                            }
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleToggleFavorite(itinerary.id);
+                            }}
+                          >
+                            {isFavorite ? (
+                              <HiHeart
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                                style={{ color: tokens.colors.error, opacity: 0.95 }}
+                              />
+                            ) : (
+                              <HiOutlineHeart
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                                style={{ opacity: 0.65 }}
+                              />
+                            )}
+                          </Button>
                         </div>
                       </div>
                     </div>

@@ -79,9 +79,10 @@ const parsePreferencesFromRecord = (
       ? (source.theme as SerializedUserPreferences['theme'])
       : 'system',
     audio_settings: {
-      playback_speed: typeof source.audio_settings?.playback_speed === 'number'
-        ? source.audio_settings.playback_speed
-        : 1,
+      playback_speed:
+        typeof source.audio_settings?.playback_speed === 'number'
+          ? source.audio_settings.playback_speed
+          : 1,
       enable_background_play: !!source.audio_settings?.enable_background_play,
       auto_play: !!source.audio_settings?.auto_play,
       skip_silence: !!source.audio_settings?.skip_silence,
