@@ -16,3 +16,6 @@ export { useLocation } from './useLocation';
 
 // Map hooks
 export { useMapPOIs } from './useMapPOIs';
+
+// Favorites hooks
+export { useFavorites } from './useFavorites';

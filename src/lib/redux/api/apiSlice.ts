@@ -1,6 +1,11 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/supabase-types';
+import type {
+  EnhancedAudioItinerary,
+  EnhancedAudioTrack,
+  EnhancedUserFavorite,
+} from '@/types/app-types';
 
 // Create Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -69,14 +74,15 @@ export const apiSlice = createApi({
       },
     }),
 
-    signOut: builder.mutation<void, void>({
+    signOut: builder.mutation<boolean, void>({
       queryFn: async () => {
         try {
           const { error } = await supabase.auth.signOut();
 
           if (error) throw error;
 
-          return { data: undefined };
+          // Return a concrete value accepted by RTK Query runtime
+          return { data: true };
         } catch (error: any) {
           return { error: { status: 'FETCH_ERROR', error: error.message } };
         }
@@ -409,6 +415,163 @@ export const apiSlice = createApi({
       providesTags: ['UserFavorite'],
     }),
 
+    getUserFavoritesDetailed: builder.query<EnhancedUserFavorite[], { userId: string }>({
+      queryFn: async ({ userId }) => {
+        try {
+          const { data: favoriteRows, error: favoritesError } = await supabase
+            .from('user_favourite')
+            .select('*')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false });
+
+          if (favoritesError) throw favoritesError;
+
+          if (!favoriteRows || favoriteRows.length === 0) {
+            return { data: [] };
+          }
+
+          const itineraryIds = Array.from(
+            new Set(
+              favoriteRows
+                .filter((favorite) => favorite.type === 'FAVOURITE-ITINERARY')
+                .map((favorite) => favorite.favourite_id),
+            ),
+          );
+
+          const trackIds = Array.from(
+            new Set(
+              favoriteRows
+                .filter((favorite) => favorite.type === 'FAVOURITE-TRACK')
+                .map((favorite) => favorite.favourite_id),
+            ),
+          );
+
+          const [itineraryResponse, trackResponse] = await Promise.all([
+            itineraryIds.length
+              ? supabase
+                  .from('audio_itinerary')
+                  .select(
+                    `
+                  *,
+                  company:company_id (
+                    id,
+                    name,
+                    description,
+                    image_file_id
+                  ),
+                  image_file:image_file_id (
+                    id,
+                    image_storage_key,
+                    image_type,
+                    object_id
+                  )
+                `,
+                  )
+                  .in('id', itineraryIds)
+              : Promise.resolve({ data: [], error: null }),
+            trackIds.length
+              ? supabase
+                  .from('audio_track')
+                  .select(
+                    `
+                  *,
+                  image_file:image_file_id (
+                    id,
+                    image_storage_key,
+                    image_type,
+                    object_id
+                  ),
+                  audio_track_poi (
+                    latitude,
+                    longitude,
+                    created_at
+                  ),
+                  audio_itinerary:audio_itinerary_id (
+                    *,
+                    company:company_id (
+                      id,
+                      name,
+                      description,
+                      image_file_id
+                    ),
+                    image_file:image_file_id (
+                      id,
+                      image_storage_key,
+                      image_type,
+                      object_id
+                    )
+                  )
+                `,
+                  )
+                  .in('id', trackIds)
+              : Promise.resolve({ data: [], error: null }),
+          ]);
+
+          const { data: itineraryDataRaw, error: itineraryError } = itineraryResponse as {
+            data: any[] | null;
+            error: Error | null;
+          };
+          if (itineraryError) throw itineraryError;
+          const itineraryData = itineraryDataRaw ?? [];
+
+          const { data: trackDataRaw, error: trackError } = trackResponse as {
+            data: any[] | null;
+            error: Error | null;
+          };
+          if (trackError) throw trackError;
+          const trackData = trackDataRaw ?? [];
+
+          const itinerariesById = new Map<string, EnhancedAudioItinerary>();
+          itineraryData.forEach((itinerary) => {
+            if (!itinerary || !itinerary.id) return;
+            const enhancedItinerary: EnhancedAudioItinerary = {
+              ...(itinerary as EnhancedAudioItinerary),
+              track_count: itinerary?.tracks?.length ?? undefined,
+            };
+            itinerariesById.set(itinerary.id, enhancedItinerary);
+          });
+
+          const tracksById = new Map<string, EnhancedAudioTrack>();
+          trackData.forEach((track) => {
+            if (!track || !track.id) return;
+            const enhancedTrack: EnhancedAudioTrack = {
+              ...(track as EnhancedAudioTrack),
+              latitude: track?.audio_track_poi?.latitude ?? undefined,
+              longitude: track?.audio_track_poi?.longitude ?? undefined,
+            };
+            tracksById.set(track.id, enhancedTrack);
+          });
+
+          const enhancedFavorites: EnhancedUserFavorite[] = favoriteRows.map((favorite) => {
+            const baseFavorite: EnhancedUserFavorite = {
+              ...favorite,
+            };
+
+            if (favorite.type === 'FAVOURITE-ITINERARY') {
+              const itinerary = itinerariesById.get(favorite.favourite_id);
+              if (itinerary) {
+                baseFavorite.itinerary = itinerary;
+              }
+            } else if (favorite.type === 'FAVOURITE-TRACK') {
+              const track = tracksById.get(favorite.favourite_id);
+              if (track) {
+                baseFavorite.track = track;
+              }
+            }
+
+            return baseFavorite;
+          });
+
+          return {
+            data: enhancedFavorites,
+          };
+        } catch (error: any) {
+          return { error: { status: 'FETCH_ERROR', error: error.message } };
+        }
+      },
+      providesTags: ['UserFavorite', 'AudioTrack', 'AudioItinerary'],
+    }),
+
     addFavorite: builder.mutation<
       Database['public']['Tables']['user_favourite']['Row'],
       {
@@ -596,6 +759,7 @@ export const {
 
   // Favorites
   useGetUserFavoritesQuery,
+  useGetUserFavoritesDetailedQuery,
   useAddFavoriteMutation,
   useRemoveFavoriteMutation,
 

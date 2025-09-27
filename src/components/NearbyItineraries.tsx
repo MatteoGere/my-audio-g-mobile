@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useMemo, useState } from 'react';
 import { Card, Badge, Button } from '@/components/ui';
@@ -42,13 +42,13 @@ export default function NearbyItineraries() {
   const { userLocation, requestLocation, locationError } = useLocation();
 
   // Sync local coords state with store-backed userLocation
-+  useEffect(() => {
+  +useEffect(() => {
     if (userLocation) {
       setCoords({ lat: userLocation.latitude, lng: userLocation.longitude });
       setGeoError(null);
     } else {
       // if there's no userLocation available, clear coords so queries are skipped
-+      setCoords(null);
+      +setCoords(null);
     }
   }, [userLocation]);
 
@@ -127,7 +127,9 @@ export default function NearbyItineraries() {
   if (geoError) {
     return (
       <div className="space-y-2">
-        <div className="text-sm text-muted">{geoError || 'Location access is disabled. Enable it to see tours near you.'}</div>
+        <div className="text-sm text-muted">
+          {geoError || 'Location access is disabled. Enable it to see tours near you.'}
+        </div>
         <Button
           size="sm"
           variant="outline"

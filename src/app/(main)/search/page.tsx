@@ -5,13 +5,17 @@ import { useSearchParams, type ReadonlyURLSearchParams } from 'next/navigation';
 import { Card, Button, Input, Badge, Select } from '@/components/ui';
 import { useGetAudioItinerariesQuery, useGetCompaniesQuery } from '@/lib/redux/api/apiSlice';
 import { useSignedUrls } from '@/lib/hooks/useSignedUrls';
+import { useFavorites } from '@/lib/hooks';
 import {
   HiOutlineMagnifyingGlass,
   HiOutlineAdjustmentsHorizontal,
   HiOutlineClock,
   HiOutlineSquares2X2,
   HiOutlineBars3,
+  HiOutlineHeart,
+  HiHeart,
 } from 'react-icons/hi2';
+import tokens from '@/design/tokens';
 
 // Small collapsible text helper (copied from itinerary detail page)
 function CollapsibleText({ id, text }: { id: string; text: string }) {
@@ -24,7 +28,10 @@ function CollapsibleText({ id, text }: { id: string; text: string }) {
 
   return (
     <div className="mb-1">
-      <p id={id} className={'text-sm text-muted leading-relaxed ' + (expanded ? '' : 'line-clamp-2')}>
+      <p
+        id={id}
+        className={'text-sm text-muted leading-relaxed ' + (expanded ? '' : 'line-clamp-2')}
+      >
         {text}
       </p>
       <button
@@ -88,7 +95,13 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const {
+    favoriteItineraryIds,
+    toggleFavorite: toggleFavoriteMutation,
+    isAddingFavorite,
+    isRemovingFavorite,
+  } = useFavorites();
+  const favoritesBusy = isAddingFavorite || isRemovingFavorite;
 
   const [filters, setFilters] = useState<SearchFilters>({
     query: searchParams.get('q') || '',
@@ -201,17 +214,12 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
     setPage(1);
   }, []);
 
-  const toggleFavorite = useCallback((itineraryId: string) => {
-    setFavorites((prev) => {
-      const newFavorites = new Set(prev);
-      if (newFavorites.has(itineraryId)) {
-        newFavorites.delete(itineraryId);
-      } else {
-        newFavorites.add(itineraryId);
-      }
-      return newFavorites;
-    });
-  }, []);
+  const handleToggleFavorite = useCallback(
+    (itineraryId: string) => {
+      void toggleFavoriteMutation({ favouriteId: itineraryId, type: 'FAVOURITE-ITINERARY' });
+    },
+    [toggleFavoriteMutation],
+  );
 
   const sortOptions = [
     { value: 'newest', label: 'Newest First' },
@@ -426,6 +434,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
             {filteredResults.map((itinerary) => {
               const imagePath = itinerary.image_file?.image_storage_key;
               const imageUrl = imagePath ? signedUrls[imagePath] : undefined;
+              const isFavorite = favoriteItineraryIds.includes(itinerary.id);
 
               return (
                 <article
@@ -443,7 +452,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                 >
                   <Card
                     padding="md"
-                    className={`bg-surface rounded-xl shadow-md overflow-hidden transition-shadow hover:shadow-lg cursor-pointer ${
+                    className={`relative bg-surface rounded-xl shadow-md overflow-hidden transition-shadow hover:shadow-lg cursor-pointer ${
                       viewMode === 'list' ? 'flex items-start' : ''
                     }`}
                   >
@@ -474,7 +483,10 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                         </h3>
 
                         {viewMode === 'list' && itinerary.description && (
-                          <CollapsibleText id={`search-desc-${itinerary.id}`} text={itinerary.description} />
+                          <CollapsibleText
+                            id={`search-desc-${itinerary.id}`}
+                            text={itinerary.description}
+                          />
                         )}
 
                         <div className="flex items-center gap-2 text-xs text-muted">
@@ -489,6 +501,37 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                               <span>{itinerary.company.name}</span>
                             </>
                           )}
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className=""
+                            loading={favoritesBusy}
+                            aria-label={
+                              isFavorite
+                                ? 'Remove itinerary from favourites'
+                                : 'Add itinerary to favourites'
+                            }
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleToggleFavorite(itinerary.id);
+                            }}
+                          >
+                            {isFavorite ? (
+                              <HiHeart
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                                style={{ color: tokens.colors.error, opacity: 0.95 }}
+                              />
+                            ) : (
+                              <HiOutlineHeart
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                                style={{ opacity: 0.65 }}
+                              />
+                            )}
+                          </Button>
                         </div>
                       </div>
                     </div>

@@ -9,6 +9,7 @@ export interface UserPreferencesState {
     enableBackgroundPlay: boolean;
     autoPlay: boolean;
     skipSilence: boolean;
+    quality: 'standard' | 'high' | 'data-saver';
   };
   mapSettings: {
     enableLocation: boolean;
@@ -26,6 +27,11 @@ export interface UserPreferencesState {
     highContrast: boolean;
     largeText: boolean;
   };
+  privacy: {
+    shareListeningHistory: boolean;
+    personalizedRecommendations: boolean;
+    locationBasedSuggestions: boolean;
+  };
 }
 
 // Initial state
@@ -37,6 +43,7 @@ const initialState: UserPreferencesState = {
     enableBackgroundPlay: true,
     autoPlay: false,
     skipSilence: false,
+    quality: 'standard',
   },
   mapSettings: {
     enableLocation: true,
@@ -53,6 +60,11 @@ const initialState: UserPreferencesState = {
     reduceMotion: false,
     highContrast: false,
     largeText: false,
+  },
+  privacy: {
+    shareListeningHistory: true,
+    personalizedRecommendations: true,
+    locationBasedSuggestions: true,
   },
 };
 
@@ -83,6 +95,12 @@ export const userPreferencesSlice = createSlice({
     },
     setSkipSilence: (state, action: PayloadAction<boolean>) => {
       state.audioSettings.skipSilence = action.payload;
+    },
+    setAudioQuality: (
+      state,
+      action: PayloadAction<UserPreferencesState['audioSettings']['quality']>,
+    ) => {
+      state.audioSettings.quality = action.payload;
     },
     updateAudioSettings: (
       state,
@@ -145,6 +163,16 @@ export const userPreferencesSlice = createSlice({
       state.accessibility = { ...state.accessibility, ...action.payload };
     },
 
+    // Privacy settings
+    setPrivacySettings: (
+      state,
+      action: PayloadAction<Partial<UserPreferencesState['privacy']>>,
+    ) => {
+      state.privacy = { ...state.privacy, ...action.payload };
+    },
+
+    hydratePreferences: (_state, action: PayloadAction<UserPreferencesState>) => action.payload,
+
     // Reset all preferences
     resetPreferences: () => initialState,
   },
@@ -158,6 +186,7 @@ export const {
   setEnableBackgroundPlay,
   setAutoPlay,
   setSkipSilence,
+  setAudioQuality,
   updateAudioSettings,
   setEnableLocation,
   setFollowUserLocation,
@@ -172,6 +201,8 @@ export const {
   setHighContrast,
   setLargeText,
   updateAccessibilitySettings,
+  setPrivacySettings,
+  hydratePreferences,
   resetPreferences,
 } = userPreferencesSlice.actions;
 
@@ -188,5 +219,7 @@ export const selectNotificationSettings = (state: { userPreferences: UserPrefere
   state.userPreferences.notifications;
 export const selectAccessibilitySettings = (state: { userPreferences: UserPreferencesState }) =>
   state.userPreferences.accessibility;
+export const selectPrivacySettings = (state: { userPreferences: UserPreferencesState }) =>
+  state.userPreferences.privacy;
 
 export default userPreferencesSlice.reducer;

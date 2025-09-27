@@ -93,8 +93,8 @@ function ResetPasswordInner() {
         {/* Success Message */}
         <div className="text-center">
           <div className="mx-auto w-16 h-16 bg-surface rounded-full flex items-center justify-center mb-4">
-              <HiCheck className="w-8 h-8 text-success" aria-hidden="true" />
-            </div>
+            <HiCheck className="w-8 h-8 text-success" aria-hidden="true" />
+          </div>
           <h2 className="text-2xl font-bold text-foreground">Password Reset Successful</h2>
           <p className="text-sm text-muted mt-2">
             Your password has been successfully updated. You can now sign in with your new password.

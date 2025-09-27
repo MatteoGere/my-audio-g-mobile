@@ -3,13 +3,14 @@
 import React from 'react';
 import { Popup } from 'react-leaflet';
 import { POIMarkerData } from '@/types/app-types';
-import { useSignedUrl } from '@/lib/hooks';
+import { useSignedUrl, useFavorites } from '@/lib/hooks';
 import { useAppDispatch, useAppSelector } from '@/lib/redux';
 import { FaPlay, FaPause, FaMusic, FaClock, FaMapMarkerAlt, FaBuilding } from 'react-icons/fa';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import Card from '@/components/ui/Card';
 import Image from 'next/image';
+import { HiHeart, HiOutlineHeart } from 'react-icons/hi2';
 
 interface POIPopupProps {
   poi: POIMarkerData;
@@ -33,6 +34,10 @@ export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onC
   const playbackState = useAppSelector((state) => state.audio.playbackState);
   const isPlaying = playbackState.isPlaying;
   const isCurrentTrack = currentTrackId === poi.trackId;
+
+  const { favoriteTrackIds, toggleFavorite, isAddingFavorite, isRemovingFavorite } = useFavorites();
+  const isFavorite = favoriteTrackIds.includes(poi.trackId);
+  const favoritesBusy = isAddingFavorite || isRemovingFavorite;
 
   // Format duration
   const formatDuration = (seconds: number): string => {
@@ -155,14 +160,20 @@ export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onC
             </Button>
 
             <Button
-              variant="outline"
+              variant={isFavorite ? 'primary' : 'outline'}
               className="px-3"
-              onClick={() => {
-                // TODO: Add to favorites functionality
-                console.log('Add to favorites:', poi.trackId);
+              loading={favoritesBusy}
+              aria-label={isFavorite ? 'Remove track from favourites' : 'Add track to favourites'}
+              onClick={(event) => {
+                event.stopPropagation();
+                void toggleFavorite({ favouriteId: poi.trackId, type: 'FAVOURITE-TRACK' });
               }}
             >
-              ♥
+              {isFavorite ? (
+                <HiHeart className="w-4 h-4" aria-hidden="true" />
+              ) : (
+                <HiOutlineHeart className="w-4 h-4" aria-hidden="true" />
+              )}
             </Button>
           </div>
         </Card>
