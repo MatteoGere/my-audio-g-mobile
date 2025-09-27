@@ -28,7 +28,8 @@ import {
   parseProfileSettings,
   buildAddressPayload,
 } from '@/lib/utils/profile';
-import { useUserProfile } from '@/lib/hooks';
+import { useAuth } from '@/lib/hooks';
+import { useGetUserProfileQuery, useUpdateUserProfileMutation } from '@/lib/redux/api/apiSlice';
 import { HiOutlineExclamationTriangle, HiOutlineCheckCircle } from 'react-icons/hi2';
 
 interface AsyncStatus {
@@ -87,7 +88,12 @@ export default function PreferencesPage() {
   const preferences = useAppSelector((state) => state.userPreferences);
   const router = useRouter();
   const { setTheme } = useTheme();
-  const { profile, updateProfile, isLoading, error } = useUserProfile();
+  const { user } = useAuth();
+  const { data: profile, isLoading: isLoadingQuery, error: queryError } =
+    useGetUserProfileQuery(user?.id ?? '', { skip: !user?.id });
+  const [updateProfileMutation, { isLoading: isUpdating }] = useUpdateUserProfileMutation();
+  const isLoading = isLoadingQuery || isUpdating;
+  const error = queryError ? String(queryError) : null;
 
   const [status, setStatus] = useState<AsyncStatus>(initialStatus);
 
@@ -102,7 +108,8 @@ export default function PreferencesPage() {
     try {
       const serializedPreferences = serializePreferences(preferences);
       const payload = buildAddressPayload(addressSnapshot, serializedPreferences);
-      await updateProfile({ address: payload });
+      if (!user?.id) throw new Error('User not authenticated');
+      await updateProfileMutation({ id: user.id, updates: { address: payload } }).unwrap();
       setStatus({ loading: false, success: 'Preferences saved and synced.', error: null });
     } catch (updateError: any) {
       setStatus({

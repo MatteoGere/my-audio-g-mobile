@@ -74,14 +74,15 @@ export const apiSlice = createApi({
       },
     }),
 
-    signOut: builder.mutation<void, void>({
+    signOut: builder.mutation<boolean, void>({
       queryFn: async () => {
         try {
           const { error } = await supabase.auth.signOut();
 
           if (error) throw error;
 
-          return { data: undefined };
+          // Return a concrete value accepted by RTK Query runtime
+          return { data: true };
         } catch (error: any) {
           return { error: { status: 'FETCH_ERROR', error: error.message } };
         }

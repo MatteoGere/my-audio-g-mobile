@@ -25,6 +25,7 @@ import {
 } from '../utils/profile';
 import type { Session, User } from '@supabase/supabase-js';
 import type { Tables } from '@/types/supabase-types';
+import { useGetUserProfileQuery, useUpdateUserProfileMutation } from '../redux/api/apiSlice';
 
 // Hook for Supabase Auth management
 export const useAuth = () => {
@@ -329,59 +330,57 @@ export const useUserProfile = () => {
   const { user, isAuthenticated } = useAuth();
   const dispatch = useAppDispatch();
   const preferencesState = useAppSelector((state) => state.userPreferences);
-  const [profile, setProfile] = useState<any>(null);
+  const [localProfile, setLocalProfile] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const hasHydratedPreferencesRef = useRef(false);
 
+  // RTK Query hooks
+  const {
+    data: fetchedProfile,
+    isLoading: isQueryLoading,
+    error: queryError,
+  } = useGetUserProfileQuery(user?.id ?? '', { skip: !user?.id });
+
+  const [updateUserProfileMutation, { isLoading: isMutationLoading }] =
+    useUpdateUserProfileMutation();
+
+  // Reflect query/loading/error into local state
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!isAuthenticated || !user?.id) {
-        setProfile(null);
-        hasHydratedPreferencesRef.current = false;
-        return;
-      }
+    setIsLoading(Boolean(isQueryLoading || isMutationLoading));
+    if (queryError) setError(String(queryError));
+  }, [isQueryLoading, isMutationLoading, queryError]);
 
+  useEffect(() => {
+    // When RTK Query provides fetchedProfile, parse and hydrate preferences once
+    if (!isAuthenticated || !user?.id) {
+      setLocalProfile(null);
+      hasHydratedPreferencesRef.current = false;
+      return;
+    }
+
+    if (fetchedProfile) {
       try {
-        setIsLoading(true);
         setError(null);
-
-        const { data, error } = await supabase
-          .from('user_profile')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-
-        if (error) {
-          if (error.code === 'PGRST116') {
-            // No profile found - this is okay for new users
-            setProfile(null);
-          } else {
-            throw error;
-          }
-        } else {
-          const parsed = parseProfileSettings(data.address);
-          if (parsed.preferences && !hasHydratedPreferencesRef.current) {
-            const merged = mergePreferencesState(preferencesState, parsed.preferences);
-            dispatch(hydratePreferences(merged));
-            hasHydratedPreferencesRef.current = true;
-          }
-          setProfile({
-            ...data,
-            address_details: parsed.address,
-            preferences_payload: parsed.preferences,
-          });
-          dispatch(updateProfileAction(data));
+        const parsed = parseProfileSettings(fetchedProfile.address);
+        if (parsed.preferences && !hasHydratedPreferencesRef.current) {
+          const merged = mergePreferencesState(preferencesState, parsed.preferences);
+          dispatch(hydratePreferences(merged));
+          hasHydratedPreferencesRef.current = true;
         }
-      } catch (err: any) {
-        console.error('Error fetching user profile:', err);
-        setError(err.message || 'Failed to fetch profile');
-      } finally {
-        setIsLoading(false);
-      }
-    };
 
-    fetchProfile();
+        const enriched = {
+          ...fetchedProfile,
+          address_details: parsed.address,
+          preferences_payload: parsed.preferences,
+        };
+        setLocalProfile(enriched);
+        dispatch(updateProfileAction(fetchedProfile));
+      } catch (err: any) {
+        console.error('Error processing fetched profile:', err);
+        setError(err.message || 'Failed to process profile');
+      }
+    }
   }, [user?.id, isAuthenticated, dispatch, preferencesState]);
 
   // Create or update profile
@@ -394,50 +393,57 @@ export const useUserProfile = () => {
       setError(null);
       setIsLoading(true);
 
-      // If profile exists, update it; otherwise create it
-      let data;
-      if (profile) {
-        const { data: updateData, error } = await supabase
-          .from('user_profile')
-          .update(updates)
-          .eq('id', user.id)
-          .select()
-          .single();
+      // If localProfile exists, use the RTK Query mutation to update
+      if (localProfile) {
+        const updated = await updateUserProfileMutation({ id: user.id, updates }).unwrap();
 
-        if (error) throw error;
-        data = updateData;
-      } else {
-        // Create new profile with required fields
-        const { data: createData, error } = await supabase
-          .from('user_profile')
-          .insert({
-            id: user.id,
-            name: updates.name || '',
-            surname: updates.surname || '',
-            role: updates.role || 'USER',
-            ...updates,
-          })
-          .select()
-          .single();
+        const parsed = parseProfileSettings(updated.address);
+        if (parsed.preferences) {
+          const merged = mergePreferencesState(preferencesState, parsed.preferences);
+          dispatch(hydratePreferences(merged));
+          hasHydratedPreferencesRef.current = true;
+        }
 
-        if (error) throw error;
-        data = createData;
+        const enriched = {
+          ...updated,
+          address_details: parsed.address,
+          preferences_payload: parsed.preferences,
+        };
+        setLocalProfile(enriched);
+        dispatch(updateProfileAction(updated));
+        return updated;
       }
 
-      const parsed = parseProfileSettings(data.address);
+      // If no profile exists, create it using Supabase directly (no create mutation exists)
+      const { data: createData, error: createError } = await supabase
+        .from('user_profile')
+        .insert({
+          id: user.id,
+          name: updates.name || '',
+          surname: updates.surname || '',
+          role: updates.role || 'USER',
+          ...updates,
+        })
+        .select()
+        .single();
+
+      if (createError) throw createError;
+
+      const parsed = parseProfileSettings(createData.address);
       if (parsed.preferences) {
         const merged = mergePreferencesState(preferencesState, parsed.preferences);
         dispatch(hydratePreferences(merged));
         hasHydratedPreferencesRef.current = true;
       }
 
-      setProfile({
-        ...data,
+      const enriched = {
+        ...createData,
         address_details: parsed.address,
         preferences_payload: parsed.preferences,
-      });
-      dispatch(updateProfileAction(data));
-      return data;
+      };
+      setLocalProfile(enriched);
+      dispatch(updateProfileAction(createData));
+      return createData;
     } catch (err: any) {
       console.error('Error updating profile:', err);
       setError(err.message || 'Failed to update profile');
@@ -448,11 +454,11 @@ export const useUserProfile = () => {
   };
 
   return {
-    profile,
+    profile: localProfile,
     isLoading,
     error,
     updateProfile,
-    hasProfile: !!profile,
+    hasProfile: !!localProfile,
     clearError: () => setError(null),
   };
 };

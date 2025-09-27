@@ -13,7 +13,12 @@ import {
 } from '@/components/ui';
 import { HiOutlineChevronLeft } from 'react-icons/hi';
 import { NavigationGuard } from '@/components/navigation/NavigationGuard';
-import { useAuth, useUserProfile } from '@/lib/hooks';
+import { useAuth } from '@/lib/hooks';
+import {
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
+} from '@/lib/redux/api/apiSlice';
+import { useAppDispatch } from '@/lib/redux/store';
 import { useAppSelector } from '@/lib/redux/store';
 import {
   serializePreferences,
@@ -65,7 +70,12 @@ const StatusMessage = ({ status }: { status: AsyncStatus }) => {
 export default function PersonalInformationPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const { profile, updateProfile, isLoading, error } = useUserProfile();
+  const dispatch = useAppDispatch();
+  const { data: profile, isLoading: isLoadingQuery, error: queryError } =
+    useGetUserProfileQuery(user?.id ?? '', { skip: !user?.id });
+  const [updateProfileMutation, { isLoading: isUpdating }] = useUpdateUserProfileMutation();
+  const isLoading = isLoadingQuery || isUpdating;
+  const error = queryError ? String(queryError) : null;
   const preferences = useAppSelector((state) => state.userPreferences);
 
   const [personalForm, setPersonalForm] = useState({
@@ -148,11 +158,12 @@ export default function PersonalInformationPage() {
     setStatus({ loading: true, success: null, error: null });
 
     try {
-      await updateProfile({
+      if (!user?.id) throw new Error('User not authenticated');
+      await updateProfileMutation({ id: user.id, updates: {
         name: personalForm.name.trim(),
         surname: personalForm.surname.trim(),
         address: addressPayload,
-      });
+      }}).unwrap();
       setStatus({ loading: false, success: 'Profile updated successfully.', error: null });
     } catch (updateError: any) {
       setStatus({

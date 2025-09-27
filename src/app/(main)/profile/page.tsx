@@ -4,13 +4,14 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { NavigationGuard } from '@/components/navigation/NavigationGuard';
 import { Card } from '@/components/ui';
-import { useAuth, useUserProfile } from '@/lib/hooks';
+import { useAuth } from '@/lib/hooks';
+import { useGetUserProfileQuery } from '@/lib/redux/api/apiSlice';
 import { HiOutlineUser, HiOutlineCog, HiOutlineLockClosed, HiOutlineTrash } from 'react-icons/hi2';
 
 export default function ProfilePage() {
   const router = useRouter();
   const { user } = useAuth();
-  const { profile } = useUserProfile();
+  const { data: profile } = useGetUserProfileQuery(user?.id ?? '', { skip: !user?.id });
 
   const initials = useMemo(() => {
     if (profile?.name && profile?.surname) {
