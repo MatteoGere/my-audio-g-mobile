@@ -14,10 +14,7 @@ import {
 import { HiOutlineChevronLeft } from 'react-icons/hi';
 import { NavigationGuard } from '@/components/navigation/NavigationGuard';
 import { useAuth } from '@/lib/hooks';
-import {
-  useGetUserProfileQuery,
-  useUpdateUserProfileMutation,
-} from '@/lib/redux/api/apiSlice';
+import { useGetUserProfileQuery, useUpdateUserProfileMutation } from '@/lib/redux/api/apiSlice';
 import { useAppDispatch } from '@/lib/redux/store';
 import { useAppSelector } from '@/lib/redux/store';
 import {
@@ -71,8 +68,11 @@ export default function PersonalInformationPage() {
   const router = useRouter();
   const { user } = useAuth();
   const dispatch = useAppDispatch();
-  const { data: profile, isLoading: isLoadingQuery, error: queryError } =
-    useGetUserProfileQuery(user?.id ?? '', { skip: !user?.id });
+  const {
+    data: profile,
+    isLoading: isLoadingQuery,
+    error: queryError,
+  } = useGetUserProfileQuery(user?.id ?? '', { skip: !user?.id });
   const [updateProfileMutation, { isLoading: isUpdating }] = useUpdateUserProfileMutation();
   const isLoading = isLoadingQuery || isUpdating;
   const error = queryError ? String(queryError) : null;
@@ -159,11 +159,14 @@ export default function PersonalInformationPage() {
 
     try {
       if (!user?.id) throw new Error('User not authenticated');
-      await updateProfileMutation({ id: user.id, updates: {
-        name: personalForm.name.trim(),
-        surname: personalForm.surname.trim(),
-        address: addressPayload,
-      }}).unwrap();
+      await updateProfileMutation({
+        id: user.id,
+        updates: {
+          name: personalForm.name.trim(),
+          surname: personalForm.surname.trim(),
+          address: addressPayload,
+        },
+      }).unwrap();
       setStatus({ loading: false, success: 'Profile updated successfully.', error: null });
     } catch (updateError: any) {
       setStatus({

@@ -89,8 +89,11 @@ export default function PreferencesPage() {
   const router = useRouter();
   const { setTheme } = useTheme();
   const { user } = useAuth();
-  const { data: profile, isLoading: isLoadingQuery, error: queryError } =
-    useGetUserProfileQuery(user?.id ?? '', { skip: !user?.id });
+  const {
+    data: profile,
+    isLoading: isLoadingQuery,
+    error: queryError,
+  } = useGetUserProfileQuery(user?.id ?? '', { skip: !user?.id });
   const [updateProfileMutation, { isLoading: isUpdating }] = useUpdateUserProfileMutation();
   const isLoading = isLoadingQuery || isUpdating;
   const error = queryError ? String(queryError) : null;
