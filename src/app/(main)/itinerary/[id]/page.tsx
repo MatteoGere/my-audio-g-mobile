@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Card, Button, Badge } from '@/components/ui';
 import { useGetAudioItineraryQuery, useGetItineraryTracksQuery } from '@/lib/redux/api/apiSlice';
@@ -9,11 +9,58 @@ import { useFavorites } from '@/lib/hooks';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi2';
 import tokens from '@/design/tokens';
 
+type CollapsibleTextProps = {
+  id: string;
+  text?: string | null;
+};
+
+const CollapsibleText = memo(function CollapsibleTextComponent({ id, text }: CollapsibleTextProps) {
+  const [expanded, setExpanded] = useState(false);
+  const content = (text ?? '').trim();
+  const shouldCollapse = content.length > 240;
+
+  if (!content) {
+    return null;
+  }
+
+  if (!shouldCollapse) {
+    return <p className="text-sm text-muted leading-relaxed mb-1">{content}</p>;
+  }
+
+  return (
+    <div className="mb-1">
+      <p
+        id={id}
+        className={'text-sm text-muted leading-relaxed ' + (expanded ? '' : 'line-clamp-2')}
+      >
+        {content}
+      </p>
+      <button
+        type="button"
+        aria-expanded={expanded}
+        aria-controls={id}
+        onClick={(event) => {
+          event.stopPropagation();
+          setExpanded((state) => !state);
+        }}
+        onKeyDown={(event) => {
+          event.stopPropagation();
+        }}
+        className="mt-1 text-sm text-primary hover:underline"
+      >
+        {expanded ? 'Show less' : 'Show more'}
+      </button>
+    </div>
+  );
+});
+
+CollapsibleText.displayName = 'CollapsibleText';
+
 export default function ItineraryDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-
+console.log("okok")
   // Fetch itinerary and tracks
   const {
     data: itinerary,
@@ -26,6 +73,10 @@ export default function ItineraryDetailPage() {
     isLoading: tracksLoading,
     error: tracksError,
   } = useGetItineraryTracksQuery(id);
+
+  const tracksErrorMessage = tracksError
+    ? 'We ran into an issue loading the audio tracks. Please try again shortly.'
+    : null;
 
   // Signed image URL for itinerary hero
   const imageKey = (itinerary as any)?.image_file?.image_storage_key as string | undefined;
@@ -51,36 +102,6 @@ export default function ItineraryDetailPage() {
     const minutes = Math.floor(total / 60);
     return `${minutes} min`;
   };
-
-  // Small collapsible text helper for long track descriptions
-  function CollapsibleText({ id, text }: { id: string; text: string }) {
-    const [expanded, setExpanded] = useState(false);
-    const shouldCollapse = text.length > 240; // heuristic threshold
-
-    if (!shouldCollapse) {
-      return <p className="text-sm text-muted leading-relaxed mb-1">{text}</p>;
-    }
-
-    return (
-      <div className="mb-1">
-        <p
-          id={id}
-          className={'text-sm text-muted leading-relaxed ' + (expanded ? '' : 'line-clamp-2')}
-        >
-          {text}
-        </p>
-        <button
-          type="button"
-          aria-expanded={expanded}
-          aria-controls={id}
-          onClick={() => setExpanded((s) => !s)}
-          className="mt-1 text-sm text-primary hover:underline"
-        >
-          {expanded ? 'Show less' : 'Show more'}
-        </button>
-      </div>
-    );
-  }
 
   if (itineraryLoading) {
     return (
@@ -207,6 +228,14 @@ export default function ItineraryDetailPage() {
                 </Card>
               ))}
             </div>
+          )}
+
+          {tracksErrorMessage && (
+            <Card padding="md" variant="outlined">
+              <p className="text-sm text-muted">
+                {tracksErrorMessage}
+              </p>
+            </Card>
           )}
 
           {tracks?.map((track) => (
