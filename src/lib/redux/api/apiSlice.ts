@@ -598,14 +598,14 @@ export const apiSlice = createApi({
       invalidatesTags: ['UserFavorite'],
     }),
 
-    removeFavorite: builder.mutation<void, number>({
+    removeFavorite: builder.mutation<boolean, number>({
       queryFn: async (favoriteId) => {
         try {
           const { error } = await supabase.from('user_favourite').delete().eq('id', favoriteId);
 
           if (error) throw error;
 
-          return { data: undefined };
+          return { data: true };
         } catch (error: any) {
           return { error: { status: 'FETCH_ERROR', error: error.message } };
         }

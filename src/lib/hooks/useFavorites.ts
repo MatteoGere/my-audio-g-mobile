@@ -29,7 +29,7 @@ interface RemoveFavoritePayload extends ToggleFavoritePayload {
 
 export const useFavorites = () => {
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.auth);
+  const user = useAppSelector((state) => state.auth.user);
 
   const {
     favoriteItineraries,

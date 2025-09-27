@@ -60,7 +60,6 @@ export default function ItineraryDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-console.log("okok")
   // Fetch itinerary and tracks
   const {
     data: itinerary,
