@@ -15,6 +15,7 @@ import {
   HiOutlineQueueList,
   HiOutlineHeart,
   HiHeart,
+  HiOutlineXMark,
 } from 'react-icons/hi2';
 import { Card, Button, Tabs, Popover } from '@/components/ui';
 import { QueueManager } from '@/components/audio/QueueManager';
@@ -28,14 +29,17 @@ import {
   pause,
   setCurrentTime,
   setPlaybackSpeed,
-  toggleMute,
   setVolume,
   setCurrentQueueIndex,
   setQueue,
-  toggleShuffle,
-  setRepeatMode,
   setAudioError,
 } from '@/lib/redux/slices/audioSlice';
+
+const TAB_TITLES = {
+  details: 'Dettagli traccia',
+  queue: 'Coda di riproduzione',
+  actions: 'Azioni rapide',
+} as const;
 
 export default function AudioPlayerPage() {
   const params = useParams();
@@ -46,7 +50,27 @@ export default function AudioPlayerPage() {
   // Local state
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const [activeTab, setActiveTab] = useState<'details' | 'queue' | 'actions'>('details');
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isBuffering] = useState(false);
+
+  useEffect(() => {
+    if (!isPanelOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsPanelOpen(false);
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isPanelOpen]);
 
   // No longer need audio element ref - using AudioManager
 
@@ -79,10 +103,13 @@ export default function AudioPlayerPage() {
   // Current track data
   const currentTrack = audioState.currentTrack;
 
-  // Memoize the image key to prevent unnecessary signed URL calls - only based on the storage key itself
-  const currentTrackImageKey = (currentTrack as any)?.image_file?.image_storage_key || '';
+  // Create a unique key that includes both the storage key and track ID to force refresh
+  const currentTrackImageKey = useMemo(() => {
+    if (!currentTrack?.image_file?.image_storage_key) return '';
+    return `${currentTrack.image_file.image_storage_key}`;
+  }, [currentTrack?.image_file?.image_storage_key]);
 
-  // Get signed URL for current track image (only when key actually changes)
+  // Get signed URL for current track image (force refresh by using track ID as dependency)
   const { signedUrl: currentTrackImageUrl } = useSignedUrl(currentTrackImageKey, 'image-files');
   const currentTrackIndex = useMemo(() => {
     if (!tracks || !currentTrack) return 0;
@@ -149,6 +176,14 @@ export default function AudioPlayerPage() {
     dispatch(setCurrentTime(0));
   }, [tracks, currentTrackIndex, audioState.shuffleMode, dispatch]);
 
+  const handleSpeedChange = useCallback(
+    (speed: number) => {
+      dispatch(setPlaybackSpeed(speed));
+      setShowSpeedMenu(false);
+    },
+    [dispatch],
+  );
+
   const handleSeek = useCallback(
     (percentage: number) => {
       if (!currentTrack) return;
@@ -166,18 +201,6 @@ export default function AudioPlayerPage() {
     },
     [dispatch],
   );
-
-  const handleSpeedChange = useCallback(
-    (speed: number) => {
-      dispatch(setPlaybackSpeed(speed));
-      setShowSpeedMenu(false);
-    },
-    [dispatch],
-  );
-
-  const handleMuteToggle = useCallback(() => {
-    dispatch(toggleMute());
-  }, [dispatch]);
 
   // Audio loading state is now managed by AudioManager
 
@@ -370,7 +393,7 @@ export default function AudioPlayerPage() {
       content:
         queue.length > 0 ? (
           <div className="pt-1">
-            <QueueManager isVisible={true} />
+            <QueueManager isVisible={true} onClose={() => setIsPanelOpen(false)} />
           </div>
         ) : (
           <Card
@@ -434,51 +457,6 @@ export default function AudioPlayerPage() {
               </Button>
             </div>
           </Card>
-
-          <Card
-            padding="lg"
-            className="space-y-3 rounded-2xl border border-muted/40 bg-surface/95 shadow-sm"
-          >
-            <h3 className="text-base font-semibold text-foreground">Modalità di riproduzione</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                variant={audioState.shuffleMode ? 'primary' : 'outline'}
-                size="sm"
-                className="h-16 rounded-2xl"
-                onClick={() => dispatch(toggleShuffle())}
-                title={audioState.shuffleMode ? 'Shuffle attivo' : 'Shuffle disattivato'}
-              >
-                <div className="flex flex-col items-center gap-1 text-xs font-semibold">
-                  <span className="text-lg">🔀</span>
-                  <span>Shuffle</span>
-                </div>
-              </Button>
-
-              <Button
-                variant={audioState.repeatMode !== 'none' ? 'primary' : 'outline'}
-                size="sm"
-                className="h-16 rounded-2xl"
-                onClick={() => {
-                  const modes: ('none' | 'one' | 'all')[] = ['none', 'one', 'all'];
-                  const currentIndex = modes.indexOf(audioState.repeatMode);
-                  const nextMode = modes[(currentIndex + 1) % modes.length];
-                  dispatch(setRepeatMode(nextMode));
-                }}
-                title={`Repeat: ${audioState.repeatMode === 'one' ? 'Singola traccia' : audioState.repeatMode === 'all' ? 'Intera coda' : 'Disattivato'}`}
-              >
-                <div className="flex flex-col items-center gap-1 text-xs font-semibold">
-                  <span className="text-lg">
-                    {audioState.repeatMode === 'one'
-                      ? '🔂'
-                      : audioState.repeatMode === 'all'
-                        ? '🔁'
-                        : '🔁'}
-                  </span>
-                  <span>Repeat</span>
-                </div>
-              </Button>
-            </div>
-          </Card>
         </div>
       ),
     },
@@ -491,226 +469,306 @@ export default function AudioPlayerPage() {
           <Button variant="ghost" size="sm" onClick={() => router.back()} className="h-11 w-11 rounded-full">
             <HiChevronLeft className="h-5 w-5" />
           </Button>
-          <span>Now Playing</span>
+          <div className="flex flex-col items-center text-center">
+            <span className="text-sm font-semibold text-foreground truncate max-w-48">
+              {currentTrack?.name || 'Loading…'}
+            </span>
+            <span className="text-xs text-muted/80">
+              {currentTrackIndex + 1} / {tracks?.length || 0}
+            </span>
+          </div>
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setActiveTab((prev) => (prev === 'queue' ? 'details' : 'queue'))}
+            onClick={() => {
+              if (isPanelOpen && activeTab === 'queue') {
+                setIsPanelOpen(false);
+              } else {
+                setActiveTab('queue');
+                setIsPanelOpen(true);
+              }
+            }}
             className="h-11 w-11 rounded-full"
-            title="Apri coda"
+            title={isPanelOpen ? 'Chiudi pannello' : 'Apri coda'}
+            aria-pressed={isPanelOpen}
           >
-            <HiOutlineQueueList className="h-5 w-5" />
+            {isPanelOpen ? <HiOutlineXMark className="h-5 w-5" /> : <HiOutlineQueueList className="h-5 w-5" />}
           </Button>
         </div>
 
+        {isPanelOpen && (
+          <div
+            className="fixed inset-0 z-40 flex justify-center bg-background/70 px-4 pb-20 pt-24 backdrop-blur-xl"
+            onClick={() => setIsPanelOpen(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Informazioni traccia"
+          >
+            <div
+              className="relative flex h-full w-full max-w-lg flex-col gap-4"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="flex items-center justify-between rounded-2xl border border-muted/40 bg-surface/95 px-4 py-3 shadow-lg">
+                <div className="flex flex-col text-left">
+                  <span className="text-xs uppercase tracking-wide text-muted">Pannello</span>
+                  <span className="text-sm font-semibold text-foreground">{TAB_TITLES[activeTab]}</span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-10 w-10 rounded-full"
+                  onClick={() => setIsPanelOpen(false)}
+                  title="Chiudi pannello"
+                >
+                  <HiOutlineXMark className="h-5 w-5" />
+                </Button>
+              </div>
+
+              <div className="rounded-2xl border border-muted/40 bg-surface/95 shadow-2xl">
+                <div className="max-h-[calc(100vh-12rem)] overflow-y-auto p-1">
+                  <Tabs
+                    items={tabItems}
+                    value={activeTab}
+                    onValueChange={(value) => setActiveTab(value as 'details' | 'queue' | 'actions')}
+                    variant="pills"
+                    size="sm"
+                    className="flex-col gap-4"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <Card
           padding="none"
-          className="overflow-hidden rounded-3xl border border-muted/40 bg-surface shadow-xl"
+          className="mx-auto max-w-xs overflow-hidden rounded-2xl border border-muted/40 bg-surface shadow-lg"
         >
           <div className="relative flex aspect-square items-center justify-center bg-background/60">
             {isBuffering && (
               <div className="absolute inset-0 flex items-center justify-center bg-foreground/10 backdrop-blur-sm">
-                <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary/40 border-t-primary" />
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary/40 border-t-primary" />
               </div>
             )}
             {currentTrack?.image_file_id && currentTrackImageUrl ? (
               <img
-                key={`${currentTrack?.id ?? 'track'}-${currentTrackImageKey}`}
+                key={`image-${currentTrack.id}-${currentTrackImageKey}`}
                 src={currentTrackImageUrl}
                 alt={currentTrack.name || 'Track visual'}
                 className="h-full w-full object-cover"
                 loading="lazy"
               />
             ) : (
-              <span className="text-7xl">🎵</span>
+              <span className="text-5xl">🎵</span>
             )}
           </div>
         </Card>
 
-        <div className="space-y-1.5 text-center">
-          <h1 className="text-2xl font-bold text-foreground">{currentTrack?.name || 'Loading…'}</h1>
-          <p className="text-sm text-muted">{itinerary?.name || 'Audio Tour'}</p>
-          <p className="text-xs text-muted/80">
-            Track {currentTrackIndex + 1} of {tracks?.length || 0}
-          </p>
-        </div>
-
-        <div className="space-y-2.5">
-          <div
-            className="group relative h-1.5 w-full cursor-pointer overflow-hidden rounded-full bg-muted/40 shadow-sm"
-            onClick={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              const offsetX = e.clientX - rect.left;
-              const percentage = (offsetX / rect.width) * 100;
-              handleSeek(percentage);
-            }}
-            role="progressbar"
-            aria-valuenow={progress}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          >
+        <div className="space-y-4">
+          <div className="space-y-2.5">
             <div
-              className="absolute inset-y-0 left-0 rounded-full bg-primary transition-all duration-300 ease-out"
-              style={{ width: `${progress}%` }}
+              className="group relative h-1.5 w-full cursor-pointer overflow-hidden rounded-full bg-muted/40 shadow-sm"
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const offsetX = e.clientX - rect.left;
+                const percentage = (offsetX / rect.width) * 100;
+                handleSeek(percentage);
+              }}
+              role="progressbar"
+              aria-valuenow={progress}
+              aria-valuemin={0}
+              aria-valuemax={100}
             >
-              <span
-                className="absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary-foreground shadow-md opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-              />
+              <div
+                className="absolute inset-y-0 left-0 rounded-full bg-primary transition-all duration-300 ease-out"
+                style={{ width: `${progress}%` }}
+              >
+                <span
+                  className="absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary-foreground shadow-md opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                />
+              </div>
+            </div>
+            <div className="flex justify-between text-xs text-muted">
+              <span>{formatTime(audioState.playbackState.currentTime)}</span>
+              <span>{formatTime(currentTrack?.duration || 0)}</span>
             </div>
           </div>
-          <div className="flex justify-between text-xs text-muted">
-            <span>{formatTime(audioState.playbackState.currentTime)}</span>
-            <span>{formatTime(currentTrack?.duration || 0)}</span>
+
+          <div className="flex items-center justify-center gap-6 py-2">
+            <Button
+              variant="ghost"
+              size="lg"
+              className="h-14 w-14 rounded-full bg-background/50 shadow-lg hover:shadow-xl"
+              onClick={handlePreviousTrack}
+              title="Previous track"
+            >
+              <HiBackward className="h-6 w-6" />
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              className="h-20 w-20 rounded-full shadow-2xl hover:shadow-3xl"
+              onClick={handlePlayPause}
+              disabled={isBuffering || urlsLoading}
+              title={audioState.playbackState.isPlaying ? 'Pause playback' : 'Start playback'}
+            >
+              {isBuffering ? (
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-foreground/60 border-t-transparent" />
+              ) : audioState.playbackState.isPlaying ? (
+                <HiPause className="h-8 w-8" />
+              ) : (
+                <HiPlay className="h-8 w-8 translate-x-[2px]" />
+              )}
+            </Button>
+            <Button
+              variant="ghost"
+              size="lg"
+              className="h-14 w-14 rounded-full bg-background/50 shadow-lg hover:shadow-xl"
+              onClick={handleNextTrack}
+              title="Next track"
+            >
+              <HiForward className="h-6 w-6" />
+            </Button>
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-6">
-          <Button
-            variant="ghost"
-            size="lg"
-            className="h-14 w-14 rounded-2xl"
-            onClick={handlePreviousTrack}
-            title="Previous track"
-          >
-            <HiBackward className="h-6 w-6" />
-          </Button>
-          <Button
-            variant="primary"
-            size="lg"
-            className="h-20 w-20 rounded-full shadow-xl"
-            onClick={handlePlayPause}
-            disabled={isBuffering || urlsLoading}
-            title={audioState.playbackState.isPlaying ? 'Pause playback' : 'Start playback'}
-          >
-            {isBuffering ? (
-              <div className="h-9 w-9 animate-spin rounded-full border-4 border-primary-foreground/60 border-t-transparent" />
-            ) : audioState.playbackState.isPlaying ? (
-              <HiPause className="h-8 w-8" />
-            ) : (
-              <HiPlay className="h-8 w-8 translate-x-[2px]" />
-            )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="lg"
-            className="h-14 w-14 rounded-2xl"
-            onClick={handleNextTrack}
-            title="Next track"
-          >
-            <HiForward className="h-6 w-6" />
-          </Button>
-        </div>
+        <div className="space-y-4">
+          <div className="text-center space-y-2">
+            <p className="text-sm text-muted">{itinerary?.name || 'Audio Tour'}</p>
+          </div>
 
-        <Card
-          padding="md"
-          className="rounded-2xl border border-muted/40 bg-surface/95 shadow-sm"
-        >
-          <div className="flex items-center justify-between gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-11 w-11 rounded-full"
-              onClick={handleMuteToggle}
-              title={audioState.playbackState.isMuted ? 'Unmute' : 'Mute'}
-            >
-              {audioState.playbackState.isMuted ? (
-                <HiSpeakerXMark className="h-5 w-5" />
-              ) : (
-                <HiSpeakerWave className="h-5 w-5" />
+          {/* Primary actions row - Speed, Queue, Details */}
+          <div className="flex items-center justify-center gap-3">
+            <div className="relative">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-11 w-20 rounded-xl font-medium"
+                onClick={() => setShowSpeedMenu(!showSpeedMenu)}
+                title="Velocità riproduzione"
+              >
+                {audioState.playbackState.playbackSpeed}x
+              </Button>
+              {showSpeedMenu && (
+                <Card
+                  padding="sm"
+                  className="absolute bottom-full left-1/2 z-30 mb-3 w-32 -translate-x-1/2 space-y-1 rounded-xl border border-muted/40 bg-surface/98 shadow-2xl backdrop-blur-lg"
+                >
+                  {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
+                    <button
+                      key={speed}
+                      className="w-full rounded-lg px-3 py-2 text-center text-sm font-semibold text-foreground hover:bg-background/80"
+                      onClick={() => handleSpeedChange(speed)}
+                    >
+                      {speed}x
+                    </button>
+                  ))}
+                </Card>
               )}
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-11 px-4 rounded-xl font-medium"
+              onClick={() => {
+                setActiveTab('queue');
+                setIsPanelOpen(true);
+              }}
+              title="Coda di riproduzione"
+            >
+              <HiOutlineQueueList className="h-4 w-4 mr-2" />
+              Coda
             </Button>
 
-            <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-11 w-11 rounded-full"
-                onClick={() => handleSeek(Math.max(0, progress - 10))}
-                title="Rewind 10%"
-              >
-                <span className="text-lg">⏪</span>
-              </Button>
-              <div className="relative">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-11 px-4 rounded-xl font-medium"
+              onClick={() => {
+                setActiveTab('details');
+                setIsPanelOpen(true);
+              }}
+              title="Dettagli traccia"
+            >
+              Dettagli
+            </Button>
+          </div>
+
+          {/* Secondary controls row - Volume, Favorites, Share */}
+          <div className="flex items-center justify-center gap-3">
+            <Popover
+              position="top"
+              align="center"
+              offset={12}
+              className="w-36 rounded-xl border border-muted/40 bg-surface/98 shadow-2xl backdrop-blur-lg"
+              trigger={
                 <Button
                   variant="outline"
                   size="sm"
-                  className="rounded-xl px-3"
-                  onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-                  title="Playback speed"
-                >
-                  {audioState.playbackState.playbackSpeed}x
-                </Button>
-                {showSpeedMenu && (
-                  <Card
-                    padding="sm"
-                    className="absolute bottom-full left-1/2 z-20 mb-3 w-32 -translate-x-1/2 space-y-1 rounded-xl border border-muted/40 bg-surface/98 shadow-xl backdrop-blur-lg"
-                  >
-                    {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
-                      <button
-                        key={speed}
-                        className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-foreground hover:bg-background/80"
-                        onClick={() => handleSpeedChange(speed)}
-                      >
-                        {speed}x
-                      </button>
-                    ))}
-                  </Card>
-                )}
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-11 w-11 rounded-full"
-                onClick={() => handleSeek(Math.min(100, progress + 10))}
-                title="Forward 10%"
-              >
-                <span className="text-lg">⏩</span>
-              </Button>
-            </div>
-
-            <Popover
-              position="top"
-              align="end"
-              offset={12}
-              className="w-36 rounded-xl border border-muted/40 bg-surface/98 shadow-xl backdrop-blur-lg"
-              trigger={
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-11 w-11 rounded-full"
+                  className="h-11 w-16 rounded-xl"
                   title="Volume"
-                  aria-label="Adjust volume"
+                  aria-label="Regola volume"
                 >
-                  <HiSpeakerWave className="h-5 w-5" />
+                  {audioState.playbackState.isMuted ? (
+                    <HiSpeakerXMark className="h-5 w-5" />
+                  ) : (
+                    <HiSpeakerWave className="h-5 w-5" />
+                  )}
                 </Button>
               }
               content={
-                <div className="flex flex-col gap-2">
-                  <span className="text-xs font-semibold text-muted">Volume</span>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between text-xs font-semibold text-muted">
+                    <span>Volume</span>
+                    <span className="text-foreground">{Math.round(audioState.playbackState.volume * 100)}%</span>
+                  </div>
                   <input
                     type="range"
                     min="0"
                     max="100"
                     value={Math.round(audioState.playbackState.volume * 100)}
                     onChange={(e) => handleVolumeChange(parseInt(e.target.value, 10))}
-                    className="h-2 w-full cursor-pointer appearance-none rounded-full bg-muted/40"
-                    aria-label="Volume level"
+                    className="h-2 w-full cursor-pointer appearance-none rounded-full bg-muted/30"
+                    aria-label="Livello volume"
                   />
                 </div>
               }
             />
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-11 w-16 rounded-xl"
+              onClick={() => currentTrack && toggleFavorite({ 
+                favouriteId: currentTrack.id, 
+                type: 'FAVOURITE-TRACK' 
+              })}
+              disabled={favoritesBusy}
+              title={isCurrentTrackFavorite ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}
+            >
+              {isCurrentTrackFavorite ? (
+                <HiHeart className="h-5 w-5 text-red-500" />
+              ) : (
+                <HiOutlineHeart className="h-5 w-5" />
+              )}
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-11 px-4 rounded-xl font-medium"
+              onClick={() => {
+                setActiveTab('actions');
+                setIsPanelOpen(true);
+              }}
+              title="Azioni rapide"
+            >
+              <HiShare className="h-4 w-4 mr-2" />
+              Altro
+            </Button>
           </div>
-        </Card>
-
-        <Tabs
-          items={tabItems}
-          value={activeTab}
-          onValueChange={(value) => setActiveTab(value as 'details' | 'queue' | 'actions')}
-          variant="pills"
-          size="sm"
-          className="w-full space-y-4"
-        />
-
+        </div>
         {audioState.audioError && (
           <Card
             padding="md"
