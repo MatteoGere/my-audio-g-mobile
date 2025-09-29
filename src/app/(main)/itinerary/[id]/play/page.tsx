@@ -16,7 +16,7 @@ import {
   HiOutlineHeart,
   HiHeart,
 } from 'react-icons/hi2';
-import { Card, Button } from '@/components/ui';
+import { Card, Button, Tabs, Popover } from '@/components/ui';
 import { QueueManager } from '@/components/audio/QueueManager';
 import { useGetAudioItineraryQuery, useGetItineraryTracksQuery } from '@/lib/redux/api/apiSlice';
 import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
@@ -45,8 +45,7 @@ export default function AudioPlayerPage() {
 
   // Local state
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
-  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
-  const [showQueue, setShowQueue] = useState(false);
+  const [activeTab, setActiveTab] = useState<'details' | 'queue' | 'actions'>('details');
   const [isBuffering] = useState(false);
 
   // No longer need audio element ref - using AudioManager
@@ -322,6 +321,169 @@ export default function AudioPlayerPage() {
     );
   }
 
+  const tabItems = [
+    {
+      id: 'details',
+      label: 'Dettagli',
+      content: (
+        <Card
+          padding="lg"
+          className="space-y-4 rounded-2xl border border-muted/40 bg-surface/95 shadow-sm"
+        >
+          <div className="space-y-2">
+            <h3 className="text-base font-semibold text-foreground">Dettagli traccia</h3>
+            <p className="text-sm leading-relaxed text-muted">
+              {currentTrack?.description || 'Nessuna descrizione disponibile per questa traccia.'}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="flex flex-col gap-1">
+              <span className="text-xs uppercase tracking-wide text-muted/80">Durata</span>
+              <span className="font-semibold text-foreground">
+                {formatTime(currentTrack?.duration || 0)}
+              </span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs uppercase tracking-wide text-muted/80">Posizione</span>
+              <span className="font-semibold text-foreground">
+                {currentTrackIndex + 1} / {tracks?.length || 0}
+              </span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs uppercase tracking-wide text-muted/80">Itinerario</span>
+              <span className="font-semibold text-foreground">{itinerary?.name || '—'}</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs uppercase tracking-wide text-muted/80">Preferito</span>
+              <span className="font-semibold text-foreground">
+                {isCurrentTrackFavorite ? 'Sì' : 'No'}
+              </span>
+            </div>
+          </div>
+        </Card>
+      ),
+    },
+    {
+      id: 'queue',
+      label: `Coda (${queue.length})`,
+      content:
+        queue.length > 0 ? (
+          <div className="pt-1">
+            <QueueManager isVisible={true} />
+          </div>
+        ) : (
+          <Card
+            padding="lg"
+            className="space-y-2 rounded-2xl border border-muted/40 bg-surface/95 text-center shadow-sm"
+          >
+            <h3 className="text-base font-semibold text-foreground">Coda vuota</h3>
+            <p className="text-sm text-muted">
+              Aggiungi altre tracce all&apos;itinerario per popolare la coda di riproduzione.
+            </p>
+          </Card>
+        ),
+    },
+    {
+      id: 'actions',
+      label: 'Azioni',
+      content: (
+        <div className="space-y-4">
+          <Card
+            padding="lg"
+            className="space-y-3 rounded-2xl border border-muted/40 bg-surface/95 shadow-sm"
+          >
+            <h3 className="text-base font-semibold text-foreground">Azioni rapide</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                variant="outline"
+                className="flex items-center justify-center gap-2 rounded-2xl"
+                onClick={() => setActiveTab('queue')}
+              >
+                <HiOutlineQueueList className="h-4 w-4" />
+                <span>Apri coda</span>
+              </Button>
+              <Button
+                variant="ghost"
+                className="flex items-center justify-center gap-2 rounded-2xl"
+                disabled={!currentTrack}
+                loading={favoritesBusy}
+                onClick={() =>
+                  currentTrack &&
+                  toggleFavorite({ favouriteId: currentTrack.id, type: 'FAVOURITE-TRACK' })
+                }
+              >
+                {isCurrentTrackFavorite ? (
+                  <HiHeart className="h-4 w-4 text-error" />
+                ) : (
+                  <HiOutlineHeart className="h-4 w-4 text-muted" />
+                )}
+                <span>{isCurrentTrackFavorite ? 'Rimuovi preferito' : 'Aggiungi ai preferiti'}</span>
+              </Button>
+              <Button
+                variant="outline"
+                className="flex items-center justify-center gap-2 rounded-2xl"
+                onClick={() => router.push(`/map?itinerary=${itineraryId}&track=${currentTrack?.id}`)}
+              >
+                <HiMapPin className="h-4 w-4" />
+                <span>Mappa</span>
+              </Button>
+              <Button variant="outline" className="flex items-center justify-center gap-2 rounded-2xl">
+                <HiShare className="h-4 w-4" />
+                <span>Condividi</span>
+              </Button>
+            </div>
+          </Card>
+
+          <Card
+            padding="lg"
+            className="space-y-3 rounded-2xl border border-muted/40 bg-surface/95 shadow-sm"
+          >
+            <h3 className="text-base font-semibold text-foreground">Modalità di riproduzione</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                variant={audioState.shuffleMode ? 'primary' : 'outline'}
+                size="sm"
+                className="h-16 rounded-2xl"
+                onClick={() => dispatch(toggleShuffle())}
+                title={audioState.shuffleMode ? 'Shuffle attivo' : 'Shuffle disattivato'}
+              >
+                <div className="flex flex-col items-center gap-1 text-xs font-semibold">
+                  <span className="text-lg">🔀</span>
+                  <span>Shuffle</span>
+                </div>
+              </Button>
+
+              <Button
+                variant={audioState.repeatMode !== 'none' ? 'primary' : 'outline'}
+                size="sm"
+                className="h-16 rounded-2xl"
+                onClick={() => {
+                  const modes: ('none' | 'one' | 'all')[] = ['none', 'one', 'all'];
+                  const currentIndex = modes.indexOf(audioState.repeatMode);
+                  const nextMode = modes[(currentIndex + 1) % modes.length];
+                  dispatch(setRepeatMode(nextMode));
+                }}
+                title={`Repeat: ${audioState.repeatMode === 'one' ? 'Singola traccia' : audioState.repeatMode === 'all' ? 'Intera coda' : 'Disattivato'}`}
+              >
+                <div className="flex flex-col items-center gap-1 text-xs font-semibold">
+                  <span className="text-lg">
+                    {audioState.repeatMode === 'one'
+                      ? '🔂'
+                      : audioState.repeatMode === 'all'
+                        ? '🔁'
+                        : '🔁'}
+                  </span>
+                  <span>Repeat</span>
+                </div>
+              </Button>
+            </div>
+          </Card>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="mx-auto flex w-full max-w-lg flex-col gap-6 px-5 pt-6 pb-10">
@@ -333,9 +495,9 @@ export default function AudioPlayerPage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setShowQueue(!showQueue)}
+            onClick={() => setActiveTab((prev) => (prev === 'queue' ? 'details' : 'queue'))}
             className="h-11 w-11 rounded-full"
-            title="Toggle queue"
+            title="Apri coda"
           >
             <HiOutlineQueueList className="h-5 w-5" />
           </Button>
@@ -353,10 +515,11 @@ export default function AudioPlayerPage() {
             )}
             {currentTrack?.image_file_id && currentTrackImageUrl ? (
               <img
-                key={currentTrackImageKey}
+                key={`${currentTrack?.id ?? 'track'}-${currentTrackImageKey}`}
                 src={currentTrackImageUrl}
                 alt={currentTrack.name || 'Track visual'}
                 className="h-full w-full object-cover"
+                loading="lazy"
               />
             ) : (
               <span className="text-7xl">🎵</span>
@@ -505,148 +668,48 @@ export default function AudioPlayerPage() {
               </Button>
             </div>
 
-            <div className="relative">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-11 w-11 rounded-full"
-                onClick={() => setShowVolumeSlider(!showVolumeSlider)}
-                title="Volume"
-              >
-                <HiSpeakerWave className="h-5 w-5" />
-              </Button>
-              {showVolumeSlider && (
-                <Card
-                  padding="sm"
-                  className="absolute bottom-full left-1/2 z-20 mb-3 -translate-x-1/2 rounded-xl border border-muted/40 bg-surface/98 shadow-xl backdrop-blur-lg"
+            <Popover
+              position="top"
+              align="end"
+              offset={12}
+              className="w-36 rounded-xl border border-muted/40 bg-surface/98 shadow-xl backdrop-blur-lg"
+              trigger={
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-11 w-11 rounded-full"
+                  title="Volume"
+                  aria-label="Adjust volume"
                 >
-                  <div className="flex w-28 flex-col gap-2">
-                    <span className="text-xs font-semibold text-muted">Volume</span>
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={audioState.playbackState.volume * 100}
-                      onChange={(e) => handleVolumeChange(parseInt(e.target.value, 10))}
-                      className="h-2 w-full cursor-pointer appearance-none rounded-full bg-muted/40"
-                    />
-                  </div>
-                </Card>
-              )}
-            </div>
+                  <HiSpeakerWave className="h-5 w-5" />
+                </Button>
+              }
+              content={
+                <div className="flex flex-col gap-2">
+                  <span className="text-xs font-semibold text-muted">Volume</span>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={Math.round(audioState.playbackState.volume * 100)}
+                    onChange={(e) => handleVolumeChange(parseInt(e.target.value, 10))}
+                    className="h-2 w-full cursor-pointer appearance-none rounded-full bg-muted/40"
+                    aria-label="Volume level"
+                  />
+                </div>
+              }
+            />
           </div>
         </Card>
 
-        <Card
-          padding="lg"
-          className="space-y-3 rounded-2xl border border-muted/40 bg-surface/95 shadow-sm"
-        >
-          <h3 className="text-base font-semibold text-foreground">About this track</h3>
-          <p className="text-sm leading-relaxed text-muted">
-            {currentTrack?.description || 'No description available for this track.'}
-          </p>
-        </Card>
-
-        {showQueue && (
-          <div className="pt-2">
-            <QueueManager isVisible={showQueue} onClose={() => setShowQueue(false)} />
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 gap-4">
-          <Button
-            variant={showQueue ? 'primary' : 'outline'}
-            className="flex items-center justify-center gap-2 rounded-2xl"
-            onClick={() => setShowQueue(!showQueue)}
-            title="Open queue"
-          >
-            <HiOutlineQueueList className="h-4 w-4" />
-            <span>Queue ({queue.length})</span>
-          </Button>
-
-          <Button
-            variant="ghost"
-            className="flex items-center justify-center gap-2 rounded-2xl"
-            disabled={!currentTrack}
-            loading={favoritesBusy}
-            onClick={() =>
-              currentTrack &&
-              toggleFavorite({ favouriteId: currentTrack.id, type: 'FAVOURITE-TRACK' })
-            }
-            title="Add to favorites"
-          >
-            {isCurrentTrackFavorite ? (
-              <HiHeart className="h-4 w-4 text-error" />
-            ) : (
-              <HiOutlineHeart className="h-4 w-4 text-muted" />
-            )}
-            <span>{isCurrentTrackFavorite ? 'Favorited' : 'Favorite'}</span>
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-4 gap-3">
-          <Button
-            variant={audioState.shuffleMode ? 'primary' : 'outline'}
-            size="sm"
-            className="h-16 rounded-2xl"
-            onClick={() => dispatch(toggleShuffle())}
-            title={audioState.shuffleMode ? 'Shuffle on' : 'Shuffle off'}
-          >
-            <div className="flex flex-col items-center gap-1 text-xs font-semibold">
-              <span className="text-lg">🔀</span>
-              <span>Shuffle</span>
-            </div>
-          </Button>
-
-          <Button
-            variant={audioState.repeatMode !== 'none' ? 'primary' : 'outline'}
-            size="sm"
-            className="h-16 rounded-2xl"
-            onClick={() => {
-              const modes: ('none' | 'one' | 'all')[] = ['none', 'one', 'all'];
-              const currentIndex = modes.indexOf(audioState.repeatMode);
-              const nextMode = modes[(currentIndex + 1) % modes.length];
-              dispatch(setRepeatMode(nextMode));
-            }}
-            title={`Repeat: ${audioState.repeatMode === 'one' ? 'Single track' : audioState.repeatMode === 'all' ? 'All tracks' : 'Off'}`}
-          >
-            <div className="flex flex-col items-center gap-1 text-xs font-semibold">
-              <span className="text-lg">
-                {audioState.repeatMode === 'one'
-                  ? '🔂'
-                  : audioState.repeatMode === 'all'
-                    ? '🔁'
-                    : '🔁'}
-              </span>
-              <span>Repeat</span>
-            </div>
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-16 rounded-2xl"
-            onClick={() => router.push(`/map?itinerary=${itineraryId}&track=${currentTrack?.id}`)}
-            title="View on map"
-          >
-            <div className="flex flex-col items-center gap-1 text-xs font-semibold">
-              <HiMapPin className="h-4 w-4" />
-              <span>Map</span>
-            </div>
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-16 rounded-2xl"
-            title="Share track"
-          >
-            <div className="flex flex-col items-center gap-1 text-xs font-semibold">
-              <HiShare className="h-4 w-4" />
-              <span>Share</span>
-            </div>
-          </Button>
-        </div>
+        <Tabs
+          items={tabItems}
+          value={activeTab}
+          onValueChange={(value) => setActiveTab(value as 'details' | 'queue' | 'actions')}
+          variant="pills"
+          size="sm"
+          className="w-full space-y-4"
+        />
 
         {audioState.audioError && (
           <Card
