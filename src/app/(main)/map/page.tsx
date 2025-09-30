@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { useI18n } from '@/i18n/I18nProvider';
 import { MapComponent } from '@/components/map';
 import { useMapPOIs, useLocation } from '@/lib/hooks';
 import { useAppDispatch, useAppSelector } from '@/lib/redux';
@@ -13,6 +14,7 @@ import Input from '@/components/ui/Input';
 import { Card } from '@/components/ui';
 
 export default function MapPage() {
+  const { t } = useI18n();
   const dispatch = useAppDispatch();
   const { userLocation, requestLocation, startTracking, stopTracking, getCurrentPosition } =
     useLocation();
@@ -227,7 +229,7 @@ export default function MapPage() {
         <div className="absolute inset-0 bg-surface/75 flex items-center justify-center z-20">
           <Card padding="lg" className="bg-surface rounded-lg shadow-lg flex items-center gap-3">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-            <span className="text-muted">Loading map data...</span>
+              <span className="text-muted">{t('map.loadingData')}</span>
           </Card>
         </div>
       )}

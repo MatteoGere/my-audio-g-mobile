@@ -1,4 +1,12 @@
 {
+  "favorites": {
+    "untitledItinerary": "Itinerario senza titolo",
+    "added": "Aggiunto",
+    "exploreItinerary": "Esplora itinerario",
+    "remove": "Rimuovi",
+    "itinerary": "itinerario",
+    "fromFavorites": "dai preferiti"
+  },
   "reduxTest": {
     "title": "Test Configurazione Redux",
     "currentLanguage": "Lingua Corrente",
@@ -8,5 +16,18 @@
     "darkTheme": "Tema Scuro",
     "lightTheme": "Tema Chiaro",
     "themeClass": "Classe Tema Corrente"
+  },
+  "map": {
+    "loadingData": "Caricamento dati mappa..."
+  },
+  "home": {
+    "welcomeTitle": "Benvenuto su MyAudioG",
+    "welcomeSubtitle": "Scopri tour audio immersivi ed esperienze di viaggio",
+    "exploreTours": "Esplora Tour",
+    "findGuides": "Trova guide audio incredibili",
+    "searchTours": "Cerca Tour",
+    "nearby": "Vicino a te",
+    "toursNearYou": "Tour vicino alla tua posizione",
+    "viewMap": "Visualizza Mappa"
   }
 }

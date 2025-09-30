@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useI18n } from '@/i18n/I18nProvider';
 import {
   Card,
   CardBody,
@@ -76,6 +77,7 @@ const formatRelativeTime = (isoDate: string) => {
 };
 
 export default function FavoritesPage() {
+  const { t } = useI18n();
   const {
     favoriteItineraries,
     favoriteTracks,
@@ -119,7 +121,7 @@ export default function FavoritesPage() {
               <span>{formatRelativeTime(favorite.created_at)}</span>
             </div>
             <div className="space-y-1">
-              <CardTitle className="text-lg">{itinerary?.name || 'Untitled itinerary'}</CardTitle>
+              <CardTitle className="text-lg">{itinerary?.name || t('favorites.untitledItinerary')}</CardTitle>
               {itinerary?.description && (
                 <CardDescription className="text-sm leading-relaxed line-clamp-2">
                   {itinerary.description}
@@ -137,17 +139,17 @@ export default function FavoritesPage() {
                   {itinerary.company.name}
                 </span>
               )}
-              <span className="inline-flex items-center gap-1">
-                <HiOutlineHeart className="h-4 w-4" aria-hidden="true" />
-                Added {formatRelativeTime(favorite.created_at)}
-              </span>
+                <span className="inline-flex items-center gap-1">
+                  <HiOutlineHeart className="h-4 w-4" aria-hidden="true" />
+                  {t('favorites.added')} {formatRelativeTime(favorite.created_at)}
+                </span>
             </div>
             <CardFooter className="justify-between px-0 pt-2">
               <Link
                 href={`/itinerary/${favorite.favourite_id}`}
                 className="inline-flex items-center gap-2 text-sm font-semibold text-primary"
               >
-                Explore itinerary
+                {t('favorites.exploreItinerary')}
                 <HiOutlineArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <div className="flex items-center gap-2">
@@ -163,9 +165,9 @@ export default function FavoritesPage() {
                       favoriteRecordId: favorite.id,
                     })
                   }
-                  aria-label={`Remove ${itinerary?.name || 'itinerary'} from favourites`}
+                  aria-label={`${t('favorites.remove')} ${itinerary?.name || t('favorites.itinerary')} ${t('favorites.fromFavorites')}`}
                 >
-                  Remove
+                  {t('favorites.remove')}
                 </Button>
               </div>
             </CardFooter>

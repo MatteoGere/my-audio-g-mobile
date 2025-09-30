@@ -1,4 +1,13 @@
 {
+  "favorites": {
+    "untitledItinerary": "Untitled itinerary",
+    "added": "Added",
+    "exploreItinerary": "Explore itinerary",
+    "remove": "Remove",
+    "itinerary": "itinerary",
+    "fromFavorites": "from favorites"
+  },
+
   "reduxTest": {
     "title": "Redux Configuration Test",
     "currentLanguage": "Current Language",
@@ -8,5 +17,18 @@
     "darkTheme": "Dark Theme",
     "lightTheme": "Light Theme",
     "themeClass": "Current Theme Class"
+  },
+  "map": {
+    "loadingData": "Loading map data..."
+  },
+  "home": {
+    "welcomeTitle": "Welcome to MyAudioG",
+    "welcomeSubtitle": "Discover immersive audio tours and travel experiences",
+    "exploreTours": "Explore Tours",
+    "findGuides": "Find amazing audio guides",
+    "searchTours": "Search Tours",
+    "nearby": "Nearby",
+    "toursNearYou": "Tours near your location",
+    "viewMap": "View Map"
   }
 }
