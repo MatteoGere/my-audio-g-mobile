@@ -1,5 +1,3 @@
-import { useI18n } from '@/i18n/I18nProvider';
-  const { t } = useI18n();
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
@@ -36,6 +34,7 @@ import {
   setQueue,
   setAudioError,
 } from '@/lib/redux/slices/audioSlice';
+import { useI18n } from '@/i18n/I18nProvider';
 
 const TAB_TITLES = {
   details: 'Dettagli traccia',
@@ -47,6 +46,7 @@ export default function AudioPlayerPage() {
   const params = useParams();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { t } = useI18n();
   const itineraryId = params.id as string;
 
   // Local state
