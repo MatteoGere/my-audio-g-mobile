@@ -259,7 +259,7 @@ export const useSignedUrl = (
         }),
       );
     }
-  }, [data, error, dispatch, path, bucket]);
+  }, [data, error, dispatch, bucket]);
 
   // Handle errors
   useEffect(() => {

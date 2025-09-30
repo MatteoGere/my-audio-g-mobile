@@ -4,7 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
 import { useSignedUrl } from '@/lib/hooks/useSignedUrls';
-import { Button, Card } from '@/components/ui';
+import { Avatar, Button, Card } from '@/components/ui';
 import {
   HiOutlinePlay,
   HiOutlinePause,
@@ -47,9 +47,7 @@ export function MiniPlayer() {
   }, []);
 
   // Memoize the image key to prevent unnecessary signed URL calls - only based on the storage key itself
-  const currentTrackImageKey = useMemo(() => {
-    return (currentTrack as any)?.image_file?.image_storage_key || '';
-  }, [(currentTrack as any)?.image_file?.image_storage_key]);
+  const currentTrackImageKey = (currentTrack as any)?.image_file?.image_storage_key || '';
 
   // Get signed URL for current track image (only when key actually changes)
   const { signedUrl: currentTrackImageUrl } = useSignedUrl(currentTrackImageKey, 'image-files');
@@ -145,144 +143,157 @@ export function MiniPlayer() {
   }
 
   return (
-    <div className="fixed bottom-16 left-0 right-0 z-30 bg-surface/95 backdrop-blur-md border-t border-muted shadow-[0_-2px_20px_rgba(0,0,0,0.1)]">
-      {/* Interactive Progress Bar */}
-      <div
-        ref={progressBarRef}
-        className="h-1 bg-background cursor-pointer relative group hover:h-2 transition-all duration-200"
-        onClick={handleProgressClick}
-        onMouseDown={handleProgressMouseDown}
-      >
+    <div className="fixed inset-x-0 bottom-20 z-40 px-3 sm:px-5">
+      <div className="mx-auto max-w-lg space-y-2">
+        {/* Progress Bar */}
         <div
-          className="h-full bg-gradient-to-r from-primary to-primary transition-all duration-300 relative"
-          style={{ width: `${progress}%` }}
+          ref={progressBarRef}
+          className="group relative h-1.5 w-full cursor-pointer overflow-hidden rounded-full bg-muted/40 shadow-sm transition-[height] duration-200 hover:h-2"
+          onClick={handleProgressClick}
+          onMouseDown={handleProgressMouseDown}
+          role="progressbar"
+          aria-valuenow={progress}
+          aria-valuemin={0}
+          aria-valuemax={100}
         >
-          {/* Progress thumb - visible on hover */}
           <div
-            className={`absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-primary rounded-full shadow-md transition-opacity duration-200 ${
-              isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-            }`}
-          />
-        </div>
-      </div>
-
-      <Card padding="sm" className="flex items-center space-x-3">
-        {/* Track Image/Icon */}
-        <div className="w-12 h-12 rounded-lg bg-surface flex items-center justify-center flex-shrink-0">
-          {currentTrack?.image_file_id && currentTrackImageUrl ? (
-            <img
-              key={currentTrackImageKey}
-              src={currentTrackImageUrl}
-              alt={currentTrack.name || 'Track'}
-              className="w-full h-full object-cover rounded-lg"
+            className="absolute inset-y-0 left-0 rounded-full bg-primary transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          >
+            <span
+              className={`absolute right-0 top-1/2 h-3 w-3 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary-foreground shadow-md transition-opacity duration-200 ${
+                isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+              }`}
             />
-          ) : (
-            <span className="text-lg">🎵</span>
-          )}
-        </div>
-
-        {/* Track Info - Clickable to open full player */}
-        <div className="flex-1 min-w-0 cursor-pointer" onClick={handleOpenFullPlayer}>
-          <p className="text-sm font-semibold text-foreground truncate">
-            {currentTrack.name || 'Audio Track'}
-          </p>
-          <div className="flex items-center space-x-2 text-xs text-muted">
-            <span>{formatTime(playbackState.currentTime)}</span>
-            <span>/</span>
-            <span>{formatTime(currentTrack.duration || 0)}</span>
-            {queue.length > 1 && (
-              <>
-                <span>•</span>
-                <span>
-                  {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1}-
-                  {queue.length}
-                </span>
-              </>
-            )}
           </div>
         </div>
 
-        {/* Playback Controls */}
-        <div className="flex items-center space-x-1">
-          {/* Mute/Volume */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="p-2 hidden sm:flex"
-            onClick={handleMuteToggle}
-            title={playbackState.isMuted ? 'Unmute' : 'Mute'}
-          >
-            {playbackState.isMuted ? (
-              <HiOutlineSpeakerXMark className="w-4 h-4" />
-            ) : (
-              <HiOutlineSpeakerWave className="w-4 h-4" />
-            )}
-          </Button>
+        {/* Main Player Card */}
+        <Card
+          padding="sm"
+          className="rounded-2xl border border-muted/60 bg-surface/95 backdrop-blur-xl shadow-lg"
+        >
+          {/* Top Row: Track Info and Essential Controls */}
+          <div className="flex items-center gap-3">
+            {/* Track Image */}
+            <div className="flex-shrink-0" onClick={handleOpenFullPlayer}>
+              <Avatar
+                size="lg"
+                src={currentTrack?.image_file_id && currentTrackImageUrl ? currentTrackImageUrl : ''}
+                alt={currentTrack?.name || 'Track'}
+                fallback={currentTrack?.name || 'Track'}
+                className="h-12 w-12 ring-2 ring-surface/60"
+              >
+                🎵
+              </Avatar>
+            </div>
 
-          {/* Previous Track */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="p-2"
-            onClick={handlePrevious}
-            disabled={queue.length <= 1}
-            title="Previous track"
-          >
-            <HiOutlineBackward className="w-4 h-4" />
-          </Button>
+            {/* Track Info */}
+            <div className="flex-1 min-w-0" onClick={handleOpenFullPlayer}>
+              <p className="truncate text-sm font-semibold text-foreground leading-tight">
+                {currentTrack.name || 'Audio Track'}
+              </p>
+              <div className="flex items-center gap-1.5 text-xs text-muted mt-0.5">
+                <span>{formatTime(playbackState.currentTime)}</span>
+                <span className="text-muted/60">/</span>
+                <span>{formatTime(currentTrack.duration || 0)}</span>
+                {queue.length > 1 && (
+                  <>
+                    <span className="text-muted/60">•</span>
+                    <span>
+                      {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1}/{queue.length}
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
 
-          {/* Play/Pause */}
-          <Button
-            variant="primary"
-            size="sm"
-            className="w-10 h-10 rounded-full p-0 shadow-md hover:shadow-lg transition-shadow"
-            onClick={handlePlayPause}
-            title={playbackState.isPlaying ? 'Pause' : 'Play'}
-          >
-            {playbackState.isLoading ? (
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-            ) : playbackState.isPlaying ? (
-              <HiOutlinePause className="w-5 h-5" />
-            ) : (
-              <HiOutlinePlay className="w-5 h-5 ml-0.5" />
-            )}
-          </Button>
+            {/* Essential Controls - Primary Actions */}
+            <div className="flex items-center gap-1">
+              {/* Previous Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 w-9 rounded-full p-0 shrink-0"
+                onClick={handlePrevious}
+                disabled={queue.length <= 1}
+                title="Previous track"
+              >
+                <HiOutlineBackward className="h-4 w-4" />
+              </Button>
 
-          {/* Next Track */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="p-2"
-            onClick={handleNext}
-            disabled={queue.length <= 1}
-            title="Next track"
-          >
-            <HiOutlineForward className="w-4 h-4" />
-          </Button>
+              {/* Play/Pause Button */}
+              <Button
+                variant="primary"
+                size="sm"
+                className="h-10 w-10 rounded-full p-0 shadow-lg shrink-0"
+                onClick={handlePlayPause}
+                title={playbackState.isPlaying ? 'Pause' : 'Play'}
+              >
+                {playbackState.isLoading ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                ) : playbackState.isPlaying ? (
+                  <HiOutlinePause className="h-4 w-4" />
+                ) : (
+                  <HiOutlinePlay className="h-4 w-4 translate-x-[1px]" />
+                )}
+              </Button>
 
-          {/* Expand to Full Player */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="p-2"
-            onClick={handleOpenFullPlayer}
-            title="Open full player"
-          >
-            <HiOutlineChevronUp className="w-4 h-4" />
-          </Button>
+              {/* Next Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 w-9 rounded-full p-0 shrink-0"
+                onClick={handleNext}
+                disabled={queue.length <= 1}
+                title="Next track"
+              >
+                <HiOutlineForward className="h-4 w-4" />
+              </Button>
+            </div>
 
-          {/* Close Mini Player */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="p-2"
-            onClick={handleCloseMiniPlayer}
-            title="Close player"
-          >
-            <HiOutlineXMark className="w-4 h-4" />
-          </Button>
-        </div>
-      </Card>
+            {/* Secondary Controls - Always Visible */}
+            <div className="flex items-center gap-0.5 shrink-0">
+              {/* Mute Button - Hidden on very small screens */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden xs:flex h-8 w-8 rounded-full p-0"
+                onClick={handleMuteToggle}
+                title={playbackState.isMuted ? 'Unmute' : 'Mute'}
+              >
+                {playbackState.isMuted ? (
+                  <HiOutlineSpeakerXMark className="h-3.5 w-3.5" />
+                ) : (
+                  <HiOutlineSpeakerWave className="h-3.5 w-3.5" />
+                )}
+              </Button>
+
+              {/* Expand Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 rounded-full p-0"
+                onClick={handleOpenFullPlayer}
+                title="Open full player"
+              >
+                <HiOutlineChevronUp className="h-3.5 w-3.5" />
+              </Button>
+
+              {/* Close Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 rounded-full p-0"
+                onClick={handleCloseMiniPlayer}
+                title="Close player"
+              >
+                <HiOutlineXMark className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }
