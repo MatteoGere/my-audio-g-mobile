@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams, type ReadonlyURLSearchParams } from 'next/navigation';
 import { Card, Button, Input, Badge, Select } from '@/components/ui';
+import { useI18n } from '@/i18n/I18nProvider';
 import { useGetAudioItinerariesQuery, useGetCompaniesQuery } from '@/lib/redux/api/apiSlice';
 import { useSignedUrls } from '@/lib/hooks/useSignedUrls';
 import { useFavorites } from '@/lib/hooks';
@@ -91,6 +92,7 @@ interface SearchPageContentProps {
 }
 
 function SearchPageContent({ searchParams }: SearchPageContentProps) {
+  const { t } = useI18n();
   // Mobile-first: default to list view
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [showFilters, setShowFilters] = useState(false);
@@ -306,32 +308,30 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
           <div className="space-y-4 pt-4">
             {/* Company Filter */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-3">Company</label>
+              <label className="block text-sm font-medium text-foreground mb-3">{t('search.company')}</label>
               <Select
                 options={companyOptions}
                 value={filters.company}
                 onValueChange={(val) => updateFilter('company', String(val || ''))}
-                placeholder="All Companies"
+                placeholder={t('search.allCompanies')}
               />
             </div>
 
             {/* Duration Range */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-3">
-                Duration (minutes)
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-3">{t('search.durationMinutes')}</label>
               <div className="flex items-center gap-3">
                 <Input
                   type="number"
-                  placeholder="Min"
+                  placeholder={t('search.min')}
                   value={filters.minDuration || ''}
                   onChange={(e) => updateFilter('minDuration', parseInt(e.target.value) || 0)}
                   className="flex-1"
                 />
-                <span className="text-muted">to</span>
+                <span className="text-muted">{t('search.to')}</span>
                 <Input
                   type="number"
-                  placeholder="Max"
+                  placeholder={t('search.max')}
                   value={filters.maxDuration || ''}
                   onChange={(e) => updateFilter('maxDuration', parseInt(e.target.value) || 300)}
                   className="flex-1"
@@ -341,12 +341,10 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
             {/* Distance Filter */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-3">
-                Max Distance (km)
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-3">{t('search.maxDistance')}</label>
               <Input
                 type="number"
-                placeholder="50"
+                placeholder={t('search.fifty')}
                 value={filters.maxDistance || ''}
                 onChange={(e) => updateFilter('maxDistance', parseInt(e.target.value) || 50)}
               />
@@ -355,7 +353,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
             {/* Clear Filters */}
             <div className="flex justify-end mt-2">
               <Button variant="outline" size="sm" onClick={clearAllFilters}>
-                Clear All Filters
+                {t('search.clearAllFilters')}
               </Button>
             </div>
           </div>
@@ -369,10 +367,10 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-foreground">
-                {filters.query ? `Search: "${filters.query}"` : 'Discover Tours'}
+                {filters.query ? `${t('search.search')}: "${filters.query}"` : t('search.discoverTours')}
               </h1>
               <p className="text-muted mt-1">
-                {filteredResults.length} tour{filteredResults.length !== 1 ? 's' : ''} found
+                {filteredResults.length} {t('search.tour')}{filteredResults.length !== 1 ? t('search.s') : ''} {t('search.found')}
               </p>
             </div>
           </div>
@@ -409,8 +407,8 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         {/* Error State */}
         {error && !isLoading && (
           <div className="text-center py-12">
-            <p className="text-muted mb-4">Failed to load results</p>
-            <Button onClick={() => refetch()}>Try Again</Button>
+            <p className="text-muted mb-4">{t('search.failedToLoad')}</p>
+            <Button onClick={() => refetch()}>{t('search.tryAgain')}</Button>
           </div>
         )}
 
@@ -418,12 +416,10 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         {!isLoading && !error && filteredResults.length === 0 && (
           <div className="text-center py-12">
             <HiOutlineMagnifyingGlass className="h-12 w-12 text-muted mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-foreground mb-2">No tours found</h3>
-            <p className="text-muted mb-4">
-              Try adjusting your search criteria or clear the filters
-            </p>
+            <h3 className="text-lg font-medium text-foreground mb-2">{t('search.noToursFound')}</h3>
+            <p className="text-muted mb-4">{t('search.tryAdjusting')}</p>
             <Button variant="outline" onClick={clearAllFilters}>
-              Clear Filters
+              {t('search.clearFilters')}
             </Button>
           </div>
         )}
@@ -545,7 +541,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
         {/* Load More Button (placeholder for infinite scroll) */}
         {!isLoading && filteredResults.length > 0 && filteredResults.length >= 20 && (
           <div className="text-center mt-8">
-            <Button onClick={() => setPage((prev) => prev + 1)}>Load More</Button>
+            <Button onClick={() => setPage((prev) => prev + 1)}>{t('search.loadMore')}</Button>
           </div>
         )}
       </div>

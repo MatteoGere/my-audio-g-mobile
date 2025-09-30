@@ -1,6 +1,35 @@
-
 {
-    "itineraryPlay": {
+  "itineraryMap": {
+    "loading": "Loading itinerary map...",
+    "notFound": "Itinerary not found",
+    "couldNotLoad": "The requested itinerary could not be loaded.",
+    "goBack": "Go Back",
+    "playItinerary": "Play Itinerary",
+    "tracksInItinerary": "Tracks in this itinerary"
+  },
+  "search": {
+    "company": "Company",
+    "allCompanies": "All Companies",
+    "durationMinutes": "Duration (minutes)",
+    "min": "Min",
+    "to": "to",
+    "max": "Max",
+    "maxDistance": "Max Distance (km)",
+    "fifty": "50",
+    "clearAllFilters": "Clear All Filters",
+    "search": "Search",
+    "discoverTours": "Discover Tours",
+    "tour": "tour",
+    "s": "s",
+    "found": "found",
+    "failedToLoad": "Failed to load results",
+    "tryAgain": "Try Again",
+    "noToursFound": "No tours found",
+    "tryAdjusting": "Try adjusting your search criteria or clear the filters",
+    "clearFilters": "Clear Filters",
+    "loadMore": "Load More"
+  },
+  "itineraryPlay": {
     "audioNotAvailable": "Audio not available",
     "unableToLoad": "Unable to load the audio tracks for this itinerary. Please try again later.",
     "goBack": "Go back",

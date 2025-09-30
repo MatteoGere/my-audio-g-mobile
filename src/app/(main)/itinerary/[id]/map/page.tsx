@@ -11,9 +11,11 @@ import { POIMarkerData } from '@/types/app-types';
 import { FaArrowLeft, FaPlay, FaRoute } from 'react-icons/fa';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import { useI18n } from '@/i18n/I18nProvider';
 import tokens from '@/design/tokens';
 
 export default function ItineraryMapPage() {
+  const { t } = useI18n();
   const params = useParams();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -88,7 +90,7 @@ export default function ItineraryMapPage() {
       <div className="flex items-center justify-center h-screen">
         <Card padding="lg" className="flex items-center gap-3">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-          <span className="text-muted">Loading itinerary map...</span>
+          <span className="text-muted">{t('itineraryMap.loading')}</span>
         </Card>
       </div>
     );
@@ -98,9 +100,9 @@ export default function ItineraryMapPage() {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
-          <h1 className="text-xl font-semibold text-foreground mb-2">Itinerary not found</h1>
-          <p className="text-muted mb-4">The requested itinerary could not be loaded.</p>
-          <Button onClick={() => router.back()}>Go Back</Button>
+          <h1 className="text-xl font-semibold text-foreground mb-2">{t('itineraryMap.notFound')}</h1>
+          <p className="text-muted mb-4">{t('itineraryMap.couldNotLoad')}</p>
+          <Button onClick={() => router.back()}>{t('itineraryMap.goBack')}</Button>
         </div>
       </div>
     );
@@ -131,7 +133,7 @@ export default function ItineraryMapPage() {
             }}
           >
             <FaPlay />
-            <span>Play Itinerary</span>
+            <span>{t('itineraryMap.playItinerary')}</span>
           </Button>
           <Button variant="outline" onClick={() => setShowRoute(!showRoute)} className="px-3">
             <FaRoute />
@@ -158,7 +160,7 @@ export default function ItineraryMapPage() {
         <div className="absolute bottom-4 left-4 right-4 z-10">
           <Card className="max-h-32 overflow-y-auto">
             <div className="p-3">
-              <h3 className="font-semibold text-foreground mb-2">Tracks in this itinerary</h3>
+              <h3 className="font-semibold text-foreground mb-2">{t('itineraryMap.tracksInItinerary')}</h3>
               <div className="space-y-1">
                 {pois.map((poi, index) => (
                   <div

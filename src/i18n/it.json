@@ -1,5 +1,35 @@
 {
-    "itineraryPlay": {
+  "itineraryMap": {
+    "loading": "Caricamento mappa itinerario...",
+    "notFound": "Itinerario non trovato",
+    "couldNotLoad": "Impossibile caricare l'itinerario richiesto.",
+    "goBack": "Indietro",
+    "playItinerary": "Avvia itinerario",
+    "tracksInItinerary": "Tracce in questo itinerario"
+  },
+  "search": {
+    "company": "Azienda",
+    "allCompanies": "Tutte le aziende",
+    "durationMinutes": "Durata (minuti)",
+    "min": "Min",
+    "to": "a",
+    "max": "Max",
+    "maxDistance": "Distanza massima (km)",
+    "fifty": "50",
+    "clearAllFilters": "Cancella tutti i filtri",
+    "search": "Cerca",
+    "discoverTours": "Scopri i tour",
+    "tour": "tour",
+    "s": "",
+    "found": "trovati",
+    "failedToLoad": "Impossibile caricare i risultati",
+    "tryAgain": "Riprova",
+    "noToursFound": "Nessun tour trovato",
+    "tryAdjusting": "Prova a modificare i criteri di ricerca o cancella i filtri",
+    "clearFilters": "Cancella filtri",
+    "loadMore": "Carica altri"
+  },
+  "itineraryPlay": {
     "audioNotAvailable": "Audio non disponibile",
     "unableToLoad": "Impossibile caricare le tracce audio per questo itinerario. Riprova più tardi.",
     "goBack": "Indietro",
@@ -21,7 +51,7 @@
     "title": "Preferenze",
     "description": "Controlla le preferenze di lingua, tema e qualità audio.",
     "back": "Indietro"
-  } ,
+  },
   "personalInfo": {
     "title": "Informazioni personali",
     "description": "Aggiorna i dettagli del tuo profilo pubblico. Questi ci aiutano a personalizzare i tuoi itinerari audio.",
