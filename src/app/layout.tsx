@@ -4,6 +4,7 @@ import { ReduxProvider } from '@/lib/redux';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { AuthProvider } from '@/components/auth/AuthProvider';
 import NextThemeProvider from '@/components/theme/NextThemeProvider';
+import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister';
 
 export const metadata: Metadata = {
   title: 'MyAudioG - Audio Guide Experience',
@@ -12,9 +13,8 @@ export const metadata: Metadata = {
   keywords: ['audio guide', 'travel', 'tours', 'maps', 'offline'],
   authors: [{ name: 'MyAudioG Team' }],
   creator: 'MyAudioG',
-  publisher: 'MyAudioG' /*
-  manifest: '/manifest.json',
-
+  publisher: 'MyAudioG',
+  manifest: '/manifest.webmanifest',
   formatDetection: {
     email: false,
     address: false,
@@ -26,7 +26,12 @@ export const metadata: Metadata = {
       { url: '/myaudiog-512.svg', sizes: '512x512', type: 'image/svg+xml' },
     ],
     apple: [{ url: '/myaudiog-192.svg', sizes: '192x192', type: 'image/svg+xml' }],
-  },*/,
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'MyAudioG',
+  },
 };
 
 export const viewport: Viewport = {
@@ -53,6 +58,7 @@ export default function RootLayout({
             </AuthProvider>
           </ReduxProvider>
         </NextThemeProvider>
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

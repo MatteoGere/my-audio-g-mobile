@@ -3,6 +3,7 @@ import { MainNavigation } from '@/components/navigation/MainNavigation';
 import { MiniPlayer } from '@/components/audio/MiniPlayer';
 import { AudioManager } from '@/components/audio/AudioManager';
 import { NavigationGuard } from '@/components/navigation/NavigationGuard';
+import { InstallPromptBanner } from '@/components/pwa/InstallPromptBanner';
 
 export const metadata: Metadata = {
   title: 'MyAudioG - Audio Guide Experience',
@@ -22,7 +23,10 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
         {/* Main Content Area */}
         <main className="flex-1 overflow-y-auto pb-20">
-          <div className="container mx-auto px-2 py-4 max-w-md">{children}</div>
+          <div className="container mx-auto px-2 py-4 max-w-md flex flex-col gap-4">
+            <InstallPromptBanner />
+            {children}
+          </div>
         </main>
 
         {/* Global Audio Manager */}
