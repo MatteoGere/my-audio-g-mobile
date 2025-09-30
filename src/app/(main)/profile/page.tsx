@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useI18n } from '@/i18n/I18nProvider';
 import { NavigationGuard } from '@/components/navigation/NavigationGuard';
 import { Card } from '@/components/ui';
 import { useAuth } from '@/lib/hooks';
@@ -9,6 +10,7 @@ import { useGetUserProfileQuery } from '@/lib/redux/api/apiSlice';
 import { HiOutlineUser, HiOutlineCog, HiOutlineLockClosed, HiOutlineTrash } from 'react-icons/hi2';
 
 export default function ProfilePage() {
+  const { t } = useI18n();
   const router = useRouter();
   const { user } = useAuth();
   const { data: profile } = useGetUserProfileQuery(user?.id ?? '', { skip: !user?.id });
@@ -67,11 +69,11 @@ export default function ProfilePage() {
                 <HiOutlineUser className="h-6 w-6 text-primary" aria-hidden="true" />
                 <div className="flex-1 text-left">
                   <span className="block text-base font-medium text-foreground">
-                    Personal Information
+                    {t('profile.personalInfo')}
                   </span>
-                  <span className="block text-xs text-muted">Name, surname, address, email</span>
+                  <span className="block text-xs text-muted">{t('profile.personalInfoDesc')}</span>
                 </div>
-                <span className="ml-auto text-xs text-accent font-semibold">Edit</span>
+                <span className="ml-auto text-xs text-accent font-semibold">{t('profile.edit')}</span>
               </button>
             </li>
             <li>
@@ -82,12 +84,10 @@ export default function ProfilePage() {
               >
                 <HiOutlineCog className="h-6 w-6 text-primary" aria-hidden="true" />
                 <div className="flex-1 text-left">
-                  <span className="block text-base font-medium text-foreground">Preferences</span>
-                  <span className="block text-xs text-muted">
-                    Language, theme, audio quality, privacy
-                  </span>
+                  <span className="block text-base font-medium text-foreground">{t('profile.preferences')}</span>
+                  <span className="block text-xs text-muted">{t('profile.preferencesDesc')}</span>
                 </div>
-                <span className="ml-auto text-xs text-accent font-semibold">Edit</span>
+                <span className="ml-auto text-xs text-accent font-semibold">{t('profile.edit')}</span>
               </button>
             </li>
             <li>
@@ -98,14 +98,10 @@ export default function ProfilePage() {
               >
                 <HiOutlineLockClosed className="h-6 w-6 text-primary" aria-hidden="true" />
                 <div className="flex-1 text-left">
-                  <span className="block text-base font-medium text-foreground">
-                    Password & Security
-                  </span>
-                  <span className="block text-xs text-muted">
-                    Change password, security settings
-                  </span>
+                  <span className="block text-base font-medium text-foreground">{t('profile.passwordSecurity')}</span>
+                  <span className="block text-xs text-muted">{t('profile.passwordSecurityDesc')}</span>
                 </div>
-                <span className="ml-auto text-xs text-accent font-semibold">Edit</span>
+                <span className="ml-auto text-xs text-accent font-semibold">{t('profile.edit')}</span>
               </button>
             </li>
             <li>
@@ -116,10 +112,10 @@ export default function ProfilePage() {
               >
                 <HiOutlineTrash className="h-6 w-6 text-error" aria-hidden="true" />
                 <div className="flex-1 text-left">
-                  <span className="block text-base font-medium text-error">Danger Zone</span>
-                  <span className="block text-xs text-error">Delete account and data</span>
+                  <span className="block text-base font-medium text-error">{t('profile.dangerZone')}</span>
+                  <span className="block text-xs text-error">{t('profile.dangerZoneDesc')}</span>
                 </div>
-                <span className="ml-auto text-xs text-error font-semibold">Delete</span>
+                <span className="ml-auto text-xs text-error font-semibold">{t('profile.delete')}</span>
               </button>
             </li>
           </ul>

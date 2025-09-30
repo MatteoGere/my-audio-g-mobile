@@ -16,6 +16,7 @@ import {
 } from '@/components/ui';
 import type { SelectOption } from '@/components/ui';
 import { NavigationGuard } from '@/components/navigation/NavigationGuard';
+import { useI18n } from '@/i18n/I18nProvider';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/store';
 import {
   setLanguage,
@@ -84,6 +85,7 @@ const preferenceOptions: {
 };
 
 export default function PreferencesPage() {
+  const { t } = useI18n();
   const dispatch = useAppDispatch();
   const preferences = useAppSelector((state) => state.userPreferences);
   const router = useRouter();
@@ -129,15 +131,13 @@ export default function PreferencesPage() {
         <div className="space-y-6 p-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <CardTitle>Preferences</CardTitle>
-              <CardDescription>
-                Control language, theme and audio quality preferences.
-              </CardDescription>
+              <CardTitle>{t('preferences.title')}</CardTitle>
+              <CardDescription>{t('preferences.description')}</CardDescription>
             </div>
             <div>
               <Button variant="ghost" size="sm" onClick={() => router.push('/profile')}>
                 <HiOutlineChevronLeft className="mr-2 h-4 w-4" aria-hidden="true" />
-                Back
+                {t('preferences.back')}
               </Button>
             </div>
           </div>

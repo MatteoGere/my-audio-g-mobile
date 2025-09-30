@@ -1,3 +1,5 @@
+import { useI18n } from '@/i18n/I18nProvider';
+  const { t } = useI18n();
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
@@ -329,13 +331,11 @@ export default function AudioPlayerPage() {
             padding="lg"
             className="space-y-4 rounded-3xl border border-error/30 bg-error/10 text-center shadow-lg"
           >
-            <h2 className="text-xl font-semibold text-foreground">Audio not available</h2>
-            <p className="text-sm text-muted">
-              Unable to load the audio tracks for this itinerary. Please try again later.
-            </p>
+            <h2 className="text-xl font-semibold text-foreground">{t('itineraryPlay.audioNotAvailable')}</h2>
+            <p className="text-sm text-muted">{t('itineraryPlay.unableToLoad')}</p>
             <div className="flex justify-center">
               <Button variant="primary" onClick={() => router.back()}>
-                Go back
+                {t('itineraryPlay.goBack')}
               </Button>
             </div>
           </Card>
@@ -347,22 +347,22 @@ export default function AudioPlayerPage() {
   const tabItems = [
     {
       id: 'details',
-      label: 'Dettagli',
+  label: t('itineraryPlay.details'),
       content: (
         <Card
           padding="lg"
           className="space-y-4 rounded-2xl border border-muted/40 bg-surface/95 shadow-sm"
         >
           <div className="space-y-2">
-            <h3 className="text-base font-semibold text-foreground">Dettagli traccia</h3>
+            <h3 className="text-base font-semibold text-foreground">{t('itineraryPlay.trackDetails')}</h3>
             <p className="text-sm leading-relaxed text-muted">
-              {currentTrack?.description || 'Nessuna descrizione disponibile per questa traccia.'}
+              {currentTrack?.description || t('itineraryPlay.noDescription')}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="flex flex-col gap-1">
-              <span className="text-xs uppercase tracking-wide text-muted/80">Durata</span>
+              <span className="text-xs uppercase tracking-wide text-muted/80">{t('itineraryPlay.duration')}</span>
               <span className="font-semibold text-foreground">
                 {formatTime(currentTrack?.duration || 0)}
               </span>

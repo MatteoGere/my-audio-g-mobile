@@ -13,6 +13,7 @@ import {
   Input,
 } from '@/components/ui';
 import { NavigationGuard } from '@/components/navigation/NavigationGuard';
+import { useI18n } from '@/i18n/I18nProvider';
 import { useAuth } from '@/lib/hooks';
 import { HiOutlineExclamationTriangle, HiOutlineCheckCircle } from 'react-icons/hi2';
 
@@ -47,6 +48,7 @@ const StatusMessage = ({ status }: { status: AsyncStatus }) => {
 };
 
 export default function PasswordPage() {
+  const { t } = useI18n();
   const router = useRouter();
   const { changePassword } = useAuth();
 
@@ -94,10 +96,8 @@ export default function PasswordPage() {
         <div className="space-y-6 p-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <CardTitle>Password & security</CardTitle>
-              <CardDescription>
-                Keep your account secure by using a strong password you do not reuse elsewhere.
-              </CardDescription>
+              <CardTitle>{t('password.title')}</CardTitle>
+              <CardDescription>{t('password.description')}</CardDescription>
             </div>
             <div>
               <Button variant="ghost" size="sm" onClick={() => router.push('/profile')}>

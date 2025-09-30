@@ -1,4 +1,51 @@
 {
+    "itineraryPlay": {
+    "audioNotAvailable": "Audio non disponibile",
+    "unableToLoad": "Impossibile caricare le tracce audio per questo itinerario. Riprova più tardi.",
+    "goBack": "Indietro",
+    "details": "Dettagli",
+    "trackDetails": "Dettagli traccia",
+    "noDescription": "Nessuna descrizione disponibile per questa traccia.",
+    "duration": "Durata"
+  },
+  "dangerZone": {
+    "title": "Zona pericolosa",
+    "description": "Eliminando il tuo account rimuovi profilo, preferiti e cronologia. Questa azione è irreversibile.",
+    "back": "Indietro"
+  },
+  "password": {
+    "title": "Password e sicurezza",
+    "description": "Mantieni il tuo account sicuro usando una password forte che non riutilizzi altrove."
+  },
+  "preferences": {
+    "title": "Preferenze",
+    "description": "Controlla le preferenze di lingua, tema e qualità audio.",
+    "back": "Indietro"
+  } ,
+  "personalInfo": {
+    "title": "Informazioni personali",
+    "description": "Aggiorna i dettagli del tuo profilo pubblico. Questi ci aiutano a personalizzare i tuoi itinerari audio.",
+    "back": "Indietro",
+    "name": "Nome",
+    "surname": "Cognome",
+    "email": "Email",
+    "emailHelper": "L'email proviene da Supabase Auth.",
+    "address": "Indirizzo",
+    "street": "Via",
+    "addressLine2": "Seconda linea indirizzo"
+  },
+  "profile": {
+    "personalInfo": "Informazioni personali",
+    "personalInfoDesc": "Nome, cognome, indirizzo, email",
+    "edit": "Modifica",
+    "preferences": "Preferenze",
+    "preferencesDesc": "Lingua, tema, qualità audio, privacy",
+    "passwordSecurity": "Password e sicurezza",
+    "passwordSecurityDesc": "Cambia password, impostazioni di sicurezza",
+    "dangerZone": "Zona pericolosa",
+    "dangerZoneDesc": "Elimina account e dati",
+    "delete": "Elimina"
+  },
   "favorites": {
     "untitledItinerary": "Itinerario senza titolo",
     "added": "Aggiunto",

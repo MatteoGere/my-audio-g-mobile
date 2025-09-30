@@ -14,6 +14,7 @@ import {
 } from '@/components/ui';
 import { HiOutlineChevronLeft } from 'react-icons/hi';
 import { NavigationGuard } from '@/components/navigation/NavigationGuard';
+import { useI18n } from '@/i18n/I18nProvider';
 import { useAuth } from '@/lib/hooks';
 import {
   HiOutlineTrash,
@@ -52,6 +53,7 @@ const StatusMessage = ({ status }: { status: AsyncStatus }) => {
 };
 
 export default function DangerZonePage() {
+  const { t } = useI18n();
   const router = useRouter();
   const { session, signOut } = useAuth();
 
@@ -115,12 +117,9 @@ export default function DangerZonePage() {
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-error">
                 <HiOutlineTrash className="h-5 w-5" aria-hidden="true" />
-                <CardTitle className="text-error">Danger zone</CardTitle>
+                <CardTitle className="text-error">{t('dangerZone.title')}</CardTitle>
               </div>
-              <CardDescription>
-                Deleting your account removes your profile, favorites, and listening history. This
-                action is irreversible.
-              </CardDescription>
+              <CardDescription>{t('dangerZone.description')}</CardDescription>
             </div>
             <div>
               <Button
@@ -130,7 +129,7 @@ export default function DangerZonePage() {
                 onClick={() => router.push('/profile')}
               >
                 <HiOutlineChevronLeft className="mr-2 h-4 w-4" aria-hidden="true" />
-                Back
+                {t('dangerZone.back')}
               </Button>
             </div>
           </div>

@@ -13,6 +13,7 @@ import {
 } from '@/components/ui';
 import { HiOutlineChevronLeft } from 'react-icons/hi';
 import { NavigationGuard } from '@/components/navigation/NavigationGuard';
+import { useI18n } from '@/i18n/I18nProvider';
 import { useAuth } from '@/lib/hooks';
 import { useGetUserProfileQuery, useUpdateUserProfileMutation } from '@/lib/redux/api/apiSlice';
 import { useAppDispatch } from '@/lib/redux/store';
@@ -65,6 +66,7 @@ const StatusMessage = ({ status }: { status: AsyncStatus }) => {
 };
 
 export default function PersonalInformationPage() {
+  const { t } = useI18n();
   const router = useRouter();
   const { user } = useAuth();
   const dispatch = useAppDispatch();
@@ -183,16 +185,13 @@ export default function PersonalInformationPage() {
         <div className="space-y-6 p-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <CardTitle>Personal information</CardTitle>
-              <CardDescription>
-                Update your public profile details. These help us personalize your audio
-                itineraries.
-              </CardDescription>
+              <CardTitle>{t('personalInfo.title')}</CardTitle>
+              <CardDescription>{t('personalInfo.description')}</CardDescription>
             </div>
             <div>
               <Button variant="ghost" size="sm" onClick={() => router.push('/profile')}>
                 <HiOutlineChevronLeft className="mr-2 h-4 w-4" aria-hidden="true" />
-                Back
+                {t('personalInfo.back')}
               </Button>
             </div>
           </div>
@@ -200,7 +199,7 @@ export default function PersonalInformationPage() {
           <div className="space-y-5">
             <div className="grid gap-4">
               <Input
-                label="Name"
+                label={t('personalInfo.name')}
                 value={personalForm.name}
                 onChange={(event) =>
                   setPersonalForm((prev) => ({ ...prev, name: event.target.value }))
@@ -209,7 +208,7 @@ export default function PersonalInformationPage() {
                 disabled={isLoading}
               />
               <Input
-                label="Surname"
+                label={t('personalInfo.surname')}
                 value={personalForm.surname}
                 onChange={(event) =>
                   setPersonalForm((prev) => ({ ...prev, surname: event.target.value }))
@@ -218,24 +217,24 @@ export default function PersonalInformationPage() {
                 disabled={isLoading}
               />
               <Input
-                label="Email"
+                label={t('personalInfo.email')}
                 value={personalForm.email}
                 disabled
-                helperText="Email comes from Supabase Auth."
+                helperText={t('personalInfo.emailHelper')}
               />
             </div>
 
             <div className="grid gap-4">
-              <h3 className="text-sm font-semibold text-muted uppercase tracking-wide">Address</h3>
+              <h3 className="text-sm font-semibold text-muted uppercase tracking-wide">{t('personalInfo.address')}</h3>
               <Input
-                label="Street"
+                label={t('personalInfo.street')}
                 value={addressForm.street}
                 onChange={(event) => handleAddressChange('street', event.target.value)}
                 placeholder="Via, street number"
                 disabled={isLoading}
               />
               <Input
-                label="Address line 2"
+                label={t('personalInfo.addressLine2')}
                 value={addressForm.line2 || ''}
                 onChange={(event) => handleAddressChange('line2', event.target.value)}
                 placeholder="Apartment, suite, etc."

@@ -1,4 +1,52 @@
+
 {
+    "itineraryPlay": {
+    "audioNotAvailable": "Audio not available",
+    "unableToLoad": "Unable to load the audio tracks for this itinerary. Please try again later.",
+    "goBack": "Go back",
+    "details": "Details",
+    "trackDetails": "Track details",
+    "noDescription": "No description available for this track.",
+    "duration": "Duration"
+  },
+  "dangerZone": {
+    "title": "Danger zone",
+    "description": "Deleting your account removes your profile, favorites, and listening history. This action is irreversible.",
+    "back": "Back"
+  },
+  "password": {
+    "title": "Password & security",
+    "description": "Keep your account secure by using a strong password you do not reuse elsewhere."
+  },
+  "preferences": {
+    "title": "Preferences",
+    "description": "Control language, theme and audio quality preferences.",
+    "back": "Back"
+  },
+  "personalInfo": {
+    "title": "Personal information",
+    "description": "Update your public profile details. These help us personalize your audio itineraries.",
+    "back": "Back",
+    "name": "Name",
+    "surname": "Surname",
+    "email": "Email",
+    "emailHelper": "Email comes from Supabase Auth.",
+    "address": "Address",
+    "street": "Street",
+    "addressLine2": "Address line 2"
+  },
+  "profile": {
+    "personalInfo": "Personal Information",
+    "personalInfoDesc": "Name, surname, address, email",
+    "edit": "Edit",
+    "preferences": "Preferences",
+    "preferencesDesc": "Language, theme, audio quality, privacy",
+    "passwordSecurity": "Password & Security",
+    "passwordSecurityDesc": "Change password, security settings",
+    "dangerZone": "Danger Zone",
+    "dangerZoneDesc": "Delete account and data",
+    "delete": "Delete"
+  },
   "favorites": {
     "untitledItinerary": "Untitled itinerary",
     "added": "Added",
