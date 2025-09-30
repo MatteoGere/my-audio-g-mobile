@@ -107,5 +107,23 @@
     "nearby": "Nearby",
     "toursNearYou": "Tours near your location",
     "viewMap": "View Map"
+  },
+  "itineraryDetail": {
+    "tracksError": "We ran into an issue loading the audio tracks. Please try again shortly.",
+    "notFound": "Itinerary not found",
+    "removedOrUnavailable": "The itinerary may have been removed or is unavailable.",
+    "goBack": "Go Back",
+    "by": "by",
+    "stops": "stops",
+    "walkingTour": "Walking Tour",
+    "startTour": "Start Tour",
+    "viewMap": "View Map",
+    "audioTracks": "Audio Tracks",
+    "untitledTrack": "Untitled track",
+    "tourRoute": "Tour Route",
+    "interactiveMapWithStops": "Interactive map with",
+    "viewFullMap": "View Full Map",
+    "about": "About",
+    "viewAllToursBy": "View All Tours by"
   }
 }

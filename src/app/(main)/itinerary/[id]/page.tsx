@@ -3,6 +3,7 @@
 import { memo, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Card, Button, Badge } from '@/components/ui';
+import { useI18n } from '@/i18n/I18nProvider';
 import { useGetAudioItineraryQuery, useGetItineraryTracksQuery } from '@/lib/redux/api/apiSlice';
 import { useSignedUrl, useSignedAudioUrls } from '@/lib/hooks/useSignedUrls';
 import { useFavorites } from '@/lib/hooks';
@@ -57,6 +58,7 @@ const CollapsibleText = memo(function CollapsibleTextComponent({ id, text }: Col
 CollapsibleText.displayName = 'CollapsibleText';
 
 export default function ItineraryDetailPage() {
+  const { t } = useI18n();
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
@@ -74,7 +76,7 @@ export default function ItineraryDetailPage() {
   } = useGetItineraryTracksQuery(id);
 
   const tracksErrorMessage = tracksError
-    ? 'We ran into an issue loading the audio tracks. Please try again shortly.'
+    ? t('itineraryDetail.tracksError')
     : null;
 
   // Signed image URL for itinerary hero
@@ -129,9 +131,9 @@ export default function ItineraryDetailPage() {
     return (
       <div className="space-y-6 px-5">
         <Card padding="lg" className="text-center">
-          <h2 className="text-lg font-semibold mb-2">Itinerary not found</h2>
-          <p className="text-muted mb-4">The itinerary may have been removed or is unavailable.</p>
-          <Button onClick={() => router.back()}>Go Back</Button>
+          <h2 className="text-lg font-semibold mb-2">{t('itineraryDetail.notFound')}</h2>
+          <p className="text-muted mb-4">{t('itineraryDetail.removedOrUnavailable')}</p>
+          <Button onClick={() => router.back()}>{t('itineraryDetail.goBack')}</Button>
         </Card>
       </div>
     );
@@ -160,7 +162,7 @@ export default function ItineraryDetailPage() {
             <div className="flex-1">
               <h1 className="text-xl font-bold text-foreground mb-2">{itinerary.name}</h1>
               {(itinerary as any)?.company?.name && (
-                <p className="text-sm text-muted">by {(itinerary as any).company.name}</p>
+                <p className="text-sm text-muted">{t('itineraryDetail.by')} {(itinerary as any).company.name}</p>
               )}
             </div>
             <Button
@@ -190,8 +192,8 @@ export default function ItineraryDetailPage() {
 
           <div className="flex items-center gap-4 mb-4">
             <Badge variant="outline">{formatDuration(itinerary.total_duration)}</Badge>
-            <Badge variant="outline">{tracks?.length || 0} stops</Badge>
-            <Badge variant="secondary">Walking Tour</Badge>
+            <Badge variant="outline">{tracks?.length || 0} {t('itineraryDetail.stops')}</Badge>
+            <Badge variant="secondary">{t('itineraryDetail.walkingTour')}</Badge>
           </div>
 
           {itinerary.description && (
@@ -204,10 +206,10 @@ export default function ItineraryDetailPage() {
               className="flex-1"
               onClick={() => router.push(`/itinerary/${id}/play`)}
             >
-              ▶ Start Tour
+              ▶ {t('itineraryDetail.startTour')}
             </Button>
             <Button variant="outline" onClick={() => router.push('/map')}>
-              📍 View Map
+              📍 {t('itineraryDetail.viewMap')}
             </Button>
           </div>
         </div>
@@ -216,7 +218,7 @@ export default function ItineraryDetailPage() {
       {/* Audio Tracks */}
       <div>
         <h2 className="text-lg font-semibold text-foreground mb-4">
-          Audio Tracks ({tracks?.length || 0})
+          {t('itineraryDetail.audioTracks')} ({tracks?.length || 0})
         </h2>
         <div className="space-y-3">
           {tracksLoading && (
@@ -246,7 +248,7 @@ export default function ItineraryDetailPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <h3 className="font-medium text-foreground mb-1">
-                      {track.name || 'Untitled track'}
+                      {track.name || t('itineraryDetail.untitledTrack')}
                     </h3>
                     <span className="text-xs text-muted">{formatDuration(track.duration)}</span>
                   </div>
@@ -298,15 +300,15 @@ export default function ItineraryDetailPage() {
 
       {/* Interactive Map Preview */}
       <Card padding="md">
-        <h3 className="font-semibold text-foreground mb-4">Tour Route</h3>
+  <h3 className="font-semibold text-foreground mb-4">{t('itineraryDetail.tourRoute')}</h3>
         <div className="h-32 bg-surface rounded-lg flex items-center justify-center border-dashed border-2 border-muted">
           <div className="text-center">
             <span className="text-muted text-2xl block mb-2">🗺️</span>
-            <p className="text-sm text-muted">Interactive map with {tracks?.length || 0} stops</p>
+            <p className="text-sm text-muted">{t('itineraryDetail.interactiveMapWithStops') + ' ' + (tracks?.length || 0)}</p>
           </div>
         </div>
         <Button variant="outline" className="w-full mt-4" onClick={() => router.push('/map')}>
-          View Full Map
+          {t('itineraryDetail.viewFullMap')}
         </Button>
       </Card>
 
@@ -314,13 +316,13 @@ export default function ItineraryDetailPage() {
       {(itinerary as any)?.company?.name && (
         <Card padding="md">
           <h3 className="font-medium text-foreground mb-2">
-            About {(itinerary as any).company.name}
+            {t('itineraryDetail.about')} {(itinerary as any).company.name}
           </h3>
           {(itinerary as any).company?.description && (
             <p className="text-sm text-muted mb-3">{(itinerary as any).company.description}</p>
           )}
           <Button variant="ghost" size="sm">
-            View All Tours by {(itinerary as any).company.name}
+            {t('itineraryDetail.viewAllToursBy') + ' ' + (itinerary as any).company.name}
           </Button>
         </Card>
       )}

@@ -106,5 +106,23 @@
     "nearby": "Vicino a te",
     "toursNearYou": "Tour vicino alla tua posizione",
     "viewMap": "Visualizza Mappa"
+  },
+  "itineraryDetail": {
+    "tracksError": "Abbiamo riscontrato un problema nel caricamento delle tracce audio. Riprova tra poco.",
+    "notFound": "Itinerario non trovato",
+    "removedOrUnavailable": "L'itinerario potrebbe essere stato rimosso o non è disponibile.",
+    "goBack": "Indietro",
+    "by": "di",
+    "stops": "fermate",
+    "walkingTour": "Tour a piedi",
+    "startTour": "Avvia tour",
+    "viewMap": "Visualizza mappa",
+    "audioTracks": "Tracce audio",
+    "untitledTrack": "Traccia senza titolo",
+    "tourRoute": "Percorso del tour",
+    "interactiveMapWithStops": "Mappa interattiva con",
+    "viewFullMap": "Visualizza mappa completa",
+    "about": "Informazioni su",
+    "viewAllToursBy": "Visualizza tutti i tour di"
   }
 }
