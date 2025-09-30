@@ -9,6 +9,9 @@ const config: Config = {
   darkMode: 'class', // allow toggling with the .dark class; controlled via UI only
   theme: {
     extend: {
+      screens: {
+        xs: '475px',
+      },
       colors: {
         background: 'var(--color-background)',
         surface: 'var(--color-surface)',

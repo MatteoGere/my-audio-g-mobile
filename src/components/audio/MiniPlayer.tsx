@@ -143,8 +143,9 @@ export function MiniPlayer() {
   }
 
   return (
-    <div className="fixed inset-x-0 bottom-20 z-40 px-5">
-      <div className="mx-auto max-w-lg space-y-3">
+    <div className="fixed inset-x-0 bottom-20 z-40 px-3 sm:px-5">
+      <div className="mx-auto max-w-lg space-y-2">
+        {/* Progress Bar */}
         <div
           ref={progressBarRef}
           className="group relative h-1.5 w-full cursor-pointer overflow-hidden rounded-full bg-muted/40 shadow-sm transition-[height] duration-200 hover:h-2"
@@ -167,113 +168,129 @@ export function MiniPlayer() {
           </div>
         </div>
 
+        {/* Main Player Card */}
         <Card
-          padding="md"
-          className="flex items-center gap-4 rounded-2xl border border-muted/60 bg-surface/95 backdrop-blur-xl shadow-lg"
+          padding="sm"
+          className="rounded-2xl border border-muted/60 bg-surface/95 backdrop-blur-xl shadow-lg"
         >
-          <div className="flex-shrink-0" onClick={handleOpenFullPlayer}>
-            <Avatar
-              size="lg"
-              src={currentTrack?.image_file_id && currentTrackImageUrl ? currentTrackImageUrl : ''}
-              alt={currentTrack?.name || 'Track'}
-              fallback={currentTrack?.name || 'Track'}
-              className="ring-4 ring-surface/80"
-            >
-              🎵
-            </Avatar>
-          </div>
-
-          <div className="flex-1 min-w-0" onClick={handleOpenFullPlayer}>
-            <p className="truncate text-sm font-semibold text-foreground">
-              {currentTrack.name || 'Audio Track'}
-            </p>
-            <div className="flex items-center gap-2 text-xs text-muted">
-              <span>{formatTime(playbackState.currentTime)}</span>
-              <span className="text-muted/60">/</span>
-              <span>{formatTime(currentTrack.duration || 0)}</span>
-              {queue.length > 1 && (
-                <>
-                  <span className="text-muted/60">•</span>
-                  <span>
-                    {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1}-{queue.length}
-                  </span>
-                </>
-              )}
+          {/* Top Row: Track Info and Essential Controls */}
+          <div className="flex items-center gap-3">
+            {/* Track Image */}
+            <div className="flex-shrink-0" onClick={handleOpenFullPlayer}>
+              <Avatar
+                size="lg"
+                src={currentTrack?.image_file_id && currentTrackImageUrl ? currentTrackImageUrl : ''}
+                alt={currentTrack?.name || 'Track'}
+                fallback={currentTrack?.name || 'Track'}
+                className="h-12 w-12 ring-2 ring-surface/60"
+              >
+                🎵
+              </Avatar>
             </div>
-          </div>
 
-          <div className="flex items-center gap-1.5">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="hidden h-11 w-11 rounded-full sm:flex"
-              onClick={handleMuteToggle}
-              title={playbackState.isMuted ? 'Unmute' : 'Mute'}
-            >
-              {playbackState.isMuted ? (
-                <HiOutlineSpeakerXMark className="h-4 w-4" />
-              ) : (
-                <HiOutlineSpeakerWave className="h-4 w-4" />
-              )}
-            </Button>
+            {/* Track Info */}
+            <div className="flex-1 min-w-0" onClick={handleOpenFullPlayer}>
+              <p className="truncate text-sm font-semibold text-foreground leading-tight">
+                {currentTrack.name || 'Audio Track'}
+              </p>
+              <div className="flex items-center gap-1.5 text-xs text-muted mt-0.5">
+                <span>{formatTime(playbackState.currentTime)}</span>
+                <span className="text-muted/60">/</span>
+                <span>{formatTime(currentTrack.duration || 0)}</span>
+                {queue.length > 1 && (
+                  <>
+                    <span className="text-muted/60">•</span>
+                    <span>
+                      {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1}/{queue.length}
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-11 w-11 rounded-full"
-              onClick={handlePrevious}
-              disabled={queue.length <= 1}
-              title="Previous track"
-            >
-              <HiOutlineBackward className="h-4 w-4" />
-            </Button>
+            {/* Essential Controls - Primary Actions */}
+            <div className="flex items-center gap-1">
+              {/* Previous Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 w-9 rounded-full p-0 shrink-0"
+                onClick={handlePrevious}
+                disabled={queue.length <= 1}
+                title="Previous track"
+              >
+                <HiOutlineBackward className="h-4 w-4" />
+              </Button>
 
-            <Button
-              variant="primary"
-              size="sm"
-              className="h-12 w-12 rounded-full p-0 shadow-lg"
-              onClick={handlePlayPause}
-              title={playbackState.isPlaying ? 'Pause' : 'Play'}
-            >
-              {playbackState.isLoading ? (
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-              ) : playbackState.isPlaying ? (
-                <HiOutlinePause className="h-5 w-5" />
-              ) : (
-                <HiOutlinePlay className="h-5 w-5 translate-x-[1px]" />
-              )}
-            </Button>
+              {/* Play/Pause Button */}
+              <Button
+                variant="primary"
+                size="sm"
+                className="h-10 w-10 rounded-full p-0 shadow-lg shrink-0"
+                onClick={handlePlayPause}
+                title={playbackState.isPlaying ? 'Pause' : 'Play'}
+              >
+                {playbackState.isLoading ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                ) : playbackState.isPlaying ? (
+                  <HiOutlinePause className="h-4 w-4" />
+                ) : (
+                  <HiOutlinePlay className="h-4 w-4 translate-x-[1px]" />
+                )}
+              </Button>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-11 w-11 rounded-full"
-              onClick={handleNext}
-              disabled={queue.length <= 1}
-              title="Next track"
-            >
-              <HiOutlineForward className="h-4 w-4" />
-            </Button>
+              {/* Next Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 w-9 rounded-full p-0 shrink-0"
+                onClick={handleNext}
+                disabled={queue.length <= 1}
+                title="Next track"
+              >
+                <HiOutlineForward className="h-4 w-4" />
+              </Button>
+            </div>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-11 w-11 rounded-full"
-              onClick={handleOpenFullPlayer}
-              title="Open full player"
-            >
-              <HiOutlineChevronUp className="h-4 w-4" />
-            </Button>
+            {/* Secondary Controls - Always Visible */}
+            <div className="flex items-center gap-0.5 shrink-0">
+              {/* Mute Button - Hidden on very small screens */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden xs:flex h-8 w-8 rounded-full p-0"
+                onClick={handleMuteToggle}
+                title={playbackState.isMuted ? 'Unmute' : 'Mute'}
+              >
+                {playbackState.isMuted ? (
+                  <HiOutlineSpeakerXMark className="h-3.5 w-3.5" />
+                ) : (
+                  <HiOutlineSpeakerWave className="h-3.5 w-3.5" />
+                )}
+              </Button>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-11 w-11 rounded-full"
-              onClick={handleCloseMiniPlayer}
-              title="Close player"
-            >
-              <HiOutlineXMark className="h-4 w-4" />
-            </Button>
+              {/* Expand Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 rounded-full p-0"
+                onClick={handleOpenFullPlayer}
+                title="Open full player"
+              >
+                <HiOutlineChevronUp className="h-3.5 w-3.5" />
+              </Button>
+
+              {/* Close Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 rounded-full p-0"
+                onClick={handleCloseMiniPlayer}
+                title="Close player"
+              >
+                <HiOutlineXMark className="h-3.5 w-3.5" />
+              </Button>
+            </div>
           </div>
         </Card>
       </div>
