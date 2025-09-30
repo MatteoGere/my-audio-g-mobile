@@ -441,17 +441,24 @@ export default function AudioPlayerPage() {
                 ) : (
                   <HiOutlineHeart className="h-4 w-4 text-muted" />
                 )}
-                <span>{isCurrentTrackFavorite ? 'Rimuovi preferito' : 'Aggiungi ai preferiti'}</span>
+                <span>
+                  {isCurrentTrackFavorite ? 'Rimuovi preferito' : 'Aggiungi ai preferiti'}
+                </span>
               </Button>
               <Button
                 variant="outline"
                 className="flex items-center justify-center gap-2 rounded-2xl"
-                onClick={() => router.push(`/map?itinerary=${itineraryId}&track=${currentTrack?.id}`)}
+                onClick={() =>
+                  router.push(`/map?itinerary=${itineraryId}&track=${currentTrack?.id}`)
+                }
               >
                 <HiMapPin className="h-4 w-4" />
                 <span>Mappa</span>
               </Button>
-              <Button variant="outline" className="flex items-center justify-center gap-2 rounded-2xl">
+              <Button
+                variant="outline"
+                className="flex items-center justify-center gap-2 rounded-2xl"
+              >
                 <HiShare className="h-4 w-4" />
                 <span>Condividi</span>
               </Button>
@@ -466,7 +473,12 @@ export default function AudioPlayerPage() {
     <div className="min-h-screen bg-background pb-24">
       <div className="mx-auto flex w-full max-w-lg flex-col gap-6 px-5 pt-6 pb-10">
         <div className="flex items-center justify-between rounded-2xl border border-muted/40 bg-surface/80 px-4 py-3 text-sm font-semibold text-foreground shadow-sm backdrop-blur-xl">
-          <Button variant="ghost" size="sm" onClick={() => router.back()} className="h-11 w-11 rounded-full">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.back()}
+            className="h-11 w-11 rounded-full"
+          >
             <HiChevronLeft className="h-5 w-5" />
           </Button>
           <div className="flex flex-col items-center text-center">
@@ -492,7 +504,11 @@ export default function AudioPlayerPage() {
             title={isPanelOpen ? 'Chiudi pannello' : 'Apri coda'}
             aria-pressed={isPanelOpen}
           >
-            {isPanelOpen ? <HiOutlineXMark className="h-5 w-5" /> : <HiOutlineQueueList className="h-5 w-5" />}
+            {isPanelOpen ? (
+              <HiOutlineXMark className="h-5 w-5" />
+            ) : (
+              <HiOutlineQueueList className="h-5 w-5" />
+            )}
           </Button>
         </div>
 
@@ -511,7 +527,9 @@ export default function AudioPlayerPage() {
               <div className="flex items-center justify-between rounded-2xl border border-muted/40 bg-surface/95 px-4 py-3 shadow-lg">
                 <div className="flex flex-col text-left">
                   <span className="text-xs uppercase tracking-wide text-muted">Pannello</span>
-                  <span className="text-sm font-semibold text-foreground">{TAB_TITLES[activeTab]}</span>
+                  <span className="text-sm font-semibold text-foreground">
+                    {TAB_TITLES[activeTab]}
+                  </span>
                 </div>
                 <Button
                   variant="ghost"
@@ -529,7 +547,9 @@ export default function AudioPlayerPage() {
                   <Tabs
                     items={tabItems}
                     value={activeTab}
-                    onValueChange={(value) => setActiveTab(value as 'details' | 'queue' | 'actions')}
+                    onValueChange={(value) =>
+                      setActiveTab(value as 'details' | 'queue' | 'actions')
+                    }
                     variant="pills"
                     size="sm"
                     className="flex-col gap-4"
@@ -583,9 +603,7 @@ export default function AudioPlayerPage() {
                 className="absolute inset-y-0 left-0 rounded-full bg-primary transition-all duration-300 ease-out"
                 style={{ width: `${progress}%` }}
               >
-                <span
-                  className="absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary-foreground shadow-md opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-                />
+                <span className="absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary-foreground shadow-md opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
               </div>
             </div>
             <div className="flex justify-between text-xs text-muted">
@@ -721,7 +739,9 @@ export default function AudioPlayerPage() {
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center justify-between text-xs font-semibold text-muted">
                     <span>Volume</span>
-                    <span className="text-foreground">{Math.round(audioState.playbackState.volume * 100)}%</span>
+                    <span className="text-foreground">
+                      {Math.round(audioState.playbackState.volume * 100)}%
+                    </span>
                   </div>
                   <input
                     type="range"
@@ -740,12 +760,15 @@ export default function AudioPlayerPage() {
               variant="outline"
               size="sm"
               className="h-11 w-16 rounded-xl"
-              onClick={() => currentTrack && toggleFavorite({ 
-                favouriteId: currentTrack.id, 
-                type: 'FAVOURITE-TRACK' 
-              })}
+              onClick={() =>
+                currentTrack &&
+                toggleFavorite({
+                  favouriteId: currentTrack.id,
+                  type: 'FAVOURITE-TRACK',
+                })
+              }
               disabled={favoritesBusy}
-              title={isCurrentTrackFavorite ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}
+              title={isCurrentTrackFavorite ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}
             >
               {isCurrentTrackFavorite ? (
                 <HiHeart className="h-5 w-5 text-red-500" />

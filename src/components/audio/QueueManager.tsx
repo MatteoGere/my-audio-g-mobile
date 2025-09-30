@@ -29,9 +29,7 @@ interface QueueManagerProps {
 
 export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
   const dispatch = useAppDispatch();
-  const { queue, currentQueueIndex, playbackState } = useAppSelector(
-    (state) => state.audio,
-  );
+  const { queue, currentQueueIndex, playbackState } = useAppSelector((state) => state.audio);
 
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -132,7 +130,9 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
             <HiOutlineMusicalNote className="h-5 w-5" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-base font-semibold text-foreground">Queue • {queue.length} tracks</h3>
+            <h3 className="text-base font-semibold text-foreground">
+              Queue • {queue.length} tracks
+            </h3>
             <p className="text-xs text-muted">
               {formatTime(totalDuration)} total · {formatTime(remainingDuration)} remaining
             </p>
@@ -176,7 +176,8 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
               key={`${queueItem.track.id}-${index}`}
               className={cn(
                 'group relative flex items-center gap-3 rounded-2xl border border-muted/40 bg-background/60 p-4 shadow-sm transition-all duration-200',
-                isCurrentTrack && 'border-primary/60 bg-primary/10 shadow-md ring-1 ring-primary/40',
+                isCurrentTrack &&
+                  'border-primary/60 bg-primary/10 shadow-md ring-1 ring-primary/40',
                 isPastTrack && 'opacity-60',
                 isDragOver && 'border-primary bg-primary/20',
                 draggedIndex === index && 'opacity-50',
@@ -214,7 +215,10 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                 )}
               </div>
 
-              <div className="flex min-w-0 flex-1 flex-col gap-1" onClick={() => handlePlayTrack(index)}>
+              <div
+                className="flex min-w-0 flex-1 flex-col gap-1"
+                onClick={() => handlePlayTrack(index)}
+              >
                 <div className="flex items-center gap-2">
                   <p
                     className={cn(
@@ -224,8 +228,16 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
                   >
                     {queueItem.track.name || `Track ${index + 1}`}
                   </p>
-                  {isCurrentTrack && <Badge variant="primary" size="sm">Now Playing</Badge>}
-                  {isPastTrack && <Badge variant="outline" size="sm">Played</Badge>}
+                  {isCurrentTrack && (
+                    <Badge variant="primary" size="sm">
+                      Now Playing
+                    </Badge>
+                  )}
+                  {isPastTrack && (
+                    <Badge variant="outline" size="sm">
+                      Played
+                    </Badge>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 text-xs text-muted">
                   <HiOutlineClock className="h-3 w-3" />

@@ -179,7 +179,9 @@ export function MiniPlayer() {
             <div className="flex-shrink-0" onClick={handleOpenFullPlayer}>
               <Avatar
                 size="lg"
-                src={currentTrack?.image_file_id && currentTrackImageUrl ? currentTrackImageUrl : ''}
+                src={
+                  currentTrack?.image_file_id && currentTrackImageUrl ? currentTrackImageUrl : ''
+                }
                 alt={currentTrack?.name || 'Track'}
                 fallback={currentTrack?.name || 'Track'}
                 className="h-12 w-12 ring-2 ring-surface/60"
@@ -201,7 +203,8 @@ export function MiniPlayer() {
                   <>
                     <span className="text-muted/60">•</span>
                     <span>
-                      {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1}/{queue.length}
+                      {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1}/
+                      {queue.length}
                     </span>
                   </>
                 )}
