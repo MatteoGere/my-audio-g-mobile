@@ -1,18 +1,17 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Marker, Tooltip } from 'react-leaflet';
+import { Marker } from 'react-leaflet';
 import { DivIcon } from 'leaflet';
 import { renderToString } from 'react-dom/server';
 import { POIMarkerData } from '@/types/app-types';
 import { POIPopup } from './POIPopup';
-import { FaPlay, FaMusic, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaMusic } from 'react-icons/fa';
 
 interface POIMarkerProps {
   poi: POIMarkerData;
   color: string;
   isSelected?: boolean;
-  showLabel?: boolean;
   showPopup?: boolean;
   onClick?: () => void;
   onPlayClick?: (poi: POIMarkerData) => void;
@@ -22,7 +21,6 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
   poi,
   color,
   isSelected = false,
-  showLabel = true,
   showPopup = false,
   onClick,
   onPlayClick,
@@ -68,45 +66,19 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
     });
   }, [color, isSelected]);
 
-  // Format duration for display
-  const formatDuration = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    if (minutes > 0) {
-      return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-    }
-    return `${seconds}s`;
-  };
-
   return (
     <Marker
       position={[poi.latitude, poi.longitude]}
       icon={createPOIIcon}
       eventHandlers={{
-        click: () => onClick?.(),
+        click: (e) => {
+          // Stop propagation to prevent map click event
+          e.originalEvent?.stopPropagation();
+          onClick?.();
+        },
       }}
     >
-      {/* Tooltip with track info */}
-      {showLabel && !showPopup && (
-        <Tooltip
-          direction="top"
-          offset={[0, -40]}
-          opacity={0.9}
-          permanent={false}
-          sticky={true}
-          className="poi-tooltip"
-        >
-          <div className="text-sm">
-            <div className="font-semibold text-foreground">{poi.trackName}</div>
-            <div className="text-muted text-xs">
-              {poi.itineraryName} • {formatDuration(poi.duration)}
-            </div>
-            <div className="text-muted text-xs mt-1">{poi.companyName}</div>
-          </div>
-        </Tooltip>
-      )}
-
-      {/* Interactive popup */}
+      {/* Interactive popup - opens when marker is clicked */}
       {showPopup && <POIPopup poi={poi} color={color} onPlayClick={onPlayClick} />}
     </Marker>
   );

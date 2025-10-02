@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo, useState, useCallback } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { Map as LeafletMap } from 'leaflet';
 import { useAppSelector, useAppDispatch } from '@/lib/redux';
@@ -51,6 +51,9 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const mapRef = useRef<LeafletMap>(null);
+  
+  // State to track which POI's popup is open
+  const [openPopupPoiId, setOpenPopupPoiId] = useState<string | null>(null);
 
   // Redux state
   const center = useAppSelector((state) => state.map.center);
@@ -58,7 +61,10 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   const isUserInteracting = useAppSelector((state) => state.map.isUserInteracting);
   const followUserLocation = useAppSelector((state) => state.map.followUserLocation);
   const mapStyle = useAppSelector((state) => state.map.mapStyle);
-  const showPOILabels = useAppSelector((state) => state.map.showPOILabels);
+  
+  // Refs to track current center/zoom to prevent update loops
+  const centerRef = useRef({ lat: center.latitude, lng: center.longitude });
+  const zoomRef = useRef(zoom);
 
   // Location hook
   const { userLocation, isLocationEnabled } = useLocation();
@@ -124,28 +130,43 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     }
   }, [mapStyle]);
 
-  // Handle map interactions
-  const handleMapMove = (center: { lat: number; lng: number }, zoom: number) => {
+  // Handle map interactions - only called on moveend/zoomend now, not during movement
+  const handleMapMove = useCallback((center: { lat: number; lng: number }, zoom: number) => {
+    // Update refs and Redux
+    centerRef.current = center;
+    zoomRef.current = zoom;
     dispatch(setCenter({ latitude: center.lat, longitude: center.lng }));
     dispatch(setZoom(zoom));
-  };
+  }, [dispatch]);
 
-  const handleMapMoveStart = () => {
+  const handleMapMoveStart = useCallback(() => {
     dispatch(setUserInteracting(true));
-  };
+  }, [dispatch]);
 
-  const handleMapMoveEnd = () => {
+  const handleMapMoveEnd = useCallback(() => {
     dispatch(setUserInteracting(false));
-  };
+  }, [dispatch]);
 
-  const handleMapBoundsChange = (bounds: {
+  const handleMapBoundsChange = useCallback((bounds: {
     north: number;
     south: number;
     east: number;
     west: number;
   }) => {
     dispatch(setBounds(bounds));
-  };
+  }, [dispatch]);
+
+  // Handle marker click - open popup
+  const handleMarkerClick = useCallback((poi: POIMarkerData) => {
+    setOpenPopupPoiId(poi.trackId);
+    onMarkerClick?.(poi);
+  }, [onMarkerClick]);
+
+  // Handle map click - close popup
+  const handleMapClickInternal = useCallback((lat: number, lng: number) => {
+    setOpenPopupPoiId(null);
+    onMapClick?.(lat, lng);
+  }, [onMapClick]);
 
   // Ensure map resizes properly on mount
   useEffect(() => {
@@ -205,6 +226,9 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
       if (latChanged || lngChanged || zoomChanged) {
         map.setView([center.latitude, center.longitude], zoom, { animate: true });
+        // Update refs to prevent bouncing back
+        centerRef.current = { lat: center.latitude, lng: center.longitude };
+        zoomRef.current = zoom;
       }
     } catch (e) {
       // ignore if map not ready
@@ -242,7 +266,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           onMoveStart={handleMapMoveStart}
           onMoveEnd={handleMapMoveEnd}
           onBoundsChange={handleMapBoundsChange}
-          onClick={onMapClick}
+          onClick={handleMapClickInternal}
         />
 
         {/* Route Visualization */}
@@ -271,8 +295,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             poi={poi}
             color={itineraryColors[poi.itineraryId]}
             isSelected={selectedPoiId === poi.trackId}
-            showLabel={showPOILabels}
-            onClick={() => onMarkerClick?.(poi)}
+            showPopup={openPopupPoiId === poi.trackId}
+            onClick={() => handleMarkerClick(poi)}
           />
         ))}
       </MapContainer>

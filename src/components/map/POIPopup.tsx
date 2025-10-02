@@ -65,10 +65,10 @@ export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onC
                 <FaMusic className="text-muted text-2xl" />
               </div>
             ) : imageUrl ? (
-              <Image
+              <img
+                key={imageUrl}
                 src={imageUrl}
                 alt={poi.trackName}
-                fill
                 className="object-cover"
                 sizes="320px"
               />

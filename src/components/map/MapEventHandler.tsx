@@ -70,16 +70,14 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
       onMoveStart?.();
     },
 
-    move: () => {
-      if (skipInitialRef.current) return;
-      const center = map.getCenter();
-      const zoom = map.getZoom();
-      onMove?.(center, zoom);
-    },
-
     moveend: () => {
       if (skipInitialRef.current) return;
       onMoveEnd?.();
+
+      // Update center and zoom after movement ends
+      const center = map.getCenter();
+      const zoom = map.getZoom();
+      onMove?.(center, zoom);
 
       // Update bounds (debounced)
       const bounds = map.getBounds();
