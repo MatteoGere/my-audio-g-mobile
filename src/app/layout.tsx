@@ -50,6 +50,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="apple-touch-icon" href="/myaudiog-180.png" />
+      </head>
       <body className="antialiased bg-marble-50 text-carbon-900 min-h-screen">
         <NextThemeProvider>
           <ReduxProvider>
