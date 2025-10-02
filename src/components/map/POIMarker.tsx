@@ -7,6 +7,7 @@ import { renderToString } from 'react-dom/server';
 import { POIMarkerData } from '@/types/app-types';
 import { POIPopup } from './POIPopup';
 import { FaMusic } from 'react-icons/fa';
+import { Card } from '../ui';
 
 interface POIMarkerProps {
   poi: POIMarkerData;
@@ -79,7 +80,7 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
       }}
     >
       {/* Interactive popup - opens when marker is clicked */}
-      {showPopup && <POIPopup poi={poi} color={color} onPlayClick={onPlayClick} />}
+      <Card>{showPopup && <POIPopup poi={poi} color={color} onPlayClick={onPlayClick} />}</Card>
     </Marker>
   );
 };
