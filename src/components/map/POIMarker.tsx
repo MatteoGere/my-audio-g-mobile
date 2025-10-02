@@ -66,14 +66,18 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
     });
   }, [color, isSelected]);
 
+  console.log('[POIMarker] Rendering', { trackId: poi.trackId, showPopup });
+
   return (
     <Marker
       position={[poi.latitude, poi.longitude]}
       icon={createPOIIcon}
       eventHandlers={{
         click: (e) => {
+          console.log('[POIMarker] Click event', { trackId: poi.trackId });
           // Stop propagation to prevent map click event
           e.originalEvent?.stopPropagation();
+          console.log('[POIMarker] Calling onClick callback');
           onClick?.();
         },
       }}

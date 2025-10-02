@@ -54,8 +54,17 @@ export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onC
     onPlayClick?.(poi);
   };
 
+  console.log('[POIPopup] Rendering popup for', poi.trackId);
+
   return (
-    <Popup closeButton={true} minWidth={280} maxWidth={320} className="poi-popup">
+    <Popup 
+      closeButton={true} 
+      minWidth={280} 
+      maxWidth={320} 
+      className="poi-popup"
+      autoPan={false}
+      autoPanPadding={[0, 0]}
+    >
       <div className="bg-surface rounded-lg overflow-hidden shadow-lg">
         {/* Header Image */}
         {poi.imageStorageKey && (

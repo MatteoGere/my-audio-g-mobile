@@ -24,16 +24,10 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
   onClick,
   initialEventDelayMs = 300,
 }) => {
-  // Timer ref used to debounce bounds updates (400ms)
-  const boundsDebounceRef = useRef<number | null>(null);
   const skipInitialRef = useRef<boolean>(true);
 
   useEffect(() => {
-    // Clear debounce timer on unmount
     return () => {
-      if (boundsDebounceRef.current) {
-        clearTimeout(boundsDebounceRef.current);
-      }
       skipInitialRef.current = false;
     };
   }, []);
@@ -42,46 +36,40 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
   // map setView doesn't get echoed back into the store.
   useEffect(() => {
     const id = window.setTimeout(() => {
+      console.log('[MapEventHandler] Initial delay ended, events will now be processed');
       skipInitialRef.current = false;
     }, initialEventDelayMs);
     return () => clearTimeout(id);
   }, [initialEventDelayMs]);
 
-  const scheduleBoundsUpdate = (payload: {
-    north: number;
-    south: number;
-    east: number;
-    west: number;
-  }) => {
-    if (!onBoundsChange) return;
-    if (boundsDebounceRef.current) {
-      clearTimeout(boundsDebounceRef.current);
-    }
-    // window.setTimeout returns a number in browsers
-    boundsDebounceRef.current = window.setTimeout(() => {
-      onBoundsChange(payload);
-      boundsDebounceRef.current = null;
-    }, 800);
-  };
-
   const map = useMapEvents({
     movestart: () => {
-      if (skipInitialRef.current) return;
+      if (skipInitialRef.current) {
+        console.log('[MapEventHandler] movestart - SKIPPED (initial delay)');
+        return;
+      }
+      console.log('[MapEventHandler] movestart');
       onMoveStart?.();
     },
 
     moveend: () => {
-      if (skipInitialRef.current) return;
+      if (skipInitialRef.current) {
+        console.log('[MapEventHandler] moveend - SKIPPED (initial delay)');
+        return;
+      }
+      console.log('[MapEventHandler] moveend');
       onMoveEnd?.();
 
       // Update center and zoom after movement ends
       const center = map.getCenter();
       const zoom = map.getZoom();
+      console.log('[MapEventHandler] moveend - calling onMove', { center, zoom });
       onMove?.(center, zoom);
 
-      // Update bounds (debounced)
+      // Update bounds
       const bounds = map.getBounds();
-      scheduleBoundsUpdate({
+      console.log('[MapEventHandler] moveend - calling onBoundsChange', bounds);
+      onBoundsChange?.({
         north: bounds.getNorth(),
         south: bounds.getSouth(),
         east: bounds.getEast(),
@@ -90,14 +78,20 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
     },
 
     zoomend: () => {
-      if (skipInitialRef.current) return;
+      if (skipInitialRef.current) {
+        console.log('[MapEventHandler] zoomend - SKIPPED (initial delay)');
+        return;
+      }
+      console.log('[MapEventHandler] zoomend');
       const center = map.getCenter();
       const zoom = map.getZoom();
+      console.log('[MapEventHandler] zoomend - calling onMove', { center, zoom });
       onMove?.(center, zoom);
 
-      // Update bounds after zoom (debounced)
+      // Update bounds after zoom
       const bounds = map.getBounds();
-      scheduleBoundsUpdate({
+      console.log('[MapEventHandler] zoomend - calling onBoundsChange', bounds);
+      onBoundsChange?.({
         north: bounds.getNorth(),
         south: bounds.getSouth(),
         east: bounds.getEast(),
@@ -106,7 +100,11 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
     },
 
     click: (e: LeafletMouseEvent) => {
-      if (skipInitialRef.current) return;
+      if (skipInitialRef.current) {
+        console.log('[MapEventHandler] click - SKIPPED (initial delay)');
+        return;
+      }
+      console.log('[MapEventHandler] click', { lat: e.latlng.lat, lng: e.latlng.lng });
       onClick?.(e.latlng.lat, e.latlng.lng);
     },
   });

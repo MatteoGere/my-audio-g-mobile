@@ -65,6 +65,20 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   // Refs to track current center/zoom to prevent update loops
   const centerRef = useRef({ lat: center.latitude, lng: center.longitude });
   const zoomRef = useRef(zoom);
+  
+  // Log renders
+  console.log('[MapComponent] RENDER', {
+    openPopupPoiId,
+    center,
+    zoom,
+    isUserInteracting,
+    numPois: pois.length,
+  });
+  
+  // Log when popup state changes
+  useEffect(() => {
+    console.log('[MapComponent] openPopupPoiId changed to:', openPopupPoiId);
+  }, [openPopupPoiId]);
 
   // Location hook
   const { userLocation, isLocationEnabled } = useLocation();
@@ -132,18 +146,22 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
   // Handle map interactions - only called on moveend/zoomend now, not during movement
   const handleMapMove = useCallback((center: { lat: number; lng: number }, zoom: number) => {
+    console.log('[MapComponent] handleMapMove called', { center, zoom });
     // Update refs and Redux
     centerRef.current = center;
     zoomRef.current = zoom;
+    console.log('[MapComponent] dispatching setCenter and setZoom to Redux');
     dispatch(setCenter({ latitude: center.lat, longitude: center.lng }));
     dispatch(setZoom(zoom));
   }, [dispatch]);
 
   const handleMapMoveStart = useCallback(() => {
+    console.log('[MapComponent] handleMapMoveStart');
     dispatch(setUserInteracting(true));
   }, [dispatch]);
 
   const handleMapMoveEnd = useCallback(() => {
+    console.log('[MapComponent] handleMapMoveEnd');
     dispatch(setUserInteracting(false));
   }, [dispatch]);
 
@@ -153,17 +171,20 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     east: number;
     west: number;
   }) => {
+    console.log('[MapComponent] handleMapBoundsChange', bounds);
     dispatch(setBounds(bounds));
   }, [dispatch]);
 
   // Handle marker click - open popup
   const handleMarkerClick = useCallback((poi: POIMarkerData) => {
+    console.log('[MapComponent] handleMarkerClick - opening popup for', poi.trackId);
     setOpenPopupPoiId(poi.trackId);
     onMarkerClick?.(poi);
   }, [onMarkerClick]);
 
   // Handle map click - close popup
   const handleMapClickInternal = useCallback((lat: number, lng: number) => {
+    console.log('[MapComponent] handleMapClickInternal - closing popup');
     setOpenPopupPoiId(null);
     onMapClick?.(lat, lng);
   }, [onMapClick]);
@@ -210,11 +231,23 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
   // Follow Redux center/zoom updates by setting the map view when needed.
   useEffect(() => {
+    console.log('[MapComponent] useEffect triggered - Redux center/zoom changed', {
+      reduxCenter: { lat: center.latitude, lng: center.longitude },
+      reduxZoom: zoom,
+      isUserInteracting,
+    });
+
     const map = mapRef.current;
-    if (!map) return;
+    if (!map) {
+      console.log('[MapComponent] useEffect - map not ready, skipping');
+      return;
+    }
 
     // If the user is interacting with the map, avoid interrupting them
-    if (isUserInteracting) return;
+    if (isUserInteracting) {
+      console.log('[MapComponent] useEffect - user is interacting, skipping');
+      return;
+    }
 
     try {
       const currentCenter = map.getCenter();
@@ -224,14 +257,25 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       const lngChanged = Math.abs(currentCenter.lng - center.longitude) > 1e-6;
       const zoomChanged = currentZoom !== zoom;
 
+      console.log('[MapComponent] useEffect - checking changes', {
+        currentCenter,
+        currentZoom,
+        latChanged,
+        lngChanged,
+        zoomChanged,
+      });
+
       if (latChanged || lngChanged || zoomChanged) {
+        console.log('[MapComponent] useEffect - SETTING MAP VIEW (this might cause loop!)');
         map.setView([center.latitude, center.longitude], zoom, { animate: true });
         // Update refs to prevent bouncing back
         centerRef.current = { lat: center.latitude, lng: center.longitude };
         zoomRef.current = zoom;
+      } else {
+        console.log('[MapComponent] useEffect - no significant changes, skipping setView');
       }
     } catch (e) {
-      // ignore if map not ready
+      console.error('[MapComponent] useEffect - error:', e);
     }
   }, [center.latitude, center.longitude, zoom, isUserInteracting]);
 
