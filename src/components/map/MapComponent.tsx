@@ -166,6 +166,30 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     [onMarkerClick],
   );
 
+  // Center the map with a vertical pixel offset (to avoid popup covering the marker)
+  const panToWithOffset = useCallback((lat: number, lng: number, offsetY: number) => {
+    const map = mapRef.current;
+    if (!map) return;
+    const targetPoint = map.project([lat, lng], map.getZoom());
+    // move point up by offsetY pixels (positive moves content up, so we subtract)
+    const adjusted = targetPoint.subtract([0, offsetY]);
+    const adjustedLatLng = map.unproject(adjusted, map.getZoom());
+    map.panTo(adjustedLatLng, { animate: true });
+  }, []);
+
+  // When popup actually opens, pan the map so the popup is fully visible
+  const handlePopupOpen = useCallback((poi: POIMarkerData) => {
+    // Ensure state reflects the open popup
+    setOpenPopupPoiId(poi.trackId);
+    // Pan with an upward offset suitable for mobile popup height
+    panToWithOffset(poi.latitude, poi.longitude, 140);
+  }, [panToWithOffset]);
+
+  // Keep state in sync when popup closes (e.g., via close button)
+  const handlePopupClose = useCallback((poi: POIMarkerData) => {
+    setOpenPopupPoiId((current) => (current === poi.trackId ? null : current));
+  }, []);
+
   // Handle map click - close popup
   const handleMapClickInternal = useCallback(
     (lat: number, lng: number) => {
@@ -304,6 +328,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             isSelected={selectedPoiId === poi.trackId}
             showPopup={openPopupPoiId === poi.trackId}
             onClick={() => handleMarkerClick(poi)}
+            onPopupOpen={handlePopupOpen}
+            onPopupClose={handlePopupClose}
           />
         ))}
       </MapContainer>

@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Marker } from 'react-leaflet';
-import { DivIcon } from 'leaflet';
+import { DivIcon, Marker as LeafletMarker } from 'leaflet';
 import { renderToString } from 'react-dom/server';
 import { POIMarkerData } from '@/types/app-types';
 import { POIPopup } from './POIPopup';
@@ -16,6 +16,8 @@ interface POIMarkerProps {
   showPopup?: boolean;
   onClick?: () => void;
   onPlayClick?: (poi: POIMarkerData) => void;
+  onPopupOpen?: (poi: POIMarkerData) => void;
+  onPopupClose?: (poi: POIMarkerData) => void;
 }
 
 export const POIMarker: React.FC<POIMarkerProps> = ({
@@ -25,7 +27,11 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
   showPopup = false,
   onClick,
   onPlayClick,
+  onPopupOpen,
+  onPopupClose,
 }) => {
+  const markerRef = useRef<LeafletMarker | null>(null);
+
   // Create custom POI marker icon
   const createPOIIcon = useMemo(() => {
     const iconHtml = renderToString(
@@ -67,8 +73,37 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
     });
   }, [color, isSelected]);
 
+  // Ensure the popup opens on the first click by programmatically controlling it
+  useEffect(() => {
+    const m = markerRef.current;
+    if (!m) return;
+    if (showPopup) {
+      // Delay to next tick to ensure <Popup> child is mounted
+      const t = setTimeout(() => {
+        try {
+          m.openPopup();
+        } catch {
+          /* noop */
+        }
+      }, 0);
+      return () => clearTimeout(t);
+    } else {
+      try {
+        m.closePopup();
+      } catch {
+        /* noop */
+      }
+    }
+  }, [showPopup]);
+
   return (
     <Marker
+      ref={(instance) => {
+        // react-leaflet passes the Leaflet instance here
+        // cast to LeafletMarker where possible
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        markerRef.current = (instance as unknown as any) ?? null;
+      }}
       position={[poi.latitude, poi.longitude]}
       icon={createPOIIcon}
       eventHandlers={{
@@ -77,6 +112,8 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
           e.originalEvent?.stopPropagation();
           onClick?.();
         },
+        popupopen: () => onPopupOpen?.(poi),
+        popupclose: () => onPopupClose?.(poi),
       }}
     >
       {/* Interactive popup - opens when marker is clicked */}
