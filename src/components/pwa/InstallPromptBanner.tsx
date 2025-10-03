@@ -50,7 +50,7 @@ export function InstallPromptBanner() {
   return (
     <Card
       padding="lg"
-      variant="outlined"
+      variant="outline"
       className="flex flex-col gap-4 border-primary/20 bg-primary/5"
       aria-live="polite"
     >

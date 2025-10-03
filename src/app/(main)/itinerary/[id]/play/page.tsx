@@ -539,7 +539,7 @@ export default function AudioPlayerPage() {
                       { value: 'actions', label: 'Azioni' },
                     ]}
                     value={activeTab}
-                    onValueChange={(value:any) =>
+                    onChange={(value) =>
                       setActiveTab(value as 'details' | 'queue' | 'actions')
                     }
                     variant="pills"
