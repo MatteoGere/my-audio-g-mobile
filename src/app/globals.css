@@ -234,3 +234,23 @@ body {
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
 }
+
+/* PWA / notch safe-area handling
+   When the app is installed and running in standalone/fullscreen mode, use the
+   environment safe-area inset to push the header content below device notches.
+   We include fallbacks for older iOS with constant(). */
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  .app-header {
+    /* Use env() with fallback to 0, and also include older constant() for legacy iOS */
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-top: constant(safe-area-inset-top);
+  }
+}
+
+/* Additionally, apply when the page is launched in iOS standalone (navigator.standalone)
+   Some iOS versions don't advertise display-mode; JS can add a class if needed.
+   The CSS below ensures the header uses safe-area if a .standalone-app class is present. */
+.standalone-app .app-header {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-top: constant(safe-area-inset-top);
+}

@@ -24,16 +24,10 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
   onClick,
   initialEventDelayMs = 300,
 }) => {
-  // Timer ref used to debounce bounds updates (400ms)
-  const boundsDebounceRef = useRef<number | null>(null);
   const skipInitialRef = useRef<boolean>(true);
 
   useEffect(() => {
-    // Clear debounce timer on unmount
     return () => {
-      if (boundsDebounceRef.current) {
-        clearTimeout(boundsDebounceRef.current);
-      }
       skipInitialRef.current = false;
     };
   }, []);
@@ -47,43 +41,24 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
     return () => clearTimeout(id);
   }, [initialEventDelayMs]);
 
-  const scheduleBoundsUpdate = (payload: {
-    north: number;
-    south: number;
-    east: number;
-    west: number;
-  }) => {
-    if (!onBoundsChange) return;
-    if (boundsDebounceRef.current) {
-      clearTimeout(boundsDebounceRef.current);
-    }
-    // window.setTimeout returns a number in browsers
-    boundsDebounceRef.current = window.setTimeout(() => {
-      onBoundsChange(payload);
-      boundsDebounceRef.current = null;
-    }, 800);
-  };
-
   const map = useMapEvents({
     movestart: () => {
       if (skipInitialRef.current) return;
       onMoveStart?.();
     },
 
-    move: () => {
-      if (skipInitialRef.current) return;
-      const center = map.getCenter();
-      const zoom = map.getZoom();
-      onMove?.(center, zoom);
-    },
-
     moveend: () => {
       if (skipInitialRef.current) return;
       onMoveEnd?.();
 
-      // Update bounds (debounced)
+      // Update center and zoom after movement ends
+      const center = map.getCenter();
+      const zoom = map.getZoom();
+      onMove?.(center, zoom);
+
+      // Update bounds
       const bounds = map.getBounds();
-      scheduleBoundsUpdate({
+      onBoundsChange?.({
         north: bounds.getNorth(),
         south: bounds.getSouth(),
         east: bounds.getEast(),
@@ -97,9 +72,9 @@ export const MapEventHandler: React.FC<MapEventHandlerProps> = ({
       const zoom = map.getZoom();
       onMove?.(center, zoom);
 
-      // Update bounds after zoom (debounced)
+      // Update bounds after zoom
       const bounds = map.getBounds();
-      scheduleBoundsUpdate({
+      onBoundsChange?.({
         north: bounds.getNorth(),
         south: bounds.getSouth(),
         east: bounds.getEast(),

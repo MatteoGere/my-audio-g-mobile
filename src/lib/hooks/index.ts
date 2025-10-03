@@ -19,3 +19,6 @@ export { useMapPOIs } from './useMapPOIs';
 
 // Favorites hooks
 export { useFavorites } from './useFavorites';
+
+// PWA hooks
+export { usePWAInstallPrompt } from './usePWAInstallPrompt';
