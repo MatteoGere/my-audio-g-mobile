@@ -116,8 +116,8 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
         popupclose: () => onPopupClose?.(poi),
       }}
     >
-      {/* Interactive popup - opens when marker is clicked */}
-      <Card>{showPopup && <POIPopup poi={poi} color={color} onPlayClick={onPlayClick} />}</Card>
+      {/* Interactive popup - Popup component renders a Card internally so we don't wrap it here */}
+      {showPopup && <POIPopup poi={poi} color={color} onPlayClick={onPlayClick} />}
     </Marker>
   );
 };

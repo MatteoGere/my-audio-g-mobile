@@ -4,7 +4,12 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { MapComponent } from '@/components/map';
 import { useMapPOIs, useLocation } from '@/lib/hooks';
 import { useAppDispatch, useAppSelector } from '@/lib/redux';
-import { selectPoi, setHighlightedTrackId, setMapStyle, setMapView } from '@/lib/redux/slices/mapSlice';
+import {
+  selectPoi,
+  setHighlightedTrackId,
+  setMapStyle,
+  setMapView,
+} from '@/lib/redux/slices/mapSlice';
 import { POIMarkerData } from '@/types/app-types';
 import { FaExpand, FaCompress, FaLocationArrow, FaFilter, FaSearch } from 'react-icons/fa';
 import { HiOutlinePlus, HiOutlineMinus } from 'react-icons/hi2';
@@ -204,38 +209,36 @@ export default function MapPage() {
           >
             <HiOutlineMinus className="h-5 w-5" />
           </Button>
-              
-                    <Button
-                      className="min-w-[44px] min-h-[44px] p-0"
-                      aria-label="Cambia mappa"
-                      onClick={() => {
-                        const order: Array<'default' | 'satellite' | 'terrain' | 'dark'> = [
-                          'default',
-                          'satellite',
-                          'terrain',
-                          'dark',
-                        ];
-                        const current = mapStyle ?? 'default';
-                        const idx = order.indexOf(current);
-                        const next = order[(idx + 1) % order.length];
-                        dispatch(setMapStyle(next));
-                      }}
-                    >
-                      {
-                        (() => {
-                          switch (mapStyle) {
-                            case 'satellite':
-                              return <FaSatellite className="h-5 w-5" />;
-                            case 'terrain':
-                              return <FaTree className="h-5 w-5" />;
-                            case 'dark':
-                              return <FaMoon className="h-5 w-5" />;
-                            default:
-                              return <FaGlobe className="h-5 w-5" />;
-                          }
-                        })()
-                      }
-                    </Button>
+
+          <Button
+            className="min-w-[44px] min-h-[44px] p-0"
+            aria-label="Cambia mappa"
+            onClick={() => {
+              const order: Array<'default' | 'satellite' | 'terrain' | 'dark'> = [
+                'default',
+                'satellite',
+                'terrain',
+                'dark',
+              ];
+              const current = mapStyle ?? 'default';
+              const idx = order.indexOf(current);
+              const next = order[(idx + 1) % order.length];
+              dispatch(setMapStyle(next));
+            }}
+          >
+            {(() => {
+              switch (mapStyle) {
+                case 'satellite':
+                  return <FaSatellite className="h-5 w-5" />;
+                case 'terrain':
+                  return <FaTree className="h-5 w-5" />;
+                case 'dark':
+                  return <FaMoon className="h-5 w-5" />;
+                default:
+                  return <FaGlobe className="h-5 w-5" />;
+              }
+            })()}
+          </Button>
         </div>
       </div>
 

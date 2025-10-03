@@ -4,7 +4,13 @@ import React, { useEffect, useRef, useMemo, useState, useCallback } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { Map as LeafletMap } from 'leaflet';
 import { useAppSelector, useAppDispatch } from '@/lib/redux';
-import { setCenter, setZoom, setBounds, setUserInteracting, setMapStyle } from '@/lib/redux/slices/mapSlice';
+import {
+  setCenter,
+  setZoom,
+  setBounds,
+  setUserInteracting,
+  setMapStyle,
+} from '@/lib/redux/slices/mapSlice';
 import { useLocation } from '@/lib/hooks';
 import { POIMarkerData } from '@/types/app-types';
 import { POIMarker } from './POIMarker';
@@ -14,7 +20,6 @@ import { RouteVisualization } from './RouteVisualization';
 import tokens from '@/design/tokens';
 import 'leaflet/dist/leaflet.css';
 import './map.css';
-import Button from '@/components/ui/Button';
 import { FaGlobe, FaSatellite, FaTree, FaMoon } from 'react-icons/fa';
 
 // Fix for default markers in react-leaflet
@@ -191,12 +196,15 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   }, []);
 
   // When popup actually opens, pan the map so the popup is fully visible
-  const handlePopupOpen = useCallback((poi: POIMarkerData) => {
-    // Ensure state reflects the open popup
-    setOpenPopupPoiId(poi.trackId);
-    // Pan with an upward offset suitable for mobile popup height
-    panToWithOffset(poi.latitude, poi.longitude, 140);
-  }, [panToWithOffset]);
+  const handlePopupOpen = useCallback(
+    (poi: POIMarkerData) => {
+      // Ensure state reflects the open popup
+      setOpenPopupPoiId(poi.trackId);
+      // Pan with an upward offset suitable for mobile popup height
+      panToWithOffset(poi.latitude, poi.longitude, 140);
+    },
+    [panToWithOffset],
+  );
 
   // Keep state in sync when popup closes (e.g., via close button)
   const handlePopupClose = useCallback((poi: POIMarkerData) => {
