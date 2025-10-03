@@ -221,9 +221,15 @@ export default function NearbyItineraries() {
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-col gap-3 mt-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <h3 className="font-bold text-foreground truncate">{it.name}</h3>
+                  <div className="flex flex-col gap-2 mt-3">
+                    <h3 className="font-bold text-foreground text-sm leading-tight line-clamp-2 min-h-[2.5rem]">{it.name}</h3>
+                    <div className="flex items-center justify-between gap-2">
+                      <Badge
+                        className={`text-xs px-2 py-1 rounded-full inline-flex items-center gap-1.5 w-fit backdrop-blur-sm ${distanceColorClass}`}
+                      >
+                        <HiOutlineMapPin className="h-3 w-3" />
+                        <span className="font-semibold">{formatDistance(it.distance_meters)}</span>
+                      </Badge>
                       <Badge
                         variant="secondary"
                         className="shrink-0 px-2 py-0.5 rounded-full text-xs inline-flex items-center gap-1 bg-gradient-to-r from-secondary/90 to-secondary backdrop-blur-sm"
@@ -232,12 +238,6 @@ export default function NearbyItineraries() {
                         {formatDuration(it.total_duration)}
                       </Badge>
                     </div>
-                    <Badge
-                      className={`text-xs px-2 py-1 rounded-full inline-flex items-center gap-1.5 w-fit backdrop-blur-sm ${distanceColorClass}`}
-                    >
-                      <HiOutlineMapPin className="h-3 w-3" />
-                      <span className="font-semibold">{formatDistance(it.distance_meters)}</span>
-                    </Badge>
                   </div>
                 </Card>
               </Link>

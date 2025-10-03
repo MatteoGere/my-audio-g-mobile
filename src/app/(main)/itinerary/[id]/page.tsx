@@ -24,14 +24,14 @@ const CollapsibleText = memo(function CollapsibleTextComponent({ id, text }: Col
   }
 
   if (!shouldCollapse) {
-    return <p className="text-sm text-muted leading-relaxed mb-1">{content}</p>;
+    return <p className="text-sm text-muted leading-relaxed">{content}</p>;
   }
 
   return (
-    <div className="mb-1">
+    <div>
       <p
         id={id}
-        className={'text-sm text-muted leading-relaxed ' + (expanded ? '' : 'line-clamp-2')}
+        className={'text-sm text-muted leading-relaxed break-words ' + (expanded ? '' : 'line-clamp-2')}
       >
         {content}
       </p>
@@ -46,7 +46,7 @@ const CollapsibleText = memo(function CollapsibleTextComponent({ id, text }: Col
         onKeyDown={(event) => {
           event.stopPropagation();
         }}
-        className="mt-1 text-sm text-primary hover:underline"
+        className="mt-1.5 text-sm text-primary hover:underline font-medium"
       >
         {expanded ? 'Show less' : 'Show more'}
       </button>
@@ -293,22 +293,28 @@ export default function ItineraryDetailPage() {
               variant="glass"
               className="bg-gradient-to-br from-surface to-primary/5 border border-primary/20 hover:shadow-medium hover:scale-[1.01] transition-all duration-300"
             >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center flex-shrink-0 shadow-soft">
-                  <span className="text-white text-base font-bold">
-                    {track.audio_itinerary_order}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-semibold text-foreground">
-                      {track.name || 'Untitled track'}
-                    </h3>
+              {/* Responsive stack on mobile, row on sm+ */}
+              <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                {/* Order / Icon column - fixed width but not forcing shrink */}
+                <div className="flex-shrink-0 flex items-start sm:items-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center shadow-soft">
+                    <span className="text-white text-base font-bold">
+                      {track.audio_itinerary_order}
+                    </span>
                   </div>
+                </div>
+
+                {/* Main content column - allow it to grow and wrap, avoid narrow columns on mobile */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-foreground mb-2 leading-tight text-base">
+                    {track.name || 'Untitled track'}
+                  </h3>
                   {track.description && (
-                    <CollapsibleText id={`track-desc-${track.id}`} text={track.description} />
+                    <div className="mb-3">
+                      <CollapsibleText id={`track-desc-${track.id}`} text={track.description} />
+                    </div>
                   )}
-                  <div className="flex items-center gap-2 mt-2">
+                  <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1.5 text-secondary">
                       <div className="w-6 h-6 rounded-lg bg-secondary/10 flex items-center justify-center backdrop-blur-sm">
                         <span className="text-xs">⏱</span>
@@ -317,7 +323,9 @@ export default function ItineraryDetailPage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex-shrink-0 self-start flex items-center gap-1">
+
+                {/* Action buttons column - align to top on mobile, to center on larger screens */}
+                <div className="flex-shrink-0 self-start sm:self-center flex items-center gap-1">
                   <Button
                     variant="ghost"
                     size="sm"

@@ -474,16 +474,14 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                   <Card
                     padding="md"
                     variant="glass"
-                    className={`group relative bg-gradient-to-br from-surface to-primary/5 border border-primary/20 rounded-2xl shadow-soft overflow-hidden transition-all duration-300 hover:shadow-medium hover:scale-[1.02] hover:border-primary/30 cursor-pointer ${
-                      viewMode === 'list' ? 'flex items-start' : ''
-                    }`}
+                    className="group relative bg-gradient-to-br from-surface to-primary/5 border border-primary/20 rounded-2xl shadow-soft overflow-hidden transition-all duration-300 hover:shadow-medium hover:scale-[1.02] hover:border-primary/30 cursor-pointer"
                   >
                     {/* Favorite Button - Absolute Position */}
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className={`absolute ${viewMode === 'grid' ? 'top-2 right-2' : 'top-2 right-2'} z-10 bg-surface/80 backdrop-blur-sm rounded-xl shadow-soft hover:bg-surface transition-all`}
+                      className="absolute top-2 right-2 z-10 bg-surface/80 backdrop-blur-sm rounded-xl shadow-soft hover:bg-surface transition-all"
                       loading={favoritesBusy}
                       aria-label={
                         isFavorite
@@ -510,11 +508,11 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                       )}
                     </Button>
 
-                    {/* Image */}
+                    {/* Image - Always on top */}
                     <div
                       className={`relative ${
-                        viewMode === 'grid' ? 'h-40 w-full' : 'h-28 w-28 flex-shrink-0 mr-4'
-                      } bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl overflow-hidden`}
+                        viewMode === 'grid' ? 'h-40' : 'h-32'
+                      } w-full bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl overflow-hidden mb-3`}
                     >
                       {imageUrl ? (
                         <>
