@@ -535,8 +535,8 @@ export default function AudioPlayerPage() {
                   <Tabs
                     items={tabItems}
                     value={activeTab}
-                    onValueChange={(value) =>
-                      setActiveTab(value as 'details' | 'queue' | 'actions')
+                    onValueChange={(value: 'details' | 'queue' | 'actions') =>
+                      setActiveTab(value)
                     }
                     variant="pills"
                     size="sm"
