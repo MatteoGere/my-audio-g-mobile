@@ -115,7 +115,7 @@ export function Header({
 
   return (
     <header className="app-header sticky top-0 z-50 bg-surface border-b border-muted shadow-md">
-      <div className="flex items-center justify-between h-16 px-5 gap-4">
+      <div className="flex items-center justify-between pb-2 px-5 gap-4">
         {/* Left Section */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
           {showBackButton && (
