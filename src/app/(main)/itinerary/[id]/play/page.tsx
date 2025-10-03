@@ -349,9 +349,7 @@ export default function AudioPlayerPage() {
       id: 'details',
       label: 'Dettagli',
       content: (
-        <Card
-          padding="lg"
-        >
+        <Card padding="lg">
           <div className="space-y-2">
             <h3 className="text-base font-semibold text-foreground">Dettagli traccia</h3>
             <p className="text-sm leading-relaxed text-muted">
@@ -395,9 +393,7 @@ export default function AudioPlayerPage() {
             <QueueManager isVisible={true} onClose={() => setIsPanelOpen(false)} />
           </div>
         ) : (
-          <Card
-            padding="lg"
-          >
+          <Card padding="lg">
             <h3 className="text-base font-semibold text-foreground">Coda vuota</h3>
             <p className="text-sm text-muted">
               Aggiungi altre tracce all&apos;itinerario per popolare la coda di riproduzione.
@@ -410,11 +406,7 @@ export default function AudioPlayerPage() {
       label: 'Azioni',
       content: (
         <div className="space-y-4">
-          <Card
-            padding="lg"
-            className='space-y-4'
-          >
-
+          <Card padding="lg" className="space-y-4">
             <h3 className="text-base font-semibold text-foreground">Azioni rapide</h3>
             <div className="grid grid-cols-2 gap-3">
               <Button
