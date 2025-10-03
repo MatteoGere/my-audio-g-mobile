@@ -1,0 +1,1773 @@
+# Linee Guida Design System 2025 - Mobile PWA
+## Refactoring Componenti Atomici per App Next.js
+
+---
+
+## 🎯 Filosofia di Design
+
+**Obiettivo**: Modernizzare i componenti atomici con stili 2025 mobile-first, mantenendo l'API esistente e aggiungendo nuove variant per flessibilità.
+
+**Principi**:
+- **Default moderni**: gli stili base devono essere già ottimali per mobile
+- **Variant intuitive**: primary/secondary/ghost/outline per tutti i componenti interattivi
+- **Touch-friendly**: target minimi 44×44px, area touch generosa
+- **Dark-first**: il dark mode deve sembrare nativo, non un afterthought
+- **Feedback immediato**: animazioni e transizioni per ogni interazione
+- **Glassmorphism subtle**: backdrop-blur e trasparenze dove appropriato
+
+---
+
+## 🔘 Button Component
+
+### Struttura Base
+```tsx
+// src/components/ui/Button.tsx
+interface ButtonProps {
+  variant?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'outline' | 'danger';
+  size?: 'sm' | 'md' | 'lg' | 'icon';
+  fullWidth?: boolean;
+  rounded?: 'default' | 'full' | 'square';
+  loading?: boolean;
+  disabled?: boolean;
+}
+```
+
+### Stili da Implementare
+```tsx
+// Base (comune a tutte le variant)
+const baseStyles = cn(
+  "inline-flex items-center justify-center gap-2 font-medium",
+  "transition-all duration-200 ease-out",
+  "active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+)
+
+// Variant styles
+const variants = {
+  primary: cn(
+    "bg-primary text-primary-foreground",
+    "shadow-lg shadow-primary/25",
+    "hover:shadow-xl hover:shadow-primary/30",
+    "active:shadow-md"
+  ),
+  secondary: cn(
+    "bg-secondary text-secondary-foreground",
+    "shadow-md shadow-secondary/20",
+    "hover:shadow-lg hover:shadow-secondary/25"
+  ),
+  accent: cn(
+    "bg-accent text-accent-foreground",
+    "shadow-md shadow-accent/20",
+    "hover:shadow-lg hover:shadow-accent/25"
+  ),
+  ghost: cn(
+    "bg-transparent text-foreground",
+    "hover:bg-marble-100/50 dark:hover:bg-marble-100/10",
+    "active:bg-marble-200/50 dark:active:bg-marble-200/20"
+  ),
+  outline: cn(
+    "bg-transparent border-2 border-marble-200/30 text-foreground",
+    "hover:bg-marble-100/30 hover:border-marble-200/50",
+    "dark:border-marble-200/20 dark:hover:bg-marble-100/10"
+  ),
+  danger: cn(
+    "bg-error text-white",
+    "shadow-md shadow-error/20",
+    "hover:shadow-lg hover:shadow-error/30"
+  ),
+}
+
+// Size styles
+const sizes = {
+  sm: "h-9 px-4 text-sm rounded-lg",
+  md: "h-11 px-6 text-base rounded-xl",
+  lg: "h-14 px-8 text-lg rounded-2xl",
+  icon: "h-11 w-11 p-0",
+}
+
+// Rounded variants
+const roundedStyles = {
+  default: "", // già coperto dai size
+  full: "!rounded-full",
+  square: "!rounded-lg",
+}
+
+// Loading state
+{loading && (
+  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+)}
+```
+
+### Note Implementazione
+- Default: `variant="primary"`, `size="md"`, `rounded="default"`
+- Il fullWidth aggiunge semplicemente `w-full`
+- Quando loading=true, disabilitare il button e mostrare spinner
+
+---
+
+## 📝 Input Component
+
+### Struttura Base
+```tsx
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+  helperText?: string;
+  variant?: 'default' | 'filled' | 'ghost';
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  fullWidth?: boolean;
+}
+```
+
+### Stili da Implementare
+```tsx
+// Container wrapper
+<div className={cn("relative", fullWidth && "w-full")}>
+  {label && (
+    <label className="block text-sm font-medium text-foreground mb-2">
+      {label}
+    </label>
+  )}
+  
+  {/* Input wrapper con icone */}
+  <div className="relative">
+    {leftIcon && (
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted">
+        {leftIcon}
+      </div>
+    )}
+    
+    <input className={cn(
+      // Base
+      "w-full h-12 px-4 text-base text-foreground placeholder:text-muted",
+      "transition-all duration-200",
+      "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1 focus:ring-offset-background",
+      
+      // Variant default
+      variant === 'default' && cn(
+        "bg-transparent border-2 border-marble-200/30 rounded-xl",
+        "hover:border-marble-200/50",
+        "focus:border-primary/50",
+        "dark:border-marble-200/20"
+      ),
+      
+      // Variant filled
+      variant === 'filled' && cn(
+        "bg-marble-100/50 border-2 border-transparent rounded-xl",
+        "hover:bg-marble-100/70",
+        "focus:bg-surface focus:border-primary/50",
+        "dark:bg-marble-100/10 dark:hover:bg-marble-100/20"
+      ),
+      
+      // Variant ghost
+      variant === 'ghost' && cn(
+        "bg-transparent border-0 border-b-2 border-marble-200/30 rounded-none",
+        "hover:border-marble-200/50",
+        "focus:border-primary"
+      ),
+      
+      // Con icone
+      leftIcon && "pl-10",
+      rightIcon && "pr-10",
+      
+      // Error state
+      error && "!border-error focus:!ring-error/50"
+    )} />
+    
+    {rightIcon && (
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted">
+        {rightIcon}
+      </div>
+    )}
+  </div>
+  
+  {/* Helper text o errore */}
+  {(helperText || error) && (
+    <p className={cn(
+      "mt-2 text-sm",
+      error ? "text-error" : "text-muted"
+    )}>
+      {error || helperText}
+    </p>
+  )}
+</div>
+```
+
+### Note Implementazione
+- Default: `variant="filled"` per look moderno
+- Gli input devono sempre avere h-12 minimo (touch-friendly)
+- Focus ring sempre visibile per accessibilità
+
+---
+
+## 🎴 Card Component
+
+### Struttura Base
+```tsx
+interface CardProps {
+  variant?: 'default' | 'glass' | 'elevated' | 'outline' | 'interactive';
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+}
+```
+
+### Stili da Implementare
+```tsx
+const variants = {
+  default: cn(
+    "bg-surface rounded-2xl",
+    "border border-marble-200/10",
+    "shadow-soft"
+  ),
+  
+  glass: cn(
+    "bg-surface/80 backdrop-blur-xl rounded-2xl",
+    "border border-marble-200/10",
+    "shadow-medium"
+  ),
+  
+  elevated: cn(
+    "bg-surface rounded-2xl",
+    "shadow-strong",
+    "border border-marble-200/5"
+  ),
+  
+  outline: cn(
+    "bg-transparent rounded-2xl",
+    "border-2 border-marble-200/30",
+    "dark:border-marble-200/20"
+  ),
+  
+  interactive: cn(
+    "bg-surface rounded-2xl",
+    "border border-marble-200/10",
+    "shadow-soft",
+    "transition-all duration-200",
+    "hover:shadow-medium hover:scale-[1.01]",
+    "active:scale-[0.99]",
+    "cursor-pointer"
+  ),
+}
+
+const paddings = {
+  none: "",
+  sm: "p-3",
+  md: "p-4",
+  lg: "p-6",
+}
+
+// Applicazione
+<div className={cn(
+  variants[variant],
+  paddings[padding],
+  className
+)} onClick={onClick}>
+  {children}
+</div>
+```
+
+### Note Implementazione
+- Default: `variant="default"`, `padding="md"`
+- Se onClick è presente, considerare di usare automaticamente variant="interactive"
+- Le card devono avere rounded-2xl per look moderno
+
+---
+
+## ✅ Checkbox Component
+
+### Struttura Base
+```tsx
+interface CheckboxProps {
+  label?: string;
+  description?: string;
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
+  disabled?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+}
+```
+
+### Stili da Implementare
+```tsx
+// Wrapper con label
+<label className={cn(
+  "inline-flex items-start gap-3 cursor-pointer",
+  disabled && "opacity-50 cursor-not-allowed"
+)}>
+  {/* Checkbox input (hidden) */}
+  <input
+    type="checkbox"
+    className="sr-only peer"
+    checked={checked}
+    onChange={(e) => onChange?.(e.target.checked)}
+    disabled={disabled}
+  />
+  
+  {/* Custom checkbox visual */}
+  <div className={cn(
+    "flex items-center justify-center shrink-0",
+    "border-2 rounded-md transition-all duration-200",
+    
+    // Size variants
+    size === 'sm' && "w-4 h-4",
+    size === 'md' && "w-5 h-5",
+    size === 'lg' && "w-6 h-6",
+    
+    // States
+    "border-marble-200/50 bg-transparent",
+    "peer-checked:bg-primary peer-checked:border-primary",
+    "peer-focus-visible:ring-2 peer-focus-visible:ring-primary/50 peer-focus-visible:ring-offset-2",
+    "peer-hover:border-primary/50",
+    "dark:border-marble-200/30"
+  )}>
+    {/* Checkmark icon */}
+    <svg 
+      className={cn(
+        "transition-all duration-200",
+        size === 'sm' && "w-2.5 h-2.5",
+        size === 'md' && "w-3 h-3",
+        size === 'lg' && "w-4 h-4",
+        checked ? "opacity-100 scale-100 text-primary-foreground" : "opacity-0 scale-50"
+      )}
+      viewBox="0 0 12 12" 
+      fill="none"
+    >
+      <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  </div>
+  
+  {/* Label e description */}
+  {(label || description) && (
+    <div className="flex-1 pt-0.5">
+      {label && (
+        <span className="block text-sm font-medium text-foreground">
+          {label}
+        </span>
+      )}
+      {description && (
+        <span className="block text-sm text-muted mt-0.5">
+          {description}
+        </span>
+      )}
+    </div>
+  )}
+</label>
+```
+
+### Note Implementazione
+- Default: `size="md"`
+- Usare hidden input nativo per accessibilità + custom styling su div
+- Animare la transizione del checkmark con scale
+
+---
+
+## 🔘 Radio Component
+
+### Struttura Base
+```tsx
+interface RadioProps {
+  label?: string;
+  description?: string;
+  value: string;
+  checked?: boolean;
+  onChange?: (value: string) => void;
+  disabled?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+}
+
+interface RadioGroupProps {
+  options: Array<{value: string; label: string; description?: string}>;
+  value: string;
+  onChange: (value: string) => void;
+  orientation?: 'vertical' | 'horizontal';
+}
+```
+
+### Stili da Implementare
+```tsx
+// Single Radio
+<label className={cn(
+  "inline-flex items-start gap-3 cursor-pointer",
+  disabled && "opacity-50 cursor-not-allowed"
+)}>
+  <input
+    type="radio"
+    className="sr-only peer"
+    value={value}
+    checked={checked}
+    onChange={(e) => onChange?.(e.target.value)}
+    disabled={disabled}
+  />
+  
+  {/* Custom radio visual */}
+  <div className={cn(
+    "flex items-center justify-center shrink-0 rounded-full",
+    "border-2 transition-all duration-200",
+    
+    size === 'sm' && "w-4 h-4",
+    size === 'md' && "w-5 h-5",
+    size === 'lg' && "w-6 h-6",
+    
+    "border-marble-200/50 bg-transparent",
+    "peer-checked:border-primary",
+    "peer-focus-visible:ring-2 peer-focus-visible:ring-primary/50 peer-focus-visible:ring-offset-2",
+    "peer-hover:border-primary/50"
+  )}>
+    {/* Inner dot */}
+    <div className={cn(
+      "rounded-full bg-primary transition-all duration-200",
+      size === 'sm' && "w-1.5 h-1.5",
+      size === 'md' && "w-2 h-2",
+      size === 'lg' && "w-2.5 h-2.5",
+      checked ? "opacity-100 scale-100" : "opacity-0 scale-0"
+    )} />
+  </div>
+  
+  {/* Label */}
+  {(label || description) && (
+    <div className="flex-1 pt-0.5">
+      {label && <span className="block text-sm font-medium text-foreground">{label}</span>}
+      {description && <span className="block text-sm text-muted mt-0.5">{description}</span>}
+    </div>
+  )}
+</label>
+
+// RadioGroup wrapper
+<div className={cn(
+  "flex gap-4",
+  orientation === 'vertical' ? "flex-col" : "flex-row flex-wrap"
+)}>
+  {options.map(option => <Radio key={option.value} {...option} />)}
+</div>
+```
+
+---
+
+## 🎚️ Switch Component
+
+### Struttura Base
+```tsx
+interface SwitchProps {
+  label?: string;
+  description?: string;
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
+  disabled?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+}
+```
+
+### Stili da Implementare
+```tsx
+<label className={cn(
+  "inline-flex items-center justify-between gap-4 cursor-pointer",
+  disabled && "opacity-50 cursor-not-allowed"
+)}>
+  {/* Label section */}
+  {(label || description) && (
+    <div className="flex-1">
+      {label && <span className="block text-sm font-medium text-foreground">{label}</span>}
+      {description && <span className="block text-sm text-muted mt-0.5">{description}</span>}
+    </div>
+  )}
+  
+  {/* Hidden input */}
+  <input
+    type="checkbox"
+    className="sr-only peer"
+    checked={checked}
+    onChange={(e) => onChange?.(e.target.checked)}
+    disabled={disabled}
+  />
+  
+  {/* Visual switch */}
+  <div className={cn(
+    "relative shrink-0 rounded-full transition-all duration-200",
+    
+    // Sizes
+    size === 'sm' && "w-8 h-5",
+    size === 'md' && "w-11 h-6",
+    size === 'lg' && "w-14 h-7",
+    
+    // States
+    "bg-marble-200/50",
+    "peer-checked:bg-primary",
+    "peer-focus-visible:ring-2 peer-focus-visible:ring-primary/50 peer-focus-visible:ring-offset-2",
+    "dark:bg-marble-200/30"
+  )}>
+    {/* Thumb */}
+    <div className={cn(
+      "absolute top-1 rounded-full bg-white shadow-md transition-all duration-200",
+      
+      // Sizes e posizioni
+      size === 'sm' && "w-3 h-3 peer-checked:translate-x-[14px]",
+      size === 'md' && "w-4 h-4 peer-checked:translate-x-[20px]",
+      size === 'lg' && "w-5 h-5 peer-checked:translate-x-[28px]",
+      
+      checked ? "left-auto right-1" : "left-1"
+    )} />
+  </div>
+</label>
+```
+
+### Note Implementazione
+- Default: `size="md"`
+- Il thumb deve avere shadow per depth
+- Transizione smooth del background e posizione thumb
+
+---
+
+## 📋 Select Component
+
+### Struttura Base
+```tsx
+interface SelectProps {
+  label?: string;
+  placeholder?: string;
+  options: Array<{value: string; label: string; icon?: React.ReactNode}>;
+  value?: string;
+  onChange?: (value: string) => void;
+  error?: string;
+  disabled?: boolean;
+  variant?: 'default' | 'filled';
+}
+```
+
+### Stili da Implementare
+```tsx
+// Container
+<div className="relative w-full">
+  {label && (
+    <label className="block text-sm font-medium text-foreground mb-2">
+      {label}
+    </label>
+  )}
+  
+  {/* Select trigger button */}
+  <button
+    type="button"
+    className={cn(
+      "w-full h-12 px-4 text-left text-base",
+      "flex items-center justify-between gap-2",
+      "transition-all duration-200",
+      "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1",
+      
+      // Variant default
+      variant === 'default' && cn(
+        "bg-transparent border-2 border-marble-200/30 rounded-xl",
+        "hover:border-marble-200/50",
+        "dark:border-marble-200/20"
+      ),
+      
+      // Variant filled
+      variant === 'filled' && cn(
+        "bg-marble-100/50 border-2 border-transparent rounded-xl",
+        "hover:bg-marble-100/70",
+        "dark:bg-marble-100/10"
+      ),
+      
+      error && "!border-error",
+      disabled && "opacity-50 cursor-not-allowed"
+    )}
+  >
+    <span className={cn(
+      value ? "text-foreground" : "text-muted"
+    )}>
+      {selectedOption?.label || placeholder || "Seleziona..."}
+    </span>
+    
+    {/* Chevron icon */}
+    <svg 
+      className={cn(
+        "w-5 h-5 text-muted transition-transform duration-200",
+        isOpen && "rotate-180"
+      )}
+      fill="none" 
+      viewBox="0 0 24 24" 
+      stroke="currentColor"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+  
+  {/* Dropdown menu */}
+  {isOpen && (
+    <div className={cn(
+      "absolute z-50 w-full mt-2",
+      "bg-surface rounded-xl shadow-strong border border-marble-200/10",
+      "py-2 max-h-60 overflow-y-auto",
+      "animate-slide-up-fade"
+    )}>
+      {options.map(option => (
+        <button
+          key={option.value}
+          type="button"
+          className={cn(
+            "w-full px-4 py-2.5 text-left text-base flex items-center gap-3",
+            "transition-colors duration-150",
+            "hover:bg-marble-100/50",
+            value === option.value && "bg-primary/10 text-primary font-medium"
+          )}
+          onClick={() => {
+            onChange?.(option.value);
+            setIsOpen(false);
+          }}
+        >
+          {option.icon && <span className="shrink-0">{option.icon}</span>}
+          <span>{option.label}</span>
+          {value === option.value && (
+            <svg className="ml-auto w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+          )}
+        </button>
+      ))}
+    </div>
+  )}
+  
+  {error && (
+    <p className="mt-2 text-sm text-error">{error}</p>
+  )}
+</div>
+```
+
+### Note Implementazione
+- Implementare close on outside click
+- Aggiungere animazione slide-up-fade per dropdown
+- Supportare navigazione keyboard (arrow up/down, enter, escape)
+
+---
+
+## 💬 Modal Component
+
+### Struttura Base
+```tsx
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
+  description?: string;
+  children: React.ReactNode;
+  variant?: 'center' | 'bottom' | 'fullscreen';
+  size?: 'sm' | 'md' | 'lg' | 'full';
+  showCloseButton?: boolean;
+}
+```
+
+### Stili da Implementare
+```tsx
+// Backdrop
+{isOpen && (
+  <div 
+    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 animate-fade-in"
+    onClick={onClose}
+  >
+    {/* Modal container */}
+    <div className={cn(
+      "relative",
+      
+      // Variant center
+      variant === 'center' && cn(
+        "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+        "w-full max-w-md mx-4",
+        "bg-surface rounded-2xl shadow-strong",
+        "animate-scale-up"
+      ),
+      
+      // Variant bottom (mobile sheet)
+      variant === 'bottom' && cn(
+        "fixed inset-x-0 bottom-0",
+        "bg-surface rounded-t-3xl shadow-strong",
+        "pb-safe",
+        "animate-slide-up"
+      ),
+      
+      // Variant fullscreen
+      variant === 'fullscreen' && cn(
+        "fixed inset-0 bg-background",
+        "animate-fade-in"
+      )
+    )}
+    onClick={(e) => e.stopPropagation()}
+    >
+      {/* Drag handle per bottom sheet */}
+      {variant === 'bottom' && (
+        <div className="flex justify-center pt-3 pb-2">
+          <div className="w-10 h-1 bg-marble-200/50 rounded-full" />
+        </div>
+      )}
+      
+      {/* Header */}
+      <div className={cn(
+        "flex items-start justify-between gap-4",
+        variant === 'bottom' ? "px-6 pb-4" : "p-6 pb-4"
+      )}>
+        <div className="flex-1">
+          {title && (
+            <h2 className="text-xl font-semibold text-foreground">
+              {title}
+            </h2>
+          )}
+          {description && (
+            <p className="text-sm text-muted mt-1">
+              {description}
+            </p>
+          )}
+        </div>
+        
+        {showCloseButton && (
+          <button
+            onClick={onClose}
+            className={cn(
+              "shrink-0 w-9 h-9 flex items-center justify-center",
+              "rounded-full hover:bg-marble-100/50",
+              "transition-colors duration-200"
+            )}
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
+      </div>
+      
+      {/* Content */}
+      <div className={cn(
+        variant === 'bottom' ? "px-6 pb-6" : "px-6 pb-6",
+        variant === 'fullscreen' && "h-full overflow-y-auto"
+      )}>
+        {children}
+      </div>
+    </div>
+  </div>
+)}
+```
+
+### Animazioni da Aggiungere
+```css
+/* In global.css */
+@keyframes slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes scale-up {
+  from { transform: translate(-50%, -50%) scale(0.95); opacity: 0; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+.animate-scale-up {
+  animation: scale-up 0.2s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-slide-up-fade {
+  animation: slide-up 0.2s ease-out, fade-in 0.2s ease-out;
+}
+```
+
+### Note Implementazione
+- Default: `variant="bottom"` per mobile-first, `showCloseButton=true`
+- Gestire focus trap quando modal è aperta
+- Chiudere con ESC key
+- Prevenire scroll del body quando modal è aperta
+
+---
+
+## 🎯 Badge Component
+
+### Struttura Base
+```tsx
+interface BadgeProps {
+  children: React.ReactNode;
+  variant?: 'default' | 'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'error' | 'outline';
+  size?: 'sm' | 'md' | 'lg';
+  dot?: boolean;
+}
+```
+
+### Stili da Implementare
+```tsx
+const baseStyles = "inline-flex items-center gap-1.5 font-medium rounded-full";
+
+const variants = {
+  default: "bg-marble-100 text-foreground dark:bg-marble-100/20",
+  primary: "bg-primary/10 text-primary border border-primary/20",
+  secondary: "bg-secondary/10 text-secondary border border-secondary/20",
+  accent: "bg-accent/10 text-accent border border-accent/20",
+  success: "bg-success/10 text-success border border-success/20",
+  warning: "bg-warning/10 text-warning border border-warning/20",
+  error: "bg-error/10 text-error border border-error/20",
+  outline: "bg-transparent border-2 border-marble-200/30 text-foreground",
+};
+
+const sizes = {
+  sm: "px-2 py-0.5 text-xs",
+  md: "px-2.5 py-1 text-sm",
+  lg: "px-3 py-1.5 text-base",
+};
+
+// Con dot indicator
+{dot && (
+  <span className={cn(
+    "w-1.5 h-1.5 rounded-full",
+    variant === 'primary' && "bg-primary",
+    variant === 'success' && "bg-success",
+    variant === 'error' && "bg-error",
+    // etc...
+  )} />
+)}
+```
+
+---
+
+## 🔔 Toast Component
+
+### Struttura Base
+```tsx
+interface ToastProps {
+  title: string;
+  description?: string;
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'info';
+  duration?: number;
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
+}
+
+// Context provider
+const ToastContext = createContext<{
+  addToast: (toast: Omit<ToastProps, 'id'>) => void;
+  removeToast: (id: string) => void;
+}>();
+```
+
+### Stili da Implementare
+```tsx
+// Toast container (portal)
+<div className="fixed bottom-20 left-4 right-4 z-[100] flex flex-col gap-2 pb-safe">
+  {toasts.map(toast => (
+    <div
+      key={toast.id}
+      className={cn(
+        "flex items-start gap-3 p-4 rounded-2xl shadow-strong",
+        "bg-surface/95 backdrop-blur-xl border",
+        "animate-slide-up",
+        
+        // Variant borders
+        toast.variant === 'success' && "border-success/30",
+        toast.variant === 'error' && "border-error/30",
+        toast.variant === 'warning' && "border-warning/30",
+        toast.variant === 'info' && "border-info/30",
+        toast.variant === 'default' && "border-marble-200/10"
+      )}
+    >
+      {/* Icon */}
+      <div className={cn(
+        "shrink-0 w-9 h-9 rounded-full flex items-center justify-center",
+        toast.variant === 'success' && "bg-success/10 text-success",
+        toast.variant === 'error' && "bg-error/10 text-error",
+        toast.variant === 'warning' && "bg-warning/10 text-warning",
+        toast.variant === 'info' && "bg-info/10 text-info",
+        toast.variant === 'default' && "bg-marble-100/50 text-foreground"
+      )}>
+        {/* Icon SVG based on variant */}
+        {toast.variant === 'success' && <CheckCircleIcon />}
+        {toast.variant === 'error' && <XCircleIcon />}
+        {toast.variant === 'warning' && <AlertCircleIcon />}
+        {toast.variant === 'info' && <InfoCircleIcon />}
+      </div>
+      
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <p className="font-medium text-foreground text-sm">
+          {toast.title}
+        </p>
+        {toast.description && (
+          <p className="text-sm text-muted mt-0.5">
+            {toast.description}
+          </p>
+        )}
+      </div>
+      
+      {/* Action button */}
+      {toast.action && (
+        <button
+          onClick={toast.action.onClick}
+          className="shrink-0 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+        >
+          {toast.action.label}
+        </button>
+      )}
+      
+      {/* Close button */}
+      <button
+        onClick={() => removeToast(toast.id)}
+        className="shrink-0 w-5 h-5 flex items-center justify-center text-muted hover:text-foreground transition-colors"
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  ))}
+</div>
+```
+
+### Note Implementazione
+- Default: `variant="default"`, `duration=5000`
+- Auto-dismiss dopo duration
+- Posizionare sopra la bottom navigation (z-index alto)
+- Supportare swipe-to-dismiss su mobile
+
+---
+
+## 📊 Progress Component
+
+### Struttura Base
+```tsx
+interface ProgressProps {
+  value: number; // 0-100
+  variant?: 'default' | 'primary' | 'success' | 'warning' | 'error';
+  size?: 'sm' | 'md' | 'lg';
+  showLabel?: boolean;
+  label?: string;
+  animated?: boolean;
+}
+```
+
+### Stili da Implementare
+```tsx
+<div className="w-full">
+  {/* Label */}
+  {(showLabel || label) && (
+    <div className="flex items-center justify-between mb-2">
+      <span className="text-sm font-medium text-foreground">
+        {label || 'Progress'}
+      </span>
+      {showLabel && (
+        <span className="text-sm font-medium text-muted">
+          {value}%
+        </span>
+      )}
+    </div>
+  )}
+  
+  {/* Progress bar track */}
+  <div className={cn(
+    "w-full bg-marble-100/50 rounded-full overflow-hidden",
+    "dark:bg-marble-100/20",
+    
+    size === 'sm' && "h-1.5",
+    size === 'md' && "h-2.5",
+    size === 'lg' && "h-3.5"
+  )}>
+    {/* Progress bar fill */}
+    <div
+      className={cn(
+        "h-full rounded-full transition-all duration-500 ease-out",
+        
+        // Variants
+        variant === 'default' && "bg-foreground",
+        variant === 'primary' && "bg-primary",
+        variant === 'success' && "bg-success",
+        variant === 'warning' && "bg-warning",
+        variant === 'error' && "bg-error",
+        
+        // Animated shimmer effect
+        animated && "animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent"
+      )}
+      style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+    />
+  </div>
+</div>
+```
+
+### Animazione Shimmer
+```css
+/* In global.css */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+```
+
+---
+
+## 🗂️ Tabs Component
+
+### Struttura Base
+```tsx
+interface TabsProps {
+  tabs: Array<{
+    value: string;
+    label: string;
+    icon?: React.ReactNode;
+    badge?: number;
+  }>;
+  value: string;
+  onChange: (value: string) => void;
+  variant?: 'default' | 'pills' | 'underline';
+  fullWidth?: boolean;
+}
+```
+
+### Stili da Implementare
+```tsx
+<div className="w-full">
+  {/* Tabs list */}
+  <div className={cn(
+    "flex gap-1",
+    
+    // Variant default (segmented control style)
+    variant === 'default' && cn(
+      "bg-marble-100/50 p-1 rounded-xl",
+      "dark:bg-marble-100/20"
+    ),
+    
+    // Variant pills
+    variant === 'pills' && "gap-2",
+    
+    // Variant underline
+    variant === 'underline' && "border-b-2 border-marble-200/20 gap-0"
+  )}>
+    {tabs.map(tab => (
+      <button
+        key={tab.value}
+        onClick={() => onChange(tab.value)}
+        className={cn(
+          "flex items-center justify-center gap-2",
+          "transition-all duration-200",
+          "font-medium text-sm",
+          
+          fullWidth && "flex-1",
+          
+          // Variant default
+          variant === 'default' && cn(
+            "px-4 py-2 rounded-lg",
+            value === tab.value 
+              ? "bg-surface text-foreground shadow-sm" 
+              : "text-muted hover:text-foreground"
+          ),
+          
+          // Variant pills
+          variant === 'pills' && cn(
+            "px-4 py-2 rounded-full",
+            value === tab.value
+              ? "bg-primary text-primary-foreground shadow-md"
+              : "bg-marble-100/30 text-muted hover:bg-marble-100/50 dark:bg-marble-100/10"
+          ),
+          
+          // Variant underline
+          variant === 'underline' && cn(
+            "px-4 py-3 border-b-2 -mb-[2px]",
+            value === tab.value
+              ? "border-primary text-primary"
+              : "border-transparent text-muted hover:text-foreground"
+          )
+        )}
+      >
+        {tab.icon && (
+          <span className="w-5 h-5">
+            {tab.icon}
+          </span>
+        )}
+        <span>{tab.label}</span>
+        {tab.badge !== undefined && tab.badge > 0 && (
+          <span className={cn(
+            "px-1.5 py-0.5 text-xs font-semibold rounded-full min-w-[18px] text-center",
+            value === tab.value
+              ? "bg-primary-foreground/20 text-primary-foreground"
+              : "bg-primary/10 text-primary"
+          )}>
+            {tab.badge > 99 ? '99+' : tab.badge}
+          </span>
+        )}
+      </button>
+    ))}
+  </div>
+  
+  {/* Tab panels (gestiti dal parent) */}
+</div>
+```
+
+### Note Implementazione
+- Default: `variant="default"`, `fullWidth=false`
+- Il contenuto dei tab panel viene gestito dal componente parent
+- Supportare swipe gesture per cambiare tab su mobile
+
+---
+
+## 📝 Textarea Component
+
+### Struttura Base
+```tsx
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  label?: string;
+  error?: string;
+  helperText?: string;
+  variant?: 'default' | 'filled';
+  maxLength?: number;
+  showCount?: boolean;
+  autoResize?: boolean;
+}
+```
+
+### Stili da Implementare
+```tsx
+<div className="w-full">
+  {label && (
+    <label className="block text-sm font-medium text-foreground mb-2">
+      {label}
+    </label>
+  )}
+  
+  <div className="relative">
+    <textarea
+      ref={textareaRef}
+      className={cn(
+        "w-full px-4 py-3 text-base text-foreground placeholder:text-muted",
+        "transition-all duration-200",
+        "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1",
+        "resize-none",
+        
+        // Variant default
+        variant === 'default' && cn(
+          "bg-transparent border-2 border-marble-200/30 rounded-xl",
+          "hover:border-marble-200/50",
+          "focus:border-primary/50",
+          "dark:border-marble-200/20"
+        ),
+        
+        // Variant filled
+        variant === 'filled' && cn(
+          "bg-marble-100/50 border-2 border-transparent rounded-xl",
+          "hover:bg-marble-100/70",
+          "focus:bg-surface focus:border-primary/50",
+          "dark:bg-marble-100/10 dark:hover:bg-marble-100/20"
+        ),
+        
+        error && "!border-error focus:!ring-error/50",
+        
+        // Min height
+        "min-h-[120px]"
+      )}
+      maxLength={maxLength}
+      onChange={handleChange}
+      {...props}
+    />
+    
+    {/* Character count */}
+    {(showCount || maxLength) && (
+      <div className="absolute bottom-3 right-3 text-xs text-muted">
+        {value?.length || 0}
+        {maxLength && ` / ${maxLength}`}
+      </div>
+    )}
+  </div>
+  
+  {/* Helper text o errore */}
+  {(helperText || error) && (
+    <p className={cn(
+      "mt-2 text-sm",
+      error ? "text-error" : "text-muted"
+    )}>
+      {error || helperText}
+    </p>
+  )}
+</div>
+```
+
+### Auto-resize Logic
+```tsx
+const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  if (autoResize) {
+    e.target.style.height = 'auto';
+    e.target.style.height = `${e.target.scrollHeight}px`;
+  }
+  onChange?.(e);
+};
+```
+
+---
+
+## 👤 Avatar Component
+
+### Struttura Base
+```tsx
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  fallback?: string; // initials
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  status?: 'online' | 'offline' | 'away' | 'busy';
+  shape?: 'circle' | 'square';
+  border?: boolean;
+}
+```
+
+### Stili da Implementare
+```tsx
+<div className={cn(
+  "relative shrink-0 inline-flex items-center justify-center",
+  "bg-marble-100 text-foreground font-semibold overflow-hidden",
+  "dark:bg-marble-100/20",
+  
+  // Sizes
+  size === 'xs' && "w-6 h-6 text-xs",
+  size === 'sm' && "w-8 h-8 text-sm",
+  size === 'md' && "w-10 h-10 text-base",
+  size === 'lg' && "w-12 h-12 text-lg",
+  size === 'xl' && "w-16 h-16 text-xl",
+  
+  // Shapes
+  shape === 'circle' && "rounded-full",
+  shape === 'square' && "rounded-lg",
+  
+  // Border
+  border && "ring-2 ring-marble-200/30 ring-offset-2 ring-offset-background"
+)}>
+  {/* Image */}
+  {src ? (
+    <img 
+      src={src} 
+      alt={alt} 
+      className="w-full h-full object-cover"
+      onError={(e) => {
+        // Fallback to initials on error
+        e.currentTarget.style.display = 'none';
+      }}
+    />
+  ) : (
+    // Fallback initials
+    <span>{fallback || alt?.[0]?.toUpperCase() || '?'}</span>
+  )}
+  
+  {/* Status indicator */}
+  {status && (
+    <span className={cn(
+      "absolute rounded-full border-2 border-background",
+      
+      // Position based on size
+      size === 'xs' && "w-1.5 h-1.5 bottom-0 right-0",
+      size === 'sm' && "w-2 h-2 bottom-0 right-0",
+      size === 'md' && "w-2.5 h-2.5 bottom-0 right-0",
+      size === 'lg' && "w-3 h-3 bottom-0 right-0",
+      size === 'xl' && "w-4 h-4 bottom-0.5 right-0.5",
+      
+      // Status colors
+      status === 'online' && "bg-success",
+      status === 'offline' && "bg-marble-200",
+      status === 'away' && "bg-warning",
+      status === 'busy' && "bg-error"
+    )} />
+  )}
+</div>
+```
+
+---
+
+## 🍞 Breadcrumb Component
+
+### Struttura Base
+```tsx
+interface BreadcrumbProps {
+  items: Array<{
+    label: string;
+    href?: string;
+    icon?: React.ReactNode;
+  }>;
+  separator?: React.ReactNode;
+}
+```
+
+### Stili da Implementare
+```tsx
+<nav className="flex items-center gap-2 flex-wrap">
+  {items.map((item, index) => (
+    <React.Fragment key={index}>
+      {/* Breadcrumb item */}
+      {item.href ? (
+        <a
+          href={item.href}
+          className={cn(
+            "flex items-center gap-2 text-sm transition-colors",
+            index === items.length - 1
+              ? "text-foreground font-medium pointer-events-none"
+              : "text-muted hover:text-foreground"
+          )}
+        >
+          {item.icon && <span className="w-4 h-4">{item.icon}</span>}
+          <span>{item.label}</span>
+        </a>
+      ) : (
+        <span className={cn(
+          "flex items-center gap-2 text-sm",
+          index === items.length - 1
+            ? "text-foreground font-medium"
+            : "text-muted"
+        )}>
+          {item.icon && <span className="w-4 h-4">{item.icon}</span>}
+          <span>{item.label}</span>
+        </span>
+      )}
+      
+      {/* Separator */}
+      {index < items.length - 1 && (
+        <span className="text-muted text-sm">
+          {separator || '/'}
+        </span>
+      )}
+    </React.Fragment>
+  ))}
+</nav>
+```
+
+---
+
+## 💬 Tooltip Component
+
+### Struttura Base
+```tsx
+interface TooltipProps {
+  content: string | React.ReactNode;
+  children: React.ReactNode;
+  position?: 'top' | 'bottom' | 'left' | 'right';
+  delay?: number;
+}
+```
+
+### Stili da Implementare
+```tsx
+const [isVisible, setIsVisible] = useState(false);
+
+<div className="relative inline-flex">
+  {/* Trigger */}
+  <div
+    onMouseEnter={() => setTimeout(() => setIsVisible(true), delay || 200)}
+    onMouseLeave={() => setIsVisible(false)}
+    onFocus={() => setIsVisible(true)}
+    onBlur={() => setIsVisible(false)}
+  >
+    {children}
+  </div>
+  
+  {/* Tooltip */}
+  {isVisible && (
+    <div className={cn(
+      "absolute z-50 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-lg",
+      "whitespace-nowrap pointer-events-none",
+      "animate-fade-in",
+      
+      // Positions
+      position === 'top' && "bottom-full left-1/2 -translate-x-1/2 mb-2",
+      position === 'bottom' && "top-full left-1/2 -translate-x-1/2 mt-2",
+      position === 'left' && "right-full top-1/2 -translate-y-1/2 mr-2",
+      position === 'right' && "left-full top-1/2 -translate-y-1/2 ml-2"
+    )}>
+      {content}
+      
+      {/* Arrow */}
+      <div className={cn(
+        "absolute w-2 h-2 bg-gray-900 transform rotate-45",
+        position === 'top' && "bottom-[-4px] left-1/2 -translate-x-1/2",
+        position === 'bottom' && "top-[-4px] left-1/2 -translate-x-1/2",
+        position === 'left' && "right-[-4px] top-1/2 -translate-y-1/2",
+        position === 'right' && "left-[-4px] top-1/2 -translate-y-1/2"
+      )} />
+    </div>
+  )}
+</div>
+```
+
+---
+
+## 🎨 Accordion Component
+
+### Struttura Base
+```tsx
+interface AccordionProps {
+  items: Array<{
+    id: string;
+    title: string;
+    content: React.ReactNode;
+    icon?: React.ReactNode;
+  }>;
+  allowMultiple?: boolean;
+  defaultOpen?: string[];
+}
+```
+
+### Stili da Implementare
+```tsx
+<div className="space-y-2">
+  {items.map(item => {
+    const isOpen = openItems.includes(item.id);
+    
+    return (
+      <div
+        key={item.id}
+        className={cn(
+          "bg-surface rounded-xl border border-marble-200/10",
+          "transition-all duration-200",
+          isOpen && "shadow-md"
+        )}
+      >
+        {/* Header/Trigger */}
+        <button
+          onClick={() => toggleItem(item.id)}
+          className={cn(
+            "w-full flex items-center justify-between gap-3 p-4",
+            "text-left transition-colors",
+            "hover:bg-marble-100/30",
+            "rounded-xl"
+          )}
+        >
+          <div className="flex items-center gap-3 flex-1">
+            {item.icon && (
+              <span className="w-5 h-5 text-primary">
+                {item.icon}
+              </span>
+            )}
+            <span className="font-medium text-foreground">
+              {item.title}
+            </span>
+          </div>
+          
+          {/* Chevron */}
+          <svg
+            className={cn(
+              "w-5 h-5 text-muted transition-transform duration-200",
+              isOpen && "rotate-180"
+            )}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        
+        {/* Content */}
+        <div
+          className={cn(
+            "overflow-hidden transition-all duration-300",
+            isOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+          )}
+        >
+          <div className="px-4 pb-4 text-sm text-muted">
+            {item.content}
+          </div>
+        </div>
+      </div>
+    );
+  })}
+</div>
+```
+
+---
+
+## 🎯 Popover Component
+
+### Struttura Base
+```tsx
+interface PopoverProps {
+  trigger: React.ReactNode;
+  content: React.ReactNode;
+  position?: 'top' | 'bottom' | 'left' | 'right';
+  align?: 'start' | 'center' | 'end';
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+```
+
+### Stili da Implementare
+```tsx
+<div className="relative inline-flex">
+  {/* Trigger */}
+  <div onClick={() => setIsOpen(!isOpen)}>
+    {trigger}
+  </div>
+  
+  {/* Popover content */}
+  {isOpen && (
+    <>
+      {/* Backdrop (click to close) */}
+      <div
+        className="fixed inset-0 z-40"
+        onClick={() => setIsOpen(false)}
+      />
+      
+      {/* Popover */}
+      <div className={cn(
+        "absolute z-50 min-w-[200px] max-w-[320px]",
+        "bg-surface rounded-xl shadow-strong border border-marble-200/10",
+        "p-4 animate-scale-up",
+        
+        // Positions
+        position === 'bottom' && "top-full mt-2",
+        position === 'top' && "bottom-full mb-2",
+        position === 'left' && "right-full mr-2",
+        position === 'right' && "left-full ml-2",
+        
+        // Alignment
+        align === 'start' && "left-0",
+        align === 'center' && "left-1/2 -translate-x-1/2",
+        align === 'end' && "right-0"
+      )}>
+        {content}
+      </div>
+    </>
+  )}
+</div>
+```
+
+---
+
+## 🎨 Design Tokens Aggiuntivi
+
+### Aggiungi al file global.css
+
+```css
+/* Responsive font sizes per mobile */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px; /* leggermente più piccolo su mobile */
+  }
+}
+
+/* Safe area CSS variables per iOS */
+:root {
+  --sat: env(safe-area-inset-top);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+  --sar: env(safe-area-inset-right);
+}
+
+/* Utility classes per safe areas */
+.pt-safe {
+  padding-top: max(1rem, env(safe-area-inset-top));
+}
+
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.pl-safe {
+  padding-left: max(1rem, env(safe-area-inset-left));
+}
+
+.pr-safe {
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+/* Scroll snap per carousel/swipe */
+.snap-x {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.snap-center {
+  scroll-snap-align: center;
+}
+
+/* Touch callout (disabilita menu contestuale iOS su long press) */
+.no-callout {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Tap highlight personalizzato */
+* {
+  -webkit-tap-highlight-color: rgba(8, 145, 178, 0.1);
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Disable scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+```
+
+---
+
+## 📱 Layout Components Comuni
+
+### Bottom Navigation Bar Template
+```tsx
+// src/components/ui/BottomNav.tsx
+interface BottomNavProps {
+  items: Array<{
+    icon: React.ReactNode;
+    activeIcon?: React.ReactNode;
+    label: string;
+    value: string;
+    badge?: number;
+  }>;
+  value: string;
+  onChange: (value: string) => void;
+}
+
+<nav className="fixed bottom-0 left-0 right-0 z-40 pb-safe bg-surface/95 backdrop-blur-xl border-t border-marble-200/10">
+  <div className="flex justify-around items-center h-16 px-2">
+    {items.map(item => {
+      const isActive = value === item.value;
+      
+      return (
+        <button
+          key={item.value}
+          onClick={() => onChange(item.value)}
+          className={cn(
+            "relative flex flex-col items-center justify-center gap-1",
+            "min-w-[64px] h-full px-2 rounded-xl",
+            "transition-all duration-200",
+            "active:scale-95",
+            isActive && "bg-primary/10"
+          )}
+        >
+          {/* Badge */}
+          {item.badge && item.badge > 0 && (
+            <span className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-error text-white text-xs font-bold rounded-full">
+              {item.badge > 9 ? '9+' : item.badge}
+            </span>
+          )}
+          
+          {/* Icon */}
+          <span className={cn(
+            "w-6 h-6 transition-colors",
+            isActive ? "text-primary" : "text-muted"
+          )}>
+            {isActive && item.activeIcon ? item.activeIcon : item.icon}
+          </span>
+          
+          {/* Label */}
+          <span className={cn(
+            "text-xs font-medium transition-colors",
+            isActive ? "text-primary" : "text-muted"
+          )}>
+            {item.label}
+          </span>
+        </button>
+      );
+    })}
+  </div>
+</nav>
+```
+
+### Top App Bar Template
+```tsx
+// src/components/ui/TopBar.tsx
+interface TopBarProps {
+  title?: string;
+  leftAction?: React.ReactNode;
+  rightActions?: React.ReactNode[];
+  transparent?: boolean;
+  hideOnScroll?: boolean;
+}
+
+<header className={cn(
+  "fixed top-0 left-0 right-0 z-40 pt-safe",
+  transparent 
+    ? "bg-transparent" 
+    : "bg-surface/95 backdrop-blur-xl border-b border-marble-200/10",
+  hideOnScroll && scrollingDown && "-translate-y-full",
+  "transition-transform duration-300"
+)}>
+  <div className="flex items-center justify-between h-14 px-4">
+    {/* Left action */}
+    <div className="flex items-center gap-2 min-w-[40px]">
+      {leftAction}
+    </div>
+    
+    {/* Title */}
+    <h1 className="text-lg font-semibold text-foreground truncate px-4">
+      {title}
+    </h1>
+    
+    {/* Right actions */}
+    <div className="flex items-center gap-2 min-w-[40px] justify-end">
+      {rightActions?.map((action, i) => (
+        <div key={i}>{action}</div>
+      ))}
+    </div>
+  </div>
+</header>
+```
+
+---
+
+## ✅ Checklist Implementazione
+
+### Per ogni componente:
+- [ ] Implementare tutti gli stili base e variant descritti
+- [ ] Aggiungere TypeScript types completi
+- [ ] Target touch minimo 44×44px per elementi interattivi
+- [ ] Focus states visibili per accessibilità keyboard
+- [ ] Transizioni smooth (200-300ms)
+- [ ] Dark mode perfettamente supportato
+- [ ] Testare su iOS Safari e Chrome Android
+- [ ] Supportare gesture native dove appropriato (swipe, long press)
+- [ ] Loading states dove applicabile
+- [ ] Error states con messaggi chiari
+- [ ] Default props sensati per uso mobile-first
+
+### Testing Mobile:
+- [ ] Testare su device reale (non solo emulatore)
+- [ ] Verificare safe areas su iPhone con notch
+- [ ] Testare scroll behavior e momentum
+- [ ] Verificare che non ci siano zoom accidentali su input focus
+- [ ] Testare con VoiceOver (iOS) e TalkBack (Android)
+- [ ] Verificare performance animazioni (60fps)
+- [ ] Testare in modalità PWA installata
+
+---
+
+## 🚀 Note Finali per Copilot
+
+**Priorità nell'implementazione:**
+1. Button, Input, Card (componenti più usati)
+2. Modal, Toast, Select (interazioni critiche)
+3. Tabs, Progress, Badge (UI feedback)
+4. Resto dei componenti
+
+**Best practices generali:**
+- Usa sempre `cn()` utility per merge delle classi
+- Mantieni consistenza nei naming delle variant
+- Documenta ogni prop nel JSDoc
+- Testa ogni componente in isolamento prima di integrare
+- Usa React.forwardRef dove necessario per ref forwarding
+- Implementa accessibility attributes (aria-*, role)
+
+**Non dimenticare:**
+- Aggiungere haptic feedback dove ha senso (navigator.vibrate)
+- Implementare keyboard shortcuts per power users
+- Supportare reduced motion preference
+- Ottimizzare per performance (React.memo, useMemo dove utile)
