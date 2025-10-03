@@ -12,7 +12,7 @@ import {
   CardDescription,
   Button,
   Badge,
-  Loader,
+  Spinner,
 } from '@/components/ui';
 import { NavigationGuard } from '@/components/navigation/NavigationGuard';
 import { useFavorites } from '@/lib/hooks';
@@ -324,7 +324,11 @@ export default function FavoritesPage() {
           })}
         </section>
 
-        {showLoader && <Loader className="min-h-[180px]" />}
+        {showLoader && (
+          <div className="flex items-center justify-center min-h-[180px]">
+            <Spinner size="lg" />
+          </div>
+        )}
 
         {!showLoader && (
           <section className="space-y-6">

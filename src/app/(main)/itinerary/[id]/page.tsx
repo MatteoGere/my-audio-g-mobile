@@ -230,7 +230,7 @@ export default function ItineraryDetailPage() {
           )}
 
           {tracksErrorMessage && (
-            <Card padding="md" variant="outlined">
+            <Card padding="md" variant="outline">
               <p className="text-sm text-muted">{tracksErrorMessage}</p>
             </Card>
           )}

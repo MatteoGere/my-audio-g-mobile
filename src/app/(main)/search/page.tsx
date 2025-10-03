@@ -248,7 +248,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
               placeholder="Search audio tours..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              icon={<HiOutlineMagnifyingGlass className="h-5 w-5" />}
+              leftIcon={<HiOutlineMagnifyingGlass className="h-5 w-5" />}
               className="pr-12"
             />
             <Button
@@ -310,7 +310,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
               <Select
                 options={companyOptions}
                 value={filters.company}
-                onValueChange={(val) => updateFilter('company', String(val || ''))}
+                onChange={(val) => updateFilter('company', String(val || ''))}
                 placeholder="All Companies"
               />
             </div>

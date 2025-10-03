@@ -129,6 +129,7 @@ export default function UIPlayground() {
   const [switchEnabled, setSwitchEnabled] = useState(false);
   const [radioValue, setRadioValue] = useState('');
   const [selectValue, setSelectValue] = useState('');
+  const [activeTab, setActiveTab] = useState('tab1');
 
   return (
     <ToastProvider>
@@ -194,7 +195,7 @@ export default function UIPlayground() {
                   label="Password"
                   type="password"
                   placeholder="Enter password"
-                  icon={<span>🔒</span>}
+                  leftIcon={<span>🔒</span>}
                 />
                 <div className="md:col-span-2">
                   <Textarea label="Message" placeholder="Enter your message here..." rows={3} />
@@ -214,7 +215,7 @@ export default function UIPlayground() {
                   options={selectOptions}
                   placeholder="Choose an option"
                   value={selectValue}
-                  onValueChange={(value) => setSelectValue(value as string)}
+                  onChange={(value) => setSelectValue(value as string)}
                 />
               </div>
 
@@ -262,7 +263,6 @@ export default function UIPlayground() {
                 <Badge variant="success">Success</Badge>
                 <Badge variant="warning">Warning</Badge>
                 <Badge variant="error">Error</Badge>
-                <Badge variant="info">Info</Badge>
                 <Badge variant="outline">Outline</Badge>
               </div>
             </div>
@@ -273,10 +273,9 @@ export default function UIPlayground() {
               <div className="flex items-center gap-4">
                 <Avatar size="xs" fallback="XS" />
                 <Avatar size="sm" fallback="SM" />
-                <Avatar size="md" fallback="MD" status="online" showStatus />
-                <Avatar size="lg" fallback="LG" status="away" showStatus />
-                <Avatar size="xl" fallback="XL" status="busy" showStatus />
-                <Avatar size="2xl" fallback="2XL" />
+                <Avatar size="md" fallback="MD" status="online" />
+                <Avatar size="lg" fallback="LG" status="away" />
+                <Avatar size="xl" fallback="XL" status="busy" />
               </div>
             </div>
 
@@ -284,7 +283,7 @@ export default function UIPlayground() {
             <div className="mb-8">
               <h3 className="text-lg font-semibold mb-4">Progress & Spinners</h3>
               <div className="space-y-4">
-                <Progress value={25} variant="primary" label="Upload Progress" showValue />
+                <Progress value={25} variant="primary" label="Upload Progress" showLabel />
                 <Progress value={50} variant="success" />
                 <Progress value={75} variant="warning" />
                 <div className="flex items-center gap-4">
@@ -381,7 +380,18 @@ export default function UIPlayground() {
               {/* Tabs */}
               <div>
                 <h3 className="text-lg font-semibold mb-4">Tabs</h3>
-                <Tabs items={tabItems} defaultValue="tab1" />
+                <Tabs
+                  tabs={tabItems.map((item) => ({
+                    value: item.id,
+                    label: item.label,
+                  }))}
+                  value={activeTab}
+                  onChange={setActiveTab}
+                  fullWidth
+                />
+                <div className="mt-4">
+                  {tabItems.find((item) => item.id === activeTab)?.content}
+                </div>
               </div>
 
               {/* Toast Demo */}

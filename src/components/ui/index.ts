@@ -46,7 +46,7 @@ export type {
 export { default as Avatar } from './Avatar';
 export type { AvatarProps } from './Avatar';
 
-export { Progress, Spinner, Loader, default as ProgressDefault } from './Progress';
+export { Progress, Spinner, default as ProgressDefault } from './Progress';
 export type { ProgressProps, SpinnerProps } from './Progress';
 
 // Interactive Components
@@ -59,7 +59,7 @@ export type { TooltipProps } from './Tooltip';
 export { default as Popover } from './Popover';
 export type { PopoverProps } from './Popover';
 
-export { Tabs, TabList, Tab, TabContent, default as TabsDefault } from './Tabs';
+export { default as Tabs } from './Tabs';
 export type { TabsProps, TabItem } from './Tabs';
 
 // Navigation Components

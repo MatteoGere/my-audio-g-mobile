@@ -531,17 +531,25 @@ export default function AudioPlayerPage() {
               </div>
 
               <div className="rounded-2xl border border-muted/40 bg-surface/95 shadow-2xl">
-                <div className="max-h-[calc(100vh-12rem)] overflow-y-auto p-1">
+                <div className="max-h-[calc(100vh-12rem)] overflow-y-auto p-4">
                   <Tabs
-                    items={tabItems}
+                    tabs={[
+                      { value: 'details', label: 'Dettagli' },
+                      { value: 'queue', label: `Coda (${queue.length})` },
+                      { value: 'actions', label: 'Azioni' },
+                    ]}
                     value={activeTab}
-                    onValueChange={(value: 'details' | 'queue' | 'actions') =>
-                      setActiveTab(value)
+                    onValueChange={(value:any) =>
+                      setActiveTab(value as 'details' | 'queue' | 'actions')
                     }
                     variant="pills"
-                    size="sm"
-                    className="flex-col gap-4"
+                    fullWidth
+                    className="mb-4"
                   />
+                  
+                  <div className="mt-4">
+                    {tabItems.find((item) => item.id === activeTab)?.content}
+                  </div>
                 </div>
               </div>
             </div>

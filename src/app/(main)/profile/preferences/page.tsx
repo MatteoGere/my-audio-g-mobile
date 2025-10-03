@@ -148,8 +148,8 @@ export default function PreferencesPage() {
                 key={`language-${preferences.language}`}
                 label="Language"
                 options={preferenceOptions.languages}
-                defaultValue={preferences.language}
-                onValueChange={(value) => dispatch(setLanguage((value as 'en' | 'it') || 'it'))}
+                value={preferences.language}
+                onChange={(value) => dispatch(setLanguage((value as 'en' | 'it') || 'it'))}
                 disabled={isLoading}
               />
 
@@ -157,8 +157,8 @@ export default function PreferencesPage() {
                 key={`theme-${preferences.theme}`}
                 label="Theme"
                 options={preferenceOptions.themes}
-                defaultValue={preferences.theme}
-                onValueChange={(value) => {
+                value={preferences.theme}
+                onChange={(value) => {
                   const themeValue = (value as typeof preferences.theme) || 'system';
                   dispatch(setThemePreference(themeValue));
                   setTheme(themeValue);
@@ -170,8 +170,8 @@ export default function PreferencesPage() {
                 key={`quality-${preferences.audioSettings.quality}`}
                 label="Audio quality"
                 options={preferenceOptions.audioQuality}
-                defaultValue={preferences.audioSettings.quality}
-                onValueChange={(value) =>
+                value={preferences.audioSettings.quality}
+                onChange={(value) =>
                   dispatch(
                     setAudioQuality(
                       (value as typeof preferences.audioSettings.quality) || 'standard',

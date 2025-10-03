@@ -214,7 +214,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
                   { value: 'distance', label: 'Distance' },
                 ]}
                 value={filters.sortBy}
-                onValueChange={(value) => updateFilters({ sortBy: value as FilterState['sortBy'] })}
+                onChange={(value) => updateFilters({ sortBy: value as FilterState['sortBy'] })}
               />
             </div>
 
