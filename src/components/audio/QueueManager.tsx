@@ -120,10 +120,7 @@ export function QueueManager({ onClose, isVisible = true }: QueueManagerProps) {
   }
 
   return (
-    <Card
-      padding="lg"
-      className="w-full max-w-lg space-y-5 rounded-3xl border border-muted/60 bg-surface/95 backdrop-blur-xl shadow-xl"
-    >
+    <Card padding="lg" className="space-y-4">
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-1 items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-inner">

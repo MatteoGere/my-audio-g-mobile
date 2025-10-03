@@ -1,32 +1,37 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import { Marker, Tooltip } from 'react-leaflet';
-import { DivIcon } from 'leaflet';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { Marker } from 'react-leaflet';
+import { DivIcon, Marker as LeafletMarker } from 'leaflet';
 import { renderToString } from 'react-dom/server';
 import { POIMarkerData } from '@/types/app-types';
 import { POIPopup } from './POIPopup';
-import { FaPlay, FaMusic, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaMusic } from 'react-icons/fa';
+import { Card } from '../ui';
 
 interface POIMarkerProps {
   poi: POIMarkerData;
   color: string;
   isSelected?: boolean;
-  showLabel?: boolean;
   showPopup?: boolean;
   onClick?: () => void;
   onPlayClick?: (poi: POIMarkerData) => void;
+  onPopupOpen?: (poi: POIMarkerData) => void;
+  onPopupClose?: (poi: POIMarkerData) => void;
 }
 
 export const POIMarker: React.FC<POIMarkerProps> = ({
   poi,
   color,
   isSelected = false,
-  showLabel = true,
   showPopup = false,
   onClick,
   onPlayClick,
+  onPopupOpen,
+  onPopupClose,
 }) => {
+  const markerRef = useRef<LeafletMarker | null>(null);
+
   // Create custom POI marker icon
   const createPOIIcon = useMemo(() => {
     const iconHtml = renderToString(
@@ -68,45 +73,50 @@ export const POIMarker: React.FC<POIMarkerProps> = ({
     });
   }, [color, isSelected]);
 
-  // Format duration for display
-  const formatDuration = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    if (minutes > 0) {
-      return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  // Ensure the popup opens on the first click by programmatically controlling it
+  useEffect(() => {
+    const m = markerRef.current;
+    if (!m) return;
+    if (showPopup) {
+      // Delay to next tick to ensure <Popup> child is mounted
+      const t = setTimeout(() => {
+        try {
+          m.openPopup();
+        } catch {
+          /* noop */
+        }
+      }, 0);
+      return () => clearTimeout(t);
+    } else {
+      try {
+        m.closePopup();
+      } catch {
+        /* noop */
+      }
     }
-    return `${seconds}s`;
-  };
+  }, [showPopup]);
 
   return (
     <Marker
+      ref={(instance) => {
+        // react-leaflet passes the Leaflet instance here
+        // cast to LeafletMarker where possible
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        markerRef.current = (instance as unknown as any) ?? null;
+      }}
       position={[poi.latitude, poi.longitude]}
       icon={createPOIIcon}
       eventHandlers={{
-        click: () => onClick?.(),
+        click: (e) => {
+          // Stop propagation to prevent map click event
+          e.originalEvent?.stopPropagation();
+          onClick?.();
+        },
+        popupopen: () => onPopupOpen?.(poi),
+        popupclose: () => onPopupClose?.(poi),
       }}
     >
-      {/* Tooltip with track info */}
-      {showLabel && !showPopup && (
-        <Tooltip
-          direction="top"
-          offset={[0, -40]}
-          opacity={0.9}
-          permanent={false}
-          sticky={true}
-          className="poi-tooltip"
-        >
-          <div className="text-sm">
-            <div className="font-semibold text-foreground">{poi.trackName}</div>
-            <div className="text-muted text-xs">
-              {poi.itineraryName} • {formatDuration(poi.duration)}
-            </div>
-            <div className="text-muted text-xs mt-1">{poi.companyName}</div>
-          </div>
-        </Tooltip>
-      )}
-
-      {/* Interactive popup */}
+      {/* Interactive popup - Popup component renders a Card internally so we don't wrap it here */}
       {showPopup && <POIPopup poi={poi} color={color} onPlayClick={onPlayClick} />}
     </Marker>
   );

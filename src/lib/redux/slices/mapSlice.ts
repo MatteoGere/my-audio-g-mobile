@@ -43,6 +43,7 @@ export interface MapState {
   center: LatLng;
   zoom: number;
   bounds: MapBounds | null;
+  lastWidestBounds: MapBounds | null;
 
   // User location
   userLocation: LatLng | null;
@@ -92,6 +93,7 @@ const initialState: MapState = {
   },
   zoom: 13,
   bounds: null,
+  lastWidestBounds: null,
   userLocation: null,
   isLocationEnabled: false,
   locationAccuracy: null,
@@ -133,6 +135,9 @@ export const mapSlice = createSlice({
     },
     setBounds: (state, action: PayloadAction<MapBounds | null>) => {
       state.bounds = action.payload;
+    },
+    setLastWidestBounds: (state, action: PayloadAction<MapBounds | null>) => {
+      state.lastWidestBounds = action.payload;
     },
     setMapView: (state, action: PayloadAction<{ center: LatLng; zoom: number }>) => {
       state.center = action.payload.center;
@@ -313,6 +318,7 @@ export const {
   setCenter,
   setZoom,
   setBounds,
+  setLastWidestBounds,
   setMapView,
   setUserLocation,
   setLocationEnabled,
