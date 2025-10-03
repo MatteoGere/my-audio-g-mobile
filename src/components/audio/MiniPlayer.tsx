@@ -10,7 +10,6 @@ import {
   HiOutlinePause,
   HiOutlineForward,
   HiOutlineBackward,
-  HiOutlineChevronUp,
   HiOutlineXMark,
   HiOutlineSpeakerWave,
   HiOutlineSpeakerXMark,
@@ -144,37 +143,39 @@ export function MiniPlayer() {
 
   return (
     <div className="fixed inset-x-0 bottom-20 z-40 px-3 sm:px-5">
-      <div className="mx-auto max-w-lg space-y-2">
-        {/* Progress Bar */}
-        <div
-          ref={progressBarRef}
-          className="group relative h-2 w-full cursor-pointer overflow-hidden rounded-full bg-gradient-to-r from-marble-100/40 to-primary/10 shadow-soft transition-[height] duration-200 hover:h-2.5"
-          onClick={handleProgressClick}
-          onMouseDown={handleProgressMouseDown}
-          role="progressbar"
-          aria-valuenow={progress}
-          aria-valuemin={0}
-          aria-valuemax={100}
-        >
-          <div
-            className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary via-accent to-secondary transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          >
-            <span
-              className={`absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 translate-x-1/2 rounded-full bg-gradient-to-br from-primary to-accent shadow-medium transition-opacity duration-200 ${
-                isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-              }`}
-            />
-          </div>
-        </div>
-
+      <div className="mx-auto max-w-lg">
         {/* Main Player Card */}
         <Card
-          padding="sm"
-          className="rounded-2xl border border-primary/20 bg-gradient-to-r from-surface/95 to-primary/5 backdrop-blur-xl shadow-strong"
+          padding="none"
+          className="rounded-2xl border border-primary/20 bg-gradient-to-r from-surface/95 to-primary/5 backdrop-blur-xl shadow-strong overflow-hidden"
         >
-          {/* Top Row: Track Info and Essential Controls */}
-          <div className="flex items-center gap-3">
+          {/* Progress Bar - Integrated at top */}
+          <div
+            ref={progressBarRef}
+            className="group relative h-1.5 w-full cursor-pointer overflow-hidden bg-gradient-to-r from-marble-100/40 to-primary/10 transition-[height] duration-200 hover:h-2"
+            onClick={handleProgressClick}
+            onMouseDown={handleProgressMouseDown}
+            role="progressbar"
+            aria-valuenow={progress}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          >
+            <div
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-accent to-secondary transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            >
+              <span
+                className={`absolute right-0 top-1/2 h-3 w-3 -translate-y-1/2 translate-x-1/2 rounded-full bg-gradient-to-br from-primary to-accent shadow-medium transition-opacity duration-200 ${
+                  isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                }`}
+              />
+            </div>
+          </div>
+
+          {/* Player Content */}
+          <div className="px-4 py-3">
+            {/* Track Info and Controls */}
+            <div className="flex items-center gap-3">
             {/* Track Image */}
             <div className="flex-shrink-0 cursor-pointer" onClick={handleOpenFullPlayer}>
               <div className="relative">
@@ -260,13 +261,13 @@ export function MiniPlayer() {
               </Button>
             </div>
 
-            {/* Secondary Controls - Always Visible */}
+            {/* Secondary Controls - Mute and Close */}
             <div className="flex items-center gap-1 shrink-0">
-              {/* Mute Button - Hidden on very small screens */}
+              {/* Mute Button */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="hidden xs:flex h-8 w-8 rounded-lg p-0 bg-marble-100/50 hover:bg-marble-200/50 transition-all"
+                className="h-8 w-8 rounded-lg p-0 bg-marble-100/50 hover:bg-marble-200/50 transition-all"
                 onClick={handleMuteToggle}
                 title={playbackState.isMuted ? 'Unmute' : 'Mute'}
               >
@@ -275,17 +276,6 @@ export function MiniPlayer() {
                 ) : (
                   <HiOutlineSpeakerWave className="h-3.5 w-3.5" />
                 )}
-              </Button>
-
-              {/* Expand Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 rounded-lg p-0 bg-primary/10 hover:bg-primary/20 text-primary transition-all"
-                onClick={handleOpenFullPlayer}
-                title="Open full player"
-              >
-                <HiOutlineChevronUp className="h-3.5 w-3.5" />
               </Button>
 
               {/* Close Button */}
@@ -299,6 +289,7 @@ export function MiniPlayer() {
                 <HiOutlineXMark className="h-3.5 w-3.5" />
               </Button>
             </div>
+          </div>
           </div>
         </Card>
       </div>

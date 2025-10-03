@@ -139,14 +139,19 @@ export function Header({
         <div className="flex items-center gap-2">
           {customActions}
 
-          {/* Reopen MiniPlayer Button */}
+          {/* Reopen MiniPlayer Button - Click to open full player page */}
           {shouldShowReopenButton && (
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => dispatch(setPlayerView('mini'))}
+              onClick={() => {
+                const itineraryId = (currentTrack as any)?.audio_itinerary_id;
+                if (itineraryId) {
+                  router.push(`/itinerary/${itineraryId}/play`);
+                }
+              }}
               className="w-10 h-10 p-0 rounded-xl bg-accent/10 hover:bg-accent/20 text-accent transition-all"
-              title="Show player"
+              title="Open player"
             >
               <HiOutlineMusicalNote className="h-5 w-5" />
             </Button>
@@ -210,8 +215,8 @@ export function Header({
 
               {/* User Dropdown Menu */}
               {showUserMenu && (
-                <div className="absolute right-0 top-full mt-2 w-56 bg-gradient-to-br from-surface to-primary/5 rounded-2xl shadow-strong border border-primary/20 py-2 z-50 backdrop-blur-xl">
-                  <div className="px-4 py-3 border-b border-primary/20">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-gradient-to-br from-surface/98 via-surface/95 to-primary/20 rounded-2xl shadow-strong border border-primary/30 py-2 z-50 backdrop-blur-2xl">
+                  <div className="px-4 py-3 border-b border-primary/30 bg-gradient-to-r from-primary/5 to-accent/5">
                     <p className="text-sm font-bold text-foreground">{getUserDisplayName()}</p>
                     <p className="text-xs text-muted flex items-center gap-1.5">
                       <span className="w-1 h-1 rounded-full bg-accent" />

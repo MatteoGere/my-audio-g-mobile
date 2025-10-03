@@ -17,7 +17,7 @@ import {
   HiHeart,
   HiOutlineXMark,
 } from 'react-icons/hi2';
-import { Card, Button, Tabs, Popover } from '@/components/ui';
+import { Card, Button, Popover } from '@/components/ui';
 import { QueueManager } from '@/components/audio/QueueManager';
 import { useGetAudioItineraryQuery, useGetItineraryTracksQuery } from '@/lib/redux/api/apiSlice';
 import { useAppSelector, useAppDispatch } from '@/lib/redux/store';
@@ -33,6 +33,7 @@ import {
   setCurrentQueueIndex,
   setQueue,
   setAudioError,
+  setPlayerView,
 } from '@/lib/redux/slices/audioSlice';
 
 const TAB_TITLES = {
@@ -52,6 +53,14 @@ export default function AudioPlayerPage() {
   const [activeTab, setActiveTab] = useState<'details' | 'queue' | 'actions'>('details');
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isBuffering] = useState(false);
+
+  // Restore MiniPlayer when leaving this page
+  useEffect(() => {
+    return () => {
+      // On unmount, restore mini player view if there's a current track
+      dispatch(setPlayerView('mini'));
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     if (!isPanelOpen) return;
@@ -581,27 +590,9 @@ export default function AudioPlayerPage() {
                   <HiOutlineXMark className="h-5 w-5" />
                 </Button>
               </div>
-
-              <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-surface/95 to-primary/5 shadow-strong backdrop-blur-xl">
-                <div className="max-h-[calc(100vh-12rem)] overflow-y-auto p-4">
-                  <Tabs
-                    tabs={[
-                      { value: 'details', label: 'Dettagli' },
-                      { value: 'queue', label: `Coda (${queue.length})` },
-                      { value: 'actions', label: 'Azioni' },
-                    ]}
-                    value={activeTab}
-                    onChange={(value) => setActiveTab(value as 'details' | 'queue' | 'actions')}
-                    variant="pills"
-                    fullWidth
-                    className="mb-4"
-                  />
-
-                  <div className="mt-4">
-                    {tabItems.find((item) => item.id === activeTab)?.content}
-                  </div>
+                <div className="max-h-[calc(100vh-12rem)] overflow-y-auto ">
+                  {tabItems.find((item) => item.id === activeTab)?.content}
                 </div>
-              </div>
             </div>
           </div>
         )}
