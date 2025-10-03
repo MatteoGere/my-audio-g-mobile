@@ -31,7 +31,9 @@ const CollapsibleText = memo(function CollapsibleTextComponent({ id, text }: Col
     <div>
       <p
         id={id}
-        className={'text-sm text-muted leading-relaxed break-words ' + (expanded ? '' : 'line-clamp-2')}
+        className={
+          'text-sm text-muted leading-relaxed break-words ' + (expanded ? '' : 'line-clamp-2')
+        }
       >
         {content}
       </p>

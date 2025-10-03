@@ -222,7 +222,9 @@ export default function NearbyItineraries() {
                     )}
                   </div>
                   <div className="flex flex-col gap-2 mt-3">
-                    <h3 className="font-bold text-foreground text-sm leading-tight line-clamp-2 min-h-[2.5rem]">{it.name}</h3>
+                    <h3 className="font-bold text-foreground text-sm leading-tight line-clamp-2 min-h-[2.5rem]">
+                      {it.name}
+                    </h3>
                     <div className="flex items-center justify-between gap-2">
                       <Badge
                         className={`text-xs px-2 py-1 rounded-full inline-flex items-center gap-1.5 w-fit backdrop-blur-sm ${distanceColorClass}`}
