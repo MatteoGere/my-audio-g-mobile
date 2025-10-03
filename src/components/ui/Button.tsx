@@ -1,41 +1,87 @@
 'use client';
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { HiOutlineArrowPath } from 'react-icons/hi2';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'outline' | 'danger';
+  size?: 'sm' | 'md' | 'lg' | 'icon';
+  fullWidth?: boolean;
+  rounded?: 'default' | 'full' | 'square';
   loading?: boolean;
   children: React.ReactNode;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { className, variant = 'primary', size = 'md', loading = false, disabled, children, ...props },
+    {
+      className,
+      variant = 'primary',
+      size = 'md',
+      fullWidth = false,
+      rounded = 'default',
+      loading = false,
+      disabled,
+      children,
+      ...props
+    },
     ref,
   ) => {
-    // Regole: min-w-[44px] min-h-[44px], rounded-lg/rounded-xl, shadow-md, padding px-4 py-3 (standard), gap-3+, font-bold, text-base+, focus ring, responsive spacing
-    const baseStyles =
-      'inline-flex items-center justify-center whitespace-nowrap min-w-[44px] min-h-[44px] rounded-xl font-bold text-base transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+    // Base styles (comune a tutte le variant)
+    const baseStyles = cn(
+      'inline-flex items-center justify-center gap-2 font-medium',
+      'transition-all duration-200 ease-out',
+      'active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+    );
 
+    // Variant styles
     const variants = {
-      primary:
-        'bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/95 shadow-md',
-      secondary:
-        'bg-secondary text-secondary-foreground hover:bg-secondary/90 active:bg-secondary/95 shadow-md',
-      accent: 'bg-accent text-accent-foreground hover:bg-accent/90 active:bg-accent/95 shadow-md',
-      // Outline uses muted border and surface hover to avoid hardcoded color tokens
-      outline:
-        'border border-muted text-foreground bg-transparent hover:bg-surface active:bg-surface/95 shadow-md',
-      ghost: 'text-foreground hover:bg-surface active:bg-surface/80',
+      primary: cn(
+        'bg-primary text-primary-foreground',
+        'shadow-lg shadow-primary/25',
+        'hover:shadow-xl hover:shadow-primary/30',
+        'active:shadow-md',
+      ),
+      secondary: cn(
+        'bg-secondary text-secondary-foreground',
+        'shadow-md shadow-secondary/20',
+        'hover:shadow-lg hover:shadow-secondary/25',
+      ),
+      accent: cn(
+        'bg-accent text-accent-foreground',
+        'shadow-md shadow-accent/20',
+        'hover:shadow-lg hover:shadow-accent/25',
+      ),
+      ghost: cn(
+        'bg-transparent text-foreground',
+        'hover:bg-marble-100/50 dark:hover:bg-marble-100/10',
+        'active:bg-marble-200/50 dark:active:bg-marble-200/20',
+      ),
+      outline: cn(
+        'bg-transparent border-2 border-marble-200/30 text-foreground',
+        'hover:bg-marble-100/30 hover:border-marble-200/50',
+        'dark:border-marble-200/20 dark:hover:bg-marble-100/10',
+      ),
+      danger: cn(
+        'bg-error text-white',
+        'shadow-md shadow-error/20',
+        'hover:shadow-lg hover:shadow-error/30',
+      ),
     };
 
-    // Regole: padding px-4 py-3 (standard), gap-3+, responsive
+    // Size styles
     const sizes = {
-      sm: 'h-11 px-3 py-2 text-sm gap-2 rounded-lg', // min-h-[44px]
-      md: 'h-12 px-4 py-3 text-base gap-3 rounded-xl', // min-h-[48px]
-      lg: 'h-14 px-6 py-4 text-lg gap-4 rounded-xl', // min-h-[56px]
+      sm: 'h-9 px-4 text-sm rounded-lg',
+      md: 'h-11 px-6 text-base rounded-xl',
+      lg: 'h-14 px-8 text-lg rounded-2xl',
+      icon: 'h-11 w-11 p-0',
+    };
+
+    // Rounded variants
+    const roundedStyles = {
+      default: '', // già coperto dai size
+      full: '!rounded-full',
+      square: '!rounded-lg',
     };
 
     return (
@@ -44,7 +90,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           baseStyles,
           variants[variant],
           sizes[size],
-          loading && 'cursor-wait',
+          roundedStyles[rounded],
+          fullWidth && 'w-full',
           className,
         )}
         disabled={disabled || loading}
@@ -52,7 +99,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loading && (
-          <HiOutlineArrowPath className="animate-spin -ml-1 mr-2 h-4 w-4" aria-hidden="true" />
+          <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
         )}
         {children}
       </button>

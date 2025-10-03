@@ -89,7 +89,7 @@ const ToastContainer: React.FC = () => {
 
   return (
     <div
-      className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full"
+      className="fixed bottom-20 left-4 right-4 z-[100] flex flex-col gap-2 pb-safe"
       aria-live="polite"
       aria-label="Notifications"
     >
@@ -130,27 +130,27 @@ const ToastComponent: React.FC<Toast> = ({
 
   const variants = {
     default: {
-      container: 'bg-surface border-muted',
-      icon: 'text-info',
+      container: 'bg-surface/95 backdrop-blur-xl border-marble-200/20',
+      icon: 'text-foreground',
       IconComp: HiOutlineInformationCircle,
     },
     success: {
-      container: 'bg-success/10 border-success/20',
+      container: 'bg-success/10 backdrop-blur-xl border-success/30',
       icon: 'text-success',
       IconComp: HiOutlineCheckCircle,
     },
     warning: {
-      container: 'bg-warning/10 border-warning/20',
+      container: 'bg-warning/10 backdrop-blur-xl border-warning/30',
       icon: 'text-warning',
       IconComp: HiOutlineExclamationTriangle,
     },
     error: {
-      container: 'bg-error/10 border-error/20',
+      container: 'bg-error/10 backdrop-blur-xl border-error/30',
       icon: 'text-error',
       IconComp: HiOutlineXCircle,
     },
     info: {
-      container: 'bg-info/10 border-info/20',
+      container: 'bg-info/10 backdrop-blur-xl border-info/30',
       icon: 'text-info',
       IconComp: HiOutlineInformationCircle,
     },
@@ -160,51 +160,57 @@ const ToastComponent: React.FC<Toast> = ({
   const Icon = variantConfig.IconComp;
 
   return (
-    <Card
-      padding="md"
+    <div
       className={cn(
-        'relative w-full pointer-events-auto overflow-hidden min-w-[44px] min-h-[44px] border shadow-lg transition-all duration-300 ease-in-out',
+        'relative w-full p-4 rounded-2xl border shadow-strong',
+        'pointer-events-auto overflow-hidden',
+        'transition-all duration-300 ease-out',
         variantConfig.container,
-        isVisible && !isLeaving
-          ? 'transform translate-x-0 opacity-100'
-          : 'transform translate-x-full opacity-0',
+        isVisible && !isLeaving ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
       )}
       role="alert"
     >
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-3 items-start">
         {/* Icon */}
-        <div className="flex-shrink-0">
-          <Icon className={cn('h-5 w-5', variantConfig.icon)} aria-hidden="true" />
+        <div className="flex-shrink-0 mt-0.5">
+          <Icon className={cn('w-5 h-5', variantConfig.icon)} aria-hidden="true" />
         </div>
 
         {/* Content */}
-        <div className="flex-1 space-y-1">
-          {title && <div className="text-base font-bold text-foreground">{title}</div>}
+        <div className="flex-1 min-w-0">
+          {title && <div className="text-sm font-semibold text-foreground mb-1">{title}</div>}
           {description && <div className="text-sm text-muted">{description}</div>}
 
           {/* Action */}
           {action && (
-            <div className="mt-2">
-              <button
-                onClick={action.onClick}
-                className="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
-              >
-                {action.label}
-              </button>
-            </div>
+            <button
+              onClick={action.onClick}
+              className={cn(
+                'mt-2 text-sm font-medium underline',
+                'hover:opacity-80 transition-opacity',
+                variant === 'default' && 'text-primary',
+                variant !== 'default' && variantConfig.icon,
+              )}
+            >
+              {action.label}
+            </button>
           )}
         </div>
 
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="flex-shrink-0 p-1 rounded-md hover:bg-surface/80 transition-colors"
+          className={cn(
+            'flex-shrink-0 p-1 rounded-full',
+            'hover:bg-marble-100/50 dark:hover:bg-marble-100/10',
+            'transition-colors',
+          )}
           aria-label="Close notification"
         >
-          <HiOutlineXMark className="h-4 w-4 text-muted" aria-hidden="true" />
+          <HiOutlineXMark className="w-4 h-4 text-muted" aria-hidden="true" />
         </button>
       </div>
-    </Card>
+    </div>
   );
 };
 

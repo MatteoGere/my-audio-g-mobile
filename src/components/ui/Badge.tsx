@@ -3,51 +3,64 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
   variant?:
     | 'default'
     | 'primary'
     | 'secondary'
     | 'accent'
-    | 'info'
     | 'success'
     | 'warning'
     | 'error'
     | 'outline';
   size?: 'sm' | 'md' | 'lg';
-  children: React.ReactNode;
+  dot?: boolean;
 }
 
 const Badge: React.FC<BadgeProps> = ({
-  className,
+  children,
   variant = 'default',
   size = 'md',
-  children,
+  dot = false,
+  className,
   ...props
 }) => {
-  // Regole: rounded-full, min-w-[24px], min-h-[24px], font-bold, shadow-sm
-  const baseStyles =
-    'inline-flex items-center justify-center rounded-full min-w-[24px] min-h-[24px] font-bold transition-all duration-200 shadow-sm';
+  const baseStyles = 'inline-flex items-center gap-1.5 font-medium rounded-full';
 
   const variants = {
-    default: 'bg-surface text-foreground border border-muted',
-    primary: 'bg-primary text-primary-foreground',
-    secondary: 'bg-secondary text-secondary-foreground',
-    accent: 'bg-accent text-accent-foreground',
-    info: 'bg-info/10 text-info border border-info/20',
+    default: 'bg-marble-100 text-foreground dark:bg-marble-100/20',
+    primary: 'bg-primary/10 text-primary border border-primary/20',
+    secondary: 'bg-secondary/10 text-secondary border border-secondary/20',
+    accent: 'bg-accent/10 text-accent border border-accent/20',
     success: 'bg-success/10 text-success border border-success/20',
     warning: 'bg-warning/10 text-warning border border-warning/20',
     error: 'bg-error/10 text-error border border-error/20',
-    outline: 'bg-transparent text-foreground border border-muted hover:bg-surface',
+    outline: 'bg-transparent border-2 border-marble-200/30 text-foreground',
   };
 
   const sizes = {
-    sm: 'px-2 py-0.5 text-xs gap-1',
-    md: 'px-2.5 py-1 text-sm gap-1.5',
-    lg: 'px-3 py-1.5 text-sm gap-2',
+    sm: 'px-2 py-0.5 text-xs',
+    md: 'px-2.5 py-1 text-sm',
+    lg: 'px-3 py-1.5 text-base',
   };
 
   return (
     <div className={cn(baseStyles, variants[variant], sizes[size], className)} {...props}>
+      {dot && (
+        <span
+          className={cn(
+            'w-1.5 h-1.5 rounded-full',
+            variant === 'primary' && 'bg-primary',
+            variant === 'secondary' && 'bg-secondary',
+            variant === 'accent' && 'bg-accent',
+            variant === 'success' && 'bg-success',
+            variant === 'warning' && 'bg-warning',
+            variant === 'error' && 'bg-error',
+            variant === 'default' && 'bg-foreground',
+            variant === 'outline' && 'bg-foreground',
+          )}
+        />
+      )}
       {children}
     </div>
   );

@@ -3,64 +3,96 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  variant?: 'default' | 'error';
-  icon?: React.ReactNode;
-  iconPosition?: 'left' | 'right';
   label?: string;
   error?: string;
   helperText?: string;
+  variant?: 'default' | 'filled' | 'ghost';
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  fullWidth?: boolean;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
     {
       className,
-      variant = 'default',
-      icon,
-      iconPosition = 'left',
+      variant = 'filled',
       label,
       error,
       helperText,
+      leftIcon,
+      rightIcon,
+      fullWidth = true,
       disabled,
       ...props
     },
     ref,
   ) => {
-    // Regole: rounded-lg, min-h-[44px], px-4 py-3, shadow-sm, border, focus ring, font-bold, text-base
-    const baseStyles =
-      'flex min-h-[44px] w-full rounded-lg border bg-surface px-4 py-3 text-base placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 shadow-sm';
-
-    const variants = {
-      default: 'border-muted hover:border-foreground/30 focus:border-primary',
-      error: 'border-error text-error focus-visible:ring-error',
-    };
-
-    const inputStyles = cn(
-      baseStyles,
-      variants[error ? 'error' : variant],
-      icon && iconPosition === 'left' && 'pl-10',
-      icon && iconPosition === 'right' && 'pr-10',
-      className,
-    );
-
     return (
-      <div className="w-full space-y-1">
-        {label && <label className="text-sm font-medium text-foreground">{label}</label>}
+      <div className={cn('relative', fullWidth && 'w-full')}>
+        {label && <label className="block text-sm font-medium text-foreground mb-2">{label}</label>}
+
+        {/* Input wrapper con icone */}
         <div className="relative">
-          {icon && (
-            <div
-              className={cn(
-                'absolute top-1/2 -translate-y-1/2 text-muted pointer-events-none',
-                iconPosition === 'left' ? 'left-3' : 'right-3',
-              )}
-            >
-              {icon}
-            </div>
+          {leftIcon && (
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted">{leftIcon}</div>
           )}
-          <input className={inputStyles} disabled={disabled} ref={ref} {...props} />
+
+          <input
+            className={cn(
+              // Base
+              'w-full h-12 px-4 text-base text-foreground placeholder:text-muted',
+              'transition-all duration-200',
+              'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1 focus:ring-offset-background',
+              'disabled:cursor-not-allowed disabled:opacity-50',
+
+              // Variant default
+              variant === 'default' &&
+                cn(
+                  'bg-surface border border-marble-200/30 rounded-xl',
+                  'hover:border-marble-200/50',
+                  'focus:border-primary',
+                  'dark:border-marble-200/20',
+                ),
+
+              // Variant filled
+              variant === 'filled' &&
+                cn(
+                  'bg-marble-100/30 border border-transparent rounded-xl',
+                  'hover:bg-marble-100/50',
+                  'focus:bg-surface focus:border-primary',
+                  'dark:bg-marble-100/10 dark:hover:bg-marble-100/20',
+                ),
+
+              // Variant ghost
+              variant === 'ghost' &&
+                cn(
+                  'bg-transparent border-b-2 border-marble-200/30 rounded-none',
+                  'hover:border-marble-200/50',
+                  'focus:border-primary',
+                ),
+
+              // Con icone
+              leftIcon && 'pl-10',
+              rightIcon && 'pr-10',
+
+              // Error state
+              error && '!border-error focus:!ring-error/50',
+              className,
+            )}
+            disabled={disabled}
+            ref={ref}
+            {...props}
+          />
+
+          {rightIcon && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted">{rightIcon}</div>
+          )}
         </div>
-        {(error || helperText) && (
-          <p className={cn('text-xs', error ? 'text-error' : 'text-muted')}>
+
+        {/* Helper text o errore */}
+        {(helperText || error) && (
+          <p className={cn('mt-2 text-sm', error ? 'text-error' : 'text-muted')}>
             {error || helperText}
           </p>
         )}

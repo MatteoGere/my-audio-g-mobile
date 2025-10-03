@@ -1,154 +1,150 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { HiOutlineChevronDown, HiCheck } from 'react-icons/hi2';
 
 export interface SelectOption {
   value: string;
   label: string;
+  icon?: React.ReactNode;
   disabled?: boolean;
 }
 
 export interface SelectProps {
+  label?: string;
+  placeholder?: string;
   options: SelectOption[];
   value?: string;
-  defaultValue?: string;
-  placeholder?: string;
-  label?: string;
+  onChange?: (value: string) => void;
   error?: string;
-  helperText?: string;
   disabled?: boolean;
-  multiple?: boolean;
-  onValueChange?: (value: string | string[]) => void;
+  variant?: 'default' | 'filled';
   className?: string;
 }
 
 const Select: React.FC<SelectProps> = ({
+  label,
+  placeholder = 'Seleziona...',
   options,
   value,
-  defaultValue,
-  placeholder = 'Select an option...',
-  label,
+  onChange,
   error,
-  helperText,
-  disabled = false,
-  multiple = false,
-  onValueChange,
+  disabled,
+  variant = 'default',
   className,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<string | string[]>(
-    multiple ? [] : value || defaultValue || '',
-  );
+  const selectRef = useRef<HTMLDivElement>(null);
 
-  const handleToggle = () => {
-    if (!disabled) {
-      setIsOpen(!isOpen);
-    }
-  };
+  const selectedOption = options.find((opt) => opt.value === value);
 
-  const handleOptionClick = (optionValue: string) => {
-    if (multiple) {
-      const currentValues = Array.isArray(selectedValue) ? selectedValue : [];
-      const newValues = currentValues.includes(optionValue)
-        ? currentValues.filter((v) => v !== optionValue)
-        : [...currentValues, optionValue];
-      setSelectedValue(newValues);
-      onValueChange?.(newValues);
-    } else {
-      setSelectedValue(optionValue);
-      onValueChange?.(optionValue);
-      setIsOpen(false);
-    }
-  };
-
-  const getDisplayValue = () => {
-    if (multiple && Array.isArray(selectedValue)) {
-      if (selectedValue.length === 0) return placeholder;
-      if (selectedValue.length === 1) {
-        const option = options.find((opt) => opt.value === selectedValue[0]);
-        return option?.label || '';
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
       }
-      return `${selectedValue.length} selected`;
-    }
+    };
 
-    const option = options.find((opt) => opt.value === selectedValue);
-    return option?.label || placeholder;
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSelect = (optionValue: string) => {
+    onChange?.(optionValue);
+    setIsOpen(false);
   };
-
-  const isSelected = (optionValue: string) => {
-    if (multiple && Array.isArray(selectedValue)) {
-      return selectedValue.includes(optionValue);
-    }
-    return selectedValue === optionValue;
-  };
-
-  // Regole: rounded-lg, min-h-[44px], px-4 py-3, shadow-sm, border, focus ring, font-bold, text-base
-  const buttonStyles = cn(
-    'flex min-h-[44px] w-full items-center justify-between rounded-lg border bg-surface px-4 py-3 text-base font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 shadow-sm',
-    error ? 'border-error' : 'border-muted hover:border-muted/80',
-    isOpen && 'ring-2 ring-primary ring-offset-2',
-    className,
-  );
 
   return (
-    <div className="relative w-full space-y-1">
-      {label && <label className="text-sm font-medium text-foreground">{label}</label>}
+    <div className="relative w-full" ref={selectRef}>
+      {label && <label className="block text-sm font-medium text-foreground mb-2">{label}</label>}
 
+      {/* Select trigger button */}
       <button
         type="button"
-        onClick={handleToggle}
-        className={buttonStyles}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        className={cn(
+          'w-full h-12 px-4 text-left text-base',
+          'flex items-center justify-between gap-2',
+          'transition-all duration-200',
+          'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1',
+          'disabled:cursor-not-allowed disabled:opacity-50',
+
+          // Variant default
+          variant === 'default' &&
+            cn(
+              'bg-surface border border-marble-200/30 rounded-xl',
+              'hover:border-marble-200/50',
+              'dark:border-marble-200/20',
+            ),
+
+          // Variant filled
+          variant === 'filled' &&
+            cn(
+              'bg-marble-100/30 border border-transparent rounded-xl',
+              'hover:bg-marble-100/50',
+              'dark:bg-marble-100/10',
+            ),
+
+          error && '!border-error',
+          className,
+        )}
         disabled={disabled}
-        aria-haspopup="listbox"
-        aria-expanded={isOpen}
       >
-        <span
-          className={cn(
-            selectedValue && (Array.isArray(selectedValue) ? selectedValue.length > 0 : true)
-              ? 'text-foreground'
-              : 'text-muted',
-          )}
-        >
-          {getDisplayValue()}
+        <span className={cn(value ? 'text-foreground' : 'text-muted')}>
+          {selectedOption?.label || placeholder}
         </span>
-        <HiOutlineChevronDown
-          className={cn('h-4 w-4 transition-transform duration-200', isOpen && 'rotate-180')}
-          aria-hidden="true"
-        />
+
+        {/* Chevron icon */}
+        <svg
+          className={cn(
+            'w-4 h-4 text-muted transition-transform duration-200',
+            isOpen && 'rotate-180',
+          )}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
 
+      {/* Dropdown menu */}
       {isOpen && (
-        <div className="absolute top-full z-50 mt-1 w-full rounded-md border border-muted bg-surface shadow-medium">
-          <ul className="max-h-60 overflow-auto py-1" role="listbox">
-            {options.map((option) => (
-              <li
-                key={option.value}
-                onClick={() => !option.disabled && handleOptionClick(option.value)}
-                className={cn(
-                  'relative cursor-pointer select-none py-2 px-3 text-sm transition-colors',
-                  option.disabled && 'cursor-not-allowed opacity-50',
-                  !option.disabled && 'hover:bg-surface/60',
-                  isSelected(option.value) && 'bg-primary text-primary-foreground',
-                )}
-                role="option"
-                aria-selected={isSelected(option.value)}
-              >
-                <span className="block truncate">{option.label}</span>
-                {multiple && isSelected(option.value) && (
-                  <span className="absolute inset-y-0 right-0 flex items-center pr-4">
-                    <HiCheck className="h-4 w-4" aria-hidden="true" />
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
+        <div
+          className={cn(
+            'absolute top-full left-0 right-0 mt-2 z-50',
+            'bg-surface/95 backdrop-blur-xl rounded-xl border border-marble-200/20',
+            'shadow-strong max-h-60 overflow-auto',
+            'animate-slide-up-fade',
+          )}
+        >
+          {options.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => !option.disabled && handleSelect(option.value)}
+              disabled={option.disabled}
+              className={cn(
+                'w-full px-4 py-3 text-left text-base',
+                'flex items-center gap-3',
+                'transition-colors duration-150',
+                'first:rounded-t-xl last:rounded-b-xl',
+                option.disabled
+                  ? 'opacity-50 cursor-not-allowed'
+                  : cn(
+                      'hover:bg-marble-100/50 dark:hover:bg-marble-100/10',
+                      'active:bg-marble-100/80 dark:active:bg-marble-100/20',
+                    ),
+                option.value === value && 'bg-primary/10 text-primary font-medium',
+              )}
+            >
+              {option.icon && <span className="shrink-0">{option.icon}</span>}
+              <span>{option.label}</span>
+            </button>
+          ))}
         </div>
       )}
 
-      {(error || helperText) && (
-        <p className={cn('text-xs', error ? 'text-error' : 'text-muted')}>{error || helperText}</p>
-      )}
+      {error && <p className="mt-2 text-sm text-error">{error}</p>}
     </div>
   );
 };

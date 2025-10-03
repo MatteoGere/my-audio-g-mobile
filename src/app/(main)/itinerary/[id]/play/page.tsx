@@ -424,11 +424,27 @@ export default function AudioPlayerPage() {
                   router.push(`/map?itinerary=${itineraryId}&track=${currentTrack?.id}`)
                 }
               >
+                {isCurrentTrackFavorite ? (
+                  <HiHeart className="h-4 w-4 text-error" />
+                ) : (
+                  <HiOutlineHeart className="h-4 w-4 text-muted" />
+                )}
+                <span>
+                  {isCurrentTrackFavorite ? 'Rimuovi preferito' : 'Aggiungi ai preferiti'}
+                </span>
+              </Button>
+              <Button
+                variant="secondary"
+                className="flex items-center justify-center gap-2 rounded-2xl"
+                onClick={() =>
+                  router.push(`/map?itinerary=${itineraryId}&track=${currentTrack?.id}`)
+                }
+              >
                 <HiMapPin className="h-4 w-4" />
                 <span>Mappa</span>
               </Button>
               <Button
-                variant="secondary"
+                variant="outline"
                 className="flex items-center justify-center gap-2 rounded-2xl"
               >
                 <HiShare className="h-4 w-4" />

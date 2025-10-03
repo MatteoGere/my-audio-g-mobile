@@ -3,7 +3,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'elevated' | 'outlined';
+  variant?: 'default' | 'glass' | 'elevated' | 'outline' | 'interactive';
   padding?: 'none' | 'sm' | 'md' | 'lg';
   children: React.ReactNode;
 }
@@ -29,19 +29,37 @@ const Card: React.FC<CardProps> = ({
   variant = 'default',
   padding = 'md',
   children,
+  onClick,
   ...props
 }) => {
-  // Regole: rounded-xl, p-4 default, shadow-md, border, max-w-full, accessibilità
-  const baseStyles = 'bg-surface rounded-xl transition-all duration-200 shadow-md max-w-full';
-
   const variants = {
-    default: '',
-    elevated: 'shadow-lg hover:shadow-xl',
-    // Use semantic border color that adapts via CSS variables
-    outlined: 'border border-muted',
+    default: cn('bg-surface rounded-2xl', 'border border-marble-200/10', 'shadow-soft'),
+
+    glass: cn(
+      'bg-surface/80 backdrop-blur-xl rounded-2xl',
+      'border border-marble-200/10',
+      'shadow-medium',
+    ),
+
+    elevated: cn('bg-surface rounded-2xl', 'shadow-strong', 'border border-marble-200/5'),
+
+    outline: cn(
+      'bg-transparent rounded-2xl',
+      'border-2 border-marble-200/30',
+      'dark:border-marble-200/20',
+    ),
+
+    interactive: cn(
+      'bg-surface rounded-2xl',
+      'border border-marble-200/10',
+      'shadow-soft',
+      'transition-all duration-200',
+      'hover:shadow-medium hover:scale-[1.01]',
+      'active:scale-[0.99]',
+      'cursor-pointer',
+    ),
   };
 
-  // p-4 default, gap tra card gestito dal container
   const paddings = {
     none: '',
     sm: 'p-3',
@@ -51,10 +69,8 @@ const Card: React.FC<CardProps> = ({
 
   return (
     <div
-      className={cn(baseStyles, variants[variant], paddings[padding], className)}
-      tabIndex={0}
-      role="region"
-      aria-label="Card"
+      className={cn(variants[variant], paddings[padding], className)}
+      onClick={onClick}
       {...props}
     >
       {children}

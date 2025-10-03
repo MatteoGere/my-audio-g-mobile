@@ -21,51 +21,68 @@ export interface RadioGroupProps {
   className?: string;
 }
 
-export interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+export interface RadioProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
   label?: string;
   description?: string;
-  error?: boolean;
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
-  ({ className, label, description, error, disabled, ...props }, ref) => {
-    // Regole: min-w-[44px] min-h-[44px] (container), rounded-full, gap-2+, focus ring, label font-bold
-    const radioStyles = cn(
-      'peer h-5 w-5 min-w-[20px] min-h-[20px] rounded-full border border-muted bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200',
-      'checked:bg-primary checked:border-primary',
-      error && 'border-error',
-      className,
-    );
-
+  ({ className, label, description, size = 'md', disabled, checked, ...props }, ref) => {
     return (
-      <div className="flex items-start min-w-[44px] min-h-[44px] space-x-4">
-        <div className="relative flex items-center">
-          <input type="radio" className={radioStyles} disabled={disabled} ref={ref} {...props} />
-          {/* Custom radio dot */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="h-1.5 w-1.5 rounded-full bg-primary-foreground opacity-0 transition-opacity peer-checked:opacity-100" />
-          </div>
+      <label
+        className={cn(
+          'inline-flex items-start gap-3 cursor-pointer',
+          disabled && 'opacity-50 cursor-not-allowed',
+        )}
+      >
+        <input
+          type="radio"
+          className="sr-only peer"
+          checked={checked}
+          disabled={disabled}
+          ref={ref}
+          {...props}
+        />
+
+        {/* Custom radio visual */}
+        <div
+          className={cn(
+            'flex items-center justify-center shrink-0 rounded-full',
+            'border-2 transition-all duration-200',
+
+            size === 'sm' && 'w-4 h-4',
+            size === 'md' && 'w-5 h-5',
+            size === 'lg' && 'w-6 h-6',
+
+            'border-marble-200/50 bg-transparent',
+            'peer-checked:border-primary',
+            'peer-focus-visible:ring-2 peer-focus-visible:ring-primary/50 peer-focus-visible:ring-offset-2',
+            'peer-hover:border-primary/50',
+            className,
+          )}
+        >
+          {/* Inner dot */}
+          <div
+            className={cn(
+              'rounded-full bg-primary transition-all duration-200',
+              size === 'sm' && 'w-1.5 h-1.5',
+              size === 'md' && 'w-2 h-2',
+              size === 'lg' && 'w-2.5 h-2.5',
+              checked ? 'opacity-100 scale-100' : 'opacity-0 scale-0',
+            )}
+          />
         </div>
 
+        {/* Label */}
         {(label || description) && (
-          <div className="grid gap-1.5 leading-none">
-            {label && (
-              <label
-                className={cn(
-                  'text-sm font-bold leading-none cursor-pointer',
-                  disabled ? 'cursor-not-allowed opacity-50' : 'text-foreground',
-                  error && 'text-error',
-                )}
-              >
-                {label}
-              </label>
-            )}
-            {description && (
-              <p className={cn('text-xs', error ? 'text-error' : 'text-muted')}>{description}</p>
-            )}
+          <div className="flex-1 pt-0.5">
+            {label && <span className="block text-sm font-medium text-foreground">{label}</span>}
+            {description && <span className="block text-sm text-muted mt-0.5">{description}</span>}
           </div>
         )}
-      </div>
+      </label>
     );
   },
 );
@@ -96,29 +113,28 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
     onValueChange?.(optionValue);
   };
 
-  const containerStyles = cn(
-    'space-y-3',
-    orientation === 'horizontal' && 'flex flex-wrap gap-6 space-y-0',
-    className,
-  );
-
   return (
-    <div className={containerStyles} role="radiogroup">
+    <div
+      className={cn(
+        'flex gap-4',
+        orientation === 'vertical' ? 'flex-col' : 'flex-row flex-wrap',
+        className,
+      )}
+      role="radiogroup"
+    >
       {options.map((option) => (
-        <div key={option.value}>
-          <Radio
-            name={name}
-            value={option.value}
-            checked={selectedValue === option.value}
-            onChange={() => !option.disabled && handleChange(option.value)}
-            disabled={disabled || option.disabled}
-            label={option.label}
-            description={option.description}
-            error={!!error}
-          />
-        </div>
+        <Radio
+          key={option.value}
+          name={name}
+          value={option.value}
+          checked={selectedValue === option.value}
+          onChange={() => !option.disabled && handleChange(option.value)}
+          disabled={disabled || option.disabled}
+          label={option.label}
+          description={option.description}
+        />
       ))}
-      {error && <p className="text-xs text-error mt-2">{error}</p>}
+      {error && <p className="text-sm text-error mt-2">{error}</p>}
     </div>
   );
 };

@@ -7,112 +7,76 @@ export interface SwitchProps
   label?: string;
   description?: string;
   size?: 'sm' | 'md' | 'lg';
-  variant?: 'default' | 'accent';
 }
 
 const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
-  (
-    {
-      className,
-      label,
-      description,
-      disabled,
-      size = 'md',
-      variant = 'default',
-      checked,
-      ...props
-    },
-    ref,
-  ) => {
-    const sizes = {
-      sm: {
-        track: 'h-4 w-7',
-        thumb: 'h-3 w-3 data-[state=checked]:translate-x-3 data-[state=unchecked]:translate-x-0',
-      },
-      md: {
-        track: 'h-5 w-9',
-        thumb: 'h-4 w-4 data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0',
-      },
-      lg: {
-        track: 'h-6 w-11',
-        thumb: 'h-5 w-5 data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0',
-      },
+  ({ className, label, description, disabled, size = 'md', checked, onChange, ...props }, ref) => {
+    const handleToggle = () => {
+      if (!disabled && onChange) {
+        onChange({
+          target: { checked: !checked },
+        } as React.ChangeEvent<HTMLInputElement>);
+      }
     };
 
-    const variants = {
-      default: {
-        track: 'data-[state=checked]:bg-primary data-[state=unchecked]:bg-muted',
-        thumb: 'bg-surface',
-      },
-      accent: {
-        track: 'data-[state=checked]:bg-accent data-[state=unchecked]:bg-muted',
-        thumb: 'bg-surface',
-      },
-    };
-
-    const trackStyles = cn(
-      'peer inline-flex shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-      sizes[size].track,
-      variants[variant].track,
-      className,
-    );
-
-    const thumbStyles = cn(
-      'pointer-events-none block rounded-full shadow-lg ring-0 transition-transform',
-      sizes[size].thumb,
-      variants[variant].thumb,
-    );
-
-    // Regole: min-w-[44px] min-h-[44px] (container), gap-4, label font-bold
     return (
-      <div className="flex items-center min-w-[44px] min-h-[44px] space-x-4">
-        <div className="relative">
-          <input
-            type="checkbox"
-            className="sr-only"
-            disabled={disabled}
-            checked={checked}
-            ref={ref}
-            {...props}
-          />
-          <div
-            className={trackStyles}
-            data-state={checked ? 'checked' : 'unchecked'}
-            onClick={() =>
-              !disabled &&
-              props.onChange?.({
-                target: { checked: !checked },
-              } as React.ChangeEvent<HTMLInputElement>)
-            }
-          >
-            <div className={thumbStyles} data-state={checked ? 'checked' : 'unchecked'} />
-          </div>
-        </div>
-
+      <label
+        className={cn(
+          'inline-flex items-center justify-between gap-4 cursor-pointer',
+          disabled && 'opacity-50 cursor-not-allowed',
+        )}
+      >
+        {/* Label section */}
         {(label || description) && (
-          <div className="grid gap-1.5 leading-none">
-            {label && (
-              <label
-                className={cn(
-                  'text-sm font-bold leading-none cursor-pointer',
-                  disabled ? 'cursor-not-allowed opacity-50' : 'text-foreground',
-                )}
-                onClick={() =>
-                  !disabled &&
-                  props.onChange?.({
-                    target: { checked: !checked },
-                  } as React.ChangeEvent<HTMLInputElement>)
-                }
-              >
-                {label}
-              </label>
-            )}
-            {description && (
-              <p className={cn('text-xs text-muted', disabled && 'opacity-50')}>{description}</p>
-            )}
+          <div className="flex-1">
+            {label && <span className="block text-sm font-medium text-foreground">{label}</span>}
+            {description && <span className="block text-sm text-muted mt-0.5">{description}</span>}
           </div>
         )}
-      </div>
+
+        {/* Hidden input */}
+        <input
+          type="checkbox"
+          className="sr-only peer"
+          checked={checked}
+          onChange={onChange}
+          disabled={disabled}
+          ref={ref}
+          {...props}
+        />
+
+        {/* Visual switch */}
+        <div
+          className={cn(
+            'relative shrink-0 rounded-full transition-all duration-200',
+
+            // Sizes
+            size === 'sm' && 'w-8 h-5',
+            size === 'md' && 'w-11 h-6',
+            size === 'lg' && 'w-14 h-7',
+
+            // States
+            'bg-marble-200/50',
+            'peer-checked:bg-primary',
+            'peer-focus-visible:ring-2 peer-focus-visible:ring-primary/50 peer-focus-visible:ring-offset-2',
+            'dark:bg-marble-200/30',
+            className,
+          )}
+          onClick={handleToggle}
+        >
+          {/* Thumb */}
+          <div
+            className={cn(
+              'absolute top-1 rounded-full bg-white shadow-md transition-all duration-200',
+
+              // Sizes e posizioni
+              size === 'sm' && cn('w-3 h-3', checked ? 'left-[14px]' : 'left-1'),
+              size === 'md' && cn('w-4 h-4', checked ? 'left-[20px]' : 'left-1'),
+              size === 'lg' && cn('w-5 h-5', checked ? 'left-[28px]' : 'left-1'),
+            )}
+          />
+        </div>
+      </label>
     );
   },
 );

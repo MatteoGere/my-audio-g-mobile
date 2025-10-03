@@ -1,15 +1,15 @@
 'use client';
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { HiOutlineUser } from 'react-icons/hi2';
 
 export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   src?: string;
   alt?: string;
-  fallback?: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  fallback?: string; // initials
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   status?: 'online' | 'offline' | 'away' | 'busy';
-  showStatus?: boolean;
+  shape?: 'circle' | 'square';
+  border?: boolean;
   children?: React.ReactNode;
 }
 
@@ -20,35 +20,33 @@ const Avatar: React.FC<AvatarProps> = ({
   fallback,
   size = 'md',
   status,
-  showStatus = false,
+  shape = 'circle',
+  border = false,
   children,
   ...props
 }) => {
   const [imageLoaded, setImageLoaded] = React.useState(false);
   const [imageError, setImageError] = React.useState(false);
 
-  // Regole: rounded-full, min-w-[44px], min-h-[44px], font-bold, shadow-sm
   const sizes = {
-    xs: 'h-6 w-6 text-xs',
-    sm: 'h-8 w-8 text-sm',
-    md: 'h-11 w-11 min-w-[44px] min-h-[44px] text-base',
-    lg: 'h-14 w-14 min-w-[56px] min-h-[56px] text-lg',
-    xl: 'h-16 w-16 min-w-[64px] min-h-[64px] text-xl',
-    '2xl': 'h-20 w-20 min-w-[80px] min-h-[80px] text-2xl',
+    xs: 'w-6 h-6 text-xs',
+    sm: 'w-8 h-8 text-sm',
+    md: 'w-10 h-10 text-base',
+    lg: 'w-12 h-12 text-lg',
+    xl: 'w-16 h-16 text-xl',
   };
 
-  const statusSizes = {
-    xs: 'h-1.5 w-1.5',
-    sm: 'h-2 w-2',
-    md: 'h-2.5 w-2.5',
-    lg: 'h-3 w-3',
-    xl: 'h-3.5 w-3.5',
-    '2xl': 'h-4 w-4',
+  const statusIndicatorSizes = {
+    xs: 'w-1.5 h-1.5 border',
+    sm: 'w-2 h-2 border',
+    md: 'w-2.5 h-2.5 border-2',
+    lg: 'w-3 h-3 border-2',
+    xl: 'w-4 h-4 border-2',
   };
 
   const statusColors = {
     online: 'bg-success',
-    offline: 'bg-surface',
+    offline: 'bg-marble-200 dark:bg-marble-200/50',
     away: 'bg-warning',
     busy: 'bg-error',
   };
@@ -62,9 +60,6 @@ const Avatar: React.FC<AvatarProps> = ({
       .slice(0, 2);
   };
 
-  const shouldShowImage = src && imageLoaded && !imageError;
-  const shouldShowFallback = !shouldShowImage && (fallback || alt);
-
   React.useEffect(() => {
     if (src) {
       setImageLoaded(false);
@@ -77,38 +72,53 @@ const Avatar: React.FC<AvatarProps> = ({
     }
   }, [src]);
 
+  const shouldShowImage = src && imageLoaded && !imageError;
+  const displayFallback = fallback || alt?.[0]?.toUpperCase() || '?';
+
   return (
-    <div className="relative inline-block">
-      <div
-        className={cn(
-          'relative flex items-center justify-center rounded-full bg-surface font-bold text-foreground overflow-hidden shadow-sm',
-          sizes[size],
-          className,
-        )}
-        {...props}
-      >
-        {shouldShowImage && <img src={src} alt={alt} className="h-full w-full object-cover" />}
+    <div
+      className={cn(
+        'relative shrink-0 inline-flex items-center justify-center',
+        'bg-marble-100 text-foreground font-semibold overflow-hidden',
+        'dark:bg-marble-100/20',
 
-        {shouldShowFallback && (
-          <span className="select-none">{getInitials(fallback || alt || '')}</span>
-        )}
+        // Sizes
+        sizes[size],
 
-        {!shouldShowImage && !shouldShowFallback && children && (
-          <span className="select-none">{children}</span>
-        )}
+        // Shapes
+        shape === 'circle' && 'rounded-full',
+        shape === 'square' && 'rounded-lg',
 
-        {!shouldShowImage && !shouldShowFallback && !children && (
-          <HiOutlineUser className="h-1/2 w-1/2 text-muted" aria-hidden="true" />
-        )}
-      </div>
+        // Border
+        border && 'ring-2 ring-marble-200/30 ring-offset-2 ring-offset-background',
 
-      {showStatus && status && (
+        className,
+      )}
+      {...props}
+    >
+      {/* Image */}
+      {shouldShowImage ? (
+        <img
+          src={src}
+          alt={alt || 'Avatar'}
+          className="w-full h-full object-cover"
+          onError={() => setImageError(true)}
+        />
+      ) : (
+        // Fallback initials or children
+        children || <span>{displayFallback}</span>
+      )}
+
+      {/* Status indicator */}
+      {status && (
         <span
           className={cn(
-            'absolute bottom-0 right-0 block rounded-full ring-2 ring-surface',
-            statusSizes[size],
+            'absolute bottom-0 right-0 rounded-full',
+            'border-background',
+            statusIndicatorSizes[size],
             statusColors[status],
           )}
+          aria-label={`Status: ${status}`}
         />
       )}
     </div>
