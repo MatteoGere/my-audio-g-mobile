@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useMemo, useState, useCallback } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { Map as LeafletMap } from 'leaflet';
 import { useAppSelector, useAppDispatch } from '@/lib/redux';
-import { setCenter, setZoom, setBounds, setUserInteracting } from '@/lib/redux/slices/mapSlice';
+import { setCenter, setZoom, setBounds, setUserInteracting, setMapStyle } from '@/lib/redux/slices/mapSlice';
 import { useLocation } from '@/lib/hooks';
 import { POIMarkerData } from '@/types/app-types';
 import { POIMarker } from './POIMarker';
@@ -14,6 +14,8 @@ import { RouteVisualization } from './RouteVisualization';
 import tokens from '@/design/tokens';
 import 'leaflet/dist/leaflet.css';
 import './map.css';
+import Button from '@/components/ui/Button';
+import { FaGlobe, FaSatellite, FaTree, FaMoon } from 'react-icons/fa';
 
 // Fix for default markers in react-leaflet
 import L from 'leaflet';
@@ -51,6 +53,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const mapRef = useRef<LeafletMap>(null);
+  const programmaticPanRef = useRef<boolean>(false);
 
   // State to track which POI's popup is open
   const [openPopupPoiId, setOpenPopupPoiId] = useState<string | null>(null);
@@ -143,10 +146,19 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   );
 
   const handleMapMoveStart = useCallback(() => {
+    // If a programmatic pan is in progress (e.g., centering on popup open),
+    // don't treat this as user interaction and don't close the popup.
+    if (programmaticPanRef.current) return;
     dispatch(setUserInteracting(true));
+    // Close any open popup when the user starts moving the map
+    setOpenPopupPoiId((current) => (current ? null : current));
   }, [dispatch]);
 
   const handleMapMoveEnd = useCallback(() => {
+    // Clear programmatic pan flag after movement completes
+    if (programmaticPanRef.current) {
+      programmaticPanRef.current = false;
+    }
     dispatch(setUserInteracting(false));
   }, [dispatch]);
 
@@ -170,6 +182,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   const panToWithOffset = useCallback((lat: number, lng: number, offsetY: number) => {
     const map = mapRef.current;
     if (!map) return;
+    programmaticPanRef.current = true;
     const targetPoint = map.project([lat, lng], map.getZoom());
     // move point up by offsetY pixels (positive moves content up, so we subtract)
     const adjusted = targetPoint.subtract([0, offsetY]);
@@ -269,6 +282,19 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   // Map container classes
   const mapClasses = `relative w-full h-full overflow-hidden ${className}`.trim();
 
+  const MapStyleIcon = useMemo(() => {
+    switch (mapStyle) {
+      case 'satellite':
+        return <FaSatellite className="h-4 w-4" aria-hidden />;
+      case 'terrain':
+        return <FaTree className="h-4 w-4" aria-hidden />;
+      case 'dark':
+        return <FaMoon className="h-4 w-4" aria-hidden />;
+      default:
+        return <FaGlobe className="h-4 w-4" aria-hidden />;
+    }
+  }, [mapStyle]);
+
   return (
     <div className={mapClasses}>
       <MapContainer
@@ -333,7 +359,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           />
         ))}
       </MapContainer>
-
       {/* No fullscreen overlay here; fullscreen is handled by container classes and map resize */}
     </div>
   );

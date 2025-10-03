@@ -8,9 +8,8 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux';
 import { FaPlay, FaPause, FaMusic, FaClock, FaMapMarkerAlt, FaBuilding } from 'react-icons/fa';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
-import Card from '@/components/ui/Card';
-import Image from 'next/image';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi2';
+import { useRouter } from 'next/navigation';
 
 interface POIPopupProps {
   poi: POIMarkerData;
@@ -21,6 +20,7 @@ interface POIPopupProps {
 
 export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onClose }) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   // Get signed URL for track image if available
   const { signedUrl: imageUrl, isLoading: imageLoading } = useSignedUrl(
@@ -51,7 +51,9 @@ export const POIPopup: React.FC<POIPopupProps> = ({ poi, color, onPlayClick, onC
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onPlayClick?.(poi);
+    // Navigate to the itinerary play page for this POI
+    // If there is no dedicated play page, adjust to `/itinerary/${poi.itineraryId}`
+    router.push(`/itinerary/${poi.itineraryId}/play`);
   };
 
   return (
