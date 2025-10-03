@@ -3,42 +3,39 @@
 const CACHE_VERSION = '1.0.0';
 const STATIC_CACHE = `myaudiog-static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `myaudiog-runtime-${CACHE_VERSION}`;
-const APP_SHELL = [
-  '/',
-  '/manifest.webmanifest',
-  '/myaudiog-192.svg',
-  '/myaudiog-512.svg'
-];
+const APP_SHELL = ['/', '/manifest.webmanifest', '/myaudiog-192.png', '/myaudiog-512.png'];
 
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(STATIC_CACHE)
-      .then(cache => cache.addAll(APP_SHELL))
-      .catch(error => console.error('[ServiceWorker] install cache error', error))
+      .then((cache) => cache.addAll(APP_SHELL))
+      .catch((error) => console.error('[ServiceWorker] install cache error', error)),
   );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', event => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys
-          .filter(key => key !== STATIC_CACHE && key !== RUNTIME_CACHE)
-          .map(key => caches.delete(key))
-      )
-    )
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key !== STATIC_CACHE && key !== RUNTIME_CACHE)
+            .map((key) => caches.delete(key)),
+        ),
+      ),
   );
   self.clients.claim();
 });
-self.addEventListener('message', event => {
+self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
 });
 
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
   const { request } = event;
 
   if (request.method !== 'GET') {
@@ -109,7 +106,7 @@ async function staleWhileRevalidate(request) {
   const cache = await caches.open(RUNTIME_CACHE);
   const cached = await cache.match(request);
   const networkFetch = fetch(request)
-    .then(response => {
+    .then((response) => {
       cache.put(request, response.clone());
       return response;
     })

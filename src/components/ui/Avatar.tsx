@@ -52,6 +52,13 @@ const Avatar: React.FC<AvatarProps> = ({
   };
 
   const getInitials = (name: string) => {
+    // Se il nome contiene spazi (nome e cognome), prende le iniziali di entrambi
+    const words = name.trim().split(/\s+/);
+    if (words.length >= 2) {
+      // Prende la prima lettera del primo e dell'ultimo nome
+      return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+    }
+    // Altrimenti prende le prime due lettere del nome
     return name
       .split(' ')
       .map((word) => word.charAt(0))

@@ -92,11 +92,16 @@ function ResetPasswordInner() {
       <div className="space-y-6">
         {/* Success Message */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-surface rounded-full flex items-center justify-center mb-4">
-            <HiCheck className="w-8 h-8 text-success" aria-hidden="true" />
+          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-accent/20 to-accent/10 rounded-2xl flex items-center justify-center mb-4 shadow-soft">
+            <div className="w-16 h-16 bg-gradient-to-br from-accent to-accent/80 rounded-xl flex items-center justify-center">
+              <HiCheck className="w-10 h-10 text-white" aria-hidden="true" />
+            </div>
           </div>
-          <h2 className="text-2xl font-bold text-foreground">Password Reset Successful</h2>
-          <p className="text-sm text-muted mt-2">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <div className="w-1 h-7 bg-gradient-to-b from-primary to-accent rounded-full" />
+            <h2 className="text-2xl font-bold text-foreground">Password Reset Successful</h2>
+          </div>
+          <p className="text-sm text-muted">
             Your password has been successfully updated. You can now sign in with your new password.
           </p>
         </div>
@@ -105,7 +110,7 @@ function ResetPasswordInner() {
         <Button
           variant="primary"
           size="lg"
-          className="w-full"
+          className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-soft"
           onClick={() => router.push('/login')}
         >
           Continue to Sign In
@@ -117,14 +122,17 @@ function ResetPasswordInner() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-foreground">Reset Your Password</h2>
-        <p className="text-sm text-muted mt-2">Choose a strong new password for your account</p>
+      <div className="text-center space-y-2">
+        <div className="flex items-center justify-center gap-2">
+          <div className="w-1 h-8 bg-gradient-to-b from-primary to-accent rounded-full" />
+          <h2 className="text-2xl font-bold text-foreground">Reset Your Password</h2>
+        </div>
+        <p className="text-sm text-muted">Choose a strong new password for your account</p>
       </div>
 
       {/* Reset Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <Input
             type={showPassword ? 'text' : 'password'}
             label="New Password"
@@ -134,7 +142,7 @@ function ResetPasswordInner() {
             required
             error={validationErrors.newPassword}
           />
-          <div className="text-xs text-muted">
+          <div className="text-xs text-muted leading-relaxed">
             Must contain at least 6 characters with uppercase, lowercase, and numbers
           </div>
         </div>
@@ -149,22 +157,22 @@ function ResetPasswordInner() {
           error={validationErrors.confirmPassword}
         />
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 pt-1">
           <input
             type="checkbox"
             id="showPassword"
             checked={showPassword}
             onChange={(e) => setShowPassword(e.target.checked)}
-            className="rounded text-primary focus:ring-primary"
+            className="rounded text-primary focus:ring-primary cursor-pointer"
           />
-          <label htmlFor="showPassword" className="text-sm text-muted">
+          <label htmlFor="showPassword" className="text-sm text-muted cursor-pointer">
             Show passwords
           </label>
         </div>
 
         {error && (
-          <div className="p-3 rounded-lg bg-surface border border-carbon-200">
-            <p className="text-sm text-error-700">{error}</p>
+          <div className="p-3 rounded-xl bg-gradient-to-br from-error/10 to-error/5 border border-error/30 shadow-soft">
+            <p className="text-sm text-error font-medium">{error}</p>
           </div>
         )}
 
@@ -172,7 +180,7 @@ function ResetPasswordInner() {
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full"
+          className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-soft"
           loading={isLoading}
           disabled={isLoading || !token}
         >
@@ -182,7 +190,10 @@ function ResetPasswordInner() {
 
       {/* Back to Login */}
       <div className="text-center">
-        <Link href="/login" className="text-sm text-primary transition-colors">
+        <Link
+          href="/login"
+          className="text-sm text-primary hover:text-primary/80 transition-colors font-medium inline-flex items-center gap-1.5"
+        >
           ← Back to Sign In
         </Link>
       </div>
@@ -195,7 +206,12 @@ export default function ResetPasswordPage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin h-8 w-8 border-2 border-primary-600 border-t-transparent rounded-full"></div>
+          <div className="relative">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 animate-pulse" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="animate-spin h-8 w-8 border-4 border-primary/40 border-t-primary rounded-full"></div>
+            </div>
+          </div>
         </div>
       }
     >

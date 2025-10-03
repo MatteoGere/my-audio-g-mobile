@@ -105,7 +105,7 @@ export default function ItineraryDetailPage() {
   if (itineraryLoading) {
     return (
       <div className="space-y-6 px-5">
-        <Card padding="lg" className="overflow-hidden animate-pulse">
+        <Card padding="lg" className="overflow-hidden">
           <div className="h-48 bg-background" />
           <div className="space-y-3">
             <div className="h-6 bg-background rounded w-2/3" />
@@ -143,71 +143,114 @@ export default function ItineraryDetailPage() {
   return (
     <div className="space-y-6">
       {/* Hero Section */}
-      <Card padding="lg" className="overflow-hidden">
-        {heroImageUrl ? (
-          <img
-            src={heroImageUrl}
-            alt={itinerary.name}
-            className="h-48 w-full object-cover rounded-t-xl"
-          />
-        ) : (
-          <div className="h-48 bg-surface flex items-center justify-center rounded-t-xl">
-            <span className="text-primary text-4xl">🏛️</span>
-          </div>
-        )}
-        <div>
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <div className="flex-1">
-              <h1 className="text-xl font-bold text-foreground mb-2">{itinerary.name}</h1>
-              {(itinerary as any)?.company?.name && (
-                <p className="text-sm text-muted">by {(itinerary as any).company.name}</p>
-              )}
+      <Card
+        padding="lg"
+        variant="glass"
+        className="overflow-hidden bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20"
+      >
+        <div className="relative">
+          {heroImageUrl ? (
+            <div className="relative h-56 rounded-2xl overflow-hidden">
+              <img src={heroImageUrl} alt={itinerary.name} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-label={
+                  isItineraryFavorite
+                    ? 'Remove itinerary from favourites'
+                    : 'Add itinerary to favourites'
+                }
+                loading={isFavoritesBusy}
+                onClick={() =>
+                  toggleFavorite({ favouriteId: itinerary.id, type: 'FAVOURITE-ITINERARY' })
+                }
+                className="absolute top-3 right-3 bg-surface/90 backdrop-blur-sm rounded-xl shadow-soft hover:bg-surface transition-all"
+              >
+                {isItineraryFavorite ? (
+                  <HiHeart
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                    style={{ color: tokens.colors.error, opacity: 0.95 }}
+                  />
+                ) : (
+                  <HiOutlineHeart className="h-5 w-5 text-foreground/80" aria-hidden="true" />
+                )}
+              </Button>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label={
-                isItineraryFavorite
-                  ? 'Remove itinerary from favourites'
-                  : 'Add itinerary to favourites'
-              }
-              loading={isFavoritesBusy}
-              onClick={() =>
-                toggleFavorite({ favouriteId: itinerary.id, type: 'FAVOURITE-ITINERARY' })
-              }
-            >
-              {isItineraryFavorite ? (
-                <HiHeart
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                  style={{ color: tokens.colors.error, opacity: 0.95 }}
-                />
-              ) : (
-                <HiOutlineHeart className="h-5 w-5" aria-hidden="true" style={{ opacity: 0.65 }} />
-              )}
-            </Button>
+          ) : (
+            <div className="relative h-56 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl flex items-center justify-center overflow-hidden">
+              <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center backdrop-blur-sm">
+                <span className="text-primary text-5xl">🏛️</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-label={
+                  isItineraryFavorite
+                    ? 'Remove itinerary from favourites'
+                    : 'Add itinerary to favourites'
+                }
+                loading={isFavoritesBusy}
+                onClick={() =>
+                  toggleFavorite({ favouriteId: itinerary.id, type: 'FAVOURITE-ITINERARY' })
+                }
+                className="absolute top-3 right-3 bg-surface/90 backdrop-blur-sm rounded-xl shadow-soft hover:bg-surface transition-all"
+              >
+                {isItineraryFavorite ? (
+                  <HiHeart
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                    style={{ color: tokens.colors.error, opacity: 0.95 }}
+                  />
+                ) : (
+                  <HiOutlineHeart className="h-5 w-5 text-foreground/80" aria-hidden="true" />
+                )}
+              </Button>
+            </div>
+          )}
+        </div>
+        <div className="mt-4">
+          <div className="mb-3">
+            <h1 className="text-2xl font-bold text-foreground mb-2">{itinerary.name}</h1>
+            {(itinerary as any)?.company?.name && (
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-4 bg-primary rounded-full" />
+                <p className="text-sm text-muted">by {(itinerary as any).company.name}</p>
+              </div>
+            )}
           </div>
 
-          <div className="flex items-center gap-4 mb-4">
-            <Badge variant="outline">{formatDuration(itinerary.total_duration)}</Badge>
-            <Badge variant="outline">{tracks?.length || 0} stops</Badge>
-            <Badge variant="secondary">Walking Tour</Badge>
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
+            <Badge className="bg-gradient-to-r from-secondary/20 to-secondary/10 border-secondary/30">
+              ⏱ {formatDuration(itinerary.total_duration)}
+            </Badge>
+            <Badge className="bg-gradient-to-r from-primary/20 to-primary/10 border-primary/30">
+              📍 {tracks?.length || 0} stops
+            </Badge>
+            <Badge className="bg-gradient-to-r from-accent/20 to-accent/10 border-accent/30">
+              🚶 Walking Tour
+            </Badge>
           </div>
 
           {itinerary.description && (
-            <p className="text-muted text-sm leading-relaxed mb-4">{itinerary.description}</p>
+            <p className="text-muted text-sm leading-relaxed mb-5">{itinerary.description}</p>
           )}
 
-          <div className="flex space-x-3">
+          <div className="flex gap-3">
             <Button
               variant="primary"
-              className="flex-1"
+              className="flex-1 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-soft hover:shadow-medium transition-all"
               onClick={() => router.push(`/itinerary/${id}/play`)}
             >
               ▶ Start Tour
             </Button>
-            <Button variant="outline" onClick={() => router.push('/map')}>
-              📍 View Map
+            <Button
+              variant="outline"
+              onClick={() => router.push('/map')}
+              className="border-primary/30 hover:bg-primary/5"
+            >
+              📍 Map
             </Button>
           </div>
         </div>
@@ -215,9 +258,17 @@ export default function ItineraryDetailPage() {
 
       {/* Audio Tracks */}
       <div>
-        <h2 className="text-lg font-semibold text-foreground mb-4">
-          Audio Tracks ({tracks?.length || 0})
-        </h2>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-1 h-7 bg-gradient-to-b from-primary to-accent rounded-full" />
+          <h2 className="text-xl font-bold text-foreground">Audio Tracks</h2>
+          <Badge
+            variant="primary"
+            size="sm"
+            className="bg-gradient-to-r from-primary/20 to-primary/10"
+          >
+            {tracks?.length || 0}
+          </Badge>
+        </div>
         <div className="space-y-3">
           {tracksLoading && (
             <div className="space-y-3">
@@ -236,29 +287,42 @@ export default function ItineraryDetailPage() {
           )}
 
           {tracks?.map((track) => (
-            <Card key={track.id} padding="md">
+            <Card
+              key={track.id}
+              padding="md"
+              variant="glass"
+              className="bg-gradient-to-br from-surface to-primary/5 border border-primary/20 hover:shadow-medium hover:scale-[1.01] transition-all duration-300"
+            >
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                  <span className="text-primary-foreground text-sm font-semibold">
+                <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center flex-shrink-0 shadow-soft">
+                  <span className="text-white text-base font-bold">
                     {track.audio_itinerary_order}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-medium text-foreground mb-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <h3 className="font-semibold text-foreground">
                       {track.name || 'Untitled track'}
                     </h3>
-                    <span className="text-xs text-muted">{formatDuration(track.duration)}</span>
                   </div>
                   {track.description && (
                     <CollapsibleText id={`track-desc-${track.id}`} text={track.description} />
                   )}
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="flex items-center gap-1.5 text-secondary">
+                      <div className="w-6 h-6 rounded-lg bg-secondary/10 flex items-center justify-center backdrop-blur-sm">
+                        <span className="text-xs">⏱</span>
+                      </div>
+                      <span className="text-xs font-medium">{formatDuration(track.duration)}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex-shrink-0 self-start flex items-center gap-2">
+                <div className="flex-shrink-0 self-start flex items-center gap-1">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => router.push(`/itinerary/${id}/play`)}
+                    className="w-9 h-9 p-0 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary transition-all"
                   >
                     ▶
                   </Button>
@@ -274,6 +338,7 @@ export default function ItineraryDetailPage() {
                     onClick={() =>
                       toggleFavorite({ favouriteId: track.id, type: 'FAVOURITE-TRACK' })
                     }
+                    className="w-9 h-9 p-0 rounded-xl hover:bg-marble-100 transition-all"
                   >
                     {favoriteTrackIds.includes(track.id) ? (
                       <HiHeart
@@ -282,11 +347,7 @@ export default function ItineraryDetailPage() {
                         style={{ color: tokens.colors.error, opacity: 0.95 }}
                       />
                     ) : (
-                      <HiOutlineHeart
-                        className="h-4 w-4"
-                        aria-hidden="true"
-                        style={{ opacity: 0.65 }}
-                      />
+                      <HiOutlineHeart className="h-4 w-4 text-foreground/60" aria-hidden="true" />
                     )}
                   </Button>
                 </div>
@@ -297,30 +358,62 @@ export default function ItineraryDetailPage() {
       </div>
 
       {/* Interactive Map Preview */}
-      <Card padding="md">
-        <h3 className="font-semibold text-foreground mb-4">Tour Route</h3>
-        <div className="h-32 bg-surface rounded-lg flex items-center justify-center border-dashed border-2 border-muted">
+      <Card
+        padding="md"
+        variant="glass"
+        className="bg-gradient-to-br from-accent/5 to-secondary/5 border border-accent/20"
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-1 h-6 bg-gradient-to-b from-accent to-secondary rounded-full" />
+          <h3 className="font-semibold text-foreground">Tour Route</h3>
+        </div>
+        <div className="relative h-40 bg-gradient-to-br from-accent/10 to-secondary/10 rounded-2xl flex items-center justify-center border-2 border-dashed border-accent/30 overflow-hidden">
+          <div className="absolute top-2 right-2 w-8 h-8 bg-surface/80 rounded-lg backdrop-blur-sm flex items-center justify-center">
+            <span className="text-xs">📍</span>
+          </div>
           <div className="text-center">
-            <span className="text-muted text-2xl block mb-2">🗺️</span>
-            <p className="text-sm text-muted">Interactive map with {tracks?.length || 0} stops</p>
+            <div className="w-16 h-16 mx-auto mb-3 bg-accent/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+              <span className="text-accent text-3xl">🗺️</span>
+            </div>
+            <p className="text-sm font-medium text-foreground">Interactive map</p>
+            <p className="text-xs text-muted">{tracks?.length || 0} stops along the route</p>
           </div>
         </div>
-        <Button variant="outline" className="w-full mt-4" onClick={() => router.push('/map')}>
-          View Full Map
+        <Button
+          variant="outline"
+          className="w-full mt-4 border-accent/30 hover:bg-accent/5 text-accent hover:text-accent"
+          onClick={() => router.push('/map')}
+        >
+          View Full Map →
         </Button>
       </Card>
 
       {/* Company Info */}
       {(itinerary as any)?.company?.name && (
-        <Card padding="md">
-          <h3 className="font-medium text-foreground mb-2">
-            About {(itinerary as any).company.name}
-          </h3>
+        <Card
+          padding="md"
+          variant="glass"
+          className="bg-gradient-to-br from-secondary/5 to-primary/5 border border-secondary/20"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
+              <span className="text-secondary text-lg">🏢</span>
+            </div>
+            <h3 className="font-semibold text-foreground">
+              About {(itinerary as any).company.name}
+            </h3>
+          </div>
           {(itinerary as any).company?.description && (
-            <p className="text-sm text-muted mb-3">{(itinerary as any).company.description}</p>
+            <p className="text-sm text-muted mb-4 leading-relaxed">
+              {(itinerary as any).company.description}
+            </p>
           )}
-          <Button variant="ghost" size="sm">
-            View All Tours by {(itinerary as any).company.name}
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-secondary/30 hover:bg-secondary/5 text-secondary hover:text-secondary"
+          >
+            View All Tours →
           </Button>
         </Card>
       )}

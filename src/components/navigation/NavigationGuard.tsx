@@ -41,10 +41,15 @@ export function NavigationGuard({
   // Show loading state while determining auth status
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-primary/40 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted">Loading...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
+        <div className="text-center space-y-4">
+          <div className="relative mx-auto">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 animate-pulse" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-8 h-8 border-4 border-primary/40 border-t-primary rounded-full animate-spin"></div>
+            </div>
+          </div>
+          <p className="text-muted font-medium">Loading...</p>
         </div>
       </div>
     );

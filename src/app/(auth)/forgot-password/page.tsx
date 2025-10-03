@@ -62,25 +62,44 @@ export default function ForgotPasswordPage() {
       <div className="space-y-6">
         {/* Success Message */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-success/20 rounded-full flex items-center justify-center mb-4">
-            <HiCheck className="w-8 h-8 text-success" aria-hidden="true" />
+          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-2xl flex items-center justify-center mb-4 shadow-soft">
+            <div className="w-16 h-16 bg-gradient-to-br from-secondary to-secondary/80 rounded-xl flex items-center justify-center">
+              <HiCheck className="w-10 h-10 text-white" aria-hidden="true" />
+            </div>
           </div>
-          <h2 className="text-2xl font-bold text-foreground">Check Your Email</h2>
-          <p className="text-sm text-muted mt-2">
-            We've sent a password reset link to <strong>{email}</strong>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <div className="w-1 h-7 bg-gradient-to-b from-primary to-accent rounded-full" />
+            <h2 className="text-2xl font-bold text-foreground">Check Your Email</h2>
+          </div>
+          <p className="text-sm text-muted">
+            We've sent a password reset link to{' '}
+            <span className="text-primary font-semibold">{email}</span>
           </p>
         </div>
 
         {/* Instructions */}
-        <Card padding="md" className="rounded-lg bg-surface border border-muted">
-          <div className="space-y-2 text-sm text-muted">
-            <p>
-              <strong>What's next?</strong>
+        <Card
+          padding="md"
+          className="rounded-xl bg-gradient-to-br from-secondary/5 to-primary/5 border border-secondary/20 shadow-soft"
+        >
+          <div className="space-y-3 text-sm">
+            <p className="font-semibold text-foreground flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+              What's next?
             </p>
-            <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>Check your email inbox (and spam folder)</li>
-              <li>Click the reset link in the email</li>
-              <li>Follow the instructions to create a new password</li>
+            <ul className="space-y-2 ml-4">
+              <li className="flex items-start gap-2 text-muted">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                <span>Check your email inbox (and spam folder)</span>
+              </li>
+              <li className="flex items-start gap-2 text-muted">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                <span>Click the reset link in the email</span>
+              </li>
+              <li className="flex items-start gap-2 text-muted">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                <span>Follow the instructions to create a new password</span>
+              </li>
             </ul>
           </div>
         </Card>
@@ -90,7 +109,7 @@ export default function ForgotPasswordPage() {
           <Button
             variant="primary"
             size="lg"
-            className="w-full"
+            className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-soft"
             onClick={() => router.push('/login')}
           >
             Back to Sign In
@@ -103,7 +122,7 @@ export default function ForgotPasswordPage() {
                 setIsSubmitted(false);
                 setEmail('');
               }}
-              className="text-sm text-primary hover:text-primary-700 transition-colors"
+              className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
             >
               Try a different email address
             </button>
@@ -116,9 +135,12 @@ export default function ForgotPasswordPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-foreground">Forgot Password?</h2>
-        <p className="text-sm text-muted mt-2">
+      <div className="text-center space-y-2">
+        <div className="flex items-center justify-center gap-2">
+          <div className="w-1 h-8 bg-gradient-to-b from-primary to-accent rounded-full" />
+          <h2 className="text-2xl font-bold text-foreground">Forgot Password?</h2>
+        </div>
+        <p className="text-sm text-muted">
           No worries! Enter your email and we'll send you reset instructions.
         </p>
       </div>
@@ -137,8 +159,8 @@ export default function ForgotPasswordPage() {
         />
 
         {error && (
-          <div className="p-3 rounded-lg bg-error/10 border border-error/30">
-            <p className="text-sm text-error">{error}</p>
+          <div className="p-3 rounded-xl bg-gradient-to-br from-error/10 to-error/5 border border-error/30 shadow-soft">
+            <p className="text-sm text-error font-medium">{error}</p>
           </div>
         )}
 
@@ -146,7 +168,7 @@ export default function ForgotPasswordPage() {
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full"
+          className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-soft"
           loading={isLoading}
           disabled={isLoading}
         >
@@ -158,7 +180,7 @@ export default function ForgotPasswordPage() {
       <div className="text-center">
         <Link
           href="/login"
-          className="text-sm text-primary hover:text-primary-700 transition-colors"
+          className="text-sm text-primary hover:text-primary/80 transition-colors font-medium inline-flex items-center gap-1.5"
         >
           ← Back to Sign In
         </Link>

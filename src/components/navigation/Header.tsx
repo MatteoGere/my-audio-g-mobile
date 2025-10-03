@@ -114,21 +114,29 @@ export function Header({
   };
 
   return (
-    <header className="app-header sticky top-0 z-50 bg-surface border-b border-muted shadow-md">
+    <header className="app-header sticky top-0 z-50 bg-gradient-to-r from-surface via-surface to-primary/5 border-b border-primary/20 shadow-soft backdrop-blur-xl">
       <div className="flex items-center justify-between pb-2 px-5 gap-4">
         {/* Left Section */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
           {showBackButton && (
-            <Button variant="ghost" size="sm" onClick={() => router.back()}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.back()}
+              className="w-10 h-10 p-0 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary transition-all"
+            >
               <HiOutlineChevronLeft className="h-5 w-5" />
             </Button>
           )}
 
-          <h1 className="text-xl font-bold text-foreground truncate">{getPageTitle()}</h1>
+          <div className="flex items-center gap-2">
+            <div className="w-1 h-7 bg-gradient-to-b from-primary to-accent rounded-full" />
+            <h1 className="text-xl font-bold text-foreground truncate">{getPageTitle()}</h1>
+          </div>
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {customActions}
 
           {/* Reopen MiniPlayer Button */}
@@ -137,7 +145,7 @@ export function Header({
               variant="ghost"
               size="sm"
               onClick={() => dispatch(setPlayerView('mini'))}
-              className="text-primary"
+              className="w-10 h-10 p-0 rounded-xl bg-accent/10 hover:bg-accent/20 text-accent transition-all"
               title="Show player"
             >
               <HiOutlineMusicalNote className="h-5 w-5" />
@@ -145,7 +153,12 @@ export function Header({
           )}
 
           {showSearchButton && (
-            <Button variant="ghost" size="sm" onClick={() => router.push('/search')}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push('/search')}
+              className="w-10 h-10 p-0 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary transition-all"
+            >
               <HiOutlineMagnifyingGlass className="h-5 w-5" />
             </Button>
           )}
@@ -165,6 +178,7 @@ export function Header({
               dispatch(setThemeAction(newTheme));
             }}
             title="Toggle theme"
+            className="w-10 h-10 p-0 rounded-xl bg-secondary/10 hover:bg-secondary/20 text-secondary transition-all"
           >
             {mounted ? (
               theme === 'dark' ? (
@@ -184,54 +198,68 @@ export function Header({
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 h-10 px-2 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 hover:from-primary/20 hover:to-accent/20 transition-all"
               >
                 {/* Usa Avatar UI component per consistenza */}
                 <span className="sr-only">User menu</span>
                 <span className="inline-flex">
-                  <Avatar size="sm" fallback={getUserDisplayName()} />
+                  <Avatar size="sm" fallback={getUserInitials()} />
                 </span>
                 <HiOutlineChevronDown className="h-4 w-4 text-muted" />
               </Button>
 
               {/* User Dropdown Menu */}
               {showUserMenu && (
-                <div className="absolute right-0 top-full mt-2 w-56 bg-surface rounded-xl shadow-lg border border-muted py-1 z-50">
-                  <div className="px-4 py-3 border-b border-muted">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-gradient-to-br from-surface to-primary/5 rounded-2xl shadow-strong border border-primary/20 py-2 z-50 backdrop-blur-xl">
+                  <div className="px-4 py-3 border-b border-primary/20">
                     <p className="text-sm font-bold text-foreground">{getUserDisplayName()}</p>
-                    <p className="text-xs text-muted">{user?.email}</p>
+                    <p className="text-xs text-muted flex items-center gap-1.5">
+                      <span className="w-1 h-1 rounded-full bg-accent" />
+                      {user?.email}
+                    </p>
                   </div>
 
                   <Link
                     href="/profile"
                     onClick={() => setShowUserMenu(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-background rounded-lg"
+                    className="flex items-center gap-3 px-4 py-2.5 my-1 mx-2 text-sm text-foreground hover:bg-primary/10 rounded-xl transition-all"
                   >
-                    <HiOutlineUser className="h-4 w-4" />
-                    Profile Settings
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <HiOutlineUser className="h-4 w-4 text-primary" />
+                    </div>
+                    <span className="font-medium">Profile Settings</span>
                   </Link>
 
                   <Link
                     href="/favorites"
                     onClick={() => setShowUserMenu(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-background rounded-lg"
+                    className="flex items-center gap-3 px-4 py-2.5 my-1 mx-2 text-sm text-foreground hover:bg-accent/10 rounded-xl transition-all"
                   >
-                    <HiOutlineCog6Tooth className="h-4 w-4" />
-                    Preferences
+                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                      <HiOutlineCog6Tooth className="h-4 w-4 text-accent" />
+                    </div>
+                    <span className="font-medium">Preferences</span>
                   </Link>
 
                   <button
                     onClick={handleSignOut}
-                    className="flex items-center gap-3 w-full px-4 py-2 text-sm text-error hover:bg-error/10 rounded-lg"
+                    className="flex items-center gap-3 w-full px-4 py-2.5 my-1 mx-2 text-sm text-error hover:bg-error/10 rounded-xl transition-all"
                   >
-                    <HiOutlineArrowRightOnRectangle className="h-4 w-4" />
-                    Sign Out
+                    <div className="w-8 h-8 rounded-lg bg-error/10 flex items-center justify-center">
+                      <HiOutlineArrowRightOnRectangle className="h-4 w-4" />
+                    </div>
+                    <span className="font-medium">Sign Out</span>
                   </button>
                 </div>
               )}
             </div>
           ) : (
-            <Button variant="outline" size="sm" onClick={() => router.push('/login')}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push('/login')}
+              className="h-10 px-4 rounded-xl bg-gradient-to-r from-primary/10 to-accent/10 border-primary/30 hover:bg-primary/20 text-primary font-medium transition-all"
+            >
               Sign In
             </Button>
           )}

@@ -235,6 +235,10 @@ body {
   display: none; /* Safari and Chrome */
 }
 
+.app-header {
+  padding-top: 12px;
+}
+
 /* PWA / notch safe-area handling
    When the app is installed and running in standalone/fullscreen mode, use the
    environment safe-area inset to push the header content below device notches.

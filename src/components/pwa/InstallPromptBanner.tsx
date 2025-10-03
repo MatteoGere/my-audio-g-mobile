@@ -1,12 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-  Button,
-  Card,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui';
+import { Button, Card, CardTitle, CardDescription } from '@/components/ui';
 import { HiOutlineDevicePhoneMobile } from 'react-icons/hi2';
 import { usePWAInstallPrompt } from '@/lib/hooks';
 
@@ -51,19 +46,27 @@ export function InstallPromptBanner() {
     <Card
       padding="lg"
       variant="outline"
-      className="flex flex-col gap-4 border-primary/20 bg-primary/5"
+      className="flex flex-col gap-4 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5 shadow-soft"
       aria-live="polite"
     >
-      <div className="flex items-start gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary">
-          <HiOutlineDevicePhoneMobile className="h-6 w-6" aria-hidden="true" />
+      <div className="flex items-start gap-4">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 text-primary shadow-soft">
+          <HiOutlineDevicePhoneMobile className="h-7 w-7" aria-hidden="true" />
         </div>
         <div className="flex-1 space-y-2">
-          <CardTitle className="text-lg">Installa MyAudioG</CardTitle>
-          <CardDescription className="text-sm text-foreground/80">
-            Salva l&apos;app nella schermata principale per un accesso rapido anche a schermo intero.
+          <CardTitle className="text-lg font-bold flex items-center gap-2">
+            <span className="w-1 h-5 bg-gradient-to-b from-primary to-accent rounded-full" />
+            Installa MyAudioG
+          </CardTitle>
+          <CardDescription className="text-sm text-foreground/80 leading-relaxed">
+            Salva l&apos;app nella schermata principale per un accesso rapido anche a schermo
+            intero.
           </CardDescription>
-          {errorMessage && <p className="text-xs text-error">{errorMessage}</p>}
+          {errorMessage && (
+            <div className="px-3 py-2 rounded-lg bg-error/10 border border-error/20">
+              <p className="text-xs text-error font-medium">{errorMessage}</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -72,7 +75,7 @@ export function InstallPromptBanner() {
           variant="ghost"
           size="sm"
           onClick={handleDismiss}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto hover:bg-marble-100/50"
         >
           Più tardi
         </Button>
@@ -81,7 +84,7 @@ export function InstallPromptBanner() {
           size="sm"
           loading={isInstalling}
           onClick={handleInstallClick}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-soft"
         >
           Installa ora
         </Button>

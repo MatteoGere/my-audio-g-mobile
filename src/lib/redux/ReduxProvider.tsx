@@ -47,11 +47,13 @@ export function ReduxProvider({ children }: ReduxProviderProps) {
           // next-themes exposes `theme` which can be 'light' | 'dark' | 'system'
           // If it's explicit light/dark, update Redux so state reflects persisted value.
           if (currentTheme === 'light' || currentTheme === 'dark') {
-            dispatch(hydratePreferences({
-              // keep other preference defaults by reading from store state
-              ...store.getState().userPreferences,
-              theme: currentTheme as 'light' | 'dark' | 'system',
-            }));
+            dispatch(
+              hydratePreferences({
+                // keep other preference defaults by reading from store state
+                ...store.getState().userPreferences,
+                theme: currentTheme as 'light' | 'dark' | 'system',
+              }),
+            );
             return;
           }
         }

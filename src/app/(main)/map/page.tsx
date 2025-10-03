@@ -178,68 +178,70 @@ export default function MapPage() {
       {/* Search bar moved to bottom (replaces stats banner) - top search removed */}
 
       {/* Map Controls */}
-      <div className={`absolute top-4 right-4 z-10 flex flex-col gap-3 pointer-events-auto`}>
+      <div className={`absolute top-4 right-4 z-10 flex flex-col gap-2 pointer-events-auto`}>
         {/* Center on User */}
-        <div className="">
-          <Button
-            onClick={centerOnUser}
-            className="min-w-[44px] min-h-[44px] p-0"
-            disabled={!isLocationEnabled && !userLocation}
-            aria-label="Center on user"
-          >
-            <FaLocationArrow className="h-5 w-5" />
-          </Button>
-        </div>
+        <Button
+          onClick={centerOnUser}
+          disabled={!isLocationEnabled && !userLocation}
+          aria-label="Center on user"
+          className="min-w-[48px] min-h-[48px] p-0 bg-gradient-to-br from-accent/90 to-accent backdrop-blur-md shadow-medium rounded-xl border border-accent/30 hover:scale-105 transition-all duration-300"
+        >
+          <FaLocationArrow className="h-5 w-5 text-white" />
+        </Button>
 
-        {/* Custom Zoom Controls (icon-only, no background) */}
-        <div className="flex flex-col items-center gap-2">
+        {/* Zoom Controls Container */}
+        <div className="flex flex-col items-center gap-1.5 bg-surface/90 backdrop-blur-md rounded-xl shadow-medium border border-primary/20 p-1.5">
           <Button
             onClick={() => dispatch(setMapView({ center: mapCenter, zoom: mapZoom + 1 }))}
-            className="min-w-[44px] min-h-[44px] p-0"
+            variant="ghost"
+            className="min-w-[40px] min-h-[40px] p-0 hover:bg-primary/10 rounded-lg transition-colors"
             aria-label="Zoom in"
           >
-            <HiOutlinePlus className="h-5 w-5" />
+            <HiOutlinePlus className="h-5 w-5 text-primary" />
           </Button>
+          <div className="w-full h-px bg-marble-200/50" />
           <Button
             onClick={() =>
               dispatch(setMapView({ center: mapCenter, zoom: Math.max(1, mapZoom - 1) }))
             }
-            className="min-w-[44px] min-h-[44px] p-0"
+            variant="ghost"
+            className="min-w-[40px] min-h-[40px] p-0 hover:bg-primary/10 rounded-lg transition-colors"
             aria-label="Zoom out"
           >
-            <HiOutlineMinus className="h-5 w-5" />
-          </Button>
-
-          <Button
-            className="min-w-[44px] min-h-[44px] p-0"
-            aria-label="Cambia mappa"
-            onClick={() => {
-              const order: Array<'default' | 'satellite' | 'terrain' | 'dark'> = [
-                'default',
-                'satellite',
-                'terrain',
-                'dark',
-              ];
-              const current = mapStyle ?? 'default';
-              const idx = order.indexOf(current);
-              const next = order[(idx + 1) % order.length];
-              dispatch(setMapStyle(next));
-            }}
-          >
-            {(() => {
-              switch (mapStyle) {
-                case 'satellite':
-                  return <FaSatellite className="h-5 w-5" />;
-                case 'terrain':
-                  return <FaTree className="h-5 w-5" />;
-                case 'dark':
-                  return <FaMoon className="h-5 w-5" />;
-                default:
-                  return <FaGlobe className="h-5 w-5" />;
-              }
-            })()}
+            <HiOutlineMinus className="h-5 w-5 text-primary" />
           </Button>
         </div>
+
+        {/* Map Style Switcher */}
+        <Button
+          aria-label="Change map style"
+          onClick={() => {
+            const order: Array<'default' | 'satellite' | 'terrain' | 'dark'> = [
+              'default',
+              'satellite',
+              'terrain',
+              'dark',
+            ];
+            const current = mapStyle ?? 'default';
+            const idx = order.indexOf(current);
+            const next = order[(idx + 1) % order.length];
+            dispatch(setMapStyle(next));
+          }}
+          className="min-w-[48px] min-h-[48px] p-0 bg-surface/90 backdrop-blur-md shadow-medium rounded-xl border border-secondary/20 hover:scale-105 transition-all duration-300 hover:border-secondary/40"
+        >
+          {(() => {
+            switch (mapStyle) {
+              case 'satellite':
+                return <FaSatellite className="h-5 w-5 text-secondary" />;
+              case 'terrain':
+                return <FaTree className="h-5 w-5 text-accent" />;
+              case 'dark':
+                return <FaMoon className="h-5 w-5 text-primary" />;
+              default:
+                return <FaGlobe className="h-5 w-5 text-primary" />;
+            }
+          })()}
+        </Button>
       </div>
 
       {/* Map Container */}
@@ -261,41 +263,68 @@ export default function MapPage() {
 
       {/* Loading Overlay */}
       {isLoading && (
-        <div className="absolute inset-0 bg-surface/75 flex items-center justify-center z-20">
-          <Card padding="lg" className="bg-surface rounded-lg shadow-lg flex items-center gap-3">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-            <span className="text-muted">Loading map data...</span>
+        <div className="absolute inset-0 bg-surface/80 backdrop-blur-sm flex items-center justify-center z-20">
+          <Card
+            padding="lg"
+            variant="glass"
+            className="bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20 rounded-2xl shadow-medium flex items-center gap-3"
+          >
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+            <div>
+              <span className="text-foreground font-medium">Loading map data</span>
+              <div className="text-xs text-muted mt-0.5">Please wait...</div>
+            </div>
           </Card>
         </div>
       )}
 
       {/* Search and Filter Bar (moved to bottom) */}
-      <div className={`absolute bottom-4 left-4 right-4 z-10 rounded-lg shadow-lg`}>
-        <div className="flex gap-2 items-center">
-          <div className="flex-1 relative">
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted text-sm" />
-            <Input
-              type="text"
-              placeholder="Search tracks, itineraries, or companies..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pr-4 py-2 w-full bg-surface"
-            />
-          </div>
-          <Button size="sm" onClick={() => setShowFilters(!showFilters)} className="px-3">
-            <FaFilter />
-          </Button>
-        </div>
-
-        {/* Filter Options */}
-        {showFilters && (
-          <Card padding="sm" className="mt-3 bg-surface">
-            <div className="text-sm text-muted">
-              Showing {filteredPois.length} of {pois.length} locations
+      <div className={`absolute bottom-4 left-4 right-4 z-10`}>
+        <div className="bg-surface/95 backdrop-blur-md rounded-2xl shadow-soft border border-primary/20 p-3">
+          <div className="flex gap-2 items-center">
+            <div className="flex-1 relative">
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <FaSearch className="text-primary text-sm" />
+              </div>
+              <Input
+                type="text"
+                placeholder="Search tracks, itineraries..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-12 pr-4 py-2 w-full bg-transparent border-0 focus:ring-0 focus:outline-none text-foreground placeholder:text-muted"
+              />
             </div>
-            {/* TODO: Add more filter options */}
-          </Card>
-        )}
+            <Button
+              size="sm"
+              onClick={() => setShowFilters(!showFilters)}
+              className={`px-3 min-w-[44px] min-h-[44px] rounded-xl transition-all ${showFilters ? 'bg-primary text-white' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}
+            >
+              <FaFilter />
+            </Button>
+          </div>
+
+          {/* Filter Options */}
+          {showFilters && (
+            <div className="mt-3 pt-3 border-t border-marble-200/50">
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-muted">
+                  Showing <span className="font-medium text-primary">{filteredPois.length}</span> of{' '}
+                  {pois.length} locations
+                </div>
+                {searchTerm && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSearchTerm('')}
+                    className="text-xs text-muted hover:text-foreground"
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

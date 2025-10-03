@@ -115,25 +115,44 @@ export default function RegisterPage() {
       <div className="space-y-6">
         {/* Success Message */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-surface rounded-full flex items-center justify-center mb-4">
-            <HiCheck className="w-8 h-8 text-success" aria-hidden="true" />
+          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-accent/20 to-accent/10 rounded-2xl flex items-center justify-center mb-4 shadow-soft">
+            <div className="w-16 h-16 bg-gradient-to-br from-accent to-accent/80 rounded-xl flex items-center justify-center">
+              <HiCheck className="w-10 h-10 text-white" aria-hidden="true" />
+            </div>
           </div>
-          <h2 className="text-2xl font-bold text-foreground">Account Created!</h2>
-          <p className="text-sm text-muted mt-2">
-            We've sent a verification email to <strong>{formData.email}</strong>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <div className="w-1 h-7 bg-gradient-to-b from-primary to-accent rounded-full" />
+            <h2 className="text-2xl font-bold text-foreground">Account Created!</h2>
+          </div>
+          <p className="text-sm text-muted">
+            We've sent a verification email to{' '}
+            <span className="text-primary font-semibold">{formData.email}</span>
           </p>
         </div>
 
         {/* Instructions */}
-        <Card padding="md" className="rounded-lg bg-surface border border-muted">
-          <div className="space-y-2 text-sm text-muted">
-            <p>
-              <strong>What's next?</strong>
+        <Card
+          padding="md"
+          className="rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20 shadow-soft"
+        >
+          <div className="space-y-3 text-sm">
+            <p className="font-semibold text-foreground flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+              What's next?
             </p>
-            <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>Check your email inbox (and spam folder)</li>
-              <li>Click the verification link in the email</li>
-              <li>Sign in to start exploring audio guides</li>
+            <ul className="space-y-2 ml-4">
+              <li className="flex items-start gap-2 text-muted">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                <span>Check your email inbox (and spam folder)</span>
+              </li>
+              <li className="flex items-start gap-2 text-muted">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                <span>Click the verification link in the email</span>
+              </li>
+              <li className="flex items-start gap-2 text-muted">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                <span>Sign in to start exploring audio guides</span>
+              </li>
             </ul>
           </div>
         </Card>
@@ -143,7 +162,7 @@ export default function RegisterPage() {
           <Button
             variant="primary"
             size="lg"
-            className="w-full"
+            className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-soft"
             onClick={() => router.push('/login')}
           >
             Go to Sign In
@@ -164,7 +183,7 @@ export default function RegisterPage() {
                 });
                 setAcceptTerms(false);
               }}
-              className="text-sm text-primary hover:text-primary transition-colors"
+              className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
             >
               Register a different account
             </button>
@@ -177,11 +196,12 @@ export default function RegisterPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-foreground">Create Account</h2>
-        <p className="text-sm text-muted mt-2">
-          Join MyAudioG and discover amazing audio experiences
-        </p>
+      <div className="text-center space-y-2">
+        <div className="flex items-center justify-center gap-2">
+          <div className="w-1 h-8 bg-gradient-to-b from-primary to-accent rounded-full" />
+          <h2 className="text-2xl font-bold text-foreground">Create Account</h2>
+        </div>
+        <p className="text-sm text-muted">Join MyAudioG and discover amazing audio experiences</p>
       </div>
 
       {/* Registration Form */}
@@ -230,7 +250,7 @@ export default function RegisterPage() {
           className="resize-none"
         />
 
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <Input
             type={showPassword ? 'text' : 'password'}
             label="Password"
@@ -241,12 +261,12 @@ export default function RegisterPage() {
             autoComplete="new-password"
             error={validationErrors.password}
           />
-          <p className="text-xs text-muted">
+          <p className="text-xs text-muted leading-relaxed">
             Must contain uppercase, lowercase, and numbers (minimum 6 characters)
           </p>
         </div>
 
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <Input
             type={showPassword ? 'text' : 'password'}
             label="Confirm Password"
@@ -260,13 +280,13 @@ export default function RegisterPage() {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="text-xs text-primary transition-colors"
+            className="text-xs text-primary hover:text-primary/80 transition-colors font-medium"
           >
             {showPassword ? 'Hide passwords' : 'Show passwords'}
           </button>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 pt-2">
           <div className="flex items-start space-x-2">
             <Checkbox
               checked={acceptTerms}
@@ -275,23 +295,31 @@ export default function RegisterPage() {
             />
             <label htmlFor="accept-terms" className="text-sm text-muted leading-5">
               I agree to the{' '}
-              <Link href="/terms" className="text-primary transition-colors">
+              <Link
+                href="/terms"
+                className="text-primary hover:text-primary/80 transition-colors font-medium"
+              >
                 Terms and Conditions
               </Link>{' '}
               and{' '}
-              <Link href="/privacy" className="text-primary transition-colors">
+              <Link
+                href="/privacy"
+                className="text-primary hover:text-primary/80 transition-colors font-medium"
+              >
                 Privacy Policy
               </Link>
             </label>
           </div>
           {validationErrors.terms && (
-            <p className="text-sm text-error-600 ml-6">{validationErrors.terms}</p>
+            <div className="ml-6 p-2 rounded-lg bg-error/10">
+              <p className="text-sm text-error font-medium">{validationErrors.terms}</p>
+            </div>
           )}
         </div>
 
         {error && (
-          <div className="p-3 rounded-lg bg-surface border border-carbon-200">
-            <p className="text-sm text-error">{error}</p>
+          <div className="p-3 rounded-xl bg-gradient-to-br from-error/10 to-error/5 border border-error/30 shadow-soft">
+            <p className="text-sm text-error font-medium">{error}</p>
           </div>
         )}
 
@@ -299,7 +327,7 @@ export default function RegisterPage() {
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full"
+          className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-soft"
           loading={isLoading}
           disabled={isLoading}
         >
@@ -308,10 +336,13 @@ export default function RegisterPage() {
       </form>
 
       {/* Sign In Link */}
-      <div className="text-center">
+      <div className="text-center pt-2">
         <p className="text-sm text-muted">
           Already have an account?{' '}
-          <Link href="/login" className="text-primary transition-colors font-medium">
+          <Link
+            href="/login"
+            className="text-primary hover:text-primary/80 transition-colors font-semibold"
+          >
             Sign in
           </Link>
         </p>

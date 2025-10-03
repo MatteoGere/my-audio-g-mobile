@@ -148,7 +148,7 @@ export function MiniPlayer() {
         {/* Progress Bar */}
         <div
           ref={progressBarRef}
-          className="group relative h-1.5 w-full cursor-pointer overflow-hidden rounded-full bg-muted/40 shadow-sm transition-[height] duration-200 hover:h-2"
+          className="group relative h-2 w-full cursor-pointer overflow-hidden rounded-full bg-gradient-to-r from-marble-100/40 to-primary/10 shadow-soft transition-[height] duration-200 hover:h-2.5"
           onClick={handleProgressClick}
           onMouseDown={handleProgressMouseDown}
           role="progressbar"
@@ -157,11 +157,11 @@ export function MiniPlayer() {
           aria-valuemax={100}
         >
           <div
-            className="absolute inset-y-0 left-0 rounded-full bg-primary transition-all duration-300"
+            className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary via-accent to-secondary transition-all duration-300"
             style={{ width: `${progress}%` }}
           >
             <span
-              className={`absolute right-0 top-1/2 h-3 w-3 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary-foreground shadow-md transition-opacity duration-200 ${
+              className={`absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 translate-x-1/2 rounded-full bg-gradient-to-br from-primary to-accent shadow-medium transition-opacity duration-200 ${
                 isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
               }`}
             />
@@ -171,38 +171,43 @@ export function MiniPlayer() {
         {/* Main Player Card */}
         <Card
           padding="sm"
-          className="rounded-2xl border border-muted/60 bg-surface/95 backdrop-blur-xl shadow-lg"
+          className="rounded-2xl border border-primary/20 bg-gradient-to-r from-surface/95 to-primary/5 backdrop-blur-xl shadow-strong"
         >
           {/* Top Row: Track Info and Essential Controls */}
           <div className="flex items-center gap-3">
             {/* Track Image */}
-            <div className="flex-shrink-0" onClick={handleOpenFullPlayer}>
-              <Avatar
-                size="lg"
-                src={
-                  currentTrack?.image_file_id && currentTrackImageUrl ? currentTrackImageUrl : ''
-                }
-                alt={currentTrack?.name || 'Track'}
-                fallback={currentTrack?.name || 'Track'}
-                className="h-12 w-12 ring-2 ring-surface/60"
-              >
-                🎵
-              </Avatar>
+            <div className="flex-shrink-0 cursor-pointer" onClick={handleOpenFullPlayer}>
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl blur-sm" />
+                <Avatar
+                  size="lg"
+                  src={
+                    currentTrack?.image_file_id && currentTrackImageUrl ? currentTrackImageUrl : ''
+                  }
+                  alt={currentTrack?.name || 'Track'}
+                  fallback={currentTrack?.name || 'Track'}
+                  className="relative h-12 w-12 ring-2 ring-primary/30"
+                >
+                  🎵
+                </Avatar>
+              </div>
             </div>
 
             {/* Track Info */}
-            <div className="flex-1 min-w-0" onClick={handleOpenFullPlayer}>
+            <div className="flex-1 min-w-0 cursor-pointer" onClick={handleOpenFullPlayer}>
               <p className="truncate text-sm font-semibold text-foreground leading-tight">
                 {currentTrack.name || 'Audio Track'}
               </p>
               <div className="flex items-center gap-1.5 text-xs text-muted mt-0.5">
-                <span>{formatTime(playbackState.currentTime)}</span>
+                <span className="font-medium text-secondary">
+                  {formatTime(playbackState.currentTime)}
+                </span>
                 <span className="text-muted/60">/</span>
                 <span>{formatTime(currentTrack.duration || 0)}</span>
                 {queue.length > 1 && (
                   <>
                     <span className="text-muted/60">•</span>
-                    <span>
+                    <span className="px-1.5 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] font-medium">
                       {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1}/
                       {queue.length}
                     </span>
@@ -212,12 +217,12 @@ export function MiniPlayer() {
             </div>
 
             {/* Essential Controls - Primary Actions */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               {/* Previous Button */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-9 w-9 rounded-full p-0 shrink-0"
+                className="h-9 w-9 rounded-xl p-0 shrink-0 bg-secondary/10 hover:bg-secondary/20 text-secondary transition-all"
                 onClick={handlePrevious}
                 disabled={queue.length <= 1}
                 title="Previous track"
@@ -229,7 +234,7 @@ export function MiniPlayer() {
               <Button
                 variant="primary"
                 size="sm"
-                className="h-10 w-10 rounded-full p-0 shadow-lg shrink-0"
+                className="h-11 w-11 rounded-xl p-0 shadow-medium shrink-0 bg-gradient-to-br from-primary via-accent to-secondary hover:scale-105 transition-all"
                 onClick={handlePlayPause}
                 title={playbackState.isPlaying ? 'Pause' : 'Play'}
               >
@@ -246,7 +251,7 @@ export function MiniPlayer() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-9 w-9 rounded-full p-0 shrink-0"
+                className="h-9 w-9 rounded-xl p-0 shrink-0 bg-accent/10 hover:bg-accent/20 text-accent transition-all"
                 onClick={handleNext}
                 disabled={queue.length <= 1}
                 title="Next track"
@@ -256,17 +261,17 @@ export function MiniPlayer() {
             </div>
 
             {/* Secondary Controls - Always Visible */}
-            <div className="flex items-center gap-0.5 shrink-0">
+            <div className="flex items-center gap-1 shrink-0">
               {/* Mute Button - Hidden on very small screens */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="hidden xs:flex h-8 w-8 rounded-full p-0"
+                className="hidden xs:flex h-8 w-8 rounded-lg p-0 bg-marble-100/50 hover:bg-marble-200/50 transition-all"
                 onClick={handleMuteToggle}
                 title={playbackState.isMuted ? 'Unmute' : 'Mute'}
               >
                 {playbackState.isMuted ? (
-                  <HiOutlineSpeakerXMark className="h-3.5 w-3.5" />
+                  <HiOutlineSpeakerXMark className="h-3.5 w-3.5 text-error" />
                 ) : (
                   <HiOutlineSpeakerWave className="h-3.5 w-3.5" />
                 )}
@@ -276,7 +281,7 @@ export function MiniPlayer() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 rounded-full p-0"
+                className="h-8 w-8 rounded-lg p-0 bg-primary/10 hover:bg-primary/20 text-primary transition-all"
                 onClick={handleOpenFullPlayer}
                 title="Open full player"
               >
@@ -287,7 +292,7 @@ export function MiniPlayer() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 rounded-full p-0"
+                className="h-8 w-8 rounded-lg p-0 bg-error/10 hover:bg-error/20 text-error transition-all"
                 onClick={handleCloseMiniPlayer}
                 title="Close player"
               >

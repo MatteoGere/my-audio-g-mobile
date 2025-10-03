@@ -303,16 +303,17 @@ export default function AudioPlayerPage() {
         <div className="mx-auto flex w-full max-w-lg flex-col gap-5 px-5 pt-12">
           <Card
             padding="lg"
-            className="space-y-6 rounded-3xl border border-muted/40 bg-surface/90 shadow-lg"
+            variant="glass"
+            className="space-y-6 rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5 shadow-medium"
           >
-            <div className="h-6 w-32 animate-pulse rounded-full bg-muted/30" />
-            <div className="aspect-square w-full animate-pulse rounded-2xl bg-muted/20" />
-            <div className="mx-auto h-4 w-1/2 animate-pulse rounded-full bg-muted/30" />
-            <div className="h-2 w-full animate-pulse rounded-full bg-muted/20" />
+            <div className="h-6 w-32 animate-pulse rounded-full bg-gradient-to-r from-primary/30 to-accent/30" />
+            <div className="aspect-square w-full animate-pulse rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10" />
+            <div className="mx-auto h-4 w-1/2 animate-pulse rounded-full bg-gradient-to-r from-secondary/30 to-primary/30" />
+            <div className="h-2 w-full animate-pulse rounded-full bg-gradient-to-r from-primary/20 to-accent/20" />
             <div className="flex items-center justify-center gap-6">
-              <div className="h-12 w-12 animate-pulse rounded-full bg-muted/20" />
-              <div className="h-16 w-16 animate-pulse rounded-full bg-muted/30" />
-              <div className="h-12 w-12 animate-pulse rounded-full bg-muted/20" />
+              <div className="h-14 w-14 animate-pulse rounded-full bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/30" />
+              <div className="h-20 w-20 animate-pulse rounded-full bg-gradient-to-br from-primary/30 via-accent/30 to-secondary/30 border-2 border-primary/30" />
+              <div className="h-14 w-14 animate-pulse rounded-full bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/30" />
             </div>
           </Card>
         </div>
@@ -327,14 +328,22 @@ export default function AudioPlayerPage() {
         <div className="mx-auto flex w-full max-w-lg flex-col px-5 pt-12">
           <Card
             padding="lg"
-            className="space-y-4 rounded-3xl border border-error/30 bg-error/10 text-center shadow-lg"
+            variant="glass"
+            className="space-y-4 rounded-3xl border border-error/30 bg-gradient-to-br from-error/10 to-error/5 text-center shadow-medium"
           >
-            <h2 className="text-xl font-semibold text-foreground">Audio not available</h2>
-            <p className="text-sm text-muted">
+            <div className="w-20 h-20 mx-auto rounded-2xl bg-error/20 flex items-center justify-center backdrop-blur-sm">
+              <span className="text-4xl">⚠️</span>
+            </div>
+            <h2 className="text-xl font-bold text-foreground">Audio not available</h2>
+            <p className="text-sm text-muted leading-relaxed">
               Unable to load the audio tracks for this itinerary. Please try again later.
             </p>
-            <div className="flex justify-center">
-              <Button variant="primary" onClick={() => router.back()}>
+            <div className="flex justify-center pt-2">
+              <Button
+                variant="primary"
+                onClick={() => router.back()}
+                className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-soft"
+              >
                 Go back
               </Button>
             </div>
@@ -349,34 +358,49 @@ export default function AudioPlayerPage() {
       id: 'details',
       label: 'Dettagli',
       content: (
-        <Card padding="lg">
-          <div className="space-y-2">
-            <h3 className="text-base font-semibold text-foreground">Dettagli traccia</h3>
+        <Card
+          padding="lg"
+          variant="glass"
+          className="bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20"
+        >
+          <div className="space-y-3 mb-5">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-6 bg-gradient-to-b from-primary to-accent rounded-full" />
+              <h3 className="text-base font-bold text-foreground">Dettagli traccia</h3>
+            </div>
             <p className="text-sm leading-relaxed text-muted">
               {currentTrack?.description || 'Nessuna descrizione disponibile per questa traccia.'}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="flex flex-col gap-1">
-              <span className="text-xs uppercase tracking-wide text-muted/80">Durata</span>
-              <span className="font-semibold text-foreground">
+            <div className="flex flex-col gap-2 p-3 rounded-xl bg-secondary/10 border border-secondary/20">
+              <span className="text-xs uppercase tracking-wide text-secondary font-semibold">
+                ⏱ Durata
+              </span>
+              <span className="font-bold text-foreground">
                 {formatTime(currentTrack?.duration || 0)}
               </span>
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs uppercase tracking-wide text-muted/80">Posizione</span>
-              <span className="font-semibold text-foreground">
+            <div className="flex flex-col gap-2 p-3 rounded-xl bg-primary/10 border border-primary/20">
+              <span className="text-xs uppercase tracking-wide text-primary font-semibold">
+                📍 Posizione
+              </span>
+              <span className="font-bold text-foreground">
                 {currentTrackIndex + 1} / {tracks?.length || 0}
               </span>
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs uppercase tracking-wide text-muted/80">Itinerario</span>
-              <span className="font-semibold text-foreground">{itinerary?.name || '—'}</span>
+            <div className="flex flex-col gap-2 p-3 rounded-xl bg-accent/10 border border-accent/20">
+              <span className="text-xs uppercase tracking-wide text-accent font-semibold">
+                🎧 Itinerario
+              </span>
+              <span className="font-bold text-foreground truncate">{itinerary?.name || '—'}</span>
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs uppercase tracking-wide text-muted/80">Preferito</span>
-              <span className="font-semibold text-foreground">
+            <div className="flex flex-col gap-2 p-3 rounded-xl bg-marble-100/50 border border-marble-200/50">
+              <span className="text-xs uppercase tracking-wide text-muted font-semibold">
+                ❤️ Preferito
+              </span>
+              <span className="font-bold text-foreground">
                 {isCurrentTrackFavorite ? 'Sì' : 'No'}
               </span>
             </div>
@@ -393,9 +417,16 @@ export default function AudioPlayerPage() {
             <QueueManager isVisible={true} onClose={() => setIsPanelOpen(false)} />
           </div>
         ) : (
-          <Card padding="lg">
-            <h3 className="text-base font-semibold text-foreground">Coda vuota</h3>
-            <p className="text-sm text-muted">
+          <Card
+            padding="lg"
+            variant="glass"
+            className="text-center bg-gradient-to-br from-marble-100/50 to-marble-200/50 border border-marble-200/50"
+          >
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-marble-200/50 flex items-center justify-center backdrop-blur-sm">
+              <span className="text-3xl">🎵</span>
+            </div>
+            <h3 className="text-base font-bold text-foreground mb-2">Coda vuota</h3>
+            <p className="text-sm text-muted leading-relaxed">
               Aggiungi altre tracce all&apos;itinerario per popolare la coda di riproduzione.
             </p>
           </Card>
@@ -406,49 +437,60 @@ export default function AudioPlayerPage() {
       label: 'Azioni',
       content: (
         <div className="space-y-4">
-          <Card padding="lg" className="space-y-4">
-            <h3 className="text-base font-semibold text-foreground">Azioni rapide</h3>
+          <Card
+            padding="lg"
+            variant="glass"
+            className="space-y-4 bg-gradient-to-br from-secondary/5 to-primary/5 border border-secondary/20"
+          >
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-6 bg-gradient-to-b from-secondary to-primary rounded-full" />
+              <h3 className="text-base font-bold text-foreground">Azioni rapide</h3>
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <Button
                 variant="accent"
-                className="flex items-center justify-center gap-2 rounded-2xl"
+                className="flex items-center justify-center gap-2 rounded-xl h-12 bg-gradient-to-br from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 shadow-soft hover:shadow-medium transition-all"
                 onClick={() => setActiveTab('queue')}
               >
-                <HiOutlineQueueList className="h-4 w-4" />
-                <span>Apri coda</span>
+                <HiOutlineQueueList className="h-5 w-5" />
+                <span className="font-medium">Apri coda</span>
               </Button>
               <Button
-                variant="accent"
-                className="flex items-center justify-center gap-2 rounded-2xl"
+                variant={isCurrentTrackFavorite ? 'outline' : 'accent'}
+                className={`flex items-center justify-center gap-2 rounded-xl h-12 transition-all ${isCurrentTrackFavorite ? 'bg-error/10 border-error/30 hover:bg-error/20 text-error' : 'bg-gradient-to-br from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 shadow-soft hover:shadow-medium'}`}
                 onClick={() =>
-                  router.push(`/map?itinerary=${itineraryId}&track=${currentTrack?.id}`)
+                  currentTrack &&
+                  toggleFavorite({
+                    favouriteId: currentTrack.id,
+                    type: 'FAVOURITE-TRACK',
+                  })
                 }
               >
                 {isCurrentTrackFavorite ? (
-                  <HiHeart className="h-4 w-4 text-error" />
+                  <HiHeart className="h-5 w-5" />
                 ) : (
-                  <HiOutlineHeart className="h-4 w-4 text-muted" />
+                  <HiOutlineHeart className="h-5 w-5" />
                 )}
-                <span>
-                  {isCurrentTrackFavorite ? 'Rimuovi preferito' : 'Aggiungi ai preferiti'}
+                <span className="font-medium">
+                  {isCurrentTrackFavorite ? 'Rimuovi' : 'Preferito'}
                 </span>
               </Button>
               <Button
                 variant="secondary"
-                className="flex items-center justify-center gap-2 rounded-2xl"
+                className="flex items-center justify-center gap-2 rounded-xl h-12 bg-gradient-to-br from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 shadow-soft hover:shadow-medium transition-all"
                 onClick={() =>
                   router.push(`/map?itinerary=${itineraryId}&track=${currentTrack?.id}`)
                 }
               >
-                <HiMapPin className="h-4 w-4" />
-                <span>Mappa</span>
+                <HiMapPin className="h-5 w-5" />
+                <span className="font-medium">Mappa</span>
               </Button>
               <Button
                 variant="outline"
-                className="flex items-center justify-center gap-2 rounded-2xl"
+                className="flex items-center justify-center gap-2 rounded-xl h-12 bg-primary/10 border-primary/30 hover:bg-primary/20 text-primary transition-all"
               >
-                <HiShare className="h-4 w-4" />
-                <span>Condividi</span>
+                <HiShare className="h-5 w-5" />
+                <span className="font-medium">Condividi</span>
               </Button>
             </div>
           </Card>
@@ -460,12 +502,12 @@ export default function AudioPlayerPage() {
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="mx-auto flex w-full max-w-lg flex-col gap-6 px-5 pt-6 pb-10">
-        <div className="flex items-center justify-between rounded-2xl border border-muted/40 bg-surface/80 px-4 py-3 text-sm font-semibold text-foreground shadow-sm backdrop-blur-xl">
+        <div className="flex items-center justify-between rounded-2xl border border-primary/20 bg-gradient-to-r from-surface/95 via-surface/90 to-primary/5 px-4 py-3 text-sm font-semibold text-foreground shadow-soft backdrop-blur-xl">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => router.back()}
-            className="h-11 w-11 rounded-full"
+            className="h-11 w-11 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-all"
           >
             <HiChevronLeft className="h-5 w-5" />
           </Button>
@@ -473,9 +515,12 @@ export default function AudioPlayerPage() {
             <span className="text-sm font-semibold text-foreground truncate max-w-48">
               {currentTrack?.name || 'Loading…'}
             </span>
-            <span className="text-xs text-muted/80">
-              {currentTrackIndex + 1} / {tracks?.length || 0}
-            </span>
+            <div className="flex items-center gap-1.5 text-xs">
+              <span className="w-1 h-1 rounded-full bg-accent" />
+              <span className="text-muted/80">
+                {currentTrackIndex + 1} / {tracks?.length || 0}
+              </span>
+            </div>
           </div>
           <Button
             variant="ghost"
@@ -488,7 +533,7 @@ export default function AudioPlayerPage() {
                 setIsPanelOpen(true);
               }
             }}
-            className="h-11 w-11 rounded-full"
+            className={`h-11 w-11 rounded-full transition-all ${isPanelOpen ? 'bg-accent/20 text-accent' : 'bg-accent/10 hover:bg-accent/20 text-accent'}`}
             title={isPanelOpen ? 'Chiudi pannello' : 'Apri coda'}
             aria-pressed={isPanelOpen}
           >
@@ -512,17 +557,24 @@ export default function AudioPlayerPage() {
               className="relative flex h-full w-full max-w-lg flex-col gap-4"
               onClick={(event) => event.stopPropagation()}
             >
-              <div className="flex items-center justify-between rounded-2xl border border-muted/40 bg-surface/95 px-4 py-3 shadow-lg">
-                <div className="flex flex-col text-left">
-                  <span className="text-xs uppercase tracking-wide text-muted">Pannello</span>
-                  <span className="text-sm font-semibold text-foreground">
-                    {TAB_TITLES[activeTab]}
-                  </span>
+              <div className="flex items-center justify-between rounded-2xl border border-primary/20 bg-gradient-to-r from-surface/95 to-primary/5 px-4 py-3 shadow-medium backdrop-blur-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center backdrop-blur-sm">
+                    <span className="text-lg">
+                      {activeTab === 'details' ? '📝' : activeTab === 'queue' ? '🎵' : '⚡'}
+                    </span>
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="text-xs uppercase tracking-wide text-muted">Pannello</span>
+                    <span className="text-sm font-semibold text-foreground">
+                      {TAB_TITLES[activeTab]}
+                    </span>
+                  </div>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-10 w-10 rounded-full"
+                  className="h-10 w-10 rounded-full bg-error/10 hover:bg-error/20 text-error transition-all"
                   onClick={() => setIsPanelOpen(false)}
                   title="Chiudi pannello"
                 >
@@ -530,7 +582,7 @@ export default function AudioPlayerPage() {
                 </Button>
               </div>
 
-              <div className="rounded-2xl border border-muted/40 bg-surface/95 shadow-2xl">
+              <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-surface/95 to-primary/5 shadow-strong backdrop-blur-xl">
                 <div className="max-h-[calc(100vh-12rem)] overflow-y-auto p-4">
                   <Tabs
                     tabs={[
@@ -539,14 +591,12 @@ export default function AudioPlayerPage() {
                       { value: 'actions', label: 'Azioni' },
                     ]}
                     value={activeTab}
-                    onChange={(value) =>
-                      setActiveTab(value as 'details' | 'queue' | 'actions')
-                    }
+                    onChange={(value) => setActiveTab(value as 'details' | 'queue' | 'actions')}
                     variant="pills"
                     fullWidth
                     className="mb-4"
                   />
-                  
+
                   <div className="mt-4">
                     {tabItems.find((item) => item.id === activeTab)?.content}
                   </div>
@@ -558,24 +608,30 @@ export default function AudioPlayerPage() {
 
         <Card
           padding="none"
-          className="mx-auto max-w-xs overflow-hidden rounded-2xl border border-muted/40 bg-surface shadow-lg"
+          variant="glass"
+          className="mx-auto max-w-xs overflow-hidden rounded-3xl border-2 border-primary/20 bg-gradient-to-br from-surface to-primary/5 shadow-medium"
         >
-          <div className="relative flex aspect-square items-center justify-center bg-background/60">
+          <div className="relative flex aspect-square items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5">
             {isBuffering && (
-              <div className="absolute inset-0 flex items-center justify-center bg-foreground/10 backdrop-blur-sm">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary/40 border-t-primary" />
+              <div className="absolute inset-0 flex items-center justify-center bg-foreground/10 backdrop-blur-sm z-10">
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary/40 border-t-primary" />
               </div>
             )}
             {currentTrack?.image_file_id && currentTrackImageUrl ? (
-              <img
-                key={`image-${currentTrack.id}-${currentTrackImageKey}`}
-                src={currentTrackImageUrl}
-                alt={currentTrack.name || 'Track visual'}
-                className="h-full w-full object-cover"
-                loading="lazy"
-              />
+              <>
+                <img
+                  key={`image-${currentTrack.id}-${currentTrackImageKey}`}
+                  src={currentTrackImageUrl}
+                  alt={currentTrack.name || 'Track visual'}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+              </>
             ) : (
-              <span className="text-5xl">🎵</span>
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center backdrop-blur-sm">
+                <span className="text-6xl">🎵</span>
+              </div>
             )}
           </div>
         </Card>
@@ -583,7 +639,7 @@ export default function AudioPlayerPage() {
         <div className="space-y-4">
           <div className="space-y-2.5">
             <div
-              className="group relative h-1.5 w-full cursor-pointer overflow-hidden rounded-full bg-muted/40 shadow-sm"
+              className="group relative h-2 w-full cursor-pointer overflow-hidden rounded-full bg-gradient-to-r from-primary/10 via-accent/10 to-secondary/10 shadow-sm border border-primary/20"
               onClick={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
                 const offsetX = e.clientX - rect.left;
@@ -596,59 +652,68 @@ export default function AudioPlayerPage() {
               aria-valuemax={100}
             >
               <div
-                className="absolute inset-y-0 left-0 rounded-full bg-primary transition-all duration-300 ease-out"
+                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary via-accent to-secondary transition-all duration-300 ease-out"
                 style={{ width: `${progress}%` }}
               >
-                <span className="absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary-foreground shadow-md opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+                <span className="absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 translate-x-1/2 rounded-full bg-white shadow-medium opacity-0 transition-opacity duration-200 group-hover:opacity-100 border-2 border-primary" />
               </div>
             </div>
-            <div className="flex justify-between text-xs text-muted">
-              <span>{formatTime(audioState.playbackState.currentTime)}</span>
-              <span>{formatTime(currentTrack?.duration || 0)}</span>
+            <div className="flex justify-between text-xs font-medium">
+              <span className="text-primary">
+                {formatTime(audioState.playbackState.currentTime)}
+              </span>
+              <span className="text-muted">{formatTime(currentTrack?.duration || 0)}</span>
             </div>
           </div>
 
           <div className="flex items-center justify-center gap-6 py-2">
             <Button
               variant="ghost"
-              size="lg"
-              className="h-14 w-14 rounded-full bg-background/50 shadow-lg hover:shadow-xl"
+              size="sm"
+              className="h-9 w-9 rounded-xl p-0 shrink-0 bg-secondary/10 hover:bg-secondary/20 text-secondary transition-all"
               onClick={handlePreviousTrack}
               title="Previous track"
             >
-              <HiBackward className="h-6 w-6" />
+              <HiBackward className="h-4 w-4" />
             </Button>
+
             <Button
               variant="primary"
               size="lg"
-              className="h-20 w-20 rounded-full shadow-2xl hover:shadow-3xl"
+              className="h-24 w-24 rounded-full bg-gradient-to-br from-primary via-accent to-secondary shadow-medium hover:shadow-strong hover:scale-105 transition-all duration-300"
               onClick={handlePlayPause}
               disabled={isBuffering || urlsLoading}
               title={audioState.playbackState.isPlaying ? 'Pause playback' : 'Start playback'}
             >
               {isBuffering ? (
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-foreground/60 border-t-transparent" />
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/60 border-t-transparent" />
               ) : audioState.playbackState.isPlaying ? (
-                <HiPause className="h-8 w-8" />
+                <HiPause className="h-10 w-10 text-white" />
               ) : (
-                <HiPlay className="h-8 w-8 translate-x-[2px]" />
+                <HiPlay className="h-10 w-10 text-white translate-x-[2px]" />
               )}
             </Button>
+
             <Button
               variant="ghost"
-              size="lg"
-              className="h-14 w-14 rounded-full bg-background/50 shadow-lg hover:shadow-xl"
+              size="sm"
+              className="h-9 w-9 rounded-xl p-0 shrink-0 bg-accent/10 hover:bg-accent/20 text-accent transition-all"
               onClick={handleNextTrack}
               title="Next track"
             >
-              <HiForward className="h-6 w-6" />
+              <HiForward className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
         <div className="space-y-4">
-          <div className="text-center space-y-2">
-            <p className="text-sm text-muted">{itinerary?.name || 'Audio Tour'}</p>
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20">
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+              <p className="text-sm font-medium text-foreground">
+                {itinerary?.name || 'Audio Tour'}
+              </p>
+            </div>
           </div>
 
           {/* Primary actions row - Speed, Queue, Details */}
@@ -657,7 +722,7 @@ export default function AudioPlayerPage() {
               <Button
                 variant="outline"
                 size="sm"
-                className="h-11 w-20 rounded-xl font-medium"
+                className="h-11 w-20 rounded-xl font-semibold bg-gradient-to-br from-secondary/10 to-secondary/5 border-secondary/30 hover:bg-secondary/10 text-secondary transition-all"
                 onClick={() => setShowSpeedMenu(!showSpeedMenu)}
                 title="Velocità riproduzione"
               >
@@ -666,12 +731,13 @@ export default function AudioPlayerPage() {
               {showSpeedMenu && (
                 <Card
                   padding="sm"
-                  className="absolute bottom-full left-1/2 z-30 mb-3 w-32 -translate-x-1/2 space-y-1 rounded-xl border border-muted/40 bg-surface/98 shadow-2xl backdrop-blur-lg"
+                  variant="glass"
+                  className="absolute bottom-full left-1/2 z-30 mb-3 w-32 -translate-x-1/2 space-y-1 rounded-xl border border-secondary/20 bg-gradient-to-br from-surface/98 to-secondary/5 shadow-strong backdrop-blur-lg"
                 >
                   {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
                     <button
                       key={speed}
-                      className="w-full rounded-lg px-3 py-2 text-center text-sm font-semibold text-foreground hover:bg-background/80"
+                      className="w-full rounded-lg px-3 py-2 text-center text-sm font-semibold text-foreground hover:bg-secondary/10 hover:text-secondary transition-all"
                       onClick={() => handleSpeedChange(speed)}
                     >
                       {speed}x
@@ -684,7 +750,7 @@ export default function AudioPlayerPage() {
             <Button
               variant="outline"
               size="sm"
-              className="h-11 px-4 rounded-xl font-medium"
+              className="h-11 px-4 rounded-xl font-medium bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30 hover:bg-primary/10 text-primary transition-all"
               onClick={() => {
                 setActiveTab('queue');
                 setIsPanelOpen(true);
@@ -698,7 +764,7 @@ export default function AudioPlayerPage() {
             <Button
               variant="outline"
               size="sm"
-              className="h-11 px-4 rounded-xl font-medium"
+              className="h-11 px-4 rounded-xl font-medium bg-gradient-to-br from-accent/10 to-accent/5 border-accent/30 hover:bg-accent/10 text-accent transition-all"
               onClick={() => {
                 setActiveTab('details');
                 setIsPanelOpen(true);
@@ -715,12 +781,12 @@ export default function AudioPlayerPage() {
               position="top"
               align="center"
               offset={12}
-              className="w-36 rounded-xl border border-muted/40 bg-surface/98 shadow-2xl backdrop-blur-lg"
+              className="w-36 rounded-xl border border-primary/20 bg-gradient-to-br from-surface/98 to-primary/5 shadow-strong backdrop-blur-lg"
               trigger={
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-11 w-16 rounded-xl"
+                  className="h-11 w-16 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30 hover:bg-primary/10 text-primary transition-all"
                   title="Volume"
                   aria-label="Regola volume"
                 >
@@ -733,9 +799,9 @@ export default function AudioPlayerPage() {
               }
               content={
                 <div className="flex flex-col gap-3">
-                  <div className="flex items-center justify-between text-xs font-semibold text-muted">
-                    <span>Volume</span>
-                    <span className="text-foreground">
+                  <div className="flex items-center justify-between text-xs font-semibold">
+                    <span className="text-muted">Volume</span>
+                    <span className="text-primary">
                       {Math.round(audioState.playbackState.volume * 100)}%
                     </span>
                   </div>
@@ -745,7 +811,7 @@ export default function AudioPlayerPage() {
                     max="100"
                     value={Math.round(audioState.playbackState.volume * 100)}
                     onChange={(e) => handleVolumeChange(parseInt(e.target.value, 10))}
-                    className="h-2 w-full cursor-pointer appearance-none rounded-full bg-muted/30"
+                    className="h-2 w-full cursor-pointer appearance-none rounded-full bg-primary/20"
                     aria-label="Livello volume"
                   />
                 </div>
@@ -755,7 +821,7 @@ export default function AudioPlayerPage() {
             <Button
               variant="outline"
               size="sm"
-              className="h-11 w-16 rounded-xl"
+              className={`h-11 w-16 rounded-xl transition-all ${isCurrentTrackFavorite ? 'bg-gradient-to-br from-error/20 to-error/10 border-error/30 hover:bg-error/20' : 'bg-gradient-to-br from-marble-100/50 to-marble-200/50 border-marble-200/30 hover:bg-marble-100'}`}
               onClick={() =>
                 currentTrack &&
                 toggleFavorite({
@@ -767,16 +833,16 @@ export default function AudioPlayerPage() {
               title={isCurrentTrackFavorite ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}
             >
               {isCurrentTrackFavorite ? (
-                <HiHeart className="h-5 w-5 text-red-500" />
+                <HiHeart className="h-5 w-5 text-error" />
               ) : (
-                <HiOutlineHeart className="h-5 w-5" />
+                <HiOutlineHeart className="h-5 w-5 text-muted" />
               )}
             </Button>
 
             <Button
               variant="outline"
               size="sm"
-              className="h-11 px-4 rounded-xl font-medium"
+              className="h-11 px-4 rounded-xl font-medium bg-gradient-to-br from-secondary/10 to-secondary/5 border-secondary/30 hover:bg-secondary/10 text-secondary transition-all"
               onClick={() => {
                 setActiveTab('actions');
                 setIsPanelOpen(true);
@@ -791,22 +857,30 @@ export default function AudioPlayerPage() {
         {audioState.audioError && (
           <Card
             padding="md"
-            className="rounded-2xl border border-error/40 bg-error/10 text-error shadow-sm"
+            variant="glass"
+            className="rounded-2xl border border-error/30 bg-gradient-to-br from-error/10 to-error/5 shadow-soft"
           >
-            <p className="text-sm">{audioState.audioError}</p>
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-3 self-start rounded-xl border-error/40 text-error hover:bg-error/20"
-              onClick={() => {
-                dispatch(setAudioError(null));
-                if (currentTrack) {
-                  dispatch(play());
-                }
-              }}
-            >
-              Retry
-            </Button>
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-error/20 flex items-center justify-center flex-shrink-0">
+                <span className="text-xl">⚠️</span>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-error mb-3">{audioState.audioError}</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-xl border-error/40 text-error hover:bg-error/20 bg-error/5 transition-all"
+                  onClick={() => {
+                    dispatch(setAudioError(null));
+                    if (currentTrack) {
+                      dispatch(play());
+                    }
+                  }}
+                >
+                  Riprova
+                </Button>
+              </div>
+            </div>
           </Card>
         )}
       </div>

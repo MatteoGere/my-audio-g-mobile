@@ -106,9 +106,14 @@ export default function FavoritesPage() {
   const renderItineraryCard = (favorite: (typeof favoriteItineraries)[number]) => {
     const itinerary = favorite.itinerary;
     return (
-      <Card key={`itinerary-${favorite.id}`} padding="lg" className="bg-surface">
+      <Card
+        key={`itinerary-${favorite.id}`}
+        padding="lg"
+        variant="glass"
+        className="bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20 shadow-soft transition-all duration-300 hover:scale-[1.01] hover:shadow-medium"
+      >
         <div className="flex gap-4">
-          <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-md">
+          <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 text-primary shadow-soft backdrop-blur-sm">
             <HiOutlineSparkles className="h-7 w-7" aria-hidden="true" />
           </div>
           <div className="flex-1 space-y-3">
@@ -180,9 +185,14 @@ export default function FavoritesPage() {
     const parentItinerary = track?.audio_itinerary;
 
     return (
-      <Card key={`track-${favorite.id}`} padding="lg" className="bg-surface">
+      <Card
+        key={`track-${favorite.id}`}
+        padding="lg"
+        variant="glass"
+        className="bg-gradient-to-br from-accent/5 to-secondary/5 border border-accent/20 shadow-soft transition-all duration-300 hover:scale-[1.01] hover:shadow-medium"
+      >
         <div className="flex gap-4">
-          <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-accent/10 text-accent shadow-md">
+          <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-accent/20 to-accent/10 text-accent shadow-soft backdrop-blur-sm">
             <HiOutlineMusicalNote className="h-7 w-7" aria-hidden="true" />
           </div>
           <div className="flex-1 space-y-3">

@@ -71,9 +71,12 @@ export default function LoginPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-foreground">Welcome Back</h2>
-        <p className="text-sm text-muted mt-2">Sign in to continue your audio journey</p>
+      <div className="text-center space-y-2">
+        <div className="flex items-center justify-center gap-2">
+          <div className="w-1 h-8 bg-gradient-to-b from-primary to-accent rounded-full" />
+          <h2 className="text-2xl font-bold text-foreground">Welcome Back</h2>
+        </div>
+        <p className="text-sm text-muted">Sign in to continue your audio journey</p>
       </div>
 
       {/* Login Form */}
@@ -89,7 +92,7 @@ export default function LoginPage() {
           error={validationErrors.email}
         />
 
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <Input
             type={showPassword ? 'text' : 'password'}
             label="Password"
@@ -103,15 +106,15 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="text-xs text-primary transition-colors"
+            className="text-xs text-primary hover:text-primary/80 transition-colors font-medium"
           >
             {showPassword ? 'Hide password' : 'Show password'}
           </button>
         </div>
 
         {displayError && (
-          <div className="p-3 rounded-lg bg-surface border border-carbon-200">
-            <p className="text-sm text-error-700">{displayError}</p>
+          <div className="p-3 rounded-xl bg-gradient-to-br from-error/10 to-error/5 border border-error/30 shadow-soft">
+            <p className="text-sm text-error font-medium">{displayError}</p>
           </div>
         )}
 
@@ -119,7 +122,7 @@ export default function LoginPage() {
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full"
+          className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-soft"
           loading={isLoading}
           disabled={isLoading}
         >
@@ -129,7 +132,10 @@ export default function LoginPage() {
 
       {/* Forgot Password */}
       <div className="text-center">
-        <Link href="/forgot-password" className="text-sm text-primary transition-colors">
+        <Link
+          href="/forgot-password"
+          className="text-sm text-primary hover:text-primary/80 transition-colors font-medium inline-flex items-center gap-1.5"
+        >
           Forgot your password?
         </Link>
       </div>
@@ -137,22 +143,30 @@ export default function LoginPage() {
       {/* Guest Mode */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-carbon-200" />
+          <div className="w-full border-t border-primary/20" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-surface text-muted">Or</span>
+          <span className="px-3 py-1 bg-surface text-muted font-medium rounded-lg">Or</span>
         </div>
       </div>
 
-      <Button variant="outline" size="lg" className="w-full" onClick={() => router.push('/')}>
+      <Button
+        variant="outline"
+        size="lg"
+        className="w-full border-primary/30 hover:bg-primary/5 hover:border-primary/40 transition-all"
+        onClick={() => router.push('/')}
+      >
         Continue as Guest
       </Button>
 
       {/* Sign Up Link */}
-      <div className="text-center">
+      <div className="text-center pt-2">
         <p className="text-sm text-muted">
           Don't have an account?{' '}
-          <Link href="/register" className="text-primary transition-colors font-medium">
+          <Link
+            href="/register"
+            className="text-primary hover:text-primary/80 transition-colors font-semibold"
+          >
             Sign up
           </Link>
         </p>

@@ -57,7 +57,10 @@ export function usePWAInstallPrompt() {
     window.addEventListener('appinstalled', handleAppInstalled);
 
     const mediaQuery = window.matchMedia('(display-mode: standalone)');
-    if (mediaQuery.matches || (window.navigator as unknown as { standalone?: boolean }).standalone) {
+    if (
+      mediaQuery.matches ||
+      (window.navigator as unknown as { standalone?: boolean }).standalone
+    ) {
       setIsInstalled(true);
     }
 

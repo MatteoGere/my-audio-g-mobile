@@ -240,22 +240,43 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Search Header */}
-      <Card padding="md" className="bg-surface border-b border-muted sticky top-0 z-10 mb-6">
+      <Card
+        padding="md"
+        variant="glass"
+        className="bg-gradient-to-br from-surface via-surface to-primary/5 border-b border-primary/20 sticky top-0 z-10 mb-6 shadow-soft backdrop-blur-lg"
+      >
         <div className="space-y-4">
+          {/* Header Title */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-7 bg-gradient-to-b from-primary to-accent rounded-full" />
+              <h1 className="text-2xl font-bold text-foreground">Discover Tours</h1>
+            </div>
+            {filteredResults.length > 0 && (
+              <Badge
+                variant="primary"
+                size="sm"
+                className="bg-gradient-to-r from-primary/20 to-primary/10"
+              >
+                {filteredResults.length} found
+              </Badge>
+            )}
+          </div>
+
           {/* Search Input */}
           <div className="relative">
             <Input
               placeholder="Search audio tours..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              leftIcon={<HiOutlineMagnifyingGlass className="h-5 w-5" />}
-              className="pr-12"
+              leftIcon={<HiOutlineMagnifyingGlass className="h-5 w-5 text-primary" />}
+              className="pr-12 border-primary/20"
             />
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowFilters(!showFilters)}
-              className="absolute right-2 top-1/2 -translate-y-1/2"
+              className={`absolute right-2 top-1/2 -translate-y-1/2 transition-colors ${showFilters ? 'text-primary bg-primary/10' : ''}`}
             >
               <HiOutlineAdjustmentsHorizontal className="h-5 w-5" />
             </Button>
@@ -267,7 +288,7 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
               <select
                 value={filters.sortBy}
                 onChange={(e) => updateFilter('sortBy', e.target.value)}
-                className="px-3 py-2 border border-muted rounded-lg text-sm bg-surface"
+                className="px-3 py-2 border border-primary/20 rounded-xl text-sm bg-surface shadow-soft transition-all hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -276,7 +297,10 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                 ))}
               </select>
               {(filters.company || filters.minDuration > 0 || filters.maxDuration < 300) && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge
+                  variant="secondary"
+                  className="text-xs bg-gradient-to-r from-secondary/90 to-secondary backdrop-blur-sm"
+                >
                   {Object.values(filters).filter((v) => v && v !== 'newest').length} filters
                 </Badge>
               )}
@@ -364,41 +388,28 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
       {/* Results */}
       <div>
-        {/* Results Header (not contained in a Card — mobile-first list view) */}
-        <div className="mb-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">
-                {filters.query ? `Search: "${filters.query}"` : 'Discover Tours'}
-              </h1>
-              <p className="text-muted mt-1">
-                {filteredResults.length} tour{filteredResults.length !== 1 ? 's' : ''} found
-              </p>
-            </div>
-          </div>
-        </div>
-
         {isLoading && (
           <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-4' : 'space-y-3'}>
             {Array.from({ length: 6 }, (_, i) => (
               <Card
                 key={i}
                 padding="md"
-                className={`overflow-hidden animate-pulse bg-surface rounded-xl shadow-md transition-shadow ${
+                variant="glass"
+                className={`overflow-hidden bg-gradient-to-br from-marble-100/30 to-marble-200/30 border border-marble-200/30 rounded-2xl shadow-soft ${
                   viewMode === 'list' ? 'flex items-start' : ''
                 }`}
               >
                 <div
                   className={
                     viewMode === 'grid'
-                      ? 'h-48 bg-background rounded-md mb-3 w-full'
-                      : 'h-48 w-48 bg-background rounded-md flex-shrink-0 mr-4'
+                      ? 'h-48 bg-gradient-to-br from-marble-100/50 to-marble-200/50 rounded-xl mb-3 w-full animate-pulse'
+                      : 'h-48 w-48 bg-gradient-to-br from-marble-100/50 to-marble-200/50 rounded-xl flex-shrink-0 mr-4 animate-pulse'
                   }
                 />
                 <div className="flex-1">
                   <div className="space-y-2">
-                    <div className="h-4 bg-background rounded w-3/4" />
-                    <div className="h-3 bg-background rounded w-1/2" />
+                    <div className="h-4 bg-marble-200/50 rounded animate-pulse w-3/4" />
+                    <div className="h-3 bg-marble-200/50 rounded animate-pulse w-1/2" />
                   </div>
                 </div>
               </Card>
@@ -416,16 +427,26 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
 
         {/* Empty State */}
         {!isLoading && !error && filteredResults.length === 0 && (
-          <div className="text-center py-12">
-            <HiOutlineMagnifyingGlass className="h-12 w-12 text-muted mx-auto mb-4" />
+          <Card
+            padding="lg"
+            variant="glass"
+            className="text-center py-12 bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20 rounded-2xl shadow-soft"
+          >
+            <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+              <HiOutlineMagnifyingGlass className="h-8 w-8 text-primary" />
+            </div>
             <h3 className="text-lg font-medium text-foreground mb-2">No tours found</h3>
             <p className="text-muted mb-4">
               Try adjusting your search criteria or clear the filters
             </p>
-            <Button variant="outline" onClick={clearAllFilters}>
+            <Button
+              variant="outline"
+              onClick={clearAllFilters}
+              className="border-primary/30 hover:bg-primary/5"
+            >
               Clear Filters
             </Button>
-          </div>
+          </Card>
         )}
 
         {/* Results List (mobile-first) */}
@@ -452,33 +473,71 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                 >
                   <Card
                     padding="md"
-                    className={`relative bg-surface rounded-xl shadow-md overflow-hidden transition-shadow hover:shadow-lg cursor-pointer ${
+                    variant="glass"
+                    className={`group relative bg-gradient-to-br from-surface to-primary/5 border border-primary/20 rounded-2xl shadow-soft overflow-hidden transition-all duration-300 hover:shadow-medium hover:scale-[1.02] hover:border-primary/30 cursor-pointer ${
                       viewMode === 'list' ? 'flex items-start' : ''
                     }`}
                   >
+                    {/* Favorite Button - Absolute Position */}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className={`absolute ${viewMode === 'grid' ? 'top-2 right-2' : 'top-2 right-2'} z-10 bg-surface/80 backdrop-blur-sm rounded-xl shadow-soft hover:bg-surface transition-all`}
+                      loading={favoritesBusy}
+                      aria-label={
+                        isFavorite
+                          ? 'Remove itinerary from favourites'
+                          : 'Add itinerary to favourites'
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleToggleFavorite(itinerary.id);
+                      }}
+                    >
+                      {isFavorite ? (
+                        <HiHeart
+                          className="h-5 w-5"
+                          aria-hidden="true"
+                          style={{ color: tokens.colors.error, opacity: 0.95 }}
+                        />
+                      ) : (
+                        <HiOutlineHeart
+                          className="h-5 w-5 text-foreground/60 group-hover:text-foreground transition-colors"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </Button>
+
                     {/* Image */}
                     <div
                       className={`relative ${
-                        viewMode === 'grid' ? 'h-32 w-full' : 'h-24 w-24 flex-shrink-0 mr-4'
-                      } bg-surface`}
+                        viewMode === 'grid' ? 'h-40 w-full' : 'h-28 w-28 flex-shrink-0 mr-4'
+                      } bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl overflow-hidden`}
                     >
                       {imageUrl ? (
-                        <img
-                          src={imageUrl}
-                          alt={itinerary.name}
-                          className="w-full h-full object-cover rounded-md"
-                        />
+                        <>
+                          <img
+                            src={imageUrl}
+                            alt={itinerary.name}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                        </>
                       ) : (
-                        <div className="w-full h-full grid place-items-center text-muted text-xs">
-                          No Image
+                        <div className="w-full h-full grid place-items-center text-muted/50 text-xs">
+                          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center backdrop-blur-sm">
+                            <HiOutlineMagnifyingGlass className="h-6 w-6" />
+                          </div>
                         </div>
                       )}
                     </div>
 
                     {/* Content */}
                     <div className="flex-1">
-                      <div className="space-y-1">
-                        <h3 className="font-medium text-foreground line-clamp-2">
+                      <div className="space-y-2">
+                        <h3 className="font-semibold text-foreground line-clamp-2 text-base group-hover:text-primary transition-colors">
                           {itinerary.name}
                         </h3>
 
@@ -489,49 +548,25 @@ function SearchPageContent({ searchParams }: SearchPageContentProps) {
                           />
                         )}
 
-                        <div className="flex items-center gap-2 text-xs text-muted">
-                          <div className="flex items-center gap-1">
-                            <HiOutlineClock className="h-3 w-3" />
-                            {formatDuration(itinerary.total_duration)}
+                        <div className="flex items-center gap-3 text-xs">
+                          <div className="flex items-center gap-1.5 text-secondary">
+                            <div className="w-6 h-6 rounded-lg bg-secondary/10 flex items-center justify-center backdrop-blur-sm">
+                              <HiOutlineClock className="h-3.5 w-3.5" />
+                            </div>
+                            <span className="font-medium">
+                              {formatDuration(itinerary.total_duration)}
+                            </span>
                           </div>
 
                           {itinerary.company?.name && (
-                            <>
-                              <span>•</span>
-                              <span>{itinerary.company.name}</span>
-                            </>
+                            <Badge
+                              variant="outline"
+                              size="sm"
+                              className="bg-marble-50/50 border-marble-200/50 backdrop-blur-sm"
+                            >
+                              {itinerary.company.name}
+                            </Badge>
                           )}
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className=""
-                            loading={favoritesBusy}
-                            aria-label={
-                              isFavorite
-                                ? 'Remove itinerary from favourites'
-                                : 'Add itinerary to favourites'
-                            }
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              handleToggleFavorite(itinerary.id);
-                            }}
-                          >
-                            {isFavorite ? (
-                              <HiHeart
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                                style={{ color: tokens.colors.error, opacity: 0.95 }}
-                              />
-                            ) : (
-                              <HiOutlineHeart
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                                style={{ opacity: 0.65 }}
-                              />
-                            )}
-                          </Button>
                         </div>
                       </div>
                     </div>

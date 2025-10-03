@@ -33,6 +33,16 @@ function formatDistance(meters?: number | null) {
   if (meters >= 1000) return `${(meters / 1000).toFixed(1)} km`;
   return `${Math.round(meters)} m`;
 }
+
+// Helper to get color class based on distance
+function getDistanceColorClass(meters?: number | null) {
+  if (meters == null) return 'bg-muted/10 text-muted';
+  if (meters < 500) return 'bg-gradient-to-r from-accent/90 to-accent text-accent-foreground'; // Very close - green
+  if (meters < 1500) return 'bg-gradient-to-r from-primary/90 to-primary text-primary-foreground'; // Close - teal
+  if (meters < 3000)
+    return 'bg-gradient-to-r from-secondary/90 to-secondary text-secondary-foreground'; // Medium - amber
+  return 'bg-gradient-to-r from-muted/60 to-muted/80 text-foreground'; // Far - gray
+}
 export default function NearbyItineraries() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [geoError, setGeoError] = useState<string | null>(null);
@@ -164,12 +174,13 @@ export default function NearbyItineraries() {
             <Card
               key={i}
               padding="md"
-              className="flex flex-col overflow-hidden rounded-xl animate-pulse shadow-md"
+              variant="glass"
+              className="flex flex-col overflow-hidden rounded-2xl shadow-soft border border-marble-200/30"
             >
-              <div className="h-24 bg-surface rounded-t-xl" />
+              <div className="h-24 bg-gradient-to-br from-marble-100/50 to-marble-200/50 rounded-xl animate-pulse" />
               <div className="flex flex-col gap-2">
-                <div className="h-4 bg-surface rounded w-3/4" />
-                <div className="h-3 bg-surface rounded w-1/2" />
+                <div className="h-4 bg-marble-200/50 rounded animate-pulse w-3/4" />
+                <div className="h-3 bg-marble-200/50 rounded animate-pulse w-1/2" />
               </div>
             </Card>
           ))}
@@ -187,20 +198,23 @@ export default function NearbyItineraries() {
               it.image_file?.image_storage_key ??
               (it.image_file_id ? imageFileMap[it.image_file_id] : '');
             const imgUrl = path ? signedUrls[path] : undefined;
+            const distanceColorClass = getDistanceColorClass(it.distance_meters);
+
             return (
               <Link key={it.id} href={`/itinerary/${it.id}`} className="block" tabIndex={0}>
                 <Card
                   padding="md"
-                  className="flex flex-col overflow-hidden rounded-xl shadow-md hover:bg-surface"
+                  variant="glass"
+                  className="flex flex-col overflow-hidden rounded-2xl shadow-soft border border-marble-200/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-medium"
                 >
-                  <div className="relative h-24 bg-surface rounded-t-xl">
+                  <div className="relative h-24 bg-gradient-to-br from-marble-100 to-marble-200 rounded-xl overflow-hidden">
                     {imgUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={imgUrl}
-                        alt={it.name}
-                        className="w-full h-full object-cover rounded-t-xl"
-                      />
+                      <>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={imgUrl} alt={it.name} className="w-full h-full object-cover" />
+                        {/* Gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                      </>
                     ) : (
                       <div className="w-full h-full grid place-items-center text-muted text-xs">
                         No Image
@@ -212,15 +226,18 @@ export default function NearbyItineraries() {
                       <h3 className="font-bold text-foreground truncate">{it.name}</h3>
                       <Badge
                         variant="secondary"
-                        className="shrink-0 px-2 py-0.5 rounded-md text-xs inline-flex items-center gap-1"
+                        className="shrink-0 px-2 py-0.5 rounded-full text-xs inline-flex items-center gap-1 bg-gradient-to-r from-secondary/90 to-secondary backdrop-blur-sm"
                       >
                         <HiOutlineClock className="h-3 w-3" />
                         {formatDuration(it.total_duration)}
                       </Badge>
                     </div>
-                    <div className="text-xs text-muted">
-                      {formatDistance(it.distance_meters)} away
-                    </div>
+                    <Badge
+                      className={`text-xs px-2 py-1 rounded-full inline-flex items-center gap-1.5 w-fit backdrop-blur-sm ${distanceColorClass}`}
+                    >
+                      <HiOutlineMapPin className="h-3 w-3" />
+                      <span className="font-semibold">{formatDistance(it.distance_meters)}</span>
+                    </Badge>
                   </div>
                 </Card>
               </Link>

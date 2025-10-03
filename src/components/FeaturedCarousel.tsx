@@ -123,12 +123,13 @@ export default function FeaturedCarousel() {
             <Card
               key={i}
               padding="md"
-              className="min-w-[240px] w-[240px] flex flex-col overflow-hidden rounded-xl animate-pulse shadow-md p-4"
+              variant="glass"
+              className="min-w-[240px] w-[240px] flex flex-col overflow-hidden rounded-2xl shadow-soft p-4 border border-marble-200/30"
             >
-              <div className="h-36 bg-background rounded-t-xl" />
+              <div className="h-36 bg-gradient-to-br from-marble-100/50 to-marble-200/50 rounded-xl animate-pulse" />
               <div className="flex flex-col gap-2 mt-2">
-                <div className="h-4 bg-background rounded w-3/4" />
-                <div className="h-3 bg-background rounded w-1/2" />
+                <div className="h-4 bg-marble-200/50 rounded animate-pulse w-3/4" />
+                <div className="h-3 bg-marble-200/50 rounded animate-pulse w-1/2" />
               </div>
             </Card>
           ))}
@@ -155,16 +156,17 @@ export default function FeaturedCarousel() {
                 <Link key={it.id} href={`/itinerary/${it.id}`} className="block" tabIndex={0}>
                   <Card
                     padding="md"
-                    className="min-w-[260px] w-[260px] flex flex-col overflow-hidden rounded-xl shadow-md snap-start transition-colors hover:bg-background p-4"
+                    variant="glass"
+                    className="min-w-[260px] w-[260px] flex flex-col overflow-hidden rounded-2xl shadow-soft snap-start transition-all duration-300 hover:scale-[1.02] hover:shadow-medium border border-marble-200/30 p-4"
                   >
-                    <div className="relative h-40 bg-surface rounded-t-xl">
+                    <div className="relative h-40 bg-gradient-to-br from-marble-100 to-marble-200 rounded-xl overflow-hidden">
                       {imgUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={imgUrl}
-                          alt={it.name}
-                          className="w-full h-full object-cover rounded-t-xl"
-                        />
+                        <>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={imgUrl} alt={it.name} className="w-full h-full object-cover" />
+                          {/* Gradient overlay for better text readability on images */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                        </>
                       ) : (
                         <div className="w-full h-full grid place-items-center text-muted">
                           No Image
@@ -176,7 +178,7 @@ export default function FeaturedCarousel() {
                         <h3 className="text-lg font-bold text-foreground truncate">{it.name}</h3>
                         <Badge
                           variant="secondary"
-                          className="shrink-0 px-2 py-0.5 rounded-md text-xs inline-flex items-center gap-1"
+                          className="shrink-0 px-2 py-0.5 rounded-full text-xs inline-flex items-center gap-1 bg-gradient-to-r from-secondary/90 to-secondary backdrop-blur-sm"
                         >
                           <HiOutlineClock className="h-3 w-3" />
                           <span className="leading-none">{formatDuration(it.total_duration)}</span>
@@ -206,10 +208,10 @@ export default function FeaturedCarousel() {
                   scrollToIndex(i);
                 }}
                 className={
-                  'h-1.5 rounded-full hover:cursor-pointer transition-all duration-200  ' +
+                  'h-1.5 rounded-full hover:cursor-pointer transition-all duration-300 ease-out ' +
                   (i === activeIndex
-                    ? 'bg-primary w-10'
-                    : 'bg-muted/30 w-6 hover:w-10 hover:bg-primary/40')
+                    ? 'bg-gradient-to-r from-primary to-accent w-10 shadow-md'
+                    : 'bg-muted/30 w-6 hover:w-10 hover:bg-gradient-to-r hover:from-primary/40 hover:to-accent/40')
                 }
               />
             ))}
