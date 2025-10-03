@@ -590,9 +590,9 @@ export default function AudioPlayerPage() {
                   <HiOutlineXMark className="h-5 w-5" />
                 </Button>
               </div>
-                <div className="max-h-[calc(100vh-12rem)] overflow-y-auto ">
-                  {tabItems.find((item) => item.id === activeTab)?.content}
-                </div>
+              <div className="max-h-[calc(100vh-12rem)] overflow-y-auto ">
+                {tabItems.find((item) => item.id === activeTab)?.content}
+              </div>
             </div>
           </div>
         )}

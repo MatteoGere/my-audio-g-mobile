@@ -79,7 +79,7 @@ export function BottomNavigation() {
             >
               <div
                 className={cn(
-                  'relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300'
+                  'relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300',
                 )}
               >
                 <Icon

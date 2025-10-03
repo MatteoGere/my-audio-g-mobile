@@ -176,120 +176,122 @@ export function MiniPlayer() {
           <div className="px-4 py-3">
             {/* Track Info and Controls */}
             <div className="flex items-center gap-3">
-            {/* Track Image */}
-            <div className="flex-shrink-0 cursor-pointer" onClick={handleOpenFullPlayer}>
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl blur-sm" />
-                <Avatar
-                  size="lg"
-                  src={
-                    currentTrack?.image_file_id && currentTrackImageUrl ? currentTrackImageUrl : ''
-                  }
-                  alt={currentTrack?.name || 'Track'}
-                  fallback={currentTrack?.name || 'Track'}
-                  className="relative h-12 w-12 ring-2 ring-primary/30"
+              {/* Track Image */}
+              <div className="flex-shrink-0 cursor-pointer" onClick={handleOpenFullPlayer}>
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl blur-sm" />
+                  <Avatar
+                    size="lg"
+                    src={
+                      currentTrack?.image_file_id && currentTrackImageUrl
+                        ? currentTrackImageUrl
+                        : ''
+                    }
+                    alt={currentTrack?.name || 'Track'}
+                    fallback={currentTrack?.name || 'Track'}
+                    className="relative h-12 w-12 ring-2 ring-primary/30"
+                  >
+                    🎵
+                  </Avatar>
+                </div>
+              </div>
+
+              {/* Track Info */}
+              <div className="flex-1 min-w-0 cursor-pointer" onClick={handleOpenFullPlayer}>
+                <p className="truncate text-sm font-semibold text-foreground leading-tight">
+                  {currentTrack.name || 'Audio Track'}
+                </p>
+                <div className="flex items-center gap-1.5 text-xs text-muted mt-0.5">
+                  <span className="font-medium text-secondary">
+                    {formatTime(playbackState.currentTime)}
+                  </span>
+                  <span className="text-muted/60">/</span>
+                  <span>{formatTime(currentTrack.duration || 0)}</span>
+                  {queue.length > 1 && (
+                    <>
+                      <span className="text-muted/60">•</span>
+                      <span className="px-1.5 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] font-medium">
+                        {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1}/
+                        {queue.length}
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Essential Controls - Primary Actions */}
+              <div className="flex items-center gap-1.5">
+                {/* Previous Button */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-9 w-9 rounded-xl p-0 shrink-0 bg-secondary/10 hover:bg-secondary/20 text-secondary transition-all"
+                  onClick={handlePrevious}
+                  disabled={queue.length <= 1}
+                  title="Previous track"
                 >
-                  🎵
-                </Avatar>
+                  <HiOutlineBackward className="h-4 w-4" />
+                </Button>
+
+                {/* Play/Pause Button */}
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="h-11 w-11 rounded-xl p-0 shadow-medium shrink-0 bg-gradient-to-br from-primary via-accent to-secondary hover:scale-105 transition-all"
+                  onClick={handlePlayPause}
+                  title={playbackState.isPlaying ? 'Pause' : 'Play'}
+                >
+                  {playbackState.isLoading ? (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                  ) : playbackState.isPlaying ? (
+                    <HiOutlinePause className="h-4 w-4" />
+                  ) : (
+                    <HiOutlinePlay className="h-4 w-4 translate-x-[1px]" />
+                  )}
+                </Button>
+
+                {/* Next Button */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-9 w-9 rounded-xl p-0 shrink-0 bg-accent/10 hover:bg-accent/20 text-accent transition-all"
+                  onClick={handleNext}
+                  disabled={queue.length <= 1}
+                  title="Next track"
+                >
+                  <HiOutlineForward className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Secondary Controls - Mute and Close */}
+              <div className="flex items-center gap-1 shrink-0">
+                {/* Mute Button */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 rounded-lg p-0 bg-marble-100/50 hover:bg-marble-200/50 transition-all"
+                  onClick={handleMuteToggle}
+                  title={playbackState.isMuted ? 'Unmute' : 'Mute'}
+                >
+                  {playbackState.isMuted ? (
+                    <HiOutlineSpeakerXMark className="h-3.5 w-3.5 text-error" />
+                  ) : (
+                    <HiOutlineSpeakerWave className="h-3.5 w-3.5" />
+                  )}
+                </Button>
+
+                {/* Close Button */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 rounded-lg p-0 bg-error/10 hover:bg-error/20 text-error transition-all"
+                  onClick={handleCloseMiniPlayer}
+                  title="Close player"
+                >
+                  <HiOutlineXMark className="h-3.5 w-3.5" />
+                </Button>
               </div>
             </div>
-
-            {/* Track Info */}
-            <div className="flex-1 min-w-0 cursor-pointer" onClick={handleOpenFullPlayer}>
-              <p className="truncate text-sm font-semibold text-foreground leading-tight">
-                {currentTrack.name || 'Audio Track'}
-              </p>
-              <div className="flex items-center gap-1.5 text-xs text-muted mt-0.5">
-                <span className="font-medium text-secondary">
-                  {formatTime(playbackState.currentTime)}
-                </span>
-                <span className="text-muted/60">/</span>
-                <span>{formatTime(currentTrack.duration || 0)}</span>
-                {queue.length > 1 && (
-                  <>
-                    <span className="text-muted/60">•</span>
-                    <span className="px-1.5 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] font-medium">
-                      {(queue.findIndex((item) => item.track.id === currentTrack.id) || 0) + 1}/
-                      {queue.length}
-                    </span>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Essential Controls - Primary Actions */}
-            <div className="flex items-center gap-1.5">
-              {/* Previous Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-9 w-9 rounded-xl p-0 shrink-0 bg-secondary/10 hover:bg-secondary/20 text-secondary transition-all"
-                onClick={handlePrevious}
-                disabled={queue.length <= 1}
-                title="Previous track"
-              >
-                <HiOutlineBackward className="h-4 w-4" />
-              </Button>
-
-              {/* Play/Pause Button */}
-              <Button
-                variant="primary"
-                size="sm"
-                className="h-11 w-11 rounded-xl p-0 shadow-medium shrink-0 bg-gradient-to-br from-primary via-accent to-secondary hover:scale-105 transition-all"
-                onClick={handlePlayPause}
-                title={playbackState.isPlaying ? 'Pause' : 'Play'}
-              >
-                {playbackState.isLoading ? (
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-                ) : playbackState.isPlaying ? (
-                  <HiOutlinePause className="h-4 w-4" />
-                ) : (
-                  <HiOutlinePlay className="h-4 w-4 translate-x-[1px]" />
-                )}
-              </Button>
-
-              {/* Next Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-9 w-9 rounded-xl p-0 shrink-0 bg-accent/10 hover:bg-accent/20 text-accent transition-all"
-                onClick={handleNext}
-                disabled={queue.length <= 1}
-                title="Next track"
-              >
-                <HiOutlineForward className="h-4 w-4" />
-              </Button>
-            </div>
-
-            {/* Secondary Controls - Mute and Close */}
-            <div className="flex items-center gap-1 shrink-0">
-              {/* Mute Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 rounded-lg p-0 bg-marble-100/50 hover:bg-marble-200/50 transition-all"
-                onClick={handleMuteToggle}
-                title={playbackState.isMuted ? 'Unmute' : 'Mute'}
-              >
-                {playbackState.isMuted ? (
-                  <HiOutlineSpeakerXMark className="h-3.5 w-3.5 text-error" />
-                ) : (
-                  <HiOutlineSpeakerWave className="h-3.5 w-3.5" />
-                )}
-              </Button>
-
-              {/* Close Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 rounded-lg p-0 bg-error/10 hover:bg-error/20 text-error transition-all"
-                onClick={handleCloseMiniPlayer}
-                title="Close player"
-              >
-                <HiOutlineXMark className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-          </div>
           </div>
         </Card>
       </div>
